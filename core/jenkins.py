@@ -34,7 +34,6 @@ def generate_jenkinsfile(
     config: dict,
     fpgas: list,
     main_script_path: str,
-    utilities_script_path: str,
     lang_version: str,
     extra_flags: list = None,
 ) -> None:
@@ -106,7 +105,7 @@ pipeline {{
     extra_flags_str = ' '.join(extra_flags) if extra_flags else ''
 
     # Command for extra utilities in the pipeline
-    utilities_command = f'sh "python3 {utilities_script_path} -d \$(pwd) \
+    utilities_command = f'sh "python3 /eda/processor-ci/core/labeler_prototype.py -d \$(pwd) \
         -c /eda/processor-ci/config.json -o /jenkins/processor_ci_utils/labels.json"'
 
     # Determine simulation command based on file types

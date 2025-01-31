@@ -96,7 +96,6 @@ FPGAs = [
 ]
 DESTINATION_DIR = './temp'
 MAIN_SCRIPT_PATH = '/eda/processor-ci/main.py'
-UTILITIES_SCRIPT_PATH = '/eda/processor-ci/core/labeler_prototype.py'
 
 
 def get_top_module_file(modules: list[dict[str, str]], top_module: str) -> str:
@@ -286,7 +285,6 @@ def generate_all_pipelines(config_file_path: str) -> None:
             processor_data,
             FPGAs,
             MAIN_SCRIPT_PATH,
-            UTILITIES_SCRIPT_PATH,
             processor_data['language_version'],
             processor_data['extra_flags'],
         )

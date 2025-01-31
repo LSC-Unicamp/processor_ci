@@ -169,6 +169,57 @@ def determine_cpu_bits(top_file):
         return None
 
 
+def generate_labels_file(processor_name, license_types, cpu_bits, output_file):
+    """Generate a JSON file with labels for the processor cores.
+
+    Args:
+        directory (str): The directory to search for LICENSE files.
+        config_file (str): The configuration JSON file path.
+        output_file (str): The output JSON file path.
+    """
+    # Load existing JSON data if the file exists
+    if os.path.exists(output_file):
+        try:
+            with open(output_file, 'r', encoding='utf-8') as json_file:
+                existing_data = json.load(json_file)
+        except (json.JSONDecodeError, OSError) as e:
+            print(f'Error reading existing JSON file: {e}')
+            existing_data = {}
+    else:
+        existing_data = {}
+
+    # Check if "cores" exists
+    if 'cores' not in existing_data:
+        # Overwrite the file completely if "cores" is missing
+        output_data = {
+            'cores': {
+                processor_name: {
+                    'license_types': list(
+                        set(license_types)
+                    ),  # Deduplicate license types
+                    'bits': cpu_bits,
+                }
+            }
+        }
+    else:
+        # Update only the cores section without overwriting other data
+        existing_data['cores'][processor_name] = {
+            'license_types': list(
+                set(license_types)
+            ),  # Deduplicate license types
+            'bits': cpu_bits,
+        }
+        output_data = existing_data
+
+    # Write updated results back to JSON file
+    try:
+        with open(output_file, 'w', encoding='utf-8') as json_file:
+            json.dump(output_data, json_file, indent=4)
+        print(f'Results saved to {output_file}')
+    except OSError as e:
+        print(f'Error writing to JSON file: {e}')
+
+
 def main(directory, config_file, output_file):
     """Main function to find LICENSE files and identify their types.
 
@@ -222,47 +273,7 @@ def main(directory, config_file, output_file):
             if cpu_bits is not None:
                 break
 
-    # Load existing JSON data if the file exists
-    if os.path.exists(output_file):
-        try:
-            with open(output_file, 'r', encoding='utf-8') as json_file:
-                existing_data = json.load(json_file)
-        except (json.JSONDecodeError, OSError) as e:
-            print(f'Error reading existing JSON file: {e}')
-            existing_data = {}
-    else:
-        existing_data = {}
-
-    # Check if "cores" exists
-    if 'cores' not in existing_data:
-        # Overwrite the file completely if "cores" is missing
-        output_data = {
-            'cores': {
-                processor_name: {
-                    'license_types': list(
-                        set(license_types)
-                    ),  # Deduplicate license types
-                    'bits': cpu_bits,
-                }
-            }
-        }
-    else:
-        # Update only the cores section without overwriting other data
-        existing_data['cores'][processor_name] = {
-            'license_types': list(
-                set(license_types)
-            ),  # Deduplicate license types
-            'bits': cpu_bits,
-        }
-        output_data = existing_data
-
-    # Write updated results back to JSON file
-    try:
-        with open(output_file, 'w', encoding='utf-8') as json_file:
-            json.dump(output_data, json_file, indent=4)
-        print(f'Results saved to {output_file}')
-    except OSError as e:
-        print(f'Error writing to JSON file: {e}')
+    generate_labels_file(processor_name, license_types, cpu_bits, output_file)
 
 
 if __name__ == '__main__':
