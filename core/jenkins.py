@@ -23,6 +23,7 @@ Arguments:
     config (dict): A dictionary containing project and FPGA configuration.
     fpgas (list): A list of FPGA names to be included in the build pipeline.
     main_script_path (str): The path to the main Python script used for synthesis and flashing.
+    utilities_script_path (str): The path to the utilities script for additional pipeline steps.
     lang_version (str): The version of the hardware description language
     to be used (e.g., VHDL or Verilog). extra_flags (list, optional):
     Additional flags for the simulation command.
@@ -33,6 +34,7 @@ def generate_jenkinsfile(
     config: dict,
     fpgas: list,
     main_script_path: str,
+    utilities_script_path: str,
     lang_version: str,
     extra_flags: list = None,
 ) -> None:
@@ -43,6 +45,7 @@ def generate_jenkinsfile(
         config (dict): Configuration dictionary containing project and FPGA details.
         fpgas (list): List of FPGA names to be used in the pipeline.
         main_script_path (str): Path to the main Python script for synthesis and flashing.
+        utilities_script_path (str): Path to the utilities script for additional pipeline steps.
         lang_version (str): The version of the VHDL or Verilog language to use.
         extra_flags (list, optional): List of extra flags for the simulation command.
 
@@ -69,7 +72,15 @@ pipeline {{
                 }}
             }}
         }}
-        
+
+         stage('Utilities')  {{
+            steps {{
+                dir("{folder}") {{
+                    {utilities_command}
+                }}            
+            }}
+        }}
+
         stage('FPGA Build Pipeline') {{
             parallel {{
                 {fpga_parallel_stages}
@@ -93,6 +104,10 @@ pipeline {{
 
     # Define extra flags if provided
     extra_flags_str = ' '.join(extra_flags) if extra_flags else ''
+
+    # Command for extra utilities in the pipeline
+    utilities_command = f'sh "python3 {utilities_script_path} -d \$(pwd) \
+        -c /eda/processor-ci/config.json -o /jenkins/processor_ci_utils/labels.json"'
 
     # Determine simulation command based on file types
     is_vhdl = any(
@@ -192,6 +207,7 @@ pipeline {{
         sim_files=sim_files,
         simulation_command=simulation_command,
         fpga_parallel_stages=fpga_parallel_stages,
+        utilities_command=utilities_command,
     )
 
     # Save the Jenkinsfile with specified encoding

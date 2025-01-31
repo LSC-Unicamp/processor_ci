@@ -18,7 +18,15 @@ pipeline {
                 }
             }
         }
-        
+
+         stage('Utilities')  {
+            steps {
+                dir("riscado-v") {
+                    sh "python3 /eda/processor-ci/core/labeler_prototype.py -d \$(pwd)         -c /eda/processor-ci/config.json -o /jenkins/processor_ci_utils/labels.json"
+                }            
+            }
+        }
+
         stage('FPGA Build Pipeline') {
             parallel {
                 

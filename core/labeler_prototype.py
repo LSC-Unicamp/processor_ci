@@ -174,6 +174,7 @@ def main(directory, config_file, output_file):
 
     Args:
         directory (str): The directory to search for LICENSE files.
+        config_file (str): The configuration JSON file path.
         output_file (str): The output JSON file path.
     """
     license_files = find_license_files(directory)
@@ -221,14 +222,41 @@ def main(directory, config_file, output_file):
             if cpu_bits is not None:
                 break
 
-    # Prepare the output data
-    output_data = {
-        'processor': processor_name,
-        'license_types': list(set(license_types)),  # Deduplicate license types
-        'bits': cpu_bits,
-    }
+    # Load existing JSON data if the file exists
+    if os.path.exists(output_file):
+        try:
+            with open(output_file, 'r', encoding='utf-8') as json_file:
+                existing_data = json.load(json_file)
+        except (json.JSONDecodeError, OSError) as e:
+            print(f'Error reading existing JSON file: {e}')
+            existing_data = {}
+    else:
+        existing_data = {}
 
-    # Write results to JSON file
+    # Check if "cores" exists
+    if 'cores' not in existing_data:
+        # Overwrite the file completely if "cores" is missing
+        output_data = {
+            'cores': {
+                processor_name: {
+                    'license_types': list(
+                        set(license_types)
+                    ),  # Deduplicate license types
+                    'bits': cpu_bits,
+                }
+            }
+        }
+    else:
+        # Update only the cores section without overwriting other data
+        existing_data['cores'][processor_name] = {
+            'license_types': list(
+                set(license_types)
+            ),  # Deduplicate license types
+            'bits': cpu_bits,
+        }
+        output_data = existing_data
+
+    # Write updated results back to JSON file
     try:
         with open(output_file, 'w', encoding='utf-8') as json_file:
             json.dump(output_data, json_file, indent=4)
