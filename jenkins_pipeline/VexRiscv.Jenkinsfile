@@ -30,7 +30,7 @@ pipeline {
          stage('Utilities')  {
             steps {
                 dir("VexRiscv") {
-                    sh "python3 /eda/processor-ci/core/labeler_prototype.py -d \$(pwd)         -c /eda/processor-ci/config.json -o /jenkins/processor_ci_utils/labels.json"
+                    sh "python3 /eda/processor-ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor-ci/config.json -o /jenkins/processor_ci_utils/labels.json"
                 }            
             }
         }
