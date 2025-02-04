@@ -1979,22 +1979,6 @@
                 "lib/work/debug/grtestmod.vhd"
             ],
             "files": [
-                "designs/leon3-xilinx-vc707/mig_interface_model.v",
-                "lib/gaisler/ddr/mig_interface_model.v",
-                "lib/gaisler/i2c/i2c_slave_model.v",
-                "lib/micron/sdram/mobile_sdr.v",
-                "lib/opencores/ge_1000baseX/clean_rst.v",
-                "lib/opencores/ge_1000baseX/decoder_8b10b.v",
-                "lib/opencores/ge_1000baseX/encoder_8b10b.v",
-                "lib/opencores/ge_1000baseX/ge_1000baseX.v",
-                "lib/opencores/ge_1000baseX/ge_1000baseX_an.v",
-                "lib/opencores/ge_1000baseX/ge_1000baseX_constants.v",
-                "lib/opencores/ge_1000baseX/ge_1000baseX_mdio.v",
-                "lib/opencores/ge_1000baseX/ge_1000baseX_regs.v",
-                "lib/opencores/ge_1000baseX/ge_1000baseX_rx.v",
-                "lib/opencores/ge_1000baseX/ge_1000baseX_sync.v",
-                "lib/opencores/ge_1000baseX/ge_1000baseX_tx.v",
-                "lib/opencores/ge_1000baseX/timescale.v",
                 "bin/altera/altera_mf.vhd",
                 "boards/altera-c5ekit/ddr3ctrl1.vhd",
                 "boards/altera-c5ekit/lpddr2ctrl1.vhd",
@@ -2933,19 +2917,6 @@
             ],
             "include_dirs": [],
             "repository": "https://github.com/riscv-boom/riscv-boom",
-            "top_module": "",
-            "extra_flags": [],
-            "language_version": "2005"
-        },
-        "microrv32": {
-            "name": "microrv32",
-            "folder": "microrv32",
-            "sim_files": [
-                "microrv32/vtb/rtl/MicroRV32Top_TB.v"
-            ],
-            "files": [],
-            "include_dirs": [],
-            "repository": "https://github.com/agra-uni-bremen/microrv32",
             "top_module": "",
             "extra_flags": [],
             "language_version": "2005"

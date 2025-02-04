@@ -47,7 +47,7 @@ pipeline {
                             steps {
                                 dir("VexRiscv") {
                                     echo 'Starting synthesis for FPGA colorlight_i9.'
-                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor-ci/config.json \
+                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor_ci/config.json \
                                             -p VexRiscv -b colorlight_i9'
                                 }
                             }
@@ -56,7 +56,7 @@ pipeline {
                             steps {
                                 dir("VexRiscv") {
                                     echo 'Flashing FPGA colorlight_i9.'
-                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor-ci/config.json \
+                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor_ci/config.json \
                                             -p VexRiscv -b colorlight_i9 -l'
                                 }
                             }
@@ -81,7 +81,7 @@ pipeline {
                             steps {
                                 dir("VexRiscv") {
                                     echo 'Starting synthesis for FPGA digilent_nexys4_ddr.'
-                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor-ci/config.json \
+                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor_ci/config.json \
                                             -p VexRiscv -b digilent_nexys4_ddr'
                                 }
                             }
@@ -90,7 +90,7 @@ pipeline {
                             steps {
                                 dir("VexRiscv") {
                                     echo 'Flashing FPGA digilent_nexys4_ddr.'
-                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor-ci/config.json \
+                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor_ci/config.json \
                                             -p VexRiscv -b digilent_nexys4_ddr -l'
                                 }
                             }
