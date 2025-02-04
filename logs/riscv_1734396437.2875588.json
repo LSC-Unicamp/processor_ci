@@ -1,0 +1,518 @@
+{
+    "name": "riscv",
+    "folder": "riscv",
+    "sim_files": [],
+    "files": [
+        "core/riscv/riscv_alu.v",
+        "core/riscv/riscv_core.v",
+        "core/riscv/riscv_csr.v",
+        "core/riscv/riscv_csr_regfile.v",
+        "core/riscv/riscv_decode.v",
+        "core/riscv/riscv_decoder.v",
+        "core/riscv/riscv_defs.v",
+        "core/riscv/riscv_divider.v",
+        "core/riscv/riscv_exec.v",
+        "core/riscv/riscv_fetch.v",
+        "core/riscv/riscv_issue.v",
+        "core/riscv/riscv_lsu.v",
+        "core/riscv/riscv_mmu.v",
+        "core/riscv/riscv_multiplier.v",
+        "core/riscv/riscv_pipe_ctrl.v",
+        "core/riscv/riscv_regfile.v",
+        "core/riscv/riscv_trace_sim.v",
+        "core/riscv/riscv_xilinx_2r1w.v",
+        "top_cache_axi/src_v/dcache.v",
+        "top_cache_axi/src_v/dcache_axi.v",
+        "top_cache_axi/src_v/dcache_axi_axi.v",
+        "top_cache_axi/src_v/dcache_core.v",
+        "top_cache_axi/src_v/dcache_core_data_ram.v",
+        "top_cache_axi/src_v/dcache_core_tag_ram.v",
+        "top_cache_axi/src_v/dcache_if_pmem.v",
+        "top_cache_axi/src_v/dcache_mux.v",
+        "top_cache_axi/src_v/dcache_pmem_mux.v",
+        "top_cache_axi/src_v/icache.v",
+        "top_cache_axi/src_v/icache_data_ram.v",
+        "top_cache_axi/src_v/icache_tag_ram.v",
+        "top_cache_axi/src_v/riscv_top.v",
+        "top_tcm_axi/src_v/dport_axi.v",
+        "top_tcm_axi/src_v/dport_mux.v",
+        "top_tcm_axi/src_v/riscv_tcm_top.v",
+        "top_tcm_axi/src_v/tcm_mem.v",
+        "top_tcm_axi/src_v/tcm_mem_pmem.v",
+        "top_tcm_axi/src_v/tcm_mem_ram.v",
+        "top_tcm_wrapper/dport_axi.v",
+        "top_tcm_wrapper/dport_mux.v",
+        "top_tcm_wrapper/riscv_tcm_wrapper.v",
+        "top_tcm_wrapper/tcm_mem.v",
+        "top_tcm_wrapper/tcm_mem_pmem.v",
+        "top_tcm_wrapper/tcm_mem_ram.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/ultraembedded/riscv",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "riscv_alu",
+            "file": "core/riscv/riscv_alu.v"
+        },
+        {
+            "module": "riscv_core",
+            "file": "core/riscv/riscv_core.v"
+        },
+        {
+            "module": "riscv_csr",
+            "file": "core/riscv/riscv_csr.v"
+        },
+        {
+            "module": "riscv_csr_regfile",
+            "file": "core/riscv/riscv_csr_regfile.v"
+        },
+        {
+            "module": "riscv_decode",
+            "file": "core/riscv/riscv_decode.v"
+        },
+        {
+            "module": "riscv_decoder",
+            "file": "core/riscv/riscv_decoder.v"
+        },
+        {
+            "module": "riscv_divider",
+            "file": "core/riscv/riscv_divider.v"
+        },
+        {
+            "module": "riscv_exec",
+            "file": "core/riscv/riscv_exec.v"
+        },
+        {
+            "module": "riscv_fetch",
+            "file": "core/riscv/riscv_fetch.v"
+        },
+        {
+            "module": "riscv_issue",
+            "file": "core/riscv/riscv_issue.v"
+        },
+        {
+            "module": "riscv_lsu",
+            "file": "core/riscv/riscv_lsu.v"
+        },
+        {
+            "module": "module",
+            "file": "core/riscv/riscv_lsu.v"
+        },
+        {
+            "module": "riscv_mmu",
+            "file": "core/riscv/riscv_mmu.v"
+        },
+        {
+            "module": "riscv_multiplier",
+            "file": "core/riscv/riscv_multiplier.v"
+        },
+        {
+            "module": "riscv_pipe_ctrl",
+            "file": "core/riscv/riscv_pipe_ctrl.v"
+        },
+        {
+            "module": "riscv_regfile",
+            "file": "core/riscv/riscv_regfile.v"
+        },
+        {
+            "module": "riscv_trace_sim",
+            "file": "core/riscv/riscv_trace_sim.v"
+        },
+        {
+            "module": "riscv_xilinx_2r1w",
+            "file": "core/riscv/riscv_xilinx_2r1w.v"
+        },
+        {
+            "module": "RAM16X1D",
+            "file": "core/riscv/riscv_xilinx_2r1w.v"
+        },
+        {
+            "module": "dcache",
+            "file": "top_cache_axi/src_v/dcache.v"
+        },
+        {
+            "module": "dcache_axi",
+            "file": "top_cache_axi/src_v/dcache_axi.v"
+        },
+        {
+            "module": "module",
+            "file": "top_cache_axi/src_v/dcache_axi.v"
+        },
+        {
+            "module": "dcache_axi_axi",
+            "file": "top_cache_axi/src_v/dcache_axi_axi.v"
+        },
+        {
+            "module": "dcache_core",
+            "file": "top_cache_axi/src_v/dcache_core.v"
+        },
+        {
+            "module": "dcache_core_data_ram",
+            "file": "top_cache_axi/src_v/dcache_core_data_ram.v"
+        },
+        {
+            "module": "dcache_core_tag_ram",
+            "file": "top_cache_axi/src_v/dcache_core_tag_ram.v"
+        },
+        {
+            "module": "dcache_if_pmem",
+            "file": "top_cache_axi/src_v/dcache_if_pmem.v"
+        },
+        {
+            "module": "module",
+            "file": "top_cache_axi/src_v/dcache_if_pmem.v"
+        },
+        {
+            "module": "dcache_mux",
+            "file": "top_cache_axi/src_v/dcache_mux.v"
+        },
+        {
+            "module": "dcache_pmem_mux",
+            "file": "top_cache_axi/src_v/dcache_pmem_mux.v"
+        },
+        {
+            "module": "icache",
+            "file": "top_cache_axi/src_v/icache.v"
+        },
+        {
+            "module": "icache_data_ram",
+            "file": "top_cache_axi/src_v/icache_data_ram.v"
+        },
+        {
+            "module": "icache_tag_ram",
+            "file": "top_cache_axi/src_v/icache_tag_ram.v"
+        },
+        {
+            "module": "riscv_top",
+            "file": "top_cache_axi/src_v/riscv_top.v"
+        },
+        {
+            "module": "dport_axi",
+            "file": "top_tcm_axi/src_v/dport_axi.v"
+        },
+        {
+            "module": "dport_axi_fifo",
+            "file": "top_tcm_axi/src_v/dport_axi.v"
+        },
+        {
+            "module": "dport_mux",
+            "file": "top_tcm_axi/src_v/dport_mux.v"
+        },
+        {
+            "module": "riscv_tcm_top",
+            "file": "top_tcm_axi/src_v/riscv_tcm_top.v"
+        },
+        {
+            "module": "tcm_mem",
+            "file": "top_tcm_axi/src_v/tcm_mem.v"
+        },
+        {
+            "module": "tcm_mem_pmem",
+            "file": "top_tcm_axi/src_v/tcm_mem_pmem.v"
+        },
+        {
+            "module": "tcm_mem_pmem_fifo2",
+            "file": "top_tcm_axi/src_v/tcm_mem_pmem.v"
+        },
+        {
+            "module": "tcm_mem_ram",
+            "file": "top_tcm_axi/src_v/tcm_mem_ram.v"
+        },
+        {
+            "module": "dport_axi",
+            "file": "top_tcm_wrapper/dport_axi.v"
+        },
+        {
+            "module": "dport_axi_fifo",
+            "file": "top_tcm_wrapper/dport_axi.v"
+        },
+        {
+            "module": "dport_mux",
+            "file": "top_tcm_wrapper/dport_mux.v"
+        },
+        {
+            "module": "riscv_tcm_wrapper",
+            "file": "top_tcm_wrapper/riscv_tcm_wrapper.v"
+        },
+        {
+            "module": "tcm_mem",
+            "file": "top_tcm_wrapper/tcm_mem.v"
+        },
+        {
+            "module": "tcm_mem_pmem",
+            "file": "top_tcm_wrapper/tcm_mem_pmem.v"
+        },
+        {
+            "module": "tcm_mem_pmem_fifo2",
+            "file": "top_tcm_wrapper/tcm_mem_pmem.v"
+        },
+        {
+            "module": "tcm_mem_ram",
+            "file": "top_tcm_wrapper/tcm_mem_ram.v"
+        }
+    ],
+    "module_graph": {
+        "riscv_alu": [],
+        "riscv_core": [
+            "riscv_top",
+            "riscv_tcm_top",
+            "riscv_tcm_wrapper"
+        ],
+        "riscv_csr": [
+            "riscv_core"
+        ],
+        "riscv_csr_regfile": [
+            "riscv_csr"
+        ],
+        "riscv_decode": [
+            "riscv_core"
+        ],
+        "riscv_decoder": [
+            "riscv_decode"
+        ],
+        "riscv_divider": [
+            "riscv_core"
+        ],
+        "riscv_exec": [
+            "riscv_core"
+        ],
+        "riscv_fetch": [
+            "riscv_core"
+        ],
+        "riscv_issue": [
+            "riscv_core"
+        ],
+        "riscv_lsu": [
+            "riscv_core"
+        ],
+        "module": [],
+        "riscv_mmu": [
+            "riscv_core"
+        ],
+        "riscv_multiplier": [
+            "riscv_core"
+        ],
+        "riscv_pipe_ctrl": [],
+        "riscv_regfile": [],
+        "riscv_trace_sim": [
+            "riscv_pipe_ctrl"
+        ],
+        "riscv_xilinx_2r1w": [],
+        "RAM16X1D": [
+            "riscv_xilinx_2r1w",
+            "riscv_xilinx_2r1w"
+        ],
+        "dcache": [
+            "riscv_top"
+        ],
+        "dcache_axi": [
+            "dcache"
+        ],
+        "dcache_axi_axi": [
+            "dcache_axi"
+        ],
+        "dcache_core": [
+            "dcache"
+        ],
+        "dcache_core_data_ram": [],
+        "dcache_core_tag_ram": [],
+        "dcache_if_pmem": [
+            "dcache"
+        ],
+        "dcache_mux": [
+            "dcache"
+        ],
+        "dcache_pmem_mux": [
+            "dcache"
+        ],
+        "icache": [
+            "riscv_top"
+        ],
+        "icache_data_ram": [],
+        "icache_tag_ram": [
+            "icache",
+            "icache"
+        ],
+        "riscv_top": [],
+        "dport_axi": [
+            "riscv_tcm_top",
+            "riscv_tcm_wrapper"
+        ],
+        "dport_axi_fifo": [
+            "dport_axi",
+            "dport_axi",
+            "dport_axi",
+            "dport_axi"
+        ],
+        "dport_mux": [
+            "riscv_tcm_top",
+            "riscv_tcm_wrapper"
+        ],
+        "riscv_tcm_top": [],
+        "tcm_mem": [
+            "riscv_tcm_top",
+            "riscv_tcm_wrapper"
+        ],
+        "tcm_mem_pmem": [
+            "tcm_mem",
+            "tcm_mem"
+        ],
+        "tcm_mem_pmem_fifo2": [
+            "tcm_mem_pmem",
+            "tcm_mem_pmem"
+        ],
+        "tcm_mem_ram": [
+            "tcm_mem",
+            "tcm_mem"
+        ],
+        "riscv_tcm_wrapper": []
+    },
+    "module_graph_inverse": {
+        "riscv_alu": [],
+        "riscv_core": [
+            "riscv_exec",
+            "riscv_decode",
+            "riscv_mmu",
+            "riscv_lsu",
+            "riscv_csr",
+            "riscv_multiplier",
+            "riscv_divider",
+            "riscv_issue",
+            "riscv_fetch"
+        ],
+        "riscv_csr": [
+            "riscv_csr_regfile"
+        ],
+        "riscv_csr_regfile": [],
+        "riscv_decode": [
+            "riscv_decoder"
+        ],
+        "riscv_decoder": [],
+        "riscv_divider": [],
+        "riscv_exec": [],
+        "riscv_fetch": [],
+        "riscv_issue": [],
+        "riscv_lsu": [],
+        "module": [],
+        "riscv_mmu": [],
+        "riscv_multiplier": [],
+        "riscv_pipe_ctrl": [
+            "riscv_trace_sim"
+        ],
+        "riscv_regfile": [],
+        "riscv_trace_sim": [],
+        "riscv_xilinx_2r1w": [
+            "RAM16X1D",
+            "RAM16X1D"
+        ],
+        "RAM16X1D": [],
+        "dcache": [
+            "dcache_if_pmem",
+            "dcache_pmem_mux",
+            "dcache_mux",
+            "dcache_core",
+            "dcache_axi"
+        ],
+        "dcache_axi": [
+            "dcache_axi_axi"
+        ],
+        "dcache_axi_axi": [],
+        "dcache_core": [],
+        "dcache_core_data_ram": [],
+        "dcache_core_tag_ram": [],
+        "dcache_if_pmem": [],
+        "dcache_mux": [],
+        "dcache_pmem_mux": [],
+        "icache": [
+            "icache_tag_ram",
+            "icache_tag_ram"
+        ],
+        "icache_data_ram": [],
+        "icache_tag_ram": [],
+        "riscv_top": [
+            "dcache",
+            "riscv_core",
+            "icache"
+        ],
+        "dport_axi": [
+            "dport_axi_fifo",
+            "dport_axi_fifo",
+            "dport_axi_fifo",
+            "dport_axi_fifo"
+        ],
+        "dport_axi_fifo": [],
+        "dport_mux": [],
+        "riscv_tcm_top": [
+            "riscv_core",
+            "dport_mux",
+            "tcm_mem",
+            "dport_axi"
+        ],
+        "tcm_mem": [
+            "tcm_mem_pmem",
+            "tcm_mem_ram",
+            "tcm_mem_pmem",
+            "tcm_mem_ram"
+        ],
+        "tcm_mem_pmem": [
+            "tcm_mem_pmem_fifo2",
+            "tcm_mem_pmem_fifo2"
+        ],
+        "tcm_mem_pmem_fifo2": [],
+        "tcm_mem_ram": [],
+        "riscv_tcm_wrapper": [
+            "riscv_core",
+            "dport_mux",
+            "tcm_mem",
+            "dport_axi"
+        ]
+    },
+    "non_tb_files": [
+        "core/riscv/riscv_alu.v",
+        "core/riscv/riscv_core.v",
+        "core/riscv/riscv_csr.v",
+        "core/riscv/riscv_csr_regfile.v",
+        "core/riscv/riscv_decode.v",
+        "core/riscv/riscv_decoder.v",
+        "core/riscv/riscv_defs.v",
+        "core/riscv/riscv_divider.v",
+        "core/riscv/riscv_exec.v",
+        "core/riscv/riscv_fetch.v",
+        "core/riscv/riscv_issue.v",
+        "core/riscv/riscv_lsu.v",
+        "core/riscv/riscv_mmu.v",
+        "core/riscv/riscv_multiplier.v",
+        "core/riscv/riscv_pipe_ctrl.v",
+        "core/riscv/riscv_regfile.v",
+        "core/riscv/riscv_trace_sim.v",
+        "core/riscv/riscv_xilinx_2r1w.v",
+        "top_cache_axi/src_v/dcache.v",
+        "top_cache_axi/src_v/dcache_axi.v",
+        "top_cache_axi/src_v/dcache_axi_axi.v",
+        "top_cache_axi/src_v/dcache_core.v",
+        "top_cache_axi/src_v/dcache_core_data_ram.v",
+        "top_cache_axi/src_v/dcache_core_tag_ram.v",
+        "top_cache_axi/src_v/dcache_if_pmem.v",
+        "top_cache_axi/src_v/dcache_mux.v",
+        "top_cache_axi/src_v/dcache_pmem_mux.v",
+        "top_cache_axi/src_v/icache.v",
+        "top_cache_axi/src_v/icache_data_ram.v",
+        "top_cache_axi/src_v/icache_tag_ram.v",
+        "top_cache_axi/src_v/riscv_top.v",
+        "top_tcm_axi/src_v/dport_axi.v",
+        "top_tcm_axi/src_v/dport_mux.v",
+        "top_tcm_axi/src_v/riscv_tcm_top.v",
+        "top_tcm_axi/src_v/tcm_mem.v",
+        "top_tcm_axi/src_v/tcm_mem_pmem.v",
+        "top_tcm_axi/src_v/tcm_mem_ram.v",
+        "top_tcm_wrapper/dport_axi.v",
+        "top_tcm_wrapper/dport_mux.v",
+        "top_tcm_wrapper/riscv_tcm_wrapper.v",
+        "top_tcm_wrapper/tcm_mem.v",
+        "top_tcm_wrapper/tcm_mem_pmem.v",
+        "top_tcm_wrapper/tcm_mem_ram.v"
+    ]
+}

@@ -1,0 +1,2777 @@
+{
+    "name": "e200_opensource",
+    "folder": "e200_opensource",
+    "sim_files": [
+        "fpga/fpga_tb_top/fpga_tb_top.v",
+        "tb/tb_top.v"
+    ],
+    "files": [
+        "fpga/artydevkit/src/clkdivider.v",
+        "fpga/artydevkit/src/dummy.v",
+        "fpga/hbirdkit/src/clkdivider.v",
+        "fpga/hbirdkit/src/dummy.v",
+        "fpga/nucleikit/src/clkdivider.v",
+        "fpga/nucleikit/src/dummy.v",
+        "rtl/e203/core/config.v",
+        "rtl/e203/core/e203_biu.v",
+        "rtl/e203/core/e203_clk_ctrl.v",
+        "rtl/e203/core/e203_clkgate.v",
+        "rtl/e203/core/e203_core.v",
+        "rtl/e203/core/e203_cpu.v",
+        "rtl/e203/core/e203_cpu_top.v",
+        "rtl/e203/core/e203_defines.v",
+        "rtl/e203/core/e203_dtcm_ctrl.v",
+        "rtl/e203/core/e203_dtcm_ram.v",
+        "rtl/e203/core/e203_extend_csr.v",
+        "rtl/e203/core/e203_exu.v",
+        "rtl/e203/core/e203_exu_alu.v",
+        "rtl/e203/core/e203_exu_alu_bjp.v",
+        "rtl/e203/core/e203_exu_alu_csrctrl.v",
+        "rtl/e203/core/e203_exu_alu_dpath.v",
+        "rtl/e203/core/e203_exu_alu_lsuagu.v",
+        "rtl/e203/core/e203_exu_alu_muldiv.v",
+        "rtl/e203/core/e203_exu_alu_rglr.v",
+        "rtl/e203/core/e203_exu_branchslv.v",
+        "rtl/e203/core/e203_exu_commit.v",
+        "rtl/e203/core/e203_exu_csr.v",
+        "rtl/e203/core/e203_exu_decode.v",
+        "rtl/e203/core/e203_exu_disp.v",
+        "rtl/e203/core/e203_exu_excp.v",
+        "rtl/e203/core/e203_exu_longpwbck.v",
+        "rtl/e203/core/e203_exu_oitf.v",
+        "rtl/e203/core/e203_exu_regfile.v",
+        "rtl/e203/core/e203_exu_wbck.v",
+        "rtl/e203/core/e203_ifu.v",
+        "rtl/e203/core/e203_ifu_ifetch.v",
+        "rtl/e203/core/e203_ifu_ift2icb.v",
+        "rtl/e203/core/e203_ifu_litebpu.v",
+        "rtl/e203/core/e203_ifu_minidec.v",
+        "rtl/e203/core/e203_irq_sync.v",
+        "rtl/e203/core/e203_itcm_ctrl.v",
+        "rtl/e203/core/e203_itcm_ram.v",
+        "rtl/e203/core/e203_lsu.v",
+        "rtl/e203/core/e203_lsu_ctrl.v",
+        "rtl/e203/core/e203_reset_ctrl.v",
+        "rtl/e203/core/e203_srams.v",
+        "rtl/e203/debug/sirv_debug_csr.v",
+        "rtl/e203/debug/sirv_debug_module.v",
+        "rtl/e203/debug/sirv_debug_ram.v",
+        "rtl/e203/debug/sirv_debug_rom.v",
+        "rtl/e203/debug/sirv_jtag_dtm.v",
+        "rtl/e203/fab/sirv_icb1to16_bus.v",
+        "rtl/e203/fab/sirv_icb1to2_bus.v",
+        "rtl/e203/fab/sirv_icb1to8_bus.v",
+        "rtl/e203/general/sirv_1cyc_sram_ctrl.v",
+        "rtl/e203/general/sirv_gnrl_bufs.v",
+        "rtl/e203/general/sirv_gnrl_dffs.v",
+        "rtl/e203/general/sirv_gnrl_icbs.v",
+        "rtl/e203/general/sirv_gnrl_ram.v",
+        "rtl/e203/general/sirv_gnrl_xchecker.v",
+        "rtl/e203/general/sirv_sim_ram.v",
+        "rtl/e203/general/sirv_sram_icb_ctrl.v",
+        "rtl/e203/mems/sirv_mrom.v",
+        "rtl/e203/mems/sirv_mrom_top.v",
+        "rtl/e203/perips/i2c_master_bit_ctrl.v",
+        "rtl/e203/perips/i2c_master_byte_ctrl.v",
+        "rtl/e203/perips/i2c_master_defines.v",
+        "rtl/e203/perips/i2c_master_top.v",
+        "rtl/e203/perips/sirv_AsyncResetReg.v",
+        "rtl/e203/perips/sirv_AsyncResetRegVec.v",
+        "rtl/e203/perips/sirv_AsyncResetRegVec_1.v",
+        "rtl/e203/perips/sirv_AsyncResetRegVec_129.v",
+        "rtl/e203/perips/sirv_AsyncResetRegVec_36.v",
+        "rtl/e203/perips/sirv_AsyncResetRegVec_67.v",
+        "rtl/e203/perips/sirv_DeglitchShiftRegister.v",
+        "rtl/e203/perips/sirv_LevelGateway.v",
+        "rtl/e203/perips/sirv_ResetCatchAndSync.v",
+        "rtl/e203/perips/sirv_ResetCatchAndSync_2.v",
+        "rtl/e203/perips/sirv_aon.v",
+        "rtl/e203/perips/sirv_aon_lclkgen_regs.v",
+        "rtl/e203/perips/sirv_aon_porrst.v",
+        "rtl/e203/perips/sirv_aon_top.v",
+        "rtl/e203/perips/sirv_aon_wrapper.v",
+        "rtl/e203/perips/sirv_clint.v",
+        "rtl/e203/perips/sirv_clint_top.v",
+        "rtl/e203/perips/sirv_expl_apb_slv.v",
+        "rtl/e203/perips/sirv_expl_axi_slv.v",
+        "rtl/e203/perips/sirv_flash_qspi.v",
+        "rtl/e203/perips/sirv_flash_qspi_top.v",
+        "rtl/e203/perips/sirv_gpio.v",
+        "rtl/e203/perips/sirv_gpio_top.v",
+        "rtl/e203/perips/sirv_hclkgen_regs.v",
+        "rtl/e203/perips/sirv_jtaggpioport.v",
+        "rtl/e203/perips/sirv_otp_top.v",
+        "rtl/e203/perips/sirv_plic_man.v",
+        "rtl/e203/perips/sirv_plic_top.v",
+        "rtl/e203/perips/sirv_pmu.v",
+        "rtl/e203/perips/sirv_pmu_core.v",
+        "rtl/e203/perips/sirv_pwm16.v",
+        "rtl/e203/perips/sirv_pwm16_core.v",
+        "rtl/e203/perips/sirv_pwm16_top.v",
+        "rtl/e203/perips/sirv_pwm8.v",
+        "rtl/e203/perips/sirv_pwm8_core.v",
+        "rtl/e203/perips/sirv_pwm8_top.v",
+        "rtl/e203/perips/sirv_pwmgpioport.v",
+        "rtl/e203/perips/sirv_qspi_1cs.v",
+        "rtl/e203/perips/sirv_qspi_1cs_top.v",
+        "rtl/e203/perips/sirv_qspi_4cs.v",
+        "rtl/e203/perips/sirv_qspi_4cs_top.v",
+        "rtl/e203/perips/sirv_qspi_arbiter.v",
+        "rtl/e203/perips/sirv_qspi_fifo.v",
+        "rtl/e203/perips/sirv_qspi_media.v",
+        "rtl/e203/perips/sirv_qspi_media_1.v",
+        "rtl/e203/perips/sirv_qspi_media_2.v",
+        "rtl/e203/perips/sirv_qspi_physical.v",
+        "rtl/e203/perips/sirv_qspi_physical_1.v",
+        "rtl/e203/perips/sirv_qspi_physical_2.v",
+        "rtl/e203/perips/sirv_queue.v",
+        "rtl/e203/perips/sirv_queue_1.v",
+        "rtl/e203/perips/sirv_repeater_6.v",
+        "rtl/e203/perips/sirv_rtc.v",
+        "rtl/e203/perips/sirv_spi_flashmap.v",
+        "rtl/e203/perips/sirv_spigpioport.v",
+        "rtl/e203/perips/sirv_spigpioport_1.v",
+        "rtl/e203/perips/sirv_spigpioport_2.v",
+        "rtl/e203/perips/sirv_tl_repeater_5.v",
+        "rtl/e203/perips/sirv_tlfragmenter_qspi_1.v",
+        "rtl/e203/perips/sirv_tlwidthwidget_qspi.v",
+        "rtl/e203/perips/sirv_uart.v",
+        "rtl/e203/perips/sirv_uart_top.v",
+        "rtl/e203/perips/sirv_uartgpioport.v",
+        "rtl/e203/perips/sirv_uartrx.v",
+        "rtl/e203/perips/sirv_uarttx.v",
+        "rtl/e203/perips/sirv_wdog.v",
+        "rtl/e203/soc/e203_soc_top.v",
+        "rtl/e203/subsys/e203_subsys_clint.v",
+        "rtl/e203/subsys/e203_subsys_gfcm.v",
+        "rtl/e203/subsys/e203_subsys_hclkgen.v",
+        "rtl/e203/subsys/e203_subsys_hclkgen_rstsync.v",
+        "rtl/e203/subsys/e203_subsys_main.v",
+        "rtl/e203/subsys/e203_subsys_mems.v",
+        "rtl/e203/subsys/e203_subsys_perips.v",
+        "rtl/e203/subsys/e203_subsys_plic.v",
+        "rtl/e203/subsys/e203_subsys_pll.v",
+        "rtl/e203/subsys/e203_subsys_pllclkdiv.v",
+        "rtl/e203/subsys/e203_subsys_top.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/SI-RISCV/e200_opensource",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "clkdivider",
+            "file": "fpga/artydevkit/src/clkdivider.v"
+        },
+        {
+            "module": "fpga_tb_top",
+            "file": "fpga/fpga_tb_top/fpga_tb_top.v"
+        },
+        {
+            "module": "clkdivider",
+            "file": "fpga/hbirdkit/src/clkdivider.v"
+        },
+        {
+            "module": "clkdivider",
+            "file": "fpga/nucleikit/src/clkdivider.v"
+        },
+        {
+            "module": "control",
+            "file": "rtl/e203/core/e203_biu.v"
+        },
+        {
+            "module": "e203_biu",
+            "file": "rtl/e203/core/e203_biu.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_clk_ctrl.v"
+        },
+        {
+            "module": "e203_clk_ctrl",
+            "file": "rtl/e203/core/e203_clk_ctrl.v"
+        },
+        {
+            "module": "e203_clkgate",
+            "file": "rtl/e203/core/e203_clkgate.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_core.v"
+        },
+        {
+            "module": "e203_core",
+            "file": "rtl/e203/core/e203_core.v"
+        },
+        {
+            "module": "output",
+            "file": "rtl/e203/core/e203_core.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_cpu.v"
+        },
+        {
+            "module": "e203_cpu",
+            "file": "rtl/e203/core/e203_cpu.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_cpu.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_cpu_top.v"
+        },
+        {
+            "module": "e203_cpu_top",
+            "file": "rtl/e203/core/e203_cpu_top.v"
+        },
+        {
+            "module": "will",
+            "file": "rtl/e203/core/e203_cpu_top.v"
+        },
+        {
+            "module": "output",
+            "file": "rtl/e203/core/e203_cpu_top.v"
+        },
+        {
+            "module": "output",
+            "file": "rtl/e203/core/e203_cpu_top.v"
+        },
+        {
+            "module": "control",
+            "file": "rtl/e203/core/e203_dtcm_ctrl.v"
+        },
+        {
+            "module": "e203_dtcm_ctrl",
+            "file": "rtl/e203/core/e203_dtcm_ctrl.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_dtcm_ram.v"
+        },
+        {
+            "module": "e203_dtcm_ram",
+            "file": "rtl/e203/core/e203_dtcm_ram.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_extend_csr.v"
+        },
+        {
+            "module": "e203_extend_csr",
+            "file": "rtl/e203/core/e203_extend_csr.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu.v"
+        },
+        {
+            "module": "e203_exu",
+            "file": "rtl/e203/core/e203_exu.v"
+        },
+        {
+            "module": "output",
+            "file": "rtl/e203/core/e203_exu.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_alu.v"
+        },
+        {
+            "module": "e203_exu_alu",
+            "file": "rtl/e203/core/e203_exu_alu.v"
+        },
+        {
+            "module": "wire",
+            "file": "rtl/e203/core/e203_exu_alu.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_alu_bjp.v"
+        },
+        {
+            "module": "e203_exu_alu_bjp",
+            "file": "rtl/e203/core/e203_exu_alu_bjp.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_alu_csrctrl.v"
+        },
+        {
+            "module": "e203_exu_alu_csrctrl",
+            "file": "rtl/e203/core/e203_exu_alu_csrctrl.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_alu_dpath.v"
+        },
+        {
+            "module": "e203_exu_alu_dpath",
+            "file": "rtl/e203/core/e203_exu_alu_dpath.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_alu_lsuagu.v"
+        },
+        {
+            "module": "e203_exu_alu_lsuagu",
+            "file": "rtl/e203/core/e203_exu_alu_lsuagu.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_alu_muldiv.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_alu_muldiv.v"
+        },
+        {
+            "module": "e203_exu_alu_muldiv",
+            "file": "rtl/e203/core/e203_exu_alu_muldiv.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_alu_rglr.v"
+        },
+        {
+            "module": "e203_exu_alu_rglr",
+            "file": "rtl/e203/core/e203_exu_alu_rglr.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_branchslv.v"
+        },
+        {
+            "module": "e203_exu_branchslv",
+            "file": "rtl/e203/core/e203_exu_branchslv.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_commit.v"
+        },
+        {
+            "module": "e203_exu_commit",
+            "file": "rtl/e203/core/e203_exu_commit.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_csr.v"
+        },
+        {
+            "module": "e203_exu_csr",
+            "file": "rtl/e203/core/e203_exu_csr.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_decode.v"
+        },
+        {
+            "module": "e203_exu_decode",
+            "file": "rtl/e203/core/e203_exu_decode.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_disp.v"
+        },
+        {
+            "module": "e203_exu_disp",
+            "file": "rtl/e203/core/e203_exu_disp.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_excp.v"
+        },
+        {
+            "module": "e203_exu_excp",
+            "file": "rtl/e203/core/e203_exu_excp.v"
+        },
+        {
+            "module": "always",
+            "file": "rtl/e203/core/e203_exu_excp.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_longpwbck.v"
+        },
+        {
+            "module": "e203_exu_longpwbck",
+            "file": "rtl/e203/core/e203_exu_longpwbck.v"
+        },
+        {
+            "module": "output",
+            "file": "rtl/e203/core/e203_exu_longpwbck.v"
+        },
+        {
+            "module": "e203_exu_oitf",
+            "file": "rtl/e203/core/e203_exu_oitf.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_regfile.v"
+        },
+        {
+            "module": "e203_exu_regfile",
+            "file": "rtl/e203/core/e203_exu_regfile.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_exu_wbck.v"
+        },
+        {
+            "module": "e203_exu_wbck",
+            "file": "rtl/e203/core/e203_exu_wbck.v"
+        },
+        {
+            "module": "e203_ifu",
+            "file": "rtl/e203/core/e203_ifu.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_ifu_ifetch.v"
+        },
+        {
+            "module": "e203_ifu_ifetch",
+            "file": "rtl/e203/core/e203_ifu_ifetch.v"
+        },
+        {
+            "module": "convert",
+            "file": "rtl/e203/core/e203_ifu_ift2icb.v"
+        },
+        {
+            "module": "e203_ifu_ift2icb",
+            "file": "rtl/e203/core/e203_ifu_ift2icb.v"
+        },
+        {
+            "module": "upfront",
+            "file": "rtl/e203/core/e203_ifu_ift2icb.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_ifu_litebpu.v"
+        },
+        {
+            "module": "e203_ifu_litebpu",
+            "file": "rtl/e203/core/e203_ifu_litebpu.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_ifu_minidec.v"
+        },
+        {
+            "module": "e203_ifu_minidec",
+            "file": "rtl/e203/core/e203_ifu_minidec.v"
+        },
+        {
+            "module": "e203_irq_sync",
+            "file": "rtl/e203/core/e203_irq_sync.v"
+        },
+        {
+            "module": "control",
+            "file": "rtl/e203/core/e203_itcm_ctrl.v"
+        },
+        {
+            "module": "e203_itcm_ctrl",
+            "file": "rtl/e203/core/e203_itcm_ctrl.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_itcm_ram.v"
+        },
+        {
+            "module": "e203_itcm_ram",
+            "file": "rtl/e203/core/e203_itcm_ram.v"
+        },
+        {
+            "module": "control",
+            "file": "rtl/e203/core/e203_lsu.v"
+        },
+        {
+            "module": "e203_lsu",
+            "file": "rtl/e203/core/e203_lsu.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_lsu.v"
+        },
+        {
+            "module": "control",
+            "file": "rtl/e203/core/e203_lsu_ctrl.v"
+        },
+        {
+            "module": "e203_lsu_ctrl",
+            "file": "rtl/e203/core/e203_lsu_ctrl.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_lsu_ctrl.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_reset_ctrl.v"
+        },
+        {
+            "module": "e203_reset_ctrl",
+            "file": "rtl/e203/core/e203_reset_ctrl.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/core/e203_srams.v"
+        },
+        {
+            "module": "e203_srams",
+            "file": "rtl/e203/core/e203_srams.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/debug/sirv_debug_csr.v"
+        },
+        {
+            "module": "sirv_debug_csr",
+            "file": "rtl/e203/debug/sirv_debug_csr.v"
+        },
+        {
+            "module": "sirv_debug_module",
+            "file": "rtl/e203/debug/sirv_debug_module.v"
+        },
+        {
+            "module": "have",
+            "file": "rtl/e203/debug/sirv_debug_module.v"
+        },
+        {
+            "module": "for",
+            "file": "rtl/e203/debug/sirv_debug_ram.v"
+        },
+        {
+            "module": "sirv_debug_ram",
+            "file": "rtl/e203/debug/sirv_debug_ram.v"
+        },
+        {
+            "module": "for",
+            "file": "rtl/e203/debug/sirv_debug_rom.v"
+        },
+        {
+            "module": "sirv_debug_rom",
+            "file": "rtl/e203/debug/sirv_debug_rom.v"
+        },
+        {
+            "module": "sirv_jtag_dtm",
+            "file": "rtl/e203/debug/sirv_jtag_dtm.v"
+        },
+        {
+            "module": "for",
+            "file": "rtl/e203/fab/sirv_icb1to16_bus.v"
+        },
+        {
+            "module": "sirv_icb1to16_bus",
+            "file": "rtl/e203/fab/sirv_icb1to16_bus.v"
+        },
+        {
+            "module": "for",
+            "file": "rtl/e203/fab/sirv_icb1to2_bus.v"
+        },
+        {
+            "module": "sirv_icb1to2_bus",
+            "file": "rtl/e203/fab/sirv_icb1to2_bus.v"
+        },
+        {
+            "module": "for",
+            "file": "rtl/e203/fab/sirv_icb1to8_bus.v"
+        },
+        {
+            "module": "sirv_icb1to8_bus",
+            "file": "rtl/e203/fab/sirv_icb1to8_bus.v"
+        },
+        {
+            "module": "control",
+            "file": "rtl/e203/general/sirv_1cyc_sram_ctrl.v"
+        },
+        {
+            "module": "sirv_1cyc_sram_ctrl",
+            "file": "rtl/e203/general/sirv_1cyc_sram_ctrl.v"
+        },
+        {
+            "module": "sirv_gnrl_pipe_stage",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "sirv_gnrl_sync",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "for",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "sirv_gnrl",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "sirv_gnrl_cdc_rx",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "sirv_gnrl",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "sirv_gnrl_cdc_tx",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "as",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "sirv_gnrl_bypbuf",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "is",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "sirv_gnrl_fifo",
+            "file": "rtl/e203/general/sirv_gnrl_bufs.v"
+        },
+        {
+            "module": "sirv_gnrl",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "sirv_gnrl_dfflrs",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "sirv_gnrl",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "sirv_gnrl_dfflr",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "sirv_gnrl",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "sirv_gnrl_dffl",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "sirv_gnrl",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "sirv_gnrl_dffrs",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "sirv_gnrl",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "sirv_gnrl_dffr",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "for",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "sirv_gnrl_ltch",
+            "file": "rtl/e203/general/sirv_gnrl_dffs.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "sirv_gnrl_icb_arbt",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "sirv_gnrl_icb_buffer",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "sirv_gnrl_icb_n2w",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "sirv_gnrl_icb_splt",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "sirv_gnrl_icb2axi",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "is",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "sirv_gnrl_icb32towishb8",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "sirv_gnrl_icb2apb",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "for",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "sirv_gnrl_axi_buffer",
+            "file": "rtl/e203/general/sirv_gnrl_icbs.v"
+        },
+        {
+            "module": "sirv_gnrl_ram",
+            "file": "rtl/e203/general/sirv_gnrl_ram.v"
+        },
+        {
+            "module": "for",
+            "file": "rtl/e203/general/sirv_gnrl_xchecker.v"
+        },
+        {
+            "module": "sirv_gnrl_xchecker",
+            "file": "rtl/e203/general/sirv_gnrl_xchecker.v"
+        },
+        {
+            "module": "sirv_sim_ram",
+            "file": "rtl/e203/general/sirv_sim_ram.v"
+        },
+        {
+            "module": "control",
+            "file": "rtl/e203/general/sirv_sram_icb_ctrl.v"
+        },
+        {
+            "module": "sirv_sram_icb_ctrl",
+            "file": "rtl/e203/general/sirv_sram_icb_ctrl.v"
+        },
+        {
+            "module": "is",
+            "file": "rtl/e203/mems/sirv_mrom.v"
+        },
+        {
+            "module": "sirv_mrom",
+            "file": "rtl/e203/mems/sirv_mrom.v"
+        },
+        {
+            "module": "is",
+            "file": "rtl/e203/mems/sirv_mrom_top.v"
+        },
+        {
+            "module": "sirv_mrom_top",
+            "file": "rtl/e203/mems/sirv_mrom_top.v"
+        },
+        {
+            "module": "i2c_master_bit_ctrl",
+            "file": "rtl/e203/perips/i2c_master_bit_ctrl.v"
+        },
+        {
+            "module": "body",
+            "file": "rtl/e203/perips/i2c_master_bit_ctrl.v"
+        },
+        {
+            "module": "i2c_master_byte_ctrl",
+            "file": "rtl/e203/perips/i2c_master_byte_ctrl.v"
+        },
+        {
+            "module": "i2c_master_top",
+            "file": "rtl/e203/perips/i2c_master_top.v"
+        },
+        {
+            "module": "body",
+            "file": "rtl/e203/perips/i2c_master_top.v"
+        },
+        {
+            "module": "sirv_AsyncResetReg",
+            "file": "rtl/e203/perips/sirv_AsyncResetReg.v"
+        },
+        {
+            "module": "sirv_AsyncResetRegVec",
+            "file": "rtl/e203/perips/sirv_AsyncResetRegVec.v"
+        },
+        {
+            "module": "sirv_AsyncResetRegVec_1",
+            "file": "rtl/e203/perips/sirv_AsyncResetRegVec_1.v"
+        },
+        {
+            "module": "sirv_AsyncResetRegVec_129",
+            "file": "rtl/e203/perips/sirv_AsyncResetRegVec_129.v"
+        },
+        {
+            "module": "sirv_AsyncResetRegVec_36",
+            "file": "rtl/e203/perips/sirv_AsyncResetRegVec_36.v"
+        },
+        {
+            "module": "sirv_AsyncResetRegVec_67",
+            "file": "rtl/e203/perips/sirv_AsyncResetRegVec_67.v"
+        },
+        {
+            "module": "sirv_DeglitchShiftRegister",
+            "file": "rtl/e203/perips/sirv_DeglitchShiftRegister.v"
+        },
+        {
+            "module": "sirv_LevelGateway",
+            "file": "rtl/e203/perips/sirv_LevelGateway.v"
+        },
+        {
+            "module": "sirv_ResetCatchAndSync",
+            "file": "rtl/e203/perips/sirv_ResetCatchAndSync.v"
+        },
+        {
+            "module": "sirv_ResetCatchAndSync_2",
+            "file": "rtl/e203/perips/sirv_ResetCatchAndSync_2.v"
+        },
+        {
+            "module": "sirv_aon",
+            "file": "rtl/e203/perips/sirv_aon.v"
+        },
+        {
+            "module": "sirv_aon_lclkgen_regs",
+            "file": "rtl/e203/perips/sirv_aon_lclkgen_regs.v"
+        },
+        {
+            "module": "sirv_aon_porrst",
+            "file": "rtl/e203/perips/sirv_aon_porrst.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_aon_top.v"
+        },
+        {
+            "module": "sirv_aon_top",
+            "file": "rtl/e203/perips/sirv_aon_top.v"
+        },
+        {
+            "module": "need",
+            "file": "rtl/e203/perips/sirv_aon_top.v"
+        },
+        {
+            "module": "sirv_aon_wrapper",
+            "file": "rtl/e203/perips/sirv_aon_wrapper.v"
+        },
+        {
+            "module": "need",
+            "file": "rtl/e203/perips/sirv_aon_wrapper.v"
+        },
+        {
+            "module": "sirv_clint",
+            "file": "rtl/e203/perips/sirv_clint.v"
+        },
+        {
+            "module": "sirv_clint_top",
+            "file": "rtl/e203/perips/sirv_clint_top.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_expl_apb_slv.v"
+        },
+        {
+            "module": "sirv_expl_apb_slv",
+            "file": "rtl/e203/perips/sirv_expl_apb_slv.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_expl_axi_slv.v"
+        },
+        {
+            "module": "sirv_expl_axi_slv",
+            "file": "rtl/e203/perips/sirv_expl_axi_slv.v"
+        },
+        {
+            "module": "sirv_flash_qspi",
+            "file": "rtl/e203/perips/sirv_flash_qspi.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_flash_qspi_top.v"
+        },
+        {
+            "module": "sirv_flash_qspi_top",
+            "file": "rtl/e203/perips/sirv_flash_qspi_top.v"
+        },
+        {
+            "module": "sirv_gpio",
+            "file": "rtl/e203/perips/sirv_gpio.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_gpio_top.v"
+        },
+        {
+            "module": "sirv_gpio_top",
+            "file": "rtl/e203/perips/sirv_gpio_top.v"
+        },
+        {
+            "module": "sirv_hclkgen_regs",
+            "file": "rtl/e203/perips/sirv_hclkgen_regs.v"
+        },
+        {
+            "module": "sirv_jtaggpioport",
+            "file": "rtl/e203/perips/sirv_jtaggpioport.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_otp_top.v"
+        },
+        {
+            "module": "sirv_otp_top",
+            "file": "rtl/e203/perips/sirv_otp_top.v"
+        },
+        {
+            "module": "is",
+            "file": "rtl/e203/perips/sirv_otp_top.v"
+        },
+        {
+            "module": "sirv_plic_man",
+            "file": "rtl/e203/perips/sirv_plic_man.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_plic_top.v"
+        },
+        {
+            "module": "sirv_plic_top",
+            "file": "rtl/e203/perips/sirv_plic_top.v"
+        },
+        {
+            "module": "sirv_pmu",
+            "file": "rtl/e203/perips/sirv_pmu.v"
+        },
+        {
+            "module": "sirv_pmu_core",
+            "file": "rtl/e203/perips/sirv_pmu_core.v"
+        },
+        {
+            "module": "sirv_pwm16",
+            "file": "rtl/e203/perips/sirv_pwm16.v"
+        },
+        {
+            "module": "sirv_pwm16_core",
+            "file": "rtl/e203/perips/sirv_pwm16_core.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_pwm16_top.v"
+        },
+        {
+            "module": "sirv_pwm16_top",
+            "file": "rtl/e203/perips/sirv_pwm16_top.v"
+        },
+        {
+            "module": "sirv_pwm8",
+            "file": "rtl/e203/perips/sirv_pwm8.v"
+        },
+        {
+            "module": "sirv_pwm8_core",
+            "file": "rtl/e203/perips/sirv_pwm8_core.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_pwm8_top.v"
+        },
+        {
+            "module": "sirv_pwm8_top",
+            "file": "rtl/e203/perips/sirv_pwm8_top.v"
+        },
+        {
+            "module": "sirv_pwmgpioport",
+            "file": "rtl/e203/perips/sirv_pwmgpioport.v"
+        },
+        {
+            "module": "sirv_qspi_1cs",
+            "file": "rtl/e203/perips/sirv_qspi_1cs.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_qspi_1cs_top.v"
+        },
+        {
+            "module": "sirv_qspi_1cs_top",
+            "file": "rtl/e203/perips/sirv_qspi_1cs_top.v"
+        },
+        {
+            "module": "sirv_qspi_4cs",
+            "file": "rtl/e203/perips/sirv_qspi_4cs.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_qspi_4cs_top.v"
+        },
+        {
+            "module": "sirv_qspi_4cs_top",
+            "file": "rtl/e203/perips/sirv_qspi_4cs_top.v"
+        },
+        {
+            "module": "sirv_qspi_arbiter",
+            "file": "rtl/e203/perips/sirv_qspi_arbiter.v"
+        },
+        {
+            "module": "sirv_qspi_fifo",
+            "file": "rtl/e203/perips/sirv_qspi_fifo.v"
+        },
+        {
+            "module": "sirv_qspi_media",
+            "file": "rtl/e203/perips/sirv_qspi_media.v"
+        },
+        {
+            "module": "sirv_qspi_media_1",
+            "file": "rtl/e203/perips/sirv_qspi_media_1.v"
+        },
+        {
+            "module": "sirv_qspi_media_2",
+            "file": "rtl/e203/perips/sirv_qspi_media_2.v"
+        },
+        {
+            "module": "sirv_qspi_physical",
+            "file": "rtl/e203/perips/sirv_qspi_physical.v"
+        },
+        {
+            "module": "sirv_qspi_physical_1",
+            "file": "rtl/e203/perips/sirv_qspi_physical_1.v"
+        },
+        {
+            "module": "sirv_qspi_physical_2",
+            "file": "rtl/e203/perips/sirv_qspi_physical_2.v"
+        },
+        {
+            "module": "sirv_queue",
+            "file": "rtl/e203/perips/sirv_queue.v"
+        },
+        {
+            "module": "sirv_queue_1",
+            "file": "rtl/e203/perips/sirv_queue_1.v"
+        },
+        {
+            "module": "sirv_repeater_6",
+            "file": "rtl/e203/perips/sirv_repeater_6.v"
+        },
+        {
+            "module": "sirv_rtc",
+            "file": "rtl/e203/perips/sirv_rtc.v"
+        },
+        {
+            "module": "sirv_qspi_flashmap",
+            "file": "rtl/e203/perips/sirv_spi_flashmap.v"
+        },
+        {
+            "module": "sirv_spigpioport",
+            "file": "rtl/e203/perips/sirv_spigpioport.v"
+        },
+        {
+            "module": "sirv_spigpioport_1",
+            "file": "rtl/e203/perips/sirv_spigpioport_1.v"
+        },
+        {
+            "module": "sirv_spigpioport_2",
+            "file": "rtl/e203/perips/sirv_spigpioport_2.v"
+        },
+        {
+            "module": "sirv_tl_repeater_5",
+            "file": "rtl/e203/perips/sirv_tl_repeater_5.v"
+        },
+        {
+            "module": "sirv_tlfragmenter_qspi_1",
+            "file": "rtl/e203/perips/sirv_tlfragmenter_qspi_1.v"
+        },
+        {
+            "module": "sirv_tlwidthwidget_qspi",
+            "file": "rtl/e203/perips/sirv_tlwidthwidget_qspi.v"
+        },
+        {
+            "module": "sirv_uart",
+            "file": "rtl/e203/perips/sirv_uart.v"
+        },
+        {
+            "module": "of",
+            "file": "rtl/e203/perips/sirv_uart_top.v"
+        },
+        {
+            "module": "sirv_uart_top",
+            "file": "rtl/e203/perips/sirv_uart_top.v"
+        },
+        {
+            "module": "sirv_uartgpioport",
+            "file": "rtl/e203/perips/sirv_uartgpioport.v"
+        },
+        {
+            "module": "sirv_uartrx",
+            "file": "rtl/e203/perips/sirv_uartrx.v"
+        },
+        {
+            "module": "sirv_uarttx",
+            "file": "rtl/e203/perips/sirv_uarttx.v"
+        },
+        {
+            "module": "sirv_wdog",
+            "file": "rtl/e203/perips/sirv_wdog.v"
+        },
+        {
+            "module": "e203_soc_top",
+            "file": "rtl/e203/soc/e203_soc_top.v"
+        },
+        {
+            "module": "e203_subsys_clint",
+            "file": "rtl/e203/subsys/e203_subsys_clint.v"
+        },
+        {
+            "module": "e203_subsys_gfcm",
+            "file": "rtl/e203/subsys/e203_subsys_gfcm.v"
+        },
+        {
+            "module": "e203_subsys_hclkgen",
+            "file": "rtl/e203/subsys/e203_subsys_hclkgen.v"
+        },
+        {
+            "module": "wire",
+            "file": "rtl/e203/subsys/e203_subsys_hclkgen.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/subsys/e203_subsys_hclkgen_rstsync.v"
+        },
+        {
+            "module": "e203_subsys_hclkgen_rstsync",
+            "file": "rtl/e203/subsys/e203_subsys_hclkgen_rstsync.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/subsys/e203_subsys_main.v"
+        },
+        {
+            "module": "e203_subsys_main",
+            "file": "rtl/e203/subsys/e203_subsys_main.v"
+        },
+        {
+            "module": "e203_subsys_mems",
+            "file": "rtl/e203/subsys/e203_subsys_mems.v"
+        },
+        {
+            "module": "e203_subsys_perips",
+            "file": "rtl/e203/subsys/e203_subsys_perips.v"
+        },
+        {
+            "module": "e203_subsys_plic",
+            "file": "rtl/e203/subsys/e203_subsys_plic.v"
+        },
+        {
+            "module": "e203_subsys_pll",
+            "file": "rtl/e203/subsys/e203_subsys_pll.v"
+        },
+        {
+            "module": "e203_subsys_pllclkdiv",
+            "file": "rtl/e203/subsys/e203_subsys_pllclkdiv.v"
+        },
+        {
+            "module": "to",
+            "file": "rtl/e203/subsys/e203_subsys_top.v"
+        },
+        {
+            "module": "e203_subsys_top",
+            "file": "rtl/e203/subsys/e203_subsys_top.v"
+        },
+        {
+            "module": "tb_top",
+            "file": "tb/tb_top.v"
+        }
+    ],
+    "module_graph": {
+        "clkdivider": [],
+        "fpga_tb_top": [],
+        "control": [],
+        "e203_biu": [
+            "to"
+        ],
+        "to": [
+            "convert"
+        ],
+        "e203_clk_ctrl": [
+            "to"
+        ],
+        "e203_clkgate": [
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "control",
+            "e203_subsys_gfcm",
+            "e203_subsys_pllclkdiv"
+        ],
+        "e203_core": [
+            "to"
+        ],
+        "output": [
+            "i2c_master_bit_ctrl"
+        ],
+        "e203_cpu": [
+            "to",
+            "to"
+        ],
+        "e203_cpu_top": [
+            "to"
+        ],
+        "will": [],
+        "e203_dtcm_ctrl": [
+            "to"
+        ],
+        "e203_dtcm_ram": [
+            "to"
+        ],
+        "e203_extend_csr": [
+            "to"
+        ],
+        "e203_exu": [
+            "to"
+        ],
+        "e203_exu_alu": [
+            "to"
+        ],
+        "wire": [],
+        "e203_exu_alu_bjp": [
+            "to"
+        ],
+        "e203_exu_alu_csrctrl": [
+            "to"
+        ],
+        "e203_exu_alu_dpath": [
+            "to"
+        ],
+        "e203_exu_alu_lsuagu": [
+            "to"
+        ],
+        "e203_exu_alu_muldiv": [
+            "to"
+        ],
+        "e203_exu_alu_rglr": [
+            "to"
+        ],
+        "e203_exu_branchslv": [
+            "to"
+        ],
+        "e203_exu_commit": [
+            "to"
+        ],
+        "e203_exu_csr": [
+            "to"
+        ],
+        "e203_exu_decode": [
+            "to",
+            "to"
+        ],
+        "e203_exu_disp": [
+            "to"
+        ],
+        "e203_exu_excp": [
+            "to"
+        ],
+        "always": [],
+        "e203_exu_longpwbck": [
+            "to"
+        ],
+        "e203_exu_oitf": [
+            "to"
+        ],
+        "e203_exu_regfile": [
+            "to"
+        ],
+        "e203_exu_wbck": [
+            "to"
+        ],
+        "e203_ifu": [
+            "to"
+        ],
+        "e203_ifu_ifetch": [
+            "e203_ifu"
+        ],
+        "convert": [],
+        "e203_ifu_ift2icb": [
+            "e203_ifu"
+        ],
+        "upfront": [],
+        "e203_ifu_litebpu": [
+            "to"
+        ],
+        "e203_ifu_minidec": [
+            "to"
+        ],
+        "e203_irq_sync": [
+            "to",
+            "e203_irq_sync"
+        ],
+        "e203_itcm_ctrl": [
+            "to"
+        ],
+        "e203_itcm_ram": [
+            "to"
+        ],
+        "e203_lsu": [
+            "to"
+        ],
+        "e203_lsu_ctrl": [
+            "control"
+        ],
+        "e203_reset_ctrl": [],
+        "e203_srams": [
+            "to"
+        ],
+        "sirv_debug_csr": [
+            "to"
+        ],
+        "sirv_debug_module": [
+            "sirv_debug_module",
+            "to"
+        ],
+        "have": [],
+        "for": [],
+        "sirv_debug_ram": [
+            "sirv_debug_module"
+        ],
+        "sirv_debug_rom": [
+            "sirv_debug_module"
+        ],
+        "sirv_jtag_dtm": [],
+        "sirv_icb1to16_bus": [
+            "for",
+            "e203_subsys_perips"
+        ],
+        "sirv_icb1to2_bus": [
+            "for",
+            "of"
+        ],
+        "sirv_icb1to8_bus": [
+            "for",
+            "e203_subsys_mems"
+        ],
+        "sirv_1cyc_sram_ctrl": [
+            "control",
+            "control"
+        ],
+        "sirv_gnrl_pipe_stage": [
+            "convert",
+            "control",
+            "sirv_gnrl_pipe_stage"
+        ],
+        "sirv_gnrl_sync": [
+            "e203_irq_sync",
+            "e203_irq_sync",
+            "e203_irq_sync",
+            "sirv_gnrl_pipe_stage",
+            "e203_subsys_clint",
+            "e203_subsys_plic",
+            "e203_subsys_plic"
+        ],
+        "sirv_gnrl": [],
+        "sirv_gnrl_cdc_rx": [
+            "sirv_debug_module",
+            "sirv_jtag_dtm",
+            "sirv_gnrl_pipe_stage",
+            "of",
+            "e203_subsys_perips"
+        ],
+        "sirv_gnrl_cdc_tx": [
+            "sirv_debug_module",
+            "sirv_gnrl_pipe_stage",
+            "e203_subsys_perips"
+        ],
+        "as": [
+            "to",
+            "convert"
+        ],
+        "sirv_gnrl_bypbuf": [
+            "sirv_gnrl_pipe_stage"
+        ],
+        "is": [
+            "convert",
+            "control",
+            "sirv_gnrl_pipe_stage"
+        ],
+        "sirv_gnrl_fifo": [
+            "control",
+            "sirv_gnrl_pipe_stage",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to"
+        ],
+        "sirv_gnrl_dfflrs": [
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl",
+            "sirv_aon_lclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs"
+        ],
+        "sirv_gnrl_dfflr": [
+            "control",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "e203_exu_oitf",
+            "e203_exu_oitf",
+            "e203_exu_oitf",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "convert",
+            "convert",
+            "convert",
+            "convert",
+            "convert",
+            "convert",
+            "convert",
+            "convert",
+            "to",
+            "control",
+            "control",
+            "control",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "sirv_debug_module",
+            "sirv_debug_module",
+            "sirv_debug_module",
+            "sirv_debug_module",
+            "sirv_debug_module",
+            "for",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl",
+            "to",
+            "to",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_hclkgen_regs",
+            "sirv_plic_man",
+            "sirv_plic_man",
+            "sirv_plic_man",
+            "e203_subsys_pllclkdiv",
+            "e203_subsys_pllclkdiv"
+        ],
+        "sirv_gnrl_dffl": [
+            "to",
+            "to",
+            "e203_exu_oitf",
+            "e203_exu_oitf",
+            "e203_exu_oitf",
+            "e203_exu_oitf",
+            "to",
+            "to",
+            "convert",
+            "convert",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl"
+        ],
+        "sirv_gnrl_dffrs": [
+            "to"
+        ],
+        "sirv_gnrl_dffr": [
+            "to",
+            "to",
+            "to",
+            "to",
+            "to",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_pipe_stage",
+            "sirv_aon_wrapper",
+            "sirv_clint_top",
+            "sirv_plic_man",
+            "sirv_plic_man"
+        ],
+        "sirv_gnrl_ltch": [
+            "to"
+        ],
+        "sirv_gnrl_icb_arbt": [
+            "control",
+            "control",
+            "control",
+            "control",
+            "to"
+        ],
+        "sirv_gnrl_icb_buffer": [
+            "control",
+            "to"
+        ],
+        "sirv_gnrl_icb_n2w": [
+            "control",
+            "control",
+            "to"
+        ],
+        "sirv_gnrl_icb_splt": [
+            "control",
+            "for",
+            "for",
+            "for"
+        ],
+        "sirv_gnrl_icb2axi": [
+            "e203_subsys_mems",
+            "e203_subsys_perips"
+        ],
+        "sirv_gnrl_icb32towishb8": [
+            "to",
+            "e203_subsys_perips"
+        ],
+        "sirv_gnrl_icb2apb": [
+            "to",
+            "e203_subsys_perips"
+        ],
+        "sirv_gnrl_axi_buffer": [
+            "to",
+            "to"
+        ],
+        "sirv_gnrl_ram": [
+            "to",
+            "to",
+            "sirv_gnrl_ram"
+        ],
+        "sirv_gnrl_xchecker": [],
+        "sirv_sim_ram": [
+            "sirv_gnrl_ram"
+        ],
+        "sirv_sram_icb_ctrl": [
+            "control",
+            "control",
+            "control"
+        ],
+        "sirv_mrom": [],
+        "sirv_mrom_top": [
+            "is",
+            "e203_subsys_mems"
+        ],
+        "i2c_master_bit_ctrl": [
+            "i2c_master_byte_ctrl"
+        ],
+        "body": [],
+        "i2c_master_byte_ctrl": [],
+        "i2c_master_top": [
+            "e203_subsys_perips"
+        ],
+        "sirv_AsyncResetReg": [
+            "sirv_AsyncResetRegVec",
+            "sirv_AsyncResetRegVec_1",
+            "sirv_AsyncResetRegVec_1",
+            "sirv_AsyncResetRegVec_1",
+            "sirv_AsyncResetRegVec_1",
+            "sirv_AsyncResetRegVec_1",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_129",
+            "sirv_AsyncResetRegVec_36",
+            "sirv_AsyncResetRegVec_36",
+            "sirv_AsyncResetRegVec_36",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67"
+        ],
+        "sirv_AsyncResetRegVec": [
+            "sirv_rtc",
+            "sirv_wdog",
+            "sirv_wdog",
+            "sirv_wdog",
+            "sirv_wdog",
+            "sirv_wdog"
+        ],
+        "sirv_AsyncResetRegVec_1": [
+            "sirv_pmu"
+        ],
+        "sirv_AsyncResetRegVec_129": [
+            "sirv_ResetCatchAndSync_2"
+        ],
+        "sirv_AsyncResetRegVec_36": [
+            "sirv_ResetCatchAndSync"
+        ],
+        "sirv_AsyncResetRegVec_67": [
+            "sirv_gpio",
+            "sirv_gpio",
+            "sirv_gpio",
+            "sirv_gpio"
+        ],
+        "sirv_DeglitchShiftRegister": [
+            "sirv_aon_wrapper",
+            "sirv_aon_wrapper",
+            "sirv_aon_wrapper"
+        ],
+        "sirv_LevelGateway": [],
+        "sirv_ResetCatchAndSync": [
+            "sirv_aon_wrapper",
+            "sirv_aon_wrapper"
+        ],
+        "sirv_ResetCatchAndSync_2": [
+            "to"
+        ],
+        "sirv_aon": [
+            "sirv_aon_wrapper"
+        ],
+        "sirv_aon_lclkgen_regs": [
+            "of"
+        ],
+        "sirv_aon_porrst": [
+            "sirv_aon_wrapper"
+        ],
+        "of": [],
+        "sirv_aon_top": [
+            "of",
+            "to"
+        ],
+        "need": [],
+        "sirv_aon_wrapper": [
+            "of"
+        ],
+        "sirv_clint": [
+            "sirv_clint_top"
+        ],
+        "sirv_clint_top": [
+            "e203_subsys_clint"
+        ],
+        "sirv_expl_apb_slv": [
+            "e203_subsys_perips"
+        ],
+        "sirv_expl_axi_slv": [
+            "e203_subsys_mems",
+            "e203_subsys_perips"
+        ],
+        "sirv_flash_qspi": [
+            "of"
+        ],
+        "sirv_flash_qspi_top": [
+            "e203_subsys_perips"
+        ],
+        "sirv_gpio": [
+            "of"
+        ],
+        "sirv_gpio_top": [
+            "e203_subsys_perips"
+        ],
+        "sirv_hclkgen_regs": [
+            "e203_subsys_perips"
+        ],
+        "sirv_jtaggpioport": [],
+        "sirv_otp_top": [
+            "e203_subsys_perips"
+        ],
+        "sirv_plic_man": [
+            "sirv_plic_man",
+            "of"
+        ],
+        "sirv_plic_top": [
+            "e203_subsys_plic"
+        ],
+        "sirv_pmu": [
+            "sirv_aon"
+        ],
+        "sirv_pmu_core": [
+            "sirv_pmu"
+        ],
+        "sirv_pwm16": [
+            "of"
+        ],
+        "sirv_pwm16_core": [
+            "sirv_pwm16"
+        ],
+        "sirv_pwm16_top": [
+            "e203_subsys_perips",
+            "e203_subsys_perips"
+        ],
+        "sirv_pwm8": [
+            "of"
+        ],
+        "sirv_pwm8_core": [
+            "sirv_pwm8"
+        ],
+        "sirv_pwm8_top": [
+            "e203_subsys_perips"
+        ],
+        "sirv_pwmgpioport": [
+            "e203_subsys_perips",
+            "e203_subsys_perips",
+            "e203_subsys_perips"
+        ],
+        "sirv_qspi_1cs": [
+            "of"
+        ],
+        "sirv_qspi_1cs_top": [
+            "e203_subsys_perips"
+        ],
+        "sirv_qspi_4cs": [
+            "of"
+        ],
+        "sirv_qspi_4cs_top": [
+            "e203_subsys_perips"
+        ],
+        "sirv_qspi_arbiter": [
+            "sirv_flash_qspi"
+        ],
+        "sirv_qspi_fifo": [
+            "sirv_flash_qspi",
+            "sirv_qspi_1cs",
+            "sirv_qspi_4cs"
+        ],
+        "sirv_qspi_media": [
+            "sirv_flash_qspi"
+        ],
+        "sirv_qspi_media_1": [
+            "sirv_qspi_4cs"
+        ],
+        "sirv_qspi_media_2": [
+            "sirv_qspi_1cs"
+        ],
+        "sirv_qspi_physical": [
+            "sirv_qspi_media"
+        ],
+        "sirv_qspi_physical_1": [
+            "sirv_qspi_media_1"
+        ],
+        "sirv_qspi_physical_2": [
+            "sirv_qspi_media_2"
+        ],
+        "sirv_queue": [
+            "sirv_aon"
+        ],
+        "sirv_queue_1": [
+            "sirv_qspi_fifo",
+            "sirv_qspi_fifo",
+            "sirv_uart",
+            "sirv_uart"
+        ],
+        "sirv_repeater_6": [
+            "sirv_tlfragmenter_qspi_1"
+        ],
+        "sirv_rtc": [
+            "sirv_aon"
+        ],
+        "sirv_qspi_flashmap": [
+            "sirv_flash_qspi"
+        ],
+        "sirv_spigpioport": [
+            "e203_subsys_perips"
+        ],
+        "sirv_spigpioport_1": [
+            "e203_subsys_perips"
+        ],
+        "sirv_spigpioport_2": [
+            "e203_subsys_perips"
+        ],
+        "sirv_tl_repeater_5": [
+            "sirv_tlwidthwidget_qspi"
+        ],
+        "sirv_tlfragmenter_qspi_1": [
+            "of"
+        ],
+        "sirv_tlwidthwidget_qspi": [
+            "of"
+        ],
+        "sirv_uart": [
+            "of"
+        ],
+        "sirv_uart_top": [
+            "e203_subsys_perips",
+            "e203_subsys_perips"
+        ],
+        "sirv_uartgpioport": [
+            "e203_subsys_perips",
+            "e203_subsys_perips"
+        ],
+        "sirv_uartrx": [
+            "sirv_uart"
+        ],
+        "sirv_uarttx": [
+            "sirv_uart"
+        ],
+        "sirv_wdog": [
+            "sirv_aon"
+        ],
+        "e203_soc_top": [],
+        "e203_subsys_clint": [
+            "to"
+        ],
+        "e203_subsys_gfcm": [
+            "e203_subsys_hclkgen"
+        ],
+        "e203_subsys_hclkgen": [
+            "to"
+        ],
+        "e203_subsys_hclkgen_rstsync": [
+            "e203_subsys_hclkgen",
+            "e203_subsys_hclkgen"
+        ],
+        "e203_subsys_main": [
+            "to"
+        ],
+        "e203_subsys_mems": [
+            "to"
+        ],
+        "e203_subsys_perips": [
+            "to"
+        ],
+        "e203_subsys_plic": [
+            "to"
+        ],
+        "e203_subsys_pll": [
+            "e203_subsys_hclkgen"
+        ],
+        "e203_subsys_pllclkdiv": [
+            "e203_subsys_hclkgen"
+        ],
+        "e203_subsys_top": [
+            "e203_soc_top"
+        ],
+        "tb_top": []
+    },
+    "module_graph_inverse": {
+        "clkdivider": [],
+        "fpga_tb_top": [],
+        "control": [
+            "sirv_gnrl_icb_arbt",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_icb_buffer",
+            "sirv_gnrl_icb_splt",
+            "sirv_gnrl_icb_arbt",
+            "sirv_sram_icb_ctrl",
+            "sirv_gnrl_icb_n2w",
+            "sirv_gnrl_icb_n2w",
+            "sirv_gnrl_icb_arbt",
+            "sirv_sram_icb_ctrl",
+            "sirv_gnrl_dfflr",
+            "e203_lsu_ctrl",
+            "sirv_gnrl_icb_arbt",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_fifo",
+            "is",
+            "sirv_1cyc_sram_ctrl",
+            "e203_clkgate",
+            "sirv_sram_icb_ctrl",
+            "sirv_1cyc_sram_ctrl"
+        ],
+        "e203_biu": [],
+        "to": [
+            "e203_clkgate",
+            "e203_clkgate",
+            "e203_clkgate",
+            "e203_clkgate",
+            "sirv_gnrl_dffr",
+            "e203_clkgate",
+            "sirv_gnrl_dffr",
+            "e203_clkgate",
+            "e203_ifu",
+            "e203_exu",
+            "e203_lsu",
+            "e203_biu",
+            "e203_cpu",
+            "e203_clk_ctrl",
+            "e203_irq_sync",
+            "e203_extend_csr",
+            "e203_core",
+            "e203_itcm_ctrl",
+            "e203_dtcm_ctrl",
+            "e203_cpu",
+            "e203_srams",
+            "sirv_gnrl_ram",
+            "e203_exu_regfile",
+            "e203_exu_decode",
+            "e203_exu_disp",
+            "e203_exu_oitf",
+            "e203_exu_alu",
+            "e203_exu_longpwbck",
+            "e203_exu_wbck",
+            "e203_exu_commit",
+            "e203_exu_csr",
+            "e203_exu_alu_csrctrl",
+            "e203_exu_alu_bjp",
+            "e203_exu_alu_lsuagu",
+            "e203_exu_alu_rglr",
+            "e203_exu_alu_muldiv",
+            "e203_exu_alu_dpath",
+            "sirv_gnrl_dffl",
+            "sirv_gnrl_dffl",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "e203_exu_branchslv",
+            "e203_exu_excp",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dffr",
+            "sirv_gnrl_dffr",
+            "sirv_gnrl_dffr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dffl",
+            "e203_clkgate",
+            "sirv_gnrl_ltch",
+            "sirv_gnrl_dffl",
+            "sirv_gnrl_dffrs",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "as",
+            "e203_ifu_minidec",
+            "e203_ifu_litebpu",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "e203_exu_decode",
+            "sirv_gnrl_ram",
+            "e203_itcm_ram",
+            "e203_dtcm_ram",
+            "sirv_debug_csr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_icb_arbt",
+            "sirv_gnrl_fifo",
+            "sirv_gnrl_icb_buffer",
+            "sirv_gnrl_fifo",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_icb_n2w",
+            "sirv_gnrl_fifo",
+            "sirv_gnrl_fifo",
+            "sirv_gnrl_fifo",
+            "sirv_gnrl_axi_buffer",
+            "sirv_gnrl_icb32towishb8",
+            "sirv_gnrl_icb2apb",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_axi_buffer",
+            "sirv_gnrl_fifo",
+            "sirv_gnrl_fifo",
+            "sirv_gnrl_fifo",
+            "sirv_gnrl_fifo",
+            "sirv_ResetCatchAndSync_2",
+            "e203_subsys_hclkgen",
+            "e203_cpu_top",
+            "e203_subsys_plic",
+            "e203_subsys_clint",
+            "e203_subsys_perips",
+            "e203_subsys_mems",
+            "e203_subsys_main",
+            "sirv_debug_module",
+            "sirv_aon_top"
+        ],
+        "e203_clk_ctrl": [],
+        "e203_clkgate": [],
+        "e203_core": [],
+        "output": [],
+        "e203_cpu": [],
+        "e203_cpu_top": [],
+        "will": [],
+        "e203_dtcm_ctrl": [],
+        "e203_dtcm_ram": [],
+        "e203_extend_csr": [],
+        "e203_exu": [],
+        "e203_exu_alu": [],
+        "wire": [],
+        "e203_exu_alu_bjp": [],
+        "e203_exu_alu_csrctrl": [],
+        "e203_exu_alu_dpath": [],
+        "e203_exu_alu_lsuagu": [],
+        "e203_exu_alu_muldiv": [],
+        "e203_exu_alu_rglr": [],
+        "e203_exu_branchslv": [],
+        "e203_exu_commit": [],
+        "e203_exu_csr": [],
+        "e203_exu_decode": [],
+        "e203_exu_disp": [],
+        "e203_exu_excp": [],
+        "always": [],
+        "e203_exu_longpwbck": [],
+        "e203_exu_oitf": [
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dffl",
+            "sirv_gnrl_dffl",
+            "sirv_gnrl_dffl",
+            "sirv_gnrl_dffl"
+        ],
+        "e203_exu_regfile": [],
+        "e203_exu_wbck": [],
+        "e203_ifu": [
+            "e203_ifu_ifetch",
+            "e203_ifu_ift2icb"
+        ],
+        "e203_ifu_ifetch": [],
+        "convert": [
+            "to",
+            "as",
+            "is",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dffl",
+            "sirv_gnrl_dffl",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_pipe_stage"
+        ],
+        "e203_ifu_ift2icb": [],
+        "upfront": [],
+        "e203_ifu_litebpu": [],
+        "e203_ifu_minidec": [],
+        "e203_irq_sync": [
+            "e203_irq_sync",
+            "sirv_gnrl_sync",
+            "sirv_gnrl_sync",
+            "sirv_gnrl_sync"
+        ],
+        "e203_itcm_ctrl": [],
+        "e203_itcm_ram": [],
+        "e203_lsu": [],
+        "e203_lsu_ctrl": [],
+        "e203_reset_ctrl": [],
+        "e203_srams": [],
+        "sirv_debug_csr": [],
+        "sirv_debug_module": [
+            "sirv_debug_module",
+            "sirv_gnrl_cdc_tx",
+            "sirv_gnrl_cdc_rx",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_debug_rom",
+            "sirv_debug_ram",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr"
+        ],
+        "have": [],
+        "for": [
+            "sirv_gnrl_dfflr",
+            "sirv_icb1to16_bus",
+            "sirv_gnrl_icb_splt",
+            "sirv_icb1to2_bus",
+            "sirv_gnrl_icb_splt",
+            "sirv_icb1to8_bus",
+            "sirv_gnrl_icb_splt"
+        ],
+        "sirv_debug_ram": [],
+        "sirv_debug_rom": [],
+        "sirv_jtag_dtm": [
+            "sirv_gnrl_cdc_rx"
+        ],
+        "sirv_icb1to16_bus": [],
+        "sirv_icb1to2_bus": [],
+        "sirv_icb1to8_bus": [],
+        "sirv_1cyc_sram_ctrl": [],
+        "sirv_gnrl_pipe_stage": [
+            "sirv_gnrl_pipe_stage",
+            "sirv_gnrl_dffl",
+            "sirv_gnrl_sync",
+            "sirv_gnrl_dffr",
+            "sirv_gnrl_cdc_rx",
+            "sirv_gnrl_dffr",
+            "is",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_cdc_tx",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dffr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_bypbuf",
+            "sirv_gnrl_fifo",
+            "sirv_gnrl_dfflrs",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflrs",
+            "sirv_gnrl_dfflr"
+        ],
+        "sirv_gnrl_sync": [],
+        "sirv_gnrl": [
+            "sirv_gnrl_dfflrs",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dffl"
+        ],
+        "sirv_gnrl_cdc_rx": [],
+        "sirv_gnrl_cdc_tx": [],
+        "as": [],
+        "sirv_gnrl_bypbuf": [],
+        "is": [
+            "sirv_mrom_top"
+        ],
+        "sirv_gnrl_fifo": [],
+        "sirv_gnrl_dfflrs": [],
+        "sirv_gnrl_dfflr": [],
+        "sirv_gnrl_dffl": [],
+        "sirv_gnrl_dffrs": [],
+        "sirv_gnrl_dffr": [],
+        "sirv_gnrl_ltch": [],
+        "sirv_gnrl_icb_arbt": [],
+        "sirv_gnrl_icb_buffer": [],
+        "sirv_gnrl_icb_n2w": [],
+        "sirv_gnrl_icb_splt": [],
+        "sirv_gnrl_icb2axi": [],
+        "sirv_gnrl_icb32towishb8": [],
+        "sirv_gnrl_icb2apb": [],
+        "sirv_gnrl_axi_buffer": [],
+        "sirv_gnrl_ram": [
+            "sirv_gnrl_ram",
+            "sirv_sim_ram"
+        ],
+        "sirv_gnrl_xchecker": [],
+        "sirv_sim_ram": [],
+        "sirv_sram_icb_ctrl": [],
+        "sirv_mrom": [],
+        "sirv_mrom_top": [],
+        "i2c_master_bit_ctrl": [
+            "output"
+        ],
+        "body": [],
+        "i2c_master_byte_ctrl": [
+            "i2c_master_bit_ctrl"
+        ],
+        "i2c_master_top": [],
+        "sirv_AsyncResetReg": [],
+        "sirv_AsyncResetRegVec": [
+            "sirv_AsyncResetReg"
+        ],
+        "sirv_AsyncResetRegVec_1": [
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg"
+        ],
+        "sirv_AsyncResetRegVec_129": [
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg"
+        ],
+        "sirv_AsyncResetRegVec_36": [
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg"
+        ],
+        "sirv_AsyncResetRegVec_67": [
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg",
+            "sirv_AsyncResetReg"
+        ],
+        "sirv_DeglitchShiftRegister": [],
+        "sirv_LevelGateway": [],
+        "sirv_ResetCatchAndSync": [
+            "sirv_AsyncResetRegVec_36"
+        ],
+        "sirv_ResetCatchAndSync_2": [
+            "sirv_AsyncResetRegVec_129"
+        ],
+        "sirv_aon": [
+            "sirv_rtc",
+            "sirv_pmu",
+            "sirv_wdog",
+            "sirv_queue"
+        ],
+        "sirv_aon_lclkgen_regs": [
+            "sirv_gnrl_dfflrs"
+        ],
+        "sirv_aon_porrst": [],
+        "of": [
+            "sirv_aon_top",
+            "sirv_gnrl_cdc_rx",
+            "sirv_icb1to2_bus",
+            "sirv_aon_lclkgen_regs",
+            "sirv_aon_wrapper",
+            "sirv_tlwidthwidget_qspi",
+            "sirv_tlfragmenter_qspi_1",
+            "sirv_flash_qspi",
+            "sirv_gpio",
+            "sirv_plic_man",
+            "sirv_pwm16",
+            "sirv_pwm8",
+            "sirv_qspi_1cs",
+            "sirv_qspi_4cs",
+            "sirv_uart"
+        ],
+        "sirv_aon_top": [],
+        "need": [],
+        "sirv_aon_wrapper": [
+            "sirv_aon",
+            "sirv_ResetCatchAndSync",
+            "sirv_ResetCatchAndSync",
+            "sirv_DeglitchShiftRegister",
+            "sirv_DeglitchShiftRegister",
+            "sirv_DeglitchShiftRegister",
+            "sirv_aon_porrst",
+            "sirv_gnrl_dffr"
+        ],
+        "sirv_clint": [],
+        "sirv_clint_top": [
+            "sirv_gnrl_dffr",
+            "sirv_clint"
+        ],
+        "sirv_expl_apb_slv": [],
+        "sirv_expl_axi_slv": [],
+        "sirv_flash_qspi": [
+            "sirv_qspi_fifo",
+            "sirv_qspi_media",
+            "sirv_qspi_flashmap",
+            "sirv_qspi_arbiter"
+        ],
+        "sirv_flash_qspi_top": [],
+        "sirv_gpio": [
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67",
+            "sirv_AsyncResetRegVec_67"
+        ],
+        "sirv_gpio_top": [],
+        "sirv_hclkgen_regs": [
+            "sirv_gnrl_dfflrs",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflrs",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflrs",
+            "sirv_gnrl_dfflrs",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflrs",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflrs",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflrs",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflrs"
+        ],
+        "sirv_jtaggpioport": [],
+        "sirv_otp_top": [],
+        "sirv_plic_man": [
+            "sirv_plic_man",
+            "sirv_gnrl_dffr",
+            "sirv_gnrl_dffr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr"
+        ],
+        "sirv_plic_top": [],
+        "sirv_pmu": [
+            "sirv_pmu_core",
+            "sirv_AsyncResetRegVec_1"
+        ],
+        "sirv_pmu_core": [],
+        "sirv_pwm16": [
+            "sirv_pwm16_core"
+        ],
+        "sirv_pwm16_core": [],
+        "sirv_pwm16_top": [],
+        "sirv_pwm8": [
+            "sirv_pwm8_core"
+        ],
+        "sirv_pwm8_core": [],
+        "sirv_pwm8_top": [],
+        "sirv_pwmgpioport": [],
+        "sirv_qspi_1cs": [
+            "sirv_qspi_fifo",
+            "sirv_qspi_media_2"
+        ],
+        "sirv_qspi_1cs_top": [],
+        "sirv_qspi_4cs": [
+            "sirv_qspi_fifo",
+            "sirv_qspi_media_1"
+        ],
+        "sirv_qspi_4cs_top": [],
+        "sirv_qspi_arbiter": [],
+        "sirv_qspi_fifo": [
+            "sirv_queue_1",
+            "sirv_queue_1"
+        ],
+        "sirv_qspi_media": [
+            "sirv_qspi_physical"
+        ],
+        "sirv_qspi_media_1": [
+            "sirv_qspi_physical_1"
+        ],
+        "sirv_qspi_media_2": [
+            "sirv_qspi_physical_2"
+        ],
+        "sirv_qspi_physical": [],
+        "sirv_qspi_physical_1": [],
+        "sirv_qspi_physical_2": [],
+        "sirv_queue": [],
+        "sirv_queue_1": [],
+        "sirv_repeater_6": [],
+        "sirv_rtc": [
+            "sirv_AsyncResetRegVec"
+        ],
+        "sirv_qspi_flashmap": [],
+        "sirv_spigpioport": [],
+        "sirv_spigpioport_1": [],
+        "sirv_spigpioport_2": [],
+        "sirv_tl_repeater_5": [],
+        "sirv_tlfragmenter_qspi_1": [
+            "sirv_repeater_6"
+        ],
+        "sirv_tlwidthwidget_qspi": [
+            "sirv_tl_repeater_5"
+        ],
+        "sirv_uart": [
+            "sirv_uarttx",
+            "sirv_queue_1",
+            "sirv_uartrx",
+            "sirv_queue_1"
+        ],
+        "sirv_uart_top": [],
+        "sirv_uartgpioport": [],
+        "sirv_uartrx": [],
+        "sirv_uarttx": [],
+        "sirv_wdog": [
+            "sirv_AsyncResetRegVec",
+            "sirv_AsyncResetRegVec",
+            "sirv_AsyncResetRegVec",
+            "sirv_AsyncResetRegVec",
+            "sirv_AsyncResetRegVec"
+        ],
+        "e203_soc_top": [
+            "e203_subsys_top"
+        ],
+        "e203_subsys_clint": [
+            "sirv_gnrl_sync",
+            "sirv_clint_top"
+        ],
+        "e203_subsys_gfcm": [
+            "e203_clkgate"
+        ],
+        "e203_subsys_hclkgen": [
+            "e203_subsys_pll",
+            "e203_subsys_hclkgen_rstsync",
+            "e203_subsys_hclkgen_rstsync",
+            "e203_subsys_pllclkdiv",
+            "e203_subsys_gfcm"
+        ],
+        "e203_subsys_hclkgen_rstsync": [],
+        "e203_subsys_main": [],
+        "e203_subsys_mems": [
+            "sirv_icb1to8_bus",
+            "sirv_mrom_top",
+            "sirv_gnrl_icb2axi",
+            "sirv_expl_axi_slv"
+        ],
+        "e203_subsys_perips": [
+            "sirv_icb1to16_bus",
+            "sirv_otp_top",
+            "sirv_gpio_top",
+            "sirv_uart_top",
+            "sirv_flash_qspi_top",
+            "sirv_pwm8_top",
+            "sirv_uart_top",
+            "sirv_qspi_4cs_top",
+            "sirv_pwm16_top",
+            "sirv_qspi_1cs_top",
+            "sirv_pwm16_top",
+            "sirv_uartgpioport",
+            "sirv_uartgpioport",
+            "sirv_pwmgpioport",
+            "sirv_pwmgpioport",
+            "sirv_pwmgpioport",
+            "sirv_spigpioport",
+            "sirv_spigpioport_1",
+            "sirv_spigpioport_2",
+            "sirv_gnrl_cdc_tx",
+            "sirv_gnrl_cdc_rx",
+            "sirv_gnrl_icb2axi",
+            "sirv_expl_axi_slv",
+            "sirv_gnrl_icb2apb",
+            "sirv_expl_apb_slv",
+            "sirv_gnrl_icb32towishb8",
+            "i2c_master_top",
+            "sirv_hclkgen_regs"
+        ],
+        "e203_subsys_plic": [
+            "sirv_gnrl_sync",
+            "sirv_gnrl_sync",
+            "sirv_plic_top"
+        ],
+        "e203_subsys_pll": [],
+        "e203_subsys_pllclkdiv": [
+            "sirv_gnrl_dfflr",
+            "sirv_gnrl_dfflr",
+            "e203_clkgate"
+        ],
+        "e203_subsys_top": [],
+        "tb_top": []
+    },
+    "non_tb_files": [
+        "fpga/artydevkit/src/clkdivider.v",
+        "fpga/artydevkit/src/dummy.v",
+        "fpga/hbirdkit/src/clkdivider.v",
+        "fpga/hbirdkit/src/dummy.v",
+        "fpga/nucleikit/src/clkdivider.v",
+        "fpga/nucleikit/src/dummy.v",
+        "rtl/e203/core/config.v",
+        "rtl/e203/core/e203_biu.v",
+        "rtl/e203/core/e203_clk_ctrl.v",
+        "rtl/e203/core/e203_clkgate.v",
+        "rtl/e203/core/e203_core.v",
+        "rtl/e203/core/e203_cpu.v",
+        "rtl/e203/core/e203_cpu_top.v",
+        "rtl/e203/core/e203_defines.v",
+        "rtl/e203/core/e203_dtcm_ctrl.v",
+        "rtl/e203/core/e203_dtcm_ram.v",
+        "rtl/e203/core/e203_extend_csr.v",
+        "rtl/e203/core/e203_exu.v",
+        "rtl/e203/core/e203_exu_alu.v",
+        "rtl/e203/core/e203_exu_alu_bjp.v",
+        "rtl/e203/core/e203_exu_alu_csrctrl.v",
+        "rtl/e203/core/e203_exu_alu_dpath.v",
+        "rtl/e203/core/e203_exu_alu_lsuagu.v",
+        "rtl/e203/core/e203_exu_alu_muldiv.v",
+        "rtl/e203/core/e203_exu_alu_rglr.v",
+        "rtl/e203/core/e203_exu_branchslv.v",
+        "rtl/e203/core/e203_exu_commit.v",
+        "rtl/e203/core/e203_exu_csr.v",
+        "rtl/e203/core/e203_exu_decode.v",
+        "rtl/e203/core/e203_exu_disp.v",
+        "rtl/e203/core/e203_exu_excp.v",
+        "rtl/e203/core/e203_exu_longpwbck.v",
+        "rtl/e203/core/e203_exu_oitf.v",
+        "rtl/e203/core/e203_exu_regfile.v",
+        "rtl/e203/core/e203_exu_wbck.v",
+        "rtl/e203/core/e203_ifu.v",
+        "rtl/e203/core/e203_ifu_ifetch.v",
+        "rtl/e203/core/e203_ifu_ift2icb.v",
+        "rtl/e203/core/e203_ifu_litebpu.v",
+        "rtl/e203/core/e203_ifu_minidec.v",
+        "rtl/e203/core/e203_irq_sync.v",
+        "rtl/e203/core/e203_itcm_ctrl.v",
+        "rtl/e203/core/e203_itcm_ram.v",
+        "rtl/e203/core/e203_lsu.v",
+        "rtl/e203/core/e203_lsu_ctrl.v",
+        "rtl/e203/core/e203_reset_ctrl.v",
+        "rtl/e203/core/e203_srams.v",
+        "rtl/e203/debug/sirv_debug_csr.v",
+        "rtl/e203/debug/sirv_debug_module.v",
+        "rtl/e203/debug/sirv_debug_ram.v",
+        "rtl/e203/debug/sirv_debug_rom.v",
+        "rtl/e203/debug/sirv_jtag_dtm.v",
+        "rtl/e203/fab/sirv_icb1to16_bus.v",
+        "rtl/e203/fab/sirv_icb1to2_bus.v",
+        "rtl/e203/fab/sirv_icb1to8_bus.v",
+        "rtl/e203/general/sirv_1cyc_sram_ctrl.v",
+        "rtl/e203/general/sirv_gnrl_bufs.v",
+        "rtl/e203/general/sirv_gnrl_dffs.v",
+        "rtl/e203/general/sirv_gnrl_icbs.v",
+        "rtl/e203/general/sirv_gnrl_ram.v",
+        "rtl/e203/general/sirv_gnrl_xchecker.v",
+        "rtl/e203/general/sirv_sim_ram.v",
+        "rtl/e203/general/sirv_sram_icb_ctrl.v",
+        "rtl/e203/mems/sirv_mrom.v",
+        "rtl/e203/mems/sirv_mrom_top.v",
+        "rtl/e203/perips/i2c_master_bit_ctrl.v",
+        "rtl/e203/perips/i2c_master_byte_ctrl.v",
+        "rtl/e203/perips/i2c_master_defines.v",
+        "rtl/e203/perips/i2c_master_top.v",
+        "rtl/e203/perips/sirv_AsyncResetReg.v",
+        "rtl/e203/perips/sirv_AsyncResetRegVec.v",
+        "rtl/e203/perips/sirv_AsyncResetRegVec_1.v",
+        "rtl/e203/perips/sirv_AsyncResetRegVec_129.v",
+        "rtl/e203/perips/sirv_AsyncResetRegVec_36.v",
+        "rtl/e203/perips/sirv_AsyncResetRegVec_67.v",
+        "rtl/e203/perips/sirv_DeglitchShiftRegister.v",
+        "rtl/e203/perips/sirv_LevelGateway.v",
+        "rtl/e203/perips/sirv_ResetCatchAndSync.v",
+        "rtl/e203/perips/sirv_ResetCatchAndSync_2.v",
+        "rtl/e203/perips/sirv_aon.v",
+        "rtl/e203/perips/sirv_aon_lclkgen_regs.v",
+        "rtl/e203/perips/sirv_aon_porrst.v",
+        "rtl/e203/perips/sirv_aon_top.v",
+        "rtl/e203/perips/sirv_aon_wrapper.v",
+        "rtl/e203/perips/sirv_clint.v",
+        "rtl/e203/perips/sirv_clint_top.v",
+        "rtl/e203/perips/sirv_expl_apb_slv.v",
+        "rtl/e203/perips/sirv_expl_axi_slv.v",
+        "rtl/e203/perips/sirv_flash_qspi.v",
+        "rtl/e203/perips/sirv_flash_qspi_top.v",
+        "rtl/e203/perips/sirv_gpio.v",
+        "rtl/e203/perips/sirv_gpio_top.v",
+        "rtl/e203/perips/sirv_hclkgen_regs.v",
+        "rtl/e203/perips/sirv_jtaggpioport.v",
+        "rtl/e203/perips/sirv_otp_top.v",
+        "rtl/e203/perips/sirv_plic_man.v",
+        "rtl/e203/perips/sirv_plic_top.v",
+        "rtl/e203/perips/sirv_pmu.v",
+        "rtl/e203/perips/sirv_pmu_core.v",
+        "rtl/e203/perips/sirv_pwm16.v",
+        "rtl/e203/perips/sirv_pwm16_core.v",
+        "rtl/e203/perips/sirv_pwm16_top.v",
+        "rtl/e203/perips/sirv_pwm8.v",
+        "rtl/e203/perips/sirv_pwm8_core.v",
+        "rtl/e203/perips/sirv_pwm8_top.v",
+        "rtl/e203/perips/sirv_pwmgpioport.v",
+        "rtl/e203/perips/sirv_qspi_1cs.v",
+        "rtl/e203/perips/sirv_qspi_1cs_top.v",
+        "rtl/e203/perips/sirv_qspi_4cs.v",
+        "rtl/e203/perips/sirv_qspi_4cs_top.v",
+        "rtl/e203/perips/sirv_qspi_arbiter.v",
+        "rtl/e203/perips/sirv_qspi_fifo.v",
+        "rtl/e203/perips/sirv_qspi_media.v",
+        "rtl/e203/perips/sirv_qspi_media_1.v",
+        "rtl/e203/perips/sirv_qspi_media_2.v",
+        "rtl/e203/perips/sirv_qspi_physical.v",
+        "rtl/e203/perips/sirv_qspi_physical_1.v",
+        "rtl/e203/perips/sirv_qspi_physical_2.v",
+        "rtl/e203/perips/sirv_queue.v",
+        "rtl/e203/perips/sirv_queue_1.v",
+        "rtl/e203/perips/sirv_repeater_6.v",
+        "rtl/e203/perips/sirv_rtc.v",
+        "rtl/e203/perips/sirv_spi_flashmap.v",
+        "rtl/e203/perips/sirv_spigpioport.v",
+        "rtl/e203/perips/sirv_spigpioport_1.v",
+        "rtl/e203/perips/sirv_spigpioport_2.v",
+        "rtl/e203/perips/sirv_tl_repeater_5.v",
+        "rtl/e203/perips/sirv_tlfragmenter_qspi_1.v",
+        "rtl/e203/perips/sirv_tlwidthwidget_qspi.v",
+        "rtl/e203/perips/sirv_uart.v",
+        "rtl/e203/perips/sirv_uart_top.v",
+        "rtl/e203/perips/sirv_uartgpioport.v",
+        "rtl/e203/perips/sirv_uartrx.v",
+        "rtl/e203/perips/sirv_uarttx.v",
+        "rtl/e203/perips/sirv_wdog.v",
+        "rtl/e203/soc/e203_soc_top.v",
+        "rtl/e203/subsys/e203_subsys_clint.v",
+        "rtl/e203/subsys/e203_subsys_gfcm.v",
+        "rtl/e203/subsys/e203_subsys_hclkgen.v",
+        "rtl/e203/subsys/e203_subsys_hclkgen_rstsync.v",
+        "rtl/e203/subsys/e203_subsys_main.v",
+        "rtl/e203/subsys/e203_subsys_mems.v",
+        "rtl/e203/subsys/e203_subsys_perips.v",
+        "rtl/e203/subsys/e203_subsys_plic.v",
+        "rtl/e203/subsys/e203_subsys_pll.v",
+        "rtl/e203/subsys/e203_subsys_pllclkdiv.v",
+        "rtl/e203/subsys/e203_subsys_top.v"
+    ]
+}

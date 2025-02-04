@@ -1,0 +1,2305 @@
+{
+    "name": "Cores-SweRV",
+    "folder": "Cores-SweRV",
+    "sim_files": [
+        "design/lsu/lsu_stbuf.sv",
+        "testbench/ahb_sif.sv",
+        "testbench/axi_lsu_dma_bridge.sv",
+        "testbench/tb_top.sv"
+    ],
+    "files": [
+        "design/dmi/dmi_jtag_to_core_sync.v",
+        "design/dmi/dmi_wrapper.v",
+        "design/dma_ctrl.sv",
+        "design/mem.sv",
+        "design/pic_ctrl.sv",
+        "design/veer.sv",
+        "design/veer_wrapper.sv",
+        "design/dbg/dbg.sv",
+        "design/dec/dec.sv",
+        "design/dec/dec_decode_ctl.sv",
+        "design/dec/dec_gpr_ctl.sv",
+        "design/dec/dec_ib_ctl.sv",
+        "design/dec/dec_tlu_ctl.sv",
+        "design/dec/dec_trigger.sv",
+        "design/dmi/rvjtag_tap.sv",
+        "design/exu/exu.sv",
+        "design/exu/exu_alu_ctl.sv",
+        "design/exu/exu_div_ctl.sv",
+        "design/exu/exu_mul_ctl.sv",
+        "design/ifu/ifu.sv",
+        "design/ifu/ifu_aln_ctl.sv",
+        "design/ifu/ifu_bp_ctl.sv",
+        "design/ifu/ifu_compress_ctl.sv",
+        "design/ifu/ifu_ic_mem.sv",
+        "design/ifu/ifu_iccm_mem.sv",
+        "design/ifu/ifu_ifc_ctl.sv",
+        "design/ifu/ifu_mem_ctl.sv",
+        "design/include/veer_types.sv",
+        "design/lib/ahb_to_axi4.sv",
+        "design/lib/axi4_to_ahb.sv",
+        "design/lib/beh_lib.sv",
+        "design/lib/mem_lib.sv",
+        "design/lib/svci_to_axi4.sv",
+        "design/lsu/lsu.sv",
+        "design/lsu/lsu_addrcheck.sv",
+        "design/lsu/lsu_bus_buffer.sv",
+        "design/lsu/lsu_bus_intf.sv",
+        "design/lsu/lsu_clkdomain.sv",
+        "design/lsu/lsu_dccm_ctl.sv",
+        "design/lsu/lsu_dccm_mem.sv",
+        "design/lsu/lsu_ecc.sv",
+        "design/lsu/lsu_lsc_ctl.sv",
+        "design/lsu/lsu_trigger.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/chipsalliance/Cores-SweRV",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "Synchronizes",
+            "file": "design/dmi/dmi_jtag_to_core_sync.v"
+        },
+        {
+            "module": "dmi_jtag_to_core_sync",
+            "file": "design/dmi/dmi_jtag_to_core_sync.v"
+        },
+        {
+            "module": "for",
+            "file": "design/dmi/dmi_wrapper.v"
+        },
+        {
+            "module": "dmi_wrapper",
+            "file": "design/dmi/dmi_wrapper.v"
+        },
+        {
+            "module": "dma_ctrl",
+            "file": "design/dma_ctrl.sv"
+        },
+        {
+            "module": "mem",
+            "file": "design/mem.sv"
+        },
+        {
+            "module": "pic_ctrl",
+            "file": "design/pic_ctrl.sv"
+        },
+        {
+            "module": "module",
+            "file": "design/pic_ctrl.sv"
+        },
+        {
+            "module": "configurable_gw",
+            "file": "design/pic_ctrl.sv"
+        },
+        {
+            "module": "veer",
+            "file": "design/veer.sv"
+        },
+        {
+            "module": "input",
+            "file": "design/veer.sv"
+        },
+        {
+            "module": "wants",
+            "file": "design/veer.sv"
+        },
+        {
+            "module": "wants",
+            "file": "design/veer.sv"
+        },
+        {
+            "module": "veer_wrapper",
+            "file": "design/veer_wrapper.sv"
+        },
+        {
+            "module": "dbg",
+            "file": "design/dbg/dbg.sv"
+        },
+        {
+            "module": "implements",
+            "file": "design/dbg/dbg.sv"
+        },
+        {
+            "module": "dec",
+            "file": "design/dec/dec.sv"
+        },
+        {
+            "module": "dec_decode_ctl",
+            "file": "design/dec/dec_decode_ctl.sv"
+        },
+        {
+            "module": "dec_dec_ctl",
+            "file": "design/dec/dec_decode_ctl.sv"
+        },
+        {
+            "module": "dec_gpr_ctl",
+            "file": "design/dec/dec_gpr_ctl.sv"
+        },
+        {
+            "module": "dec_ib_ctl",
+            "file": "design/dec/dec_ib_ctl.sv"
+        },
+        {
+            "module": "dec_tlu_ctl",
+            "file": "design/dec/dec_tlu_ctl.sv"
+        },
+        {
+            "module": "dec_timer_ctl",
+            "file": "design/dec/dec_tlu_ctl.sv"
+        },
+        {
+            "module": "dec_trigger",
+            "file": "design/dec/dec_trigger.sv"
+        },
+        {
+            "module": "rvjtag_tap",
+            "file": "design/dmi/rvjtag_tap.sv"
+        },
+        {
+            "module": "exu",
+            "file": "design/exu/exu.sv"
+        },
+        {
+            "module": "exu_alu_ctl",
+            "file": "design/exu/exu_alu_ctl.sv"
+        },
+        {
+            "module": "exu_div_ctl",
+            "file": "design/exu/exu_div_ctl.sv"
+        },
+        {
+            "module": "exu_mul_ctl",
+            "file": "design/exu/exu_mul_ctl.sv"
+        },
+        {
+            "module": "ifu",
+            "file": "design/ifu/ifu.sv"
+        },
+        {
+            "module": "ifu_aln_ctl",
+            "file": "design/ifu/ifu_aln_ctl.sv"
+        },
+        {
+            "module": "ifu_bp_ctl",
+            "file": "design/ifu/ifu_bp_ctl.sv"
+        },
+        {
+            "module": "ifu_compress_ctl",
+            "file": "design/ifu/ifu_compress_ctl.sv"
+        },
+        {
+            "module": "ifu_ic_mem",
+            "file": "design/ifu/ifu_ic_mem.sv"
+        },
+        {
+            "module": "IC_DATA",
+            "file": "design/ifu/ifu_ic_mem.sv"
+        },
+        {
+            "module": "IC_TAG",
+            "file": "design/ifu/ifu_ic_mem.sv"
+        },
+        {
+            "module": "ifu_iccm_mem",
+            "file": "design/ifu/ifu_iccm_mem.sv"
+        },
+        {
+            "module": "ifu_ifc_ctl",
+            "file": "design/ifu/ifu_ifc_ctl.sv"
+        },
+        {
+            "module": "ifu_mem_ctl",
+            "file": "design/ifu/ifu_mem_ctl.sv"
+        },
+        {
+            "module": "ahb_to_axi4",
+            "file": "design/lib/ahb_to_axi4.sv"
+        },
+        {
+            "module": "axi4_to_ahb",
+            "file": "design/lib/axi4_to_ahb.sv"
+        },
+        {
+            "module": "rvdff",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvdffs",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvdffsc",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvdff_fpga",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvdffs_fpga",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvdffsc_fpga",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "module",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvclkhdr",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvoclkhdr",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "module",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvsyncss",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvlsadder",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvbradder",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvtwoscomp",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvfindfirst1",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvfindfirst1hot",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvmaskandmatch",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvbtb_tag_hash",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "module",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "module",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvrangecheck",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rveven_paritygen",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rveven_paritycheck",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvecc_encode",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "rvecc_decode",
+            "file": "design/lib/beh_lib.sv"
+        },
+        {
+            "module": "ram_32768x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_16384x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_8192x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_4096x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_3072x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_2048x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_1536x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_1024x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_768x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_512x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_256x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_128x39",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_1024x20",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_512x20",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_256x20",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_128x20",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_64x20",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_4096x34",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_2048x34",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_1024x34",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_512x34",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_256x34",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_128x34",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_64x34",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_4096x42",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_2048x42",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_1024x42",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_512x42",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_256x42",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_128x42",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_64x42",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_1024x21",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_512x21",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_256x21",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_128x21",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_64x21",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_1024x25",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_512x25",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_256x25",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_128x25",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "ram_64x25",
+            "file": "design/lib/mem_lib.sv"
+        },
+        {
+            "module": "svci_to_axi4",
+            "file": "design/lib/svci_to_axi4.sv"
+        },
+        {
+            "module": "lsu",
+            "file": "design/lsu/lsu.sv"
+        },
+        {
+            "module": "lsu_addrcheck",
+            "file": "design/lsu/lsu_addrcheck.sv"
+        },
+        {
+            "module": "lsu_bus_buffer",
+            "file": "design/lsu/lsu_bus_buffer.sv"
+        },
+        {
+            "module": "lsu_bus_intf",
+            "file": "design/lsu/lsu_bus_intf.sv"
+        },
+        {
+            "module": "lsu_clkdomain",
+            "file": "design/lsu/lsu_clkdomain.sv"
+        },
+        {
+            "module": "lsu_dccm_ctl",
+            "file": "design/lsu/lsu_dccm_ctl.sv"
+        },
+        {
+            "module": "lsu_dccm_mem",
+            "file": "design/lsu/lsu_dccm_mem.sv"
+        },
+        {
+            "module": "lsu_ecc",
+            "file": "design/lsu/lsu_ecc.sv"
+        },
+        {
+            "module": "lsu_lsc_ctl",
+            "file": "design/lsu/lsu_lsc_ctl.sv"
+        },
+        {
+            "module": "lsu_stbuf",
+            "file": "design/lsu/lsu_stbuf.sv"
+        },
+        {
+            "module": "lsu_trigger",
+            "file": "design/lsu/lsu_trigger.sv"
+        },
+        {
+            "module": "ahb_sif",
+            "file": "testbench/ahb_sif.sv"
+        },
+        {
+            "module": "axi_slv",
+            "file": "testbench/ahb_sif.sv"
+        },
+        {
+            "module": "axi_lsu_dma_bridge",
+            "file": "testbench/axi_lsu_dma_bridge.sv"
+        },
+        {
+            "module": "tb_top",
+            "file": "testbench/tb_top.sv"
+        },
+        {
+            "module": "tb_top",
+            "file": "testbench/tb_top.sv"
+        }
+    ],
+    "module_graph": {
+        "Synchronizes": [],
+        "dmi_jtag_to_core_sync": [
+            "for"
+        ],
+        "for": [
+            "dec_decode_ctl"
+        ],
+        "dmi_wrapper": [
+            "veer_wrapper"
+        ],
+        "dma_ctrl": [
+            "veer"
+        ],
+        "mem": [
+            "veer_wrapper"
+        ],
+        "pic_ctrl": [
+            "veer"
+        ],
+        "module": [
+            "for",
+            "dma_ctrl",
+            "pic_ctrl",
+            "dbg",
+            "dec_tlu_ctl",
+            "ifu_compress_ctl",
+            "ifu_ic_mem",
+            "ifu_ifc_ctl",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "ahb_sif",
+            "tb_top"
+        ],
+        "configurable_gw": [
+            "pic_ctrl"
+        ],
+        "veer": [],
+        "input": [],
+        "wants": [],
+        "veer_wrapper": [],
+        "dbg": [
+            "veer"
+        ],
+        "implements": [],
+        "dec": [
+            "veer"
+        ],
+        "dec_decode_ctl": [
+            "dec"
+        ],
+        "dec_dec_ctl": [
+            "dec_decode_ctl"
+        ],
+        "dec_gpr_ctl": [
+            "dec",
+            "dec_gpr_ctl"
+        ],
+        "dec_ib_ctl": [
+            "dec"
+        ],
+        "dec_tlu_ctl": [
+            "dec"
+        ],
+        "dec_timer_ctl": [
+            "dec_tlu_ctl"
+        ],
+        "dec_trigger": [
+            "dec"
+        ],
+        "rvjtag_tap": [
+            "for"
+        ],
+        "exu": [
+            "veer"
+        ],
+        "exu_alu_ctl": [
+            "exu",
+            "exu",
+            "exu",
+            "exu"
+        ],
+        "exu_div_ctl": [
+            "exu"
+        ],
+        "exu_mul_ctl": [
+            "exu"
+        ],
+        "ifu": [
+            "veer"
+        ],
+        "ifu_aln_ctl": [
+            "ifu"
+        ],
+        "ifu_bp_ctl": [
+            "ifu"
+        ],
+        "ifu_compress_ctl": [
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl"
+        ],
+        "ifu_ic_mem": [
+            "mem"
+        ],
+        "IC_DATA": [
+            "ifu_ic_mem",
+            "ifu_ic_mem"
+        ],
+        "IC_TAG": [
+            "ifu_ic_mem",
+            "ifu_ic_mem"
+        ],
+        "ifu_iccm_mem": [
+            "mem"
+        ],
+        "ifu_ifc_ctl": [
+            "ifu"
+        ],
+        "ifu_mem_ctl": [
+            "ifu"
+        ],
+        "ahb_to_axi4": [
+            "veer",
+            "ahb_to_axi4"
+        ],
+        "axi4_to_ahb": [
+            "veer",
+            "veer",
+            "veer",
+            "axi4_to_ahb"
+        ],
+        "rvdff": [
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_ib_ctl",
+            "dec_ib_ctl",
+            "dec_ib_ctl",
+            "dec_ib_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "exu",
+            "exu",
+            "exu",
+            "exu",
+            "exu",
+            "exu_div_ctl",
+            "exu_div_ctl",
+            "exu_div_ctl",
+            "exu_div_ctl",
+            "exu_div_ctl",
+            "exu_div_ctl",
+            "ifu",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_bp_ctl",
+            "ifu_bp_ctl",
+            "ifu_bp_ctl",
+            "ifu_bp_ctl",
+            "ifu_ic_mem",
+            "ifu_ic_mem",
+            "ifu_ic_mem",
+            "ifu_ifc_ctl",
+            "ifu_ifc_ctl",
+            "ifu_ifc_ctl",
+            "ifu_ifc_ctl",
+            "ifu_ifc_ctl",
+            "ifu_ifc_ctl",
+            "ifu_ifc_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_intf",
+            "lsu_bus_intf",
+            "lsu_bus_intf",
+            "lsu_bus_intf",
+            "lsu_bus_intf",
+            "lsu_bus_intf",
+            "lsu_bus_intf",
+            "lsu_bus_intf",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_dccm_mem",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf"
+        ],
+        "rvdffs": [
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dbg",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_decode_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "exu",
+            "exu",
+            "exu",
+            "exu",
+            "exu_alu_ctl",
+            "exu_div_ctl",
+            "exu_mul_ctl",
+            "exu_mul_ctl",
+            "ifu_bp_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "rvdff",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "lsu",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_dccm_mem",
+            "lsu_dccm_mem",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf"
+        ],
+        "rvdffsc": [
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "rvdff",
+            "rvdff",
+            "svci_to_axi4",
+            "svci_to_axi4",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf"
+        ],
+        "rvdff_fpga": [
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dbg",
+            "dbg",
+            "exu_mul_ctl",
+            "exu_mul_ctl",
+            "exu_mul_ctl",
+            "exu_mul_ctl",
+            "exu_mul_ctl",
+            "exu_mul_ctl",
+            "exu_mul_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "rvdff",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu_addrcheck",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_buffer",
+            "lsu_bus_intf",
+            "lsu_bus_intf",
+            "lsu_bus_intf",
+            "lsu_bus_intf",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_dccm_ctl",
+            "lsu_dccm_ctl",
+            "lsu_dccm_ctl",
+            "lsu_dccm_ctl",
+            "lsu_dccm_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_lsc_ctl",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf",
+            "lsu_stbuf"
+        ],
+        "rvdffs_fpga": [
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "ifu_bp_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "rvdff"
+        ],
+        "rvdffsc_fpga": [
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "ahb_to_axi4",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "rvdff",
+            "lsu_bus_buffer"
+        ],
+        "rvclkhdr": [
+            "dma_ctrl",
+            "dbg",
+            "exu_mul_ctl",
+            "exu_mul_ctl",
+            "exu_mul_ctl",
+            "ifu_bp_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "rvdff",
+            "svci_to_axi4",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain"
+        ],
+        "rvoclkhdr": [
+            "dma_ctrl",
+            "dma_ctrl",
+            "mem",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "pic_ctrl",
+            "veer",
+            "dbg",
+            "dbg",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "dec_tlu_ctl",
+            "ifu_iccm_mem",
+            "ifu_iccm_mem",
+            "ifu_iccm_mem",
+            "ifu_iccm_mem",
+            "ifu_ifc_ctl",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain",
+            "lsu_clkdomain"
+        ],
+        "rvsyncss": [
+            "pic_ctrl",
+            "dec_tlu_ctl",
+            "rvdff"
+        ],
+        "rvlsadder": [
+            "lsu_lsc_ctl"
+        ],
+        "rvbradder": [
+            "dec_decode_ctl",
+            "exu_alu_ctl",
+            "ifu_bp_ctl",
+            "ifu_bp_ctl",
+            "ifu_bp_ctl",
+            "ifu_bp_ctl",
+            "ifu_bp_ctl",
+            "ifu_bp_ctl"
+        ],
+        "rvtwoscomp": [
+            "exu_div_ctl",
+            "exu_div_ctl",
+            "exu_div_ctl"
+        ],
+        "rvfindfirst1": [],
+        "rvfindfirst1hot": [],
+        "rvmaskandmatch": [
+            "dec_trigger",
+            "dec_trigger",
+            "lsu_trigger"
+        ],
+        "rvbtb_tag_hash": [
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_aln_ctl",
+            "ifu_bp_ctl"
+        ],
+        "rvrangecheck": [
+            "dma_ctrl",
+            "dma_ctrl",
+            "dma_ctrl",
+            "ifu_ifc_ctl",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "ahb_to_axi4",
+            "lsu_addrcheck",
+            "lsu_addrcheck",
+            "lsu_addrcheck"
+        ],
+        "rveven_paritygen": [
+            "ifu_ic_mem",
+            "ifu_ic_mem",
+            "ifu_mem_ctl"
+        ],
+        "rveven_paritycheck": [
+            "ifu_ic_mem",
+            "ifu_ic_mem"
+        ],
+        "rvecc_encode": [
+            "ifu_ic_mem",
+            "ifu_mem_ctl",
+            "ifu_mem_ctl",
+            "lsu_ecc"
+        ],
+        "rvecc_decode": [
+            "ifu_ic_mem",
+            "ifu_ic_mem",
+            "lsu_ecc"
+        ],
+        "ram_32768x39": [],
+        "ram_16384x39": [],
+        "ram_8192x39": [],
+        "ram_4096x39": [],
+        "ram_3072x39": [],
+        "ram_2048x39": [],
+        "ram_1536x39": [],
+        "ram_1024x39": [],
+        "ram_768x39": [],
+        "ram_512x39": [],
+        "ram_256x39": [],
+        "ram_128x39": [],
+        "ram_1024x20": [],
+        "ram_512x20": [],
+        "ram_256x20": [],
+        "ram_128x20": [],
+        "ram_64x20": [],
+        "ram_4096x34": [],
+        "ram_2048x34": [],
+        "ram_1024x34": [],
+        "ram_512x34": [],
+        "ram_256x34": [],
+        "ram_128x34": [],
+        "ram_64x34": [],
+        "ram_4096x42": [],
+        "ram_2048x42": [],
+        "ram_1024x42": [],
+        "ram_512x42": [],
+        "ram_256x42": [],
+        "ram_128x42": [],
+        "ram_64x42": [],
+        "ram_1024x21": [],
+        "ram_512x21": [],
+        "ram_256x21": [],
+        "ram_128x21": [],
+        "ram_64x21": [
+            "ifu_ic_mem"
+        ],
+        "ram_1024x25": [],
+        "ram_512x25": [],
+        "ram_256x25": [],
+        "ram_128x25": [],
+        "ram_64x25": [],
+        "svci_to_axi4": [
+            "svci_to_axi4"
+        ],
+        "lsu": [
+            "veer"
+        ],
+        "lsu_addrcheck": [
+            "lsu_lsc_ctl"
+        ],
+        "lsu_bus_buffer": [
+            "lsu_bus_intf"
+        ],
+        "lsu_bus_intf": [
+            "lsu"
+        ],
+        "lsu_clkdomain": [
+            "lsu"
+        ],
+        "lsu_dccm_ctl": [
+            "lsu"
+        ],
+        "lsu_dccm_mem": [],
+        "lsu_ecc": [
+            "lsu"
+        ],
+        "lsu_lsc_ctl": [
+            "lsu"
+        ],
+        "lsu_stbuf": [
+            "lsu"
+        ],
+        "lsu_trigger": [
+            "lsu"
+        ],
+        "ahb_sif": [
+            "tb_top",
+            "tb_top"
+        ],
+        "axi_slv": [
+            "tb_top",
+            "tb_top"
+        ],
+        "axi_lsu_dma_bridge": [
+            "tb_top"
+        ],
+        "tb_top": []
+    },
+    "module_graph_inverse": {
+        "Synchronizes": [],
+        "dmi_jtag_to_core_sync": [],
+        "for": [
+            "module",
+            "rvjtag_tap",
+            "dmi_jtag_to_core_sync"
+        ],
+        "dmi_wrapper": [],
+        "dma_ctrl": [
+            "module",
+            "rvdffsc",
+            "rvdffsc",
+            "rvdffsc",
+            "rvdffs",
+            "rvdffs",
+            "rvdffsc",
+            "rvdffsc",
+            "rvdffsc",
+            "rvdffsc",
+            "rvdffsc",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvrangecheck",
+            "rvrangecheck",
+            "rvrangecheck",
+            "rvdff",
+            "rvdff",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvclkhdr",
+            "rvdffsc_fpga",
+            "rvdffsc_fpga",
+            "rvdffsc_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga"
+        ],
+        "mem": [
+            "rvoclkhdr",
+            "ifu_ic_mem",
+            "ifu_iccm_mem"
+        ],
+        "pic_ctrl": [
+            "module",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvsyncss",
+            "rvdffs",
+            "configurable_gw",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff"
+        ],
+        "module": [],
+        "configurable_gw": [],
+        "veer": [
+            "rvoclkhdr",
+            "dbg",
+            "ifu",
+            "exu",
+            "lsu",
+            "dec",
+            "pic_ctrl",
+            "dma_ctrl",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "axi4_to_ahb",
+            "ahb_to_axi4"
+        ],
+        "input": [],
+        "wants": [],
+        "veer_wrapper": [
+            "mem",
+            "dmi_wrapper"
+        ],
+        "dbg": [
+            "module",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvclkhdr",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdffs",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdffs",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs"
+        ],
+        "implements": [],
+        "dec": [
+            "dec_gpr_ctl",
+            "dec_trigger",
+            "dec_ib_ctl",
+            "dec_decode_ctl",
+            "dec_tlu_ctl"
+        ],
+        "dec_decode_ctl": [
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "dec_dec_ctl",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "for",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvbradder"
+        ],
+        "dec_dec_ctl": [],
+        "dec_gpr_ctl": [
+            "dec_gpr_ctl"
+        ],
+        "dec_ib_ctl": [
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff"
+        ],
+        "dec_tlu_ctl": [
+            "dec_timer_ctl",
+            "rvsyncss",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvoclkhdr",
+            "rvdff",
+            "module",
+            "rvdff",
+            "rvdff"
+        ],
+        "dec_timer_ctl": [],
+        "dec_trigger": [
+            "rvmaskandmatch",
+            "rvmaskandmatch"
+        ],
+        "rvjtag_tap": [],
+        "exu": [
+            "exu_mul_ctl",
+            "exu_div_ctl",
+            "exu_alu_ctl",
+            "exu_alu_ctl",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "exu_alu_ctl",
+            "exu_alu_ctl",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdff"
+        ],
+        "exu_alu_ctl": [
+            "rvdffs",
+            "rvbradder"
+        ],
+        "exu_div_ctl": [
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvdff",
+            "rvtwoscomp",
+            "rvtwoscomp",
+            "rvtwoscomp",
+            "rvdff"
+        ],
+        "exu_mul_ctl": [
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvdffs",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdffs",
+            "rvdff_fpga",
+            "rvdff_fpga"
+        ],
+        "ifu": [
+            "ifu_ifc_ctl",
+            "ifu_aln_ctl",
+            "ifu_bp_ctl",
+            "ifu_mem_ctl",
+            "rvdff"
+        ],
+        "ifu_aln_ctl": [
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvbtb_tag_hash",
+            "rvbtb_tag_hash",
+            "rvbtb_tag_hash",
+            "rvbtb_tag_hash",
+            "rvdff",
+            "ifu_compress_ctl",
+            "ifu_compress_ctl",
+            "ifu_compress_ctl"
+        ],
+        "ifu_bp_ctl": [
+            "rvdff",
+            "rvdffs",
+            "rvdff",
+            "rvbradder",
+            "rvbradder",
+            "rvdff",
+            "rvbradder",
+            "rvbradder",
+            "rvbradder",
+            "rvbradder",
+            "rvbtb_tag_hash",
+            "rvdff",
+            "rvclkhdr",
+            "rvdffs_fpga"
+        ],
+        "ifu_compress_ctl": [
+            "module"
+        ],
+        "ifu_ic_mem": [
+            "module",
+            "IC_TAG",
+            "IC_DATA",
+            "IC_DATA",
+            "rvdff",
+            "rvdff",
+            "IC_TAG",
+            "rveven_paritygen",
+            "rvecc_encode",
+            "rveven_paritygen",
+            "rvdff",
+            "rvecc_decode",
+            "ram_64x21",
+            "rveven_paritycheck",
+            "rvecc_decode",
+            "rveven_paritycheck"
+        ],
+        "IC_DATA": [],
+        "IC_TAG": [],
+        "ifu_iccm_mem": [
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr"
+        ],
+        "ifu_ifc_ctl": [
+            "module",
+            "rvoclkhdr",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvrangecheck"
+        ],
+        "ifu_mem_ctl": [
+            "rvdff",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rveven_paritygen",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvdffsc",
+            "rvdffsc",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff",
+            "rvdff_fpga",
+            "rvdffs_fpga",
+            "rvdff",
+            "rvdff",
+            "rvecc_encode",
+            "rvecc_encode",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvclkhdr",
+            "rvdff",
+            "rvdff",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdff",
+            "rvdff",
+            "rvdff"
+        ],
+        "ahb_to_axi4": [
+            "ahb_to_axi4",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdffs_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvrangecheck",
+            "rvrangecheck",
+            "rvrangecheck",
+            "rvdffsc_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga"
+        ],
+        "axi4_to_ahb": [
+            "axi4_to_ahb",
+            "rvdffsc_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffsc_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffs_fpga",
+            "rvdffsc_fpga",
+            "rvdffs_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga"
+        ],
+        "rvdff": [
+            "rvdff",
+            "rvdffsc",
+            "rvdff_fpga",
+            "rvdff",
+            "rvdffs_fpga",
+            "rvdffs",
+            "rvdffsc_fpga",
+            "rvdffsc",
+            "module",
+            "rvclkhdr",
+            "rvdff",
+            "rvsyncss",
+            "rvdff",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module"
+        ],
+        "rvdffs": [],
+        "rvdffsc": [],
+        "rvdff_fpga": [],
+        "rvdffs_fpga": [],
+        "rvdffsc_fpga": [],
+        "rvclkhdr": [],
+        "rvoclkhdr": [],
+        "rvsyncss": [],
+        "rvlsadder": [],
+        "rvbradder": [],
+        "rvtwoscomp": [],
+        "rvfindfirst1": [],
+        "rvfindfirst1hot": [],
+        "rvmaskandmatch": [],
+        "rvbtb_tag_hash": [],
+        "rvrangecheck": [],
+        "rveven_paritygen": [],
+        "rveven_paritycheck": [],
+        "rvecc_encode": [],
+        "rvecc_decode": [],
+        "ram_32768x39": [],
+        "ram_16384x39": [],
+        "ram_8192x39": [],
+        "ram_4096x39": [],
+        "ram_3072x39": [],
+        "ram_2048x39": [],
+        "ram_1536x39": [],
+        "ram_1024x39": [],
+        "ram_768x39": [],
+        "ram_512x39": [],
+        "ram_256x39": [],
+        "ram_128x39": [],
+        "ram_1024x20": [],
+        "ram_512x20": [],
+        "ram_256x20": [],
+        "ram_128x20": [],
+        "ram_64x20": [],
+        "ram_4096x34": [],
+        "ram_2048x34": [],
+        "ram_1024x34": [],
+        "ram_512x34": [],
+        "ram_256x34": [],
+        "ram_128x34": [],
+        "ram_64x34": [],
+        "ram_4096x42": [],
+        "ram_2048x42": [],
+        "ram_1024x42": [],
+        "ram_512x42": [],
+        "ram_256x42": [],
+        "ram_128x42": [],
+        "ram_64x42": [],
+        "ram_1024x21": [],
+        "ram_512x21": [],
+        "ram_256x21": [],
+        "ram_128x21": [],
+        "ram_64x21": [],
+        "ram_1024x25": [],
+        "ram_512x25": [],
+        "ram_256x25": [],
+        "ram_128x25": [],
+        "ram_64x25": [],
+        "svci_to_axi4": [
+            "svci_to_axi4",
+            "rvdffsc",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffsc",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvclkhdr"
+        ],
+        "lsu": [
+            "lsu_lsc_ctl",
+            "lsu_dccm_ctl",
+            "lsu_stbuf",
+            "lsu_ecc",
+            "lsu_trigger",
+            "lsu_clkdomain",
+            "lsu_bus_intf",
+            "rvdffs",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff",
+            "rvdff",
+            "rvdff"
+        ],
+        "lsu_addrcheck": [
+            "rvrangecheck",
+            "rvrangecheck",
+            "rvrangecheck",
+            "rvdff_fpga"
+        ],
+        "lsu_bus_buffer": [
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdffsc_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdffsc",
+            "rvdffsc",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff_fpga",
+            "rvdff",
+            "rvdff"
+        ],
+        "lsu_bus_intf": [
+            "lsu_bus_buffer",
+            "rvdff",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff"
+        ],
+        "lsu_clkdomain": [
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr",
+            "rvoclkhdr"
+        ],
+        "lsu_dccm_ctl": [
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga"
+        ],
+        "lsu_dccm_mem": [
+            "rvdff",
+            "rvdffs",
+            "rvdffs"
+        ],
+        "lsu_ecc": [
+            "rvecc_decode",
+            "rvecc_encode"
+        ],
+        "lsu_lsc_ctl": [
+            "rvlsadder",
+            "lsu_addrcheck",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff",
+            "rvdff"
+        ],
+        "lsu_stbuf": [
+            "rvdffsc",
+            "rvdffsc",
+            "rvdffsc",
+            "rvdffs",
+            "rvdffs",
+            "rvdffs",
+            "rvdff",
+            "rvdff",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff_fpga",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdff",
+            "rvdffs"
+        ],
+        "lsu_trigger": [
+            "rvmaskandmatch"
+        ],
+        "ahb_sif": [
+            "module"
+        ],
+        "axi_slv": [],
+        "axi_lsu_dma_bridge": [],
+        "tb_top": [
+            "module",
+            "ahb_sif",
+            "ahb_sif",
+            "axi_slv",
+            "axi_slv",
+            "axi_lsu_dma_bridge"
+        ]
+    },
+    "non_tb_files": [
+        "design/dmi/dmi_jtag_to_core_sync.v",
+        "design/dmi/dmi_wrapper.v",
+        "design/dma_ctrl.sv",
+        "design/mem.sv",
+        "design/pic_ctrl.sv",
+        "design/veer.sv",
+        "design/veer_wrapper.sv",
+        "design/dbg/dbg.sv",
+        "design/dec/dec.sv",
+        "design/dec/dec_decode_ctl.sv",
+        "design/dec/dec_gpr_ctl.sv",
+        "design/dec/dec_ib_ctl.sv",
+        "design/dec/dec_tlu_ctl.sv",
+        "design/dec/dec_trigger.sv",
+        "design/dmi/rvjtag_tap.sv",
+        "design/exu/exu.sv",
+        "design/exu/exu_alu_ctl.sv",
+        "design/exu/exu_div_ctl.sv",
+        "design/exu/exu_mul_ctl.sv",
+        "design/ifu/ifu.sv",
+        "design/ifu/ifu_aln_ctl.sv",
+        "design/ifu/ifu_bp_ctl.sv",
+        "design/ifu/ifu_compress_ctl.sv",
+        "design/ifu/ifu_ic_mem.sv",
+        "design/ifu/ifu_iccm_mem.sv",
+        "design/ifu/ifu_ifc_ctl.sv",
+        "design/ifu/ifu_mem_ctl.sv",
+        "design/include/veer_types.sv",
+        "design/lib/ahb_to_axi4.sv",
+        "design/lib/axi4_to_ahb.sv",
+        "design/lib/beh_lib.sv",
+        "design/lib/mem_lib.sv",
+        "design/lib/svci_to_axi4.sv",
+        "design/lsu/lsu.sv",
+        "design/lsu/lsu_addrcheck.sv",
+        "design/lsu/lsu_bus_buffer.sv",
+        "design/lsu/lsu_bus_intf.sv",
+        "design/lsu/lsu_clkdomain.sv",
+        "design/lsu/lsu_dccm_ctl.sv",
+        "design/lsu/lsu_dccm_mem.sv",
+        "design/lsu/lsu_ecc.sv",
+        "design/lsu/lsu_lsc_ctl.sv",
+        "design/lsu/lsu_trigger.sv"
+    ]
+}

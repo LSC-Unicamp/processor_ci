@@ -1,0 +1,1168 @@
+{
+    "name": "cv32e40s",
+    "folder": "cv32e40s",
+    "sim_files": [],
+    "files": [
+        "bhv/cv32e40s_core_log.sv",
+        "bhv/cv32e40s_dbg_helper.sv",
+        "bhv/cv32e40s_rvfi.sv",
+        "bhv/cv32e40s_rvfi_data_obi.sv",
+        "bhv/cv32e40s_rvfi_instr_obi.sv",
+        "bhv/cv32e40s_rvfi_sim_trace.sv",
+        "bhv/cv32e40s_sim_clock_gate.sv",
+        "bhv/cv32e40s_sim_sffr.sv",
+        "bhv/cv32e40s_sim_sffs.sv",
+        "bhv/cv32e40s_wrapper.sv",
+        "bhv/include/cv32e40s_rvfi_pkg.sv",
+        "rtl/cv32e40s_alert.sv",
+        "rtl/cv32e40s_alignment_buffer.sv",
+        "rtl/cv32e40s_alu.sv",
+        "rtl/cv32e40s_alu_b_cpop.sv",
+        "rtl/cv32e40s_b_decoder.sv",
+        "rtl/cv32e40s_clic_int_controller.sv",
+        "rtl/cv32e40s_compressed_decoder.sv",
+        "rtl/cv32e40s_controller.sv",
+        "rtl/cv32e40s_controller_bypass.sv",
+        "rtl/cv32e40s_controller_fsm.sv",
+        "rtl/cv32e40s_core.sv",
+        "rtl/cv32e40s_cs_registers.sv",
+        "rtl/cv32e40s_csr.sv",
+        "rtl/cv32e40s_data_obi_interface.sv",
+        "rtl/cv32e40s_debug_triggers.sv",
+        "rtl/cv32e40s_decoder.sv",
+        "rtl/cv32e40s_div.sv",
+        "rtl/cv32e40s_dummy_instr.sv",
+        "rtl/cv32e40s_ex_stage.sv",
+        "rtl/cv32e40s_ff_one.sv",
+        "rtl/cv32e40s_i_decoder.sv",
+        "rtl/cv32e40s_id_stage.sv",
+        "rtl/cv32e40s_if_c_obi.sv",
+        "rtl/cv32e40s_if_stage.sv",
+        "rtl/cv32e40s_instr_obi_interface.sv",
+        "rtl/cv32e40s_int_controller.sv",
+        "rtl/cv32e40s_lfsr.sv",
+        "rtl/cv32e40s_load_store_unit.sv",
+        "rtl/cv32e40s_lsu_response_filter.sv",
+        "rtl/cv32e40s_m_decoder.sv",
+        "rtl/cv32e40s_mpu.sv",
+        "rtl/cv32e40s_mult.sv",
+        "rtl/cv32e40s_obi_integrity_fifo.sv",
+        "rtl/cv32e40s_pc_check.sv",
+        "rtl/cv32e40s_pc_target.sv",
+        "rtl/cv32e40s_pma.sv",
+        "rtl/cv32e40s_pmp.sv",
+        "rtl/cv32e40s_popcnt.sv",
+        "rtl/cv32e40s_prefetch_unit.sv",
+        "rtl/cv32e40s_prefetcher.sv",
+        "rtl/cv32e40s_rchk_check.sv",
+        "rtl/cv32e40s_register_file.sv",
+        "rtl/cv32e40s_register_file_ecc.sv",
+        "rtl/cv32e40s_register_file_wrapper.sv",
+        "rtl/cv32e40s_sequencer.sv",
+        "rtl/cv32e40s_sleep_unit.sv",
+        "rtl/cv32e40s_wb_stage.sv",
+        "rtl/cv32e40s_wpt.sv",
+        "rtl/cv32e40s_write_buffer.sv",
+        "rtl/include/cv32e40s_pkg.sv",
+        "sva/cv32e40s_alignment_buffer_sva.sv",
+        "sva/cv32e40s_clic_int_controller_sva.sv",
+        "sva/cv32e40s_controller_fsm_sva.sv",
+        "sva/cv32e40s_core_sva.sv",
+        "sva/cv32e40s_cs_registers_sva.sv",
+        "sva/cv32e40s_data_obi_interface_sva.sv",
+        "sva/cv32e40s_debug_triggers_sva.sv",
+        "sva/cv32e40s_decoder_sva.sv",
+        "sva/cv32e40s_div_sva.sv",
+        "sva/cv32e40s_dummy_instr_sva.sv",
+        "sva/cv32e40s_ex_stage_sva.sv",
+        "sva/cv32e40s_id_stage_sva.sv",
+        "sva/cv32e40s_if_stage_sva.sv",
+        "sva/cv32e40s_instr_obi_interface_sva.sv",
+        "sva/cv32e40s_load_store_unit_sva.sv",
+        "sva/cv32e40s_lsu_response_filter_sva.sv",
+        "sva/cv32e40s_mpu_sva.sv",
+        "sva/cv32e40s_mult_sva.sv",
+        "sva/cv32e40s_parameter_sva.sv",
+        "sva/cv32e40s_pc_check_sva.sv",
+        "sva/cv32e40s_prefetch_unit_sva.sv",
+        "sva/cv32e40s_prefetcher_sva.sv",
+        "sva/cv32e40s_register_file_sva.sv",
+        "sva/cv32e40s_rvfi_sva.sv",
+        "sva/cv32e40s_sequencer_sva.sv",
+        "sva/cv32e40s_sleep_unit_sva.sv",
+        "sva/cv32e40s_wb_stage_sva.sv",
+        "sva/cv32e40s_wpt_sva.sv",
+        "sva/cv32e40s_write_buffer_sva.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/openhwgroup/cv32e40s",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2012",
+    "modules": [
+        {
+            "module": "cv32e40s_core_log",
+            "file": "bhv/cv32e40s_core_log.sv"
+        },
+        {
+            "module": "contains",
+            "file": "bhv/cv32e40s_dbg_helper.sv"
+        },
+        {
+            "module": "cv32e40s_dbg_helper",
+            "file": "bhv/cv32e40s_dbg_helper.sv"
+        },
+        {
+            "module": "cv32e40s_rvfi",
+            "file": "bhv/cv32e40s_rvfi.sv"
+        },
+        {
+            "module": "may",
+            "file": "bhv/cv32e40s_rvfi_data_obi.sv"
+        },
+        {
+            "module": "cv32e40s_rvfi_data_obi",
+            "file": "bhv/cv32e40s_rvfi_data_obi.sv"
+        },
+        {
+            "module": "cv32e40s_rvfi_instr_obi",
+            "file": "bhv/cv32e40s_rvfi_instr_obi.sv"
+        },
+        {
+            "module": "cv32e40s_rvfi_sim_trace",
+            "file": "bhv/cv32e40s_rvfi_sim_trace.sv"
+        },
+        {
+            "module": "cv32e40s_clock_gate",
+            "file": "bhv/cv32e40s_sim_clock_gate.sv"
+        },
+        {
+            "module": "cv32e40s_sffr",
+            "file": "bhv/cv32e40s_sim_sffr.sv"
+        },
+        {
+            "module": "cv32e40s_sffs",
+            "file": "bhv/cv32e40s_sim_sffs.sv"
+        },
+        {
+            "module": "cv32e40s_wrapper",
+            "file": "bhv/cv32e40s_wrapper.sv"
+        },
+        {
+            "module": "combines",
+            "file": "rtl/cv32e40s_alert.sv"
+        },
+        {
+            "module": "cv32e40s_alert",
+            "file": "rtl/cv32e40s_alert.sv"
+        },
+        {
+            "module": "cv32e40s_alignment_buffer",
+            "file": "rtl/cv32e40s_alignment_buffer.sv"
+        },
+        {
+            "module": "cv32e40s_alu",
+            "file": "rtl/cv32e40s_alu.sv"
+        },
+        {
+            "module": "cv32e40s_alu_b_cpop",
+            "file": "rtl/cv32e40s_alu_b_cpop.sv"
+        },
+        {
+            "module": "cv32e40s_b_decoder",
+            "file": "rtl/cv32e40s_b_decoder.sv"
+        },
+        {
+            "module": "cv32e40s_clic_int_controller",
+            "file": "rtl/cv32e40s_clic_int_controller.sv"
+        },
+        {
+            "module": "is",
+            "file": "rtl/cv32e40s_compressed_decoder.sv"
+        },
+        {
+            "module": "cv32e40s_compressed_decoder",
+            "file": "rtl/cv32e40s_compressed_decoder.sv"
+        },
+        {
+            "module": "cv32e40s_controller",
+            "file": "rtl/cv32e40s_controller.sv"
+        },
+        {
+            "module": "cv32e40s_controller_bypass",
+            "file": "rtl/cv32e40s_controller_bypass.sv"
+        },
+        {
+            "module": "cv32e40s_controller_fsm",
+            "file": "rtl/cv32e40s_controller_fsm.sv"
+        },
+        {
+            "module": "input",
+            "file": "rtl/cv32e40s_controller_fsm.sv"
+        },
+        {
+            "module": "detected",
+            "file": "rtl/cv32e40s_controller_fsm.sv"
+        },
+        {
+            "module": "of",
+            "file": "rtl/cv32e40s_core.sv"
+        },
+        {
+            "module": "cv32e40s_core",
+            "file": "rtl/cv32e40s_core.sv"
+        },
+        {
+            "module": "logic",
+            "file": "rtl/cv32e40s_core.sv"
+        },
+        {
+            "module": "cv32e40s_cs_registers",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "instance",
+            "file": "rtl/cv32e40s_cs_registers.sv"
+        },
+        {
+            "module": "cv32e40s_csr",
+            "file": "rtl/cv32e40s_csr.sv"
+        },
+        {
+            "module": "cv32e40s_data_obi_interface",
+            "file": "rtl/cv32e40s_data_obi_interface.sv"
+        },
+        {
+            "module": "cv32e40s_debug_triggers",
+            "file": "rtl/cv32e40s_debug_triggers.sv"
+        },
+        {
+            "module": "cv32e40s_decoder",
+            "file": "rtl/cv32e40s_decoder.sv"
+        },
+        {
+            "module": "cv32e40s_div",
+            "file": "rtl/cv32e40s_div.sv"
+        },
+        {
+            "module": "cv32e40s_dummy_instr",
+            "file": "rtl/cv32e40s_dummy_instr.sv"
+        },
+        {
+            "module": "cv32e40s_ex_stage",
+            "file": "rtl/cv32e40s_ex_stage.sv"
+        },
+        {
+            "module": "cv32e40s_ff_one",
+            "file": "rtl/cv32e40s_ff_one.sv"
+        },
+        {
+            "module": "cv32e40s_i_decoder",
+            "file": "rtl/cv32e40s_i_decoder.sv"
+        },
+        {
+            "module": "cv32e40s_id_stage",
+            "file": "rtl/cv32e40s_id_stage.sv"
+        },
+        {
+            "module": "cv32e40s_if_stage",
+            "file": "rtl/cv32e40s_if_stage.sv"
+        },
+        {
+            "module": "input",
+            "file": "rtl/cv32e40s_if_stage.sv"
+        },
+        {
+            "module": "cv32e40s_instr_obi_interface",
+            "file": "rtl/cv32e40s_instr_obi_interface.sv"
+        },
+        {
+            "module": "cv32e40s_int_controller",
+            "file": "rtl/cv32e40s_int_controller.sv"
+        },
+        {
+            "module": "cv32e40s_lfsr",
+            "file": "rtl/cv32e40s_lfsr.sv"
+        },
+        {
+            "module": "cv32e40s_load_store_unit",
+            "file": "rtl/cv32e40s_load_store_unit.sv"
+        },
+        {
+            "module": "output",
+            "file": "rtl/cv32e40s_load_store_unit.sv"
+        },
+        {
+            "module": "assign",
+            "file": "rtl/cv32e40s_load_store_unit.sv"
+        },
+        {
+            "module": "will",
+            "file": "rtl/cv32e40s_load_store_unit.sv"
+        },
+        {
+            "module": "cv32e40s_lsu_response_filter",
+            "file": "rtl/cv32e40s_lsu_response_filter.sv"
+        },
+        {
+            "module": "cv32e40s_m_decoder",
+            "file": "rtl/cv32e40s_m_decoder.sv"
+        },
+        {
+            "module": "cv32e40s_mpu",
+            "file": "rtl/cv32e40s_mpu.sv"
+        },
+        {
+            "module": "within",
+            "file": "rtl/cv32e40s_mpu.sv"
+        },
+        {
+            "module": "cv32e40s_mult",
+            "file": "rtl/cv32e40s_mult.sv"
+        },
+        {
+            "module": "cv32e40s_obi_integrity_fifo",
+            "file": "rtl/cv32e40s_obi_integrity_fifo.sv"
+        },
+        {
+            "module": "will",
+            "file": "rtl/cv32e40s_pc_check.sv"
+        },
+        {
+            "module": "cv32e40s_pc_check",
+            "file": "rtl/cv32e40s_pc_check.sv"
+        },
+        {
+            "module": "cv32e40s_pc_target",
+            "file": "rtl/cv32e40s_pc_target.sv"
+        },
+        {
+            "module": "cv32e40s_pma",
+            "file": "rtl/cv32e40s_pma.sv"
+        },
+        {
+            "module": "cv32e40s_pmp",
+            "file": "rtl/cv32e40s_pmp.sv"
+        },
+        {
+            "module": "cv32e40s_popcnt",
+            "file": "rtl/cv32e40s_popcnt.sv"
+        },
+        {
+            "module": "cv32e40s_prefetch_unit",
+            "file": "rtl/cv32e40s_prefetch_unit.sv"
+        },
+        {
+            "module": "cv32e40s_prefetcher",
+            "file": "rtl/cv32e40s_prefetcher.sv"
+        },
+        {
+            "module": "will",
+            "file": "rtl/cv32e40s_rchk_check.sv"
+        },
+        {
+            "module": "cv32e40s_rchk_check",
+            "file": "rtl/cv32e40s_rchk_check.sv"
+        },
+        {
+            "module": "cv32e40s_register_file",
+            "file": "rtl/cv32e40s_register_file.sv"
+        },
+        {
+            "module": "cv32e40s_register_file_ecc",
+            "file": "rtl/cv32e40s_register_file_ecc.sv"
+        },
+        {
+            "module": "cv32e40s_register_file_wrapper",
+            "file": "rtl/cv32e40s_register_file_wrapper.sv"
+        },
+        {
+            "module": "cv32e40s_sequencer",
+            "file": "rtl/cv32e40s_sequencer.sv"
+        },
+        {
+            "module": "cv32e40s_sleep_unit",
+            "file": "rtl/cv32e40s_sleep_unit.sv"
+        },
+        {
+            "module": "cv32e40s_wb_stage",
+            "file": "rtl/cv32e40s_wb_stage.sv"
+        },
+        {
+            "module": "cv32e40s_wpt",
+            "file": "rtl/cv32e40s_wpt.sv"
+        },
+        {
+            "module": "input",
+            "file": "rtl/cv32e40s_wpt.sv"
+        },
+        {
+            "module": "cv32e40s_write_buffer",
+            "file": "rtl/cv32e40s_write_buffer.sv"
+        },
+        {
+            "module": "cv32e40s_alignment_buffer_sva",
+            "file": "sva/cv32e40s_alignment_buffer_sva.sv"
+        },
+        {
+            "module": "cv32e40s_clic_int_controller_sva",
+            "file": "sva/cv32e40s_clic_int_controller_sva.sv"
+        },
+        {
+            "module": "cv32e40s_controller_fsm_sva",
+            "file": "sva/cv32e40s_controller_fsm_sva.sv"
+        },
+        {
+            "module": "cv32e40s_core_sva",
+            "file": "sva/cv32e40s_core_sva.sv"
+        },
+        {
+            "module": "cv32e40s_cs_registers_sva",
+            "file": "sva/cv32e40s_cs_registers_sva.sv"
+        },
+        {
+            "module": "cv32e40s_data_obi_interface_sva",
+            "file": "sva/cv32e40s_data_obi_interface_sva.sv"
+        },
+        {
+            "module": "cv32e40s_debug_triggers_sva",
+            "file": "sva/cv32e40s_debug_triggers_sva.sv"
+        },
+        {
+            "module": "cv32e40s_decoder_sva",
+            "file": "sva/cv32e40s_decoder_sva.sv"
+        },
+        {
+            "module": "cv32e40s_div_sva",
+            "file": "sva/cv32e40s_div_sva.sv"
+        },
+        {
+            "module": "cv32e40s_dummy_instr_sva",
+            "file": "sva/cv32e40s_dummy_instr_sva.sv"
+        },
+        {
+            "module": "cv32e40s_ex_stage_sva",
+            "file": "sva/cv32e40s_ex_stage_sva.sv"
+        },
+        {
+            "module": "cv32e40s_id_stage_sva",
+            "file": "sva/cv32e40s_id_stage_sva.sv"
+        },
+        {
+            "module": "cv32e40s_if_stage_sva",
+            "file": "sva/cv32e40s_if_stage_sva.sv"
+        },
+        {
+            "module": "cv32e40s_instr_obi_interface_sva",
+            "file": "sva/cv32e40s_instr_obi_interface_sva.sv"
+        },
+        {
+            "module": "cv32e40s_load_store_unit_sva",
+            "file": "sva/cv32e40s_load_store_unit_sva.sv"
+        },
+        {
+            "module": "cv32e40s_lsu_response_filter_sva",
+            "file": "sva/cv32e40s_lsu_response_filter_sva.sv"
+        },
+        {
+            "module": "cv32e40s_mpu_sva",
+            "file": "sva/cv32e40s_mpu_sva.sv"
+        },
+        {
+            "module": "cv32e40s_mult_sva",
+            "file": "sva/cv32e40s_mult_sva.sv"
+        },
+        {
+            "module": "boundary",
+            "file": "sva/cv32e40s_mult_sva.sv"
+        },
+        {
+            "module": "cv32e40s_parameter_sva",
+            "file": "sva/cv32e40s_parameter_sva.sv"
+        },
+        {
+            "module": "cv32e40s_pc_check_sva",
+            "file": "sva/cv32e40s_pc_check_sva.sv"
+        },
+        {
+            "module": "cv32e40s_prefetch_unit_sva",
+            "file": "sva/cv32e40s_prefetch_unit_sva.sv"
+        },
+        {
+            "module": "cv32e40s_prefetcher_sva",
+            "file": "sva/cv32e40s_prefetcher_sva.sv"
+        },
+        {
+            "module": "cv32e40s_register_file_sva",
+            "file": "sva/cv32e40s_register_file_sva.sv"
+        },
+        {
+            "module": "cv32e40s_rvfi_sva",
+            "file": "sva/cv32e40s_rvfi_sva.sv"
+        },
+        {
+            "module": "cv32e40s_sequencer_sva",
+            "file": "sva/cv32e40s_sequencer_sva.sv"
+        },
+        {
+            "module": "cv32e40s_sleep_unit_sva",
+            "file": "sva/cv32e40s_sleep_unit_sva.sv"
+        },
+        {
+            "module": "cv32e40s_wb_stage_sva",
+            "file": "sva/cv32e40s_wb_stage_sva.sv"
+        },
+        {
+            "module": "cv32e40s_wpt_sva",
+            "file": "sva/cv32e40s_wpt_sva.sv"
+        },
+        {
+            "module": "cv32e40s_write_buffer_sva",
+            "file": "sva/cv32e40s_write_buffer_sva.sv"
+        }
+    ],
+    "module_graph": {
+        "cv32e40s_core_log": [
+            "cv32e40s_wrapper"
+        ],
+        "contains": [],
+        "cv32e40s_dbg_helper": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_rvfi": [
+            "cv32e40s_wrapper"
+        ],
+        "may": [],
+        "cv32e40s_rvfi_data_obi": [
+            "cv32e40s_rvfi"
+        ],
+        "cv32e40s_rvfi_instr_obi": [
+            "cv32e40s_rvfi"
+        ],
+        "cv32e40s_rvfi_sim_trace": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_clock_gate": [],
+        "cv32e40s_sffr": [
+            "cv32e40s_csr",
+            "cv32e40s_csr"
+        ],
+        "cv32e40s_sffs": [
+            "cv32e40s_csr"
+        ],
+        "cv32e40s_wrapper": [],
+        "combines": [],
+        "cv32e40s_alert": [
+            "of"
+        ],
+        "cv32e40s_alignment_buffer": [
+            "cv32e40s_prefetch_unit"
+        ],
+        "cv32e40s_alu": [],
+        "cv32e40s_alu_b_cpop": [],
+        "cv32e40s_b_decoder": [],
+        "cv32e40s_clic_int_controller": [],
+        "is": [
+            "cv32e40s_rvfi",
+            "cv32e40s_alignment_buffer",
+            "cv32e40s_clic_int_controller",
+            "cv32e40s_sequencer",
+            "cv32e40s_core_sva",
+            "cv32e40s_write_buffer_sva"
+        ],
+        "cv32e40s_compressed_decoder": [],
+        "cv32e40s_controller": [
+            "of"
+        ],
+        "cv32e40s_controller_bypass": [
+            "cv32e40s_controller"
+        ],
+        "cv32e40s_controller_fsm": [
+            "cv32e40s_controller"
+        ],
+        "input": [],
+        "detected": [],
+        "of": [
+            "cv32e40s_id_stage",
+            "will"
+        ],
+        "cv32e40s_core": [
+            "cv32e40s_wrapper"
+        ],
+        "logic": [],
+        "cv32e40s_cs_registers": [
+            "of"
+        ],
+        "instance": [],
+        "cv32e40s_csr": [
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_csr",
+            "cv32e40s_debug_triggers",
+            "cv32e40s_debug_triggers",
+            "cv32e40s_debug_triggers"
+        ],
+        "cv32e40s_data_obi_interface": [
+            "cv32e40s_load_store_unit"
+        ],
+        "cv32e40s_debug_triggers": [],
+        "cv32e40s_decoder": [],
+        "cv32e40s_div": [],
+        "cv32e40s_dummy_instr": [],
+        "cv32e40s_ex_stage": [
+            "of"
+        ],
+        "cv32e40s_ff_one": [],
+        "cv32e40s_i_decoder": [],
+        "cv32e40s_id_stage": [
+            "of"
+        ],
+        "cv32e40s_if_stage": [
+            "of"
+        ],
+        "cv32e40s_instr_obi_interface": [
+            "cv32e40s_if_stage"
+        ],
+        "cv32e40s_int_controller": [
+            "of"
+        ],
+        "cv32e40s_lfsr": [
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers",
+            "cv32e40s_cs_registers"
+        ],
+        "cv32e40s_load_store_unit": [
+            "of"
+        ],
+        "output": [],
+        "assign": [
+            "cv32e40s_if_stage"
+        ],
+        "will": [],
+        "cv32e40s_lsu_response_filter": [
+            "cv32e40s_load_store_unit"
+        ],
+        "cv32e40s_m_decoder": [],
+        "cv32e40s_mpu": [
+            "cv32e40s_if_stage",
+            "cv32e40s_load_store_unit"
+        ],
+        "within": [],
+        "cv32e40s_mult": [],
+        "cv32e40s_obi_integrity_fifo": [
+            "cv32e40s_data_obi_interface",
+            "cv32e40s_instr_obi_interface"
+        ],
+        "cv32e40s_pc_check": [
+            "cv32e40s_if_stage"
+        ],
+        "cv32e40s_pc_target": [],
+        "cv32e40s_pma": [],
+        "cv32e40s_pmp": [],
+        "cv32e40s_popcnt": [],
+        "cv32e40s_prefetch_unit": [],
+        "cv32e40s_prefetcher": [
+            "cv32e40s_prefetch_unit"
+        ],
+        "cv32e40s_rchk_check": [
+            "cv32e40s_alignment_buffer"
+        ],
+        "cv32e40s_register_file": [
+            "cv32e40s_register_file_wrapper"
+        ],
+        "cv32e40s_register_file_ecc": [],
+        "cv32e40s_register_file_wrapper": [],
+        "cv32e40s_sequencer": [],
+        "cv32e40s_sleep_unit": [],
+        "cv32e40s_wb_stage": [
+            "of"
+        ],
+        "cv32e40s_wpt": [],
+        "cv32e40s_write_buffer": [
+            "cv32e40s_load_store_unit"
+        ],
+        "cv32e40s_alignment_buffer_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_clic_int_controller_sva": [],
+        "cv32e40s_controller_fsm_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_core_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_cs_registers_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_data_obi_interface_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_debug_triggers_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_decoder_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_div_sva": [],
+        "cv32e40s_dummy_instr_sva": [],
+        "cv32e40s_ex_stage_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_id_stage_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_if_stage_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_instr_obi_interface_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_load_store_unit_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_lsu_response_filter_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_mpu_sva": [
+            "cv32e40s_wrapper",
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_mult_sva": [],
+        "boundary": [],
+        "cv32e40s_parameter_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_pc_check_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_prefetch_unit_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_prefetcher_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_register_file_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_rvfi_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_sequencer_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_sleep_unit_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_wb_stage_sva": [
+            "cv32e40s_wrapper"
+        ],
+        "cv32e40s_wpt_sva": [],
+        "cv32e40s_write_buffer_sva": [
+            "cv32e40s_wrapper"
+        ]
+    },
+    "module_graph_inverse": {
+        "cv32e40s_core_log": [],
+        "contains": [],
+        "cv32e40s_dbg_helper": [],
+        "cv32e40s_rvfi": [
+            "cv32e40s_rvfi_instr_obi",
+            "cv32e40s_rvfi_data_obi",
+            "is"
+        ],
+        "may": [],
+        "cv32e40s_rvfi_data_obi": [],
+        "cv32e40s_rvfi_instr_obi": [],
+        "cv32e40s_rvfi_sim_trace": [],
+        "cv32e40s_clock_gate": [],
+        "cv32e40s_sffr": [],
+        "cv32e40s_sffs": [],
+        "cv32e40s_wrapper": [
+            "cv32e40s_parameter_sva",
+            "cv32e40s_if_stage_sva",
+            "cv32e40s_pc_check_sva",
+            "cv32e40s_register_file_sva",
+            "cv32e40s_id_stage_sva",
+            "cv32e40s_ex_stage_sva",
+            "cv32e40s_wb_stage_sva",
+            "cv32e40s_dbg_helper",
+            "cv32e40s_controller_fsm_sva",
+            "cv32e40s_cs_registers_sva",
+            "cv32e40s_load_store_unit_sva",
+            "cv32e40s_debug_triggers_sva",
+            "cv32e40s_prefetch_unit_sva",
+            "cv32e40s_alignment_buffer_sva",
+            "cv32e40s_prefetcher_sva",
+            "cv32e40s_core_sva",
+            "cv32e40s_sleep_unit_sva",
+            "cv32e40s_decoder_sva",
+            "cv32e40s_mpu_sva",
+            "cv32e40s_mpu_sva",
+            "cv32e40s_lsu_response_filter_sva",
+            "cv32e40s_write_buffer_sva",
+            "cv32e40s_sequencer_sva",
+            "cv32e40s_instr_obi_interface_sva",
+            "cv32e40s_data_obi_interface_sva",
+            "cv32e40s_rvfi_sim_trace",
+            "cv32e40s_rvfi_sva",
+            "cv32e40s_core_log",
+            "cv32e40s_rvfi",
+            "cv32e40s_core"
+        ],
+        "combines": [],
+        "cv32e40s_alert": [],
+        "cv32e40s_alignment_buffer": [
+            "is",
+            "cv32e40s_rchk_check"
+        ],
+        "cv32e40s_alu": [],
+        "cv32e40s_alu_b_cpop": [],
+        "cv32e40s_b_decoder": [],
+        "cv32e40s_clic_int_controller": [
+            "is"
+        ],
+        "is": [],
+        "cv32e40s_compressed_decoder": [],
+        "cv32e40s_controller": [
+            "cv32e40s_controller_fsm",
+            "cv32e40s_controller_bypass"
+        ],
+        "cv32e40s_controller_bypass": [],
+        "cv32e40s_controller_fsm": [],
+        "input": [],
+        "detected": [],
+        "of": [
+            "cv32e40s_alert",
+            "cv32e40s_if_stage",
+            "cv32e40s_id_stage",
+            "cv32e40s_ex_stage",
+            "cv32e40s_load_store_unit",
+            "cv32e40s_wb_stage",
+            "cv32e40s_cs_registers",
+            "cv32e40s_controller",
+            "cv32e40s_int_controller"
+        ],
+        "cv32e40s_core": [],
+        "logic": [],
+        "cv32e40s_cs_registers": [
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_lfsr",
+            "cv32e40s_lfsr",
+            "cv32e40s_lfsr",
+            "cv32e40s_csr",
+            "cv32e40s_csr"
+        ],
+        "instance": [],
+        "cv32e40s_csr": [
+            "cv32e40s_csr",
+            "cv32e40s_sffr",
+            "cv32e40s_sffr",
+            "cv32e40s_sffs"
+        ],
+        "cv32e40s_data_obi_interface": [
+            "cv32e40s_obi_integrity_fifo"
+        ],
+        "cv32e40s_debug_triggers": [
+            "cv32e40s_csr",
+            "cv32e40s_csr",
+            "cv32e40s_csr"
+        ],
+        "cv32e40s_decoder": [],
+        "cv32e40s_div": [],
+        "cv32e40s_dummy_instr": [],
+        "cv32e40s_ex_stage": [],
+        "cv32e40s_ff_one": [],
+        "cv32e40s_i_decoder": [],
+        "cv32e40s_id_stage": [
+            "of"
+        ],
+        "cv32e40s_if_stage": [
+            "assign",
+            "cv32e40s_mpu",
+            "cv32e40s_instr_obi_interface",
+            "cv32e40s_pc_check"
+        ],
+        "cv32e40s_instr_obi_interface": [
+            "cv32e40s_obi_integrity_fifo"
+        ],
+        "cv32e40s_int_controller": [],
+        "cv32e40s_lfsr": [],
+        "cv32e40s_load_store_unit": [
+            "cv32e40s_mpu",
+            "cv32e40s_lsu_response_filter",
+            "cv32e40s_write_buffer",
+            "cv32e40s_data_obi_interface"
+        ],
+        "output": [],
+        "assign": [],
+        "will": [
+            "of"
+        ],
+        "cv32e40s_lsu_response_filter": [],
+        "cv32e40s_m_decoder": [],
+        "cv32e40s_mpu": [],
+        "within": [],
+        "cv32e40s_mult": [],
+        "cv32e40s_obi_integrity_fifo": [],
+        "cv32e40s_pc_check": [],
+        "cv32e40s_pc_target": [],
+        "cv32e40s_pma": [],
+        "cv32e40s_pmp": [],
+        "cv32e40s_popcnt": [],
+        "cv32e40s_prefetch_unit": [
+            "cv32e40s_prefetcher",
+            "cv32e40s_alignment_buffer"
+        ],
+        "cv32e40s_prefetcher": [],
+        "cv32e40s_rchk_check": [],
+        "cv32e40s_register_file": [],
+        "cv32e40s_register_file_ecc": [],
+        "cv32e40s_register_file_wrapper": [
+            "cv32e40s_register_file"
+        ],
+        "cv32e40s_sequencer": [
+            "is"
+        ],
+        "cv32e40s_sleep_unit": [],
+        "cv32e40s_wb_stage": [],
+        "cv32e40s_wpt": [],
+        "cv32e40s_write_buffer": [],
+        "cv32e40s_alignment_buffer_sva": [],
+        "cv32e40s_clic_int_controller_sva": [],
+        "cv32e40s_controller_fsm_sva": [],
+        "cv32e40s_core_sva": [
+            "is"
+        ],
+        "cv32e40s_cs_registers_sva": [],
+        "cv32e40s_data_obi_interface_sva": [],
+        "cv32e40s_debug_triggers_sva": [],
+        "cv32e40s_decoder_sva": [],
+        "cv32e40s_div_sva": [],
+        "cv32e40s_dummy_instr_sva": [],
+        "cv32e40s_ex_stage_sva": [],
+        "cv32e40s_id_stage_sva": [],
+        "cv32e40s_if_stage_sva": [],
+        "cv32e40s_instr_obi_interface_sva": [],
+        "cv32e40s_load_store_unit_sva": [],
+        "cv32e40s_lsu_response_filter_sva": [],
+        "cv32e40s_mpu_sva": [],
+        "cv32e40s_mult_sva": [],
+        "boundary": [],
+        "cv32e40s_parameter_sva": [],
+        "cv32e40s_pc_check_sva": [],
+        "cv32e40s_prefetch_unit_sva": [],
+        "cv32e40s_prefetcher_sva": [],
+        "cv32e40s_register_file_sva": [],
+        "cv32e40s_rvfi_sva": [],
+        "cv32e40s_sequencer_sva": [],
+        "cv32e40s_sleep_unit_sva": [],
+        "cv32e40s_wb_stage_sva": [],
+        "cv32e40s_wpt_sva": [],
+        "cv32e40s_write_buffer_sva": [
+            "is"
+        ]
+    },
+    "non_tb_files": [
+        "bhv/cv32e40s_core_log.sv",
+        "bhv/cv32e40s_dbg_helper.sv",
+        "bhv/cv32e40s_rvfi.sv",
+        "bhv/cv32e40s_rvfi_data_obi.sv",
+        "bhv/cv32e40s_rvfi_instr_obi.sv",
+        "bhv/cv32e40s_rvfi_sim_trace.sv",
+        "bhv/cv32e40s_sim_clock_gate.sv",
+        "bhv/cv32e40s_sim_sffr.sv",
+        "bhv/cv32e40s_sim_sffs.sv",
+        "bhv/cv32e40s_wrapper.sv",
+        "bhv/include/cv32e40s_rvfi_pkg.sv",
+        "rtl/cv32e40s_alert.sv",
+        "rtl/cv32e40s_alignment_buffer.sv",
+        "rtl/cv32e40s_alu.sv",
+        "rtl/cv32e40s_alu_b_cpop.sv",
+        "rtl/cv32e40s_b_decoder.sv",
+        "rtl/cv32e40s_clic_int_controller.sv",
+        "rtl/cv32e40s_compressed_decoder.sv",
+        "rtl/cv32e40s_controller.sv",
+        "rtl/cv32e40s_controller_bypass.sv",
+        "rtl/cv32e40s_controller_fsm.sv",
+        "rtl/cv32e40s_core.sv",
+        "rtl/cv32e40s_cs_registers.sv",
+        "rtl/cv32e40s_csr.sv",
+        "rtl/cv32e40s_data_obi_interface.sv",
+        "rtl/cv32e40s_debug_triggers.sv",
+        "rtl/cv32e40s_decoder.sv",
+        "rtl/cv32e40s_div.sv",
+        "rtl/cv32e40s_dummy_instr.sv",
+        "rtl/cv32e40s_ex_stage.sv",
+        "rtl/cv32e40s_ff_one.sv",
+        "rtl/cv32e40s_i_decoder.sv",
+        "rtl/cv32e40s_id_stage.sv",
+        "rtl/cv32e40s_if_c_obi.sv",
+        "rtl/cv32e40s_if_stage.sv",
+        "rtl/cv32e40s_instr_obi_interface.sv",
+        "rtl/cv32e40s_int_controller.sv",
+        "rtl/cv32e40s_lfsr.sv",
+        "rtl/cv32e40s_load_store_unit.sv",
+        "rtl/cv32e40s_lsu_response_filter.sv",
+        "rtl/cv32e40s_m_decoder.sv",
+        "rtl/cv32e40s_mpu.sv",
+        "rtl/cv32e40s_mult.sv",
+        "rtl/cv32e40s_obi_integrity_fifo.sv",
+        "rtl/cv32e40s_pc_check.sv",
+        "rtl/cv32e40s_pc_target.sv",
+        "rtl/cv32e40s_pma.sv",
+        "rtl/cv32e40s_pmp.sv",
+        "rtl/cv32e40s_popcnt.sv",
+        "rtl/cv32e40s_prefetch_unit.sv",
+        "rtl/cv32e40s_prefetcher.sv",
+        "rtl/cv32e40s_rchk_check.sv",
+        "rtl/cv32e40s_register_file.sv",
+        "rtl/cv32e40s_register_file_ecc.sv",
+        "rtl/cv32e40s_register_file_wrapper.sv",
+        "rtl/cv32e40s_sequencer.sv",
+        "rtl/cv32e40s_sleep_unit.sv",
+        "rtl/cv32e40s_wb_stage.sv",
+        "rtl/cv32e40s_wpt.sv",
+        "rtl/cv32e40s_write_buffer.sv",
+        "rtl/include/cv32e40s_pkg.sv",
+        "sva/cv32e40s_alignment_buffer_sva.sv",
+        "sva/cv32e40s_clic_int_controller_sva.sv",
+        "sva/cv32e40s_controller_fsm_sva.sv",
+        "sva/cv32e40s_core_sva.sv",
+        "sva/cv32e40s_cs_registers_sva.sv",
+        "sva/cv32e40s_data_obi_interface_sva.sv",
+        "sva/cv32e40s_debug_triggers_sva.sv",
+        "sva/cv32e40s_decoder_sva.sv",
+        "sva/cv32e40s_div_sva.sv",
+        "sva/cv32e40s_dummy_instr_sva.sv",
+        "sva/cv32e40s_ex_stage_sva.sv",
+        "sva/cv32e40s_id_stage_sva.sv",
+        "sva/cv32e40s_if_stage_sva.sv",
+        "sva/cv32e40s_instr_obi_interface_sva.sv",
+        "sva/cv32e40s_load_store_unit_sva.sv",
+        "sva/cv32e40s_lsu_response_filter_sva.sv",
+        "sva/cv32e40s_mpu_sva.sv",
+        "sva/cv32e40s_mult_sva.sv",
+        "sva/cv32e40s_parameter_sva.sv",
+        "sva/cv32e40s_pc_check_sva.sv",
+        "sva/cv32e40s_prefetch_unit_sva.sv",
+        "sva/cv32e40s_prefetcher_sva.sv",
+        "sva/cv32e40s_register_file_sva.sv",
+        "sva/cv32e40s_rvfi_sva.sv",
+        "sva/cv32e40s_sequencer_sva.sv",
+        "sva/cv32e40s_sleep_unit_sva.sv",
+        "sva/cv32e40s_wb_stage_sva.sv",
+        "sva/cv32e40s_wpt_sva.sv",
+        "sva/cv32e40s_write_buffer_sva.sv"
+    ]
+}

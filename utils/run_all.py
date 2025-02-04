@@ -24,7 +24,7 @@ Nota:
 import subprocess
 
 # Caminho para o arquivo que contém a lista de URLs
-FILE_PATH = 'arquivos.txt'
+FILE_PATH = 'processadores2.txt'
 
 # Abrir o arquivo e ler as URLs
 with open(FILE_PATH, 'r', encoding='utf-8') as file:
@@ -42,15 +42,16 @@ command_base = [
     '',
     '-c',
     '-a',
+    #'-n',
 ]
 
 # Timeout de 3 minutos (180 segundos)
-TIMEOUT_SECONDS = 180
+TIMEOUT_SECONDS = 720
 
 # Para cada URL na lista, executar o comando com timeout
 for url in urls:
     # Montar o comando com a URL
-    command_base[4] = url  # Substituir a URL no comando
+    command_base[3] = url  # Substituir a URL no comando
     print(f"Executando: {' '.join(command_base)}")
 
     try:

@@ -1,0 +1,1722 @@
+{
+    "name": "I2SRV32-V-v1",
+    "folder": "I2SRV32-V-v1",
+    "sim_files": [
+        "Source code/rtl/BPU/BTB_PLRU.v",
+        "Source code/testbench/FPGA_WRAPPER.v"
+    ],
+    "files": [
+        "Source code/rtl/PWM.v",
+        "Source code/rtl/Sys_counter.v",
+        "Source code/rtl/XADC_rtl.v",
+        "Source code/rtl/cachefsm.v",
+        "Source code/rtl/cpu.v",
+        "Source code/rtl/csr.v",
+        "Source code/rtl/dcache_biu.v",
+        "Source code/rtl/dcache_dpram.v",
+        "Source code/rtl/dcache_ram_fsm.v",
+        "Source code/rtl/dcache_top.v",
+        "Source code/rtl/debouce.v",
+        "Source code/rtl/defines.v",
+        "Source code/rtl/ext_emulator.v",
+        "Source code/rtl/ext_emulator_secded.v",
+        "Source code/rtl/fet_dec_ex_mem.v",
+        "Source code/rtl/icache.v",
+        "Source code/rtl/intercon.v",
+        "Source code/rtl/interrupt_main.v",
+        "Source code/rtl/irq_interface.v",
+        "Source code/rtl/lcd.v",
+        "Source code/rtl/mem_hier.v",
+        "Source code/rtl/or1200_amultp2_32x32.v",
+        "Source code/rtl/or1200_fpu_div.v",
+        "Source code/rtl/or1200_wb_biu.v",
+        "Source code/rtl/raminfr.v",
+        "Source code/rtl/secded.v",
+        "Source code/rtl/timescale.v",
+        "Source code/rtl/uart_debug_if.v",
+        "Source code/rtl/uart_defines.v",
+        "Source code/rtl/uart_receiver.v",
+        "Source code/rtl/uart_regs.v",
+        "Source code/rtl/uart_rfifo.v",
+        "Source code/rtl/uart_sync_flops.v",
+        "Source code/rtl/uart_tfifo.v",
+        "Source code/rtl/uart_top.v",
+        "Source code/rtl/uart_transmitter.v",
+        "Source code/rtl/uart_wb.v",
+        "Source code/rtl/wb_arbiter.v",
+        "Source code/rtl/wb_bus_ctrl.v",
+        "Source code/rtl/wb_mux.v",
+        "Source code/rtl/wishbone.v",
+        "Source code/rtl/BPU/Branch_Prediction_Unit.v",
+        "Source code/rtl/BPU/Branch_Target_Buff.v",
+        "Source code/rtl/BPU/Direction_Predictor.v",
+        "Source code/rtl/BPU/Return_Addr_Stack.v",
+        "Source code/rtl/CPU/DECODE.v",
+        "Source code/rtl/CPU/EXECUTE.v",
+        "Source code/rtl/CPU/IF_ID_EX.v",
+        "Source code/rtl/CPU/INST_FETCH.v",
+        "Source code/rtl/CPU/REG_FILE.v",
+        "Source code/rtl/EVA/EVA_ArgSort.v",
+        "Source code/rtl/EVA/EVA_update.v",
+        "Source code/rtl/EVA/access_ctr.v",
+        "Source code/rtl/EVA/addr_cal.v",
+        "Source code/rtl/EVA/age_set_ctr.v",
+        "Source code/rtl/EVA/block.v",
+        "Source code/rtl/EVA/class_bit.v",
+        "Source code/rtl/EVA/ctr_update.v",
+        "Source code/rtl/EVA/div_18.v",
+        "Source code/rtl/EVA/div_4_14.v",
+        "Source code/rtl/EVA/div_5_15.v",
+        "Source code/rtl/EVA/eviction_ctr.v",
+        "Source code/rtl/EVA/hit_ctr.v",
+        "Source code/rtl/EVA/replacement_algo.v",
+        "Source code/rtl/EVA/seq.v",
+        "Source code/rtl/FPU/FP_DECODE.v",
+        "Source code/rtl/FPU/FP_EXECUTE.v",
+        "Source code/rtl/FPU/FP_REG_FILE.v",
+        "Source code/rtl/FPU/fpu/ADD.v",
+        "Source code/rtl/FPU/fpu/COMPARE_1.v",
+        "Source code/rtl/FPU/fpu/CONVERT.v",
+        "Source code/rtl/FPU/fpu/Compare.v",
+        "Source code/rtl/FPU/fpu/DIV.v",
+        "Source code/rtl/FPU/fpu/FPU.v",
+        "Source code/rtl/FPU/fpu/FP_to_FP.v",
+        "Source code/rtl/FPU/fpu/FP_to_int.v",
+        "Source code/rtl/FPU/fpu/LZC.v",
+        "Source code/rtl/FPU/fpu/MULT.v",
+        "Source code/rtl/FPU/fpu/Rounding_Mode.v",
+        "Source code/rtl/FPU/fpu/SIGN_INJECTION.v",
+        "Source code/rtl/FPU/fpu/SQRT.v",
+        "Source code/rtl/FPU/fpu/TRANSFER.v",
+        "Source code/rtl/FPU/fpu/int_to_FP.v",
+        "Source code/rtl/ITLB/icam.v",
+        "Source code/rtl/ITLB/ilru.v",
+        "Source code/rtl/ITLB/itlb.v",
+        "Source code/rtl/tlb/cam.v",
+        "Source code/rtl/tlb/lru.v",
+        "Source code/rtl/tlb/tlb.v",
+        "Source code/rtl/vector_unit/v_wrapper.v",
+        "Source code/rtl/vector_unit/vec_decoder.v",
+        "Source code/rtl/vector_unit/vector_top.v",
+        "Source code/rtl/FPU/fpu/IEEE_to_flopoco_DP.vhdl",
+        "Source code/rtl/FPU/fpu/IEEE_to_flopoco_SP.vhdl",
+        "Source code/rtl/FPU/fpu/add_DP.vhdl",
+        "Source code/rtl/FPU/fpu/div_DP.vhdl",
+        "Source code/rtl/FPU/fpu/div_SP.vhdl",
+        "Source code/rtl/FPU/fpu/flopoco_to_IEEE_DP.vhdl",
+        "Source code/rtl/FPU/fpu/flopoco_to_IEEE_SP.vhdl",
+        "Source code/rtl/FPU/fpu/mul_DP.vhdl",
+        "Source code/rtl/FPU/fpu/mul_SP.vhdl",
+        "Source code/rtl/FPU/fpu/sqrt_DP.vhdl",
+        "Source code/rtl/FPU/fpu/sqrt_SP.vhdl",
+        "Source code/rtl/FPU/fpu/add_SP.vhd",
+        "Source code/rtl/vector_unit/alu.vhd",
+        "Source code/rtl/vector_unit/count_gen.vhd",
+        "Source code/rtl/vector_unit/cpu_inf.vhd",
+        "Source code/rtl/vector_unit/dmem_addr_xbar.vhd",
+        "Source code/rtl/vector_unit/exe_unit.vhd",
+        "Source code/rtl/vector_unit/lsu.vhd",
+        "Source code/rtl/vector_unit/multicycle_ops.vhd",
+        "Source code/rtl/vector_unit/mypack.vhd",
+        "Source code/rtl/vector_unit/stall_gen.vhd",
+        "Source code/rtl/vector_unit/vminmax.vhd",
+        "Source code/rtl/vector_unit/vrf_bank.vhd",
+        "Source code/rtl/vector_unit/wrapper.vhd",
+        "Source code/rtl/vector_unit/xoutreg.vhd"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/RClabiisc/I2SRV32-V-v1",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "PWM",
+            "file": "Source code/rtl/PWM.v"
+        },
+        {
+            "module": "Sys_counter",
+            "file": "Source code/rtl/Sys_counter.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/Sys_counter.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/Sys_counter.v"
+        },
+        {
+            "module": "counter_real_clk",
+            "file": "Source code/rtl/Sys_counter.v"
+        },
+        {
+            "module": "counter_instr_clk",
+            "file": "Source code/rtl/Sys_counter.v"
+        },
+        {
+            "module": "XADC_INST_des",
+            "file": "Source code/rtl/XADC_rtl.v"
+        },
+        {
+            "module": "cachefsm",
+            "file": "Source code/rtl/cachefsm.v"
+        },
+        {
+            "module": "cpu",
+            "file": "Source code/rtl/cpu.v"
+        },
+        {
+            "module": "csr",
+            "file": "Source code/rtl/csr.v"
+        },
+        {
+            "module": "dcache_biu",
+            "file": "Source code/rtl/dcache_biu.v"
+        },
+        {
+            "module": "dcache_dpram",
+            "file": "Source code/rtl/dcache_dpram.v"
+        },
+        {
+            "module": "dcache_ram_fsm",
+            "file": "Source code/rtl/dcache_ram_fsm.v"
+        },
+        {
+            "module": "dcache_top",
+            "file": "Source code/rtl/dcache_top.v"
+        },
+        {
+            "module": "debouce",
+            "file": "Source code/rtl/debouce.v"
+        },
+        {
+            "module": "added",
+            "file": "Source code/rtl/defines.v"
+        },
+        {
+            "module": "ext_emulator",
+            "file": "Source code/rtl/ext_emulator.v"
+        },
+        {
+            "module": "ext_emulator_secded",
+            "file": "Source code/rtl/ext_emulator_secded.v"
+        },
+        {
+            "module": "fet_dec_ex_mem",
+            "file": "Source code/rtl/fet_dec_ex_mem.v"
+        },
+        {
+            "module": "icache",
+            "file": "Source code/rtl/icache.v"
+        },
+        {
+            "module": "intercon",
+            "file": "Source code/rtl/intercon.v"
+        },
+        {
+            "module": "Submodules",
+            "file": "Source code/rtl/interrupt_main.v"
+        },
+        {
+            "module": "interrupt_main",
+            "file": "Source code/rtl/interrupt_main.v"
+        },
+        {
+            "module": "irq_interface",
+            "file": "Source code/rtl/irq_interface.v"
+        },
+        {
+            "module": "LCD",
+            "file": "Source code/rtl/lcd.v"
+        },
+        {
+            "module": "mem_hier",
+            "file": "Source code/rtl/mem_hier.v"
+        },
+        {
+            "module": "PP_LOW",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "or1200_amultp2_32x32",
+            "file": "Source code/rtl/or1200_amultp2_32x32.v"
+        },
+        {
+            "module": "divider",
+            "file": "Source code/rtl/or1200_fpu_div.v"
+        },
+        {
+            "module": "or1200_wb_biu",
+            "file": "Source code/rtl/or1200_wb_biu.v"
+        },
+        {
+            "module": "raminfr",
+            "file": "Source code/rtl/raminfr.v"
+        },
+        {
+            "module": "secded",
+            "file": "Source code/rtl/secded.v"
+        },
+        {
+            "module": "takes",
+            "file": "Source code/rtl/secded.v"
+        },
+        {
+            "module": "uart_debug_if",
+            "file": "Source code/rtl/uart_debug_if.v"
+        },
+        {
+            "module": "uart_receiver",
+            "file": "Source code/rtl/uart_receiver.v"
+        },
+        {
+            "module": "uart_regs",
+            "file": "Source code/rtl/uart_regs.v"
+        },
+        {
+            "module": "wire",
+            "file": "Source code/rtl/uart_regs.v"
+        },
+        {
+            "module": "uart_rfifo",
+            "file": "Source code/rtl/uart_rfifo.v"
+        },
+        {
+            "module": "uart_sync_flops",
+            "file": "Source code/rtl/uart_sync_flops.v"
+        },
+        {
+            "module": "uart_tfifo",
+            "file": "Source code/rtl/uart_tfifo.v"
+        },
+        {
+            "module": "uart_top",
+            "file": "Source code/rtl/uart_top.v"
+        },
+        {
+            "module": "uart_wb",
+            "file": "Source code/rtl/uart_top.v"
+        },
+        {
+            "module": "uart_transmitter",
+            "file": "Source code/rtl/uart_transmitter.v"
+        },
+        {
+            "module": "uart_wb",
+            "file": "Source code/rtl/uart_wb.v"
+        },
+        {
+            "module": "wb_arbiter",
+            "file": "Source code/rtl/wb_arbiter.v"
+        },
+        {
+            "module": "wb_bus_ctrl",
+            "file": "Source code/rtl/wb_bus_ctrl.v"
+        },
+        {
+            "module": "wb_mux",
+            "file": "Source code/rtl/wb_mux.v"
+        },
+        {
+            "module": "or1200_wb_biu1",
+            "file": "Source code/rtl/wishbone.v"
+        },
+        {
+            "module": "BTB_PLRU",
+            "file": "Source code/rtl/BPU/BTB_PLRU.v"
+        },
+        {
+            "module": "Branch_Prediction_Unit",
+            "file": "Source code/rtl/BPU/Branch_Prediction_Unit.v"
+        },
+        {
+            "module": "Branch_Target_Buff",
+            "file": "Source code/rtl/BPU/Branch_Target_Buff.v"
+        },
+        {
+            "module": "Direction_Predictor",
+            "file": "Source code/rtl/BPU/Direction_Predictor.v"
+        },
+        {
+            "module": "Return_Addr_Stack",
+            "file": "Source code/rtl/BPU/Return_Addr_Stack.v"
+        },
+        {
+            "module": "DECODE",
+            "file": "Source code/rtl/CPU/DECODE.v"
+        },
+        {
+            "module": "commands",
+            "file": "Source code/rtl/CPU/DECODE.v"
+        },
+        {
+            "module": "EXECUTE",
+            "file": "Source code/rtl/CPU/EXECUTE.v"
+        },
+        {
+            "module": "IF_ID_EX",
+            "file": "Source code/rtl/CPU/IF_ID_EX.v"
+        },
+        {
+            "module": "INST_FETCH",
+            "file": "Source code/rtl/CPU/INST_FETCH.v"
+        },
+        {
+            "module": "REG_FILE",
+            "file": "Source code/rtl/CPU/REG_FILE.v"
+        },
+        {
+            "module": "EVA_ArgSort",
+            "file": "Source code/rtl/EVA/EVA_ArgSort.v"
+        },
+        {
+            "module": "EVA_update",
+            "file": "Source code/rtl/EVA/EVA_update.v"
+        },
+        {
+            "module": "access_ctr",
+            "file": "Source code/rtl/EVA/access_ctr.v"
+        },
+        {
+            "module": "addr_cal",
+            "file": "Source code/rtl/EVA/addr_cal.v"
+        },
+        {
+            "module": "age_set_ctr",
+            "file": "Source code/rtl/EVA/age_set_ctr.v"
+        },
+        {
+            "module": "block",
+            "file": "Source code/rtl/EVA/block.v"
+        },
+        {
+            "module": "class_bit",
+            "file": "Source code/rtl/EVA/class_bit.v"
+        },
+        {
+            "module": "ctr_update",
+            "file": "Source code/rtl/EVA/ctr_update.v"
+        },
+        {
+            "module": "div_18",
+            "file": "Source code/rtl/EVA/div_18.v"
+        },
+        {
+            "module": "div_4_14",
+            "file": "Source code/rtl/EVA/div_4_14.v"
+        },
+        {
+            "module": "div_5_15",
+            "file": "Source code/rtl/EVA/div_5_15.v"
+        },
+        {
+            "module": "eviction_ctr",
+            "file": "Source code/rtl/EVA/eviction_ctr.v"
+        },
+        {
+            "module": "hit_ctr",
+            "file": "Source code/rtl/EVA/hit_ctr.v"
+        },
+        {
+            "module": "replacement_algo",
+            "file": "Source code/rtl/EVA/replacement_algo.v"
+        },
+        {
+            "module": "seq",
+            "file": "Source code/rtl/EVA/seq.v"
+        },
+        {
+            "module": "FP_DECODE",
+            "file": "Source code/rtl/FPU/FP_DECODE.v"
+        },
+        {
+            "module": "FP_EXECUTE",
+            "file": "Source code/rtl/FPU/FP_EXECUTE.v"
+        },
+        {
+            "module": "FP_REG_FILE",
+            "file": "Source code/rtl/FPU/FP_REG_FILE.v"
+        },
+        {
+            "module": "ADD",
+            "file": "Source code/rtl/FPU/fpu/ADD.v"
+        },
+        {
+            "module": "COMPARE",
+            "file": "Source code/rtl/FPU/fpu/COMPARE_1.v"
+        },
+        {
+            "module": "CONVERT",
+            "file": "Source code/rtl/FPU/fpu/CONVERT.v"
+        },
+        {
+            "module": "Compare",
+            "file": "Source code/rtl/FPU/fpu/Compare.v"
+        },
+        {
+            "module": "DIV",
+            "file": "Source code/rtl/FPU/fpu/DIV.v"
+        },
+        {
+            "module": "FPU",
+            "file": "Source code/rtl/FPU/fpu/FPU.v"
+        },
+        {
+            "module": "FP_to_FP",
+            "file": "Source code/rtl/FPU/fpu/FP_to_FP.v"
+        },
+        {
+            "module": "FP_to_int",
+            "file": "Source code/rtl/FPU/fpu/FP_to_int.v"
+        },
+        {
+            "module": "LZC",
+            "file": "Source code/rtl/FPU/fpu/LZC.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/FPU/fpu/LZC.v"
+        },
+        {
+            "module": "MULT",
+            "file": "Source code/rtl/FPU/fpu/MULT.v"
+        },
+        {
+            "module": "Rounding_Mode_SP",
+            "file": "Source code/rtl/FPU/fpu/Rounding_Mode.v"
+        },
+        {
+            "module": "module",
+            "file": "Source code/rtl/FPU/fpu/Rounding_Mode.v"
+        },
+        {
+            "module": "SIGN_INJECTION",
+            "file": "Source code/rtl/FPU/fpu/SIGN_INJECTION.v"
+        },
+        {
+            "module": "SQRT",
+            "file": "Source code/rtl/FPU/fpu/SQRT.v"
+        },
+        {
+            "module": "TRANSFER",
+            "file": "Source code/rtl/FPU/fpu/TRANSFER.v"
+        },
+        {
+            "module": "int_to_FP",
+            "file": "Source code/rtl/FPU/fpu/int_to_FP.v"
+        },
+        {
+            "module": "iregisters",
+            "file": "Source code/rtl/ITLB/icam.v"
+        },
+        {
+            "module": "ilru",
+            "file": "Source code/rtl/ITLB/ilru.v"
+        },
+        {
+            "module": "itlb",
+            "file": "Source code/rtl/ITLB/itlb.v"
+        },
+        {
+            "module": "Registers",
+            "file": "Source code/rtl/tlb/cam.v"
+        },
+        {
+            "module": "lru",
+            "file": "Source code/rtl/tlb/lru.v"
+        },
+        {
+            "module": "tlb",
+            "file": "Source code/rtl/tlb/tlb.v"
+        },
+        {
+            "module": "v_wrapper",
+            "file": "Source code/rtl/vector_unit/v_wrapper.v"
+        },
+        {
+            "module": "vec_decoder",
+            "file": "Source code/rtl/vector_unit/vec_decoder.v"
+        },
+        {
+            "module": "vector_top",
+            "file": "Source code/rtl/vector_unit/vector_top.v"
+        },
+        {
+            "module": "FPGA_WRAPPER",
+            "file": "Source code/testbench/FPGA_WRAPPER.v"
+        },
+        {
+            "module": "IEEE_TO_FLOPOCO_DP",
+            "file": "Source code/rtl/FPU/fpu/IEEE_to_flopoco_DP.vhdl"
+        },
+        {
+            "module": "IEEE_TO_FLOPOCO_SP",
+            "file": "Source code/rtl/FPU/fpu/IEEE_to_flopoco_SP.vhdl"
+        },
+        {
+            "module": "IntAdder_66_f400_uid4",
+            "file": "Source code/rtl/FPU/fpu/add_DP.vhdl"
+        },
+        {
+            "module": "RightShifter_53_by_max_55_comb_uid12",
+            "file": "Source code/rtl/FPU/fpu/add_DP.vhdl"
+        },
+        {
+            "module": "IntAdder_56_f400_uid16",
+            "file": "Source code/rtl/FPU/fpu/add_DP.vhdl"
+        },
+        {
+            "module": "LZCShifter_57_to_57_counting_64_comb_uid24",
+            "file": "Source code/rtl/FPU/fpu/add_DP.vhdl"
+        },
+        {
+            "module": "FPAdd_11_52_comb_uid2",
+            "file": "Source code/rtl/FPU/fpu/add_DP.vhdl"
+        },
+        {
+            "module": "SelFunctionTable_r4_comb_uid4",
+            "file": "Source code/rtl/FPU/fpu/div_DP.vhdl"
+        },
+        {
+            "module": "FPDiv_11_52_comb_uid2",
+            "file": "Source code/rtl/FPU/fpu/div_DP.vhdl"
+        },
+        {
+            "module": "SelFunctionTable_r4_comb_uid4",
+            "file": "Source code/rtl/FPU/fpu/div_SP.vhdl"
+        },
+        {
+            "module": "FPDiv_8_23_comb_uid2",
+            "file": "Source code/rtl/FPU/fpu/div_SP.vhdl"
+        },
+        {
+            "module": "FLOPOCO_TO_IEEE_DP",
+            "file": "Source code/rtl/FPU/fpu/flopoco_to_IEEE_DP.vhdl"
+        },
+        {
+            "module": "FLOPOCO_TO_IEEE_SP",
+            "file": "Source code/rtl/FPU/fpu/flopoco_to_IEEE_SP.vhdl"
+        },
+        {
+            "module": "SmallMultTableP3x3r6XuYu_comb_uid9",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "SmallMultTableP3x3r6XuYu_comb_uid36",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "SmallMultTableP3x3r6XuYu_comb_uid63",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "SmallMultTableP3x3r6XuYu_comb_uid90",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "SmallMultTableP3x3r6XuYu_comb_uid109",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "SmallMultTableP3x3r6XuYu_comb_uid128",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "Compressor_6_3",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "Compressor_14_3",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "Compressor_5_3",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "Compressor_4_3",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "Compressor_23_3",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "Compressor_13_3",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "Compressor_3_2",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "IntAdder_104_f400_uid549",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "IntMultiplier_UsingDSP_53_53_106_unsigned_comb_uid4",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "FPMult_11_52_11_52_11_52_comb_uid2",
+            "file": "Source code/rtl/FPU/fpu/mul_DP.vhdl"
+        },
+        {
+            "module": "IntAdder_42_f400_uid15",
+            "file": "Source code/rtl/FPU/fpu/mul_SP.vhdl"
+        },
+        {
+            "module": "IntMultiplier_UsingDSP_24_24_48_unsigned_comb_uid4",
+            "file": "Source code/rtl/FPU/fpu/mul_SP.vhdl"
+        },
+        {
+            "module": "FPMult_8_23_8_23_8_23_comb_uid2",
+            "file": "Source code/rtl/FPU/fpu/mul_SP.vhdl"
+        },
+        {
+            "module": "FPSqrt_11_52",
+            "file": "Source code/rtl/FPU/fpu/sqrt_DP.vhdl"
+        },
+        {
+            "module": "FPSqrt_8_23",
+            "file": "Source code/rtl/FPU/fpu/sqrt_SP.vhdl"
+        },
+        {
+            "module": "RightShifter_24_by_max_26_comb_uid4",
+            "file": "Source code/rtl/FPU/fpu/add_SP.vhd"
+        },
+        {
+            "module": "IntAdder_27_f400_uid8",
+            "file": "Source code/rtl/FPU/fpu/add_SP.vhd"
+        },
+        {
+            "module": "LZCShifter_28_to_28_counting_32_comb_uid16",
+            "file": "Source code/rtl/FPU/fpu/add_SP.vhd"
+        },
+        {
+            "module": "FPAdd_8_23_comb_uid2",
+            "file": "Source code/rtl/FPU/fpu/add_SP.vhd"
+        },
+        {
+            "module": "alu",
+            "file": "Source code/rtl/vector_unit/alu.vhd"
+        },
+        {
+            "module": "count_gen",
+            "file": "Source code/rtl/vector_unit/count_gen.vhd"
+        },
+        {
+            "module": "cpu_inf",
+            "file": "Source code/rtl/vector_unit/cpu_inf.vhd"
+        },
+        {
+            "module": "dmem_xbar",
+            "file": "Source code/rtl/vector_unit/dmem_addr_xbar.vhd"
+        },
+        {
+            "module": "exe_unit",
+            "file": "Source code/rtl/vector_unit/exe_unit.vhd"
+        },
+        {
+            "module": "lsu",
+            "file": "Source code/rtl/vector_unit/lsu.vhd"
+        },
+        {
+            "module": "multicycle_ops",
+            "file": "Source code/rtl/vector_unit/multicycle_ops.vhd"
+        },
+        {
+            "module": "stall_gen",
+            "file": "Source code/rtl/vector_unit/stall_gen.vhd"
+        },
+        {
+            "module": "vminmax",
+            "file": "Source code/rtl/vector_unit/vminmax.vhd"
+        },
+        {
+            "module": "vrf_bank",
+            "file": "Source code/rtl/vector_unit/vrf_bank.vhd"
+        },
+        {
+            "module": "wrapper",
+            "file": "Source code/rtl/vector_unit/wrapper.vhd"
+        },
+        {
+            "module": "Xoutreg",
+            "file": "Source code/rtl/vector_unit/xoutreg.vhd"
+        }
+    ],
+    "module_graph": {
+        "PWM": [
+            "FPGA_WRAPPER"
+        ],
+        "Sys_counter": [
+            "IF_ID_EX"
+        ],
+        "module": [
+            "Sys_counter",
+            "Sys_counter",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "LZC",
+            "Rounding_Mode_SP"
+        ],
+        "counter_real_clk": [
+            "Sys_counter"
+        ],
+        "counter_instr_clk": [
+            "Sys_counter"
+        ],
+        "XADC_INST_des": [
+            "FPGA_WRAPPER"
+        ],
+        "cachefsm": [
+            "mem_hier"
+        ],
+        "cpu": [
+            "FPGA_WRAPPER"
+        ],
+        "csr": [
+            "IF_ID_EX"
+        ],
+        "dcache_biu": [
+            "fet_dec_ex_mem"
+        ],
+        "dcache_dpram": [
+            "dcache_top"
+        ],
+        "dcache_ram_fsm": [
+            "dcache_top"
+        ],
+        "dcache_top": [
+            "dcache_biu"
+        ],
+        "debouce": [
+            "FPGA_WRAPPER",
+            "FPGA_WRAPPER",
+            "FPGA_WRAPPER",
+            "FPGA_WRAPPER"
+        ],
+        "added": [],
+        "ext_emulator": [
+            "FPGA_WRAPPER"
+        ],
+        "ext_emulator_secded": [
+            "FPGA_WRAPPER"
+        ],
+        "fet_dec_ex_mem": [
+            "cpu"
+        ],
+        "icache": [
+            "mem_hier"
+        ],
+        "intercon": [
+            "FPGA_WRAPPER"
+        ],
+        "Submodules": [],
+        "interrupt_main": [
+            "IF_ID_EX"
+        ],
+        "irq_interface": [
+            "cpu",
+            "IF_ID_EX"
+        ],
+        "LCD": [
+            "FPGA_WRAPPER"
+        ],
+        "mem_hier": [
+            "fet_dec_ex_mem"
+        ],
+        "PP_LOW": [
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW"
+        ],
+        "or1200_amultp2_32x32": [],
+        "divider": [
+            "EXECUTE"
+        ],
+        "or1200_wb_biu": [],
+        "raminfr": [
+            "uart_rfifo",
+            "uart_tfifo"
+        ],
+        "secded": [
+            "ext_emulator_secded"
+        ],
+        "takes": [],
+        "uart_debug_if": [
+            "uart_top"
+        ],
+        "uart_receiver": [
+            "uart_regs",
+            "uart_regs"
+        ],
+        "uart_regs": [
+            "uart_top"
+        ],
+        "wire": [],
+        "uart_rfifo": [
+            "uart_receiver"
+        ],
+        "uart_sync_flops": [
+            "uart_regs"
+        ],
+        "uart_tfifo": [
+            "uart_transmitter"
+        ],
+        "uart_top": [
+            "FPGA_WRAPPER"
+        ],
+        "uart_wb": [
+            "uart_top",
+            "uart_top"
+        ],
+        "uart_transmitter": [
+            "uart_regs"
+        ],
+        "wb_arbiter": [],
+        "wb_bus_ctrl": [],
+        "wb_mux": [
+            "intercon"
+        ],
+        "or1200_wb_biu1": [
+            "mem_hier"
+        ],
+        "BTB_PLRU": [
+            "Branch_Target_Buff"
+        ],
+        "Branch_Prediction_Unit": [],
+        "Branch_Target_Buff": [
+            "Branch_Prediction_Unit"
+        ],
+        "Direction_Predictor": [],
+        "Return_Addr_Stack": [
+            "Branch_Prediction_Unit"
+        ],
+        "DECODE": [
+            "IF_ID_EX"
+        ],
+        "commands": [],
+        "EXECUTE": [
+            "IF_ID_EX"
+        ],
+        "IF_ID_EX": [
+            "fet_dec_ex_mem"
+        ],
+        "INST_FETCH": [
+            "IF_ID_EX"
+        ],
+        "REG_FILE": [
+            "IF_ID_EX"
+        ],
+        "EVA_ArgSort": [
+            "EVA_update"
+        ],
+        "EVA_update": [
+            "replacement_algo"
+        ],
+        "access_ctr": [
+            "ctr_update"
+        ],
+        "addr_cal": [
+            "replacement_algo"
+        ],
+        "age_set_ctr": [
+            "ctr_update"
+        ],
+        "block": [
+            "EVA_ArgSort"
+        ],
+        "class_bit": [
+            "ctr_update"
+        ],
+        "ctr_update": [
+            "replacement_algo"
+        ],
+        "div_18": [
+            "EVA_update",
+            "EVA_update",
+            "EVA_update"
+        ],
+        "div_4_14": [
+            "EVA_update",
+            "EVA_update",
+            "EVA_update",
+            "EVA_update"
+        ],
+        "div_5_15": [
+            "EVA_update"
+        ],
+        "eviction_ctr": [
+            "ctr_update"
+        ],
+        "hit_ctr": [],
+        "replacement_algo": [
+            "itlb",
+            "tlb"
+        ],
+        "seq": [
+            "EVA_ArgSort"
+        ],
+        "FP_DECODE": [],
+        "FP_EXECUTE": [
+            "IF_ID_EX"
+        ],
+        "FP_REG_FILE": [
+            "IF_ID_EX"
+        ],
+        "ADD": [],
+        "COMPARE": [
+            "FPU"
+        ],
+        "CONVERT": [
+            "FPU"
+        ],
+        "Compare": [
+            "COMPARE"
+        ],
+        "DIV": [
+            "FPU"
+        ],
+        "FPU": [],
+        "FP_to_FP": [
+            "CONVERT"
+        ],
+        "FP_to_int": [
+            "CONVERT"
+        ],
+        "LZC": [
+            "int_to_FP"
+        ],
+        "MULT": [
+            "FPU"
+        ],
+        "Rounding_Mode_SP": [],
+        "SIGN_INJECTION": [
+            "CONVERT"
+        ],
+        "SQRT": [
+            "FPU"
+        ],
+        "TRANSFER": [
+            "FPU"
+        ],
+        "int_to_FP": [
+            "CONVERT"
+        ],
+        "iregisters": [
+            "itlb"
+        ],
+        "ilru": [
+            "itlb"
+        ],
+        "itlb": [],
+        "Registers": [
+            "tlb"
+        ],
+        "lru": [
+            "tlb"
+        ],
+        "tlb": [
+            "dcache_dpram"
+        ],
+        "v_wrapper": [
+            "vector_top"
+        ],
+        "vec_decoder": [
+            "vector_top"
+        ],
+        "vector_top": [],
+        "FPGA_WRAPPER": [],
+        "IEEE_TO_FLOPOCO_DP": [
+            "FPU",
+            "FPU",
+            "FPU"
+        ],
+        "IEEE_TO_FLOPOCO_SP": [
+            "FPU",
+            "FPU",
+            "FPU"
+        ],
+        "IntAdder_66_f400_uid4": [],
+        "RightShifter_53_by_max_55_comb_uid12": [],
+        "IntAdder_56_f400_uid16": [],
+        "LZCShifter_57_to_57_counting_64_comb_uid24": [],
+        "FPAdd_11_52_comb_uid2": [
+            "ADD"
+        ],
+        "SelFunctionTable_r4_comb_uid4": [],
+        "FPDiv_11_52_comb_uid2": [
+            "DIV"
+        ],
+        "FPDiv_8_23_comb_uid2": [
+            "DIV"
+        ],
+        "FLOPOCO_TO_IEEE_DP": [
+            "FPU"
+        ],
+        "FLOPOCO_TO_IEEE_SP": [
+            "FPU"
+        ],
+        "SmallMultTableP3x3r6XuYu_comb_uid9": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid36": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid63": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid90": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid109": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid128": [],
+        "Compressor_6_3": [],
+        "Compressor_14_3": [],
+        "Compressor_5_3": [],
+        "Compressor_4_3": [],
+        "Compressor_23_3": [],
+        "Compressor_13_3": [],
+        "Compressor_3_2": [],
+        "IntAdder_104_f400_uid549": [],
+        "IntMultiplier_UsingDSP_53_53_106_unsigned_comb_uid4": [],
+        "FPMult_11_52_11_52_11_52_comb_uid2": [
+            "MULT"
+        ],
+        "IntAdder_42_f400_uid15": [],
+        "IntMultiplier_UsingDSP_24_24_48_unsigned_comb_uid4": [],
+        "FPMult_8_23_8_23_8_23_comb_uid2": [
+            "MULT"
+        ],
+        "FPSqrt_11_52": [
+            "SQRT"
+        ],
+        "FPSqrt_8_23": [
+            "SQRT"
+        ],
+        "RightShifter_24_by_max_26_comb_uid4": [],
+        "IntAdder_27_f400_uid8": [],
+        "LZCShifter_28_to_28_counting_32_comb_uid16": [],
+        "FPAdd_8_23_comb_uid2": [
+            "ADD"
+        ],
+        "alu": [],
+        "count_gen": [],
+        "cpu_inf": [],
+        "dmem_xbar": [],
+        "exe_unit": [],
+        "lsu": [],
+        "multicycle_ops": [],
+        "stall_gen": [],
+        "vminmax": [],
+        "vrf_bank": [],
+        "wrapper": [
+            "v_wrapper"
+        ],
+        "Xoutreg": []
+    },
+    "module_graph_inverse": {
+        "PWM": [],
+        "Sys_counter": [
+            "counter_real_clk",
+            "counter_instr_clk",
+            "module",
+            "module"
+        ],
+        "module": [],
+        "counter_real_clk": [],
+        "counter_instr_clk": [],
+        "XADC_INST_des": [],
+        "cachefsm": [],
+        "cpu": [
+            "irq_interface",
+            "fet_dec_ex_mem"
+        ],
+        "csr": [],
+        "dcache_biu": [
+            "dcache_top"
+        ],
+        "dcache_dpram": [
+            "tlb"
+        ],
+        "dcache_ram_fsm": [],
+        "dcache_top": [
+            "dcache_ram_fsm",
+            "dcache_dpram"
+        ],
+        "debouce": [],
+        "added": [],
+        "ext_emulator": [],
+        "ext_emulator_secded": [
+            "secded"
+        ],
+        "fet_dec_ex_mem": [
+            "IF_ID_EX",
+            "dcache_biu",
+            "mem_hier"
+        ],
+        "icache": [],
+        "intercon": [
+            "wb_mux"
+        ],
+        "Submodules": [],
+        "interrupt_main": [],
+        "irq_interface": [],
+        "LCD": [],
+        "mem_hier": [
+            "or1200_wb_biu1",
+            "icache",
+            "cachefsm"
+        ],
+        "PP_LOW": [
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "PP_LOW",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module",
+            "module"
+        ],
+        "or1200_amultp2_32x32": [],
+        "divider": [],
+        "or1200_wb_biu": [],
+        "raminfr": [],
+        "secded": [],
+        "takes": [],
+        "uart_debug_if": [],
+        "uart_receiver": [
+            "uart_rfifo"
+        ],
+        "uart_regs": [
+            "uart_transmitter",
+            "uart_sync_flops",
+            "uart_receiver",
+            "uart_receiver"
+        ],
+        "wire": [],
+        "uart_rfifo": [
+            "raminfr"
+        ],
+        "uart_sync_flops": [],
+        "uart_tfifo": [
+            "raminfr"
+        ],
+        "uart_top": [
+            "uart_wb",
+            "uart_wb",
+            "uart_regs",
+            "uart_debug_if"
+        ],
+        "uart_wb": [],
+        "uart_transmitter": [
+            "uart_tfifo"
+        ],
+        "wb_arbiter": [],
+        "wb_bus_ctrl": [],
+        "wb_mux": [],
+        "or1200_wb_biu1": [],
+        "BTB_PLRU": [],
+        "Branch_Prediction_Unit": [
+            "Branch_Target_Buff",
+            "Return_Addr_Stack"
+        ],
+        "Branch_Target_Buff": [
+            "BTB_PLRU"
+        ],
+        "Direction_Predictor": [],
+        "Return_Addr_Stack": [],
+        "DECODE": [],
+        "commands": [],
+        "EXECUTE": [
+            "divider"
+        ],
+        "IF_ID_EX": [
+            "INST_FETCH",
+            "DECODE",
+            "EXECUTE",
+            "FP_EXECUTE",
+            "REG_FILE",
+            "FP_REG_FILE",
+            "Sys_counter",
+            "csr",
+            "irq_interface",
+            "interrupt_main"
+        ],
+        "INST_FETCH": [],
+        "REG_FILE": [],
+        "EVA_ArgSort": [
+            "seq",
+            "block"
+        ],
+        "EVA_update": [
+            "div_18",
+            "div_18",
+            "div_18",
+            "div_4_14",
+            "div_4_14",
+            "div_4_14",
+            "div_4_14",
+            "div_5_15",
+            "EVA_ArgSort"
+        ],
+        "access_ctr": [],
+        "addr_cal": [],
+        "age_set_ctr": [],
+        "block": [],
+        "class_bit": [],
+        "ctr_update": [
+            "eviction_ctr",
+            "class_bit",
+            "age_set_ctr",
+            "access_ctr"
+        ],
+        "div_18": [],
+        "div_4_14": [],
+        "div_5_15": [],
+        "eviction_ctr": [],
+        "hit_ctr": [],
+        "replacement_algo": [
+            "ctr_update",
+            "EVA_update",
+            "addr_cal"
+        ],
+        "seq": [],
+        "FP_DECODE": [],
+        "FP_EXECUTE": [],
+        "FP_REG_FILE": [],
+        "ADD": [
+            "FPAdd_8_23_comb_uid2",
+            "FPAdd_11_52_comb_uid2"
+        ],
+        "COMPARE": [
+            "Compare"
+        ],
+        "CONVERT": [
+            "FP_to_int",
+            "int_to_FP",
+            "SIGN_INJECTION",
+            "FP_to_FP"
+        ],
+        "Compare": [],
+        "DIV": [
+            "FPDiv_8_23_comb_uid2",
+            "FPDiv_11_52_comb_uid2"
+        ],
+        "FPU": [
+            "MULT",
+            "DIV",
+            "SQRT",
+            "COMPARE",
+            "CONVERT",
+            "TRANSFER",
+            "IEEE_TO_FLOPOCO_DP",
+            "IEEE_TO_FLOPOCO_SP",
+            "IEEE_TO_FLOPOCO_DP",
+            "IEEE_TO_FLOPOCO_SP",
+            "IEEE_TO_FLOPOCO_DP",
+            "IEEE_TO_FLOPOCO_SP",
+            "FLOPOCO_TO_IEEE_DP",
+            "FLOPOCO_TO_IEEE_SP"
+        ],
+        "FP_to_FP": [],
+        "FP_to_int": [],
+        "LZC": [
+            "module"
+        ],
+        "MULT": [
+            "FPMult_8_23_8_23_8_23_comb_uid2",
+            "FPMult_11_52_11_52_11_52_comb_uid2"
+        ],
+        "Rounding_Mode_SP": [
+            "module"
+        ],
+        "SIGN_INJECTION": [],
+        "SQRT": [
+            "FPSqrt_8_23",
+            "FPSqrt_11_52"
+        ],
+        "TRANSFER": [],
+        "int_to_FP": [
+            "LZC"
+        ],
+        "iregisters": [],
+        "ilru": [],
+        "itlb": [
+            "iregisters",
+            "ilru",
+            "replacement_algo"
+        ],
+        "Registers": [],
+        "lru": [],
+        "tlb": [
+            "Registers",
+            "lru",
+            "replacement_algo"
+        ],
+        "v_wrapper": [
+            "wrapper"
+        ],
+        "vec_decoder": [],
+        "vector_top": [
+            "vec_decoder",
+            "v_wrapper"
+        ],
+        "FPGA_WRAPPER": [
+            "debouce",
+            "debouce",
+            "debouce",
+            "debouce",
+            "ext_emulator_secded",
+            "ext_emulator",
+            "uart_top",
+            "intercon",
+            "cpu",
+            "PWM",
+            "XADC_INST_des",
+            "LCD"
+        ],
+        "IEEE_TO_FLOPOCO_DP": [],
+        "IEEE_TO_FLOPOCO_SP": [],
+        "IntAdder_66_f400_uid4": [],
+        "RightShifter_53_by_max_55_comb_uid12": [],
+        "IntAdder_56_f400_uid16": [],
+        "LZCShifter_57_to_57_counting_64_comb_uid24": [],
+        "FPAdd_11_52_comb_uid2": [],
+        "SelFunctionTable_r4_comb_uid4": [],
+        "FPDiv_11_52_comb_uid2": [],
+        "FPDiv_8_23_comb_uid2": [],
+        "FLOPOCO_TO_IEEE_DP": [],
+        "FLOPOCO_TO_IEEE_SP": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid9": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid36": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid63": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid90": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid109": [],
+        "SmallMultTableP3x3r6XuYu_comb_uid128": [],
+        "Compressor_6_3": [],
+        "Compressor_14_3": [],
+        "Compressor_5_3": [],
+        "Compressor_4_3": [],
+        "Compressor_23_3": [],
+        "Compressor_13_3": [],
+        "Compressor_3_2": [],
+        "IntAdder_104_f400_uid549": [],
+        "IntMultiplier_UsingDSP_53_53_106_unsigned_comb_uid4": [],
+        "FPMult_11_52_11_52_11_52_comb_uid2": [],
+        "IntAdder_42_f400_uid15": [],
+        "IntMultiplier_UsingDSP_24_24_48_unsigned_comb_uid4": [],
+        "FPMult_8_23_8_23_8_23_comb_uid2": [],
+        "FPSqrt_11_52": [],
+        "FPSqrt_8_23": [],
+        "RightShifter_24_by_max_26_comb_uid4": [],
+        "IntAdder_27_f400_uid8": [],
+        "LZCShifter_28_to_28_counting_32_comb_uid16": [],
+        "FPAdd_8_23_comb_uid2": [],
+        "alu": [],
+        "count_gen": [],
+        "cpu_inf": [],
+        "dmem_xbar": [],
+        "exe_unit": [],
+        "lsu": [],
+        "multicycle_ops": [],
+        "stall_gen": [],
+        "vminmax": [],
+        "vrf_bank": [],
+        "wrapper": [],
+        "Xoutreg": []
+    },
+    "non_tb_files": [
+        "Source code/rtl/PWM.v",
+        "Source code/rtl/Sys_counter.v",
+        "Source code/rtl/XADC_rtl.v",
+        "Source code/rtl/cachefsm.v",
+        "Source code/rtl/cpu.v",
+        "Source code/rtl/csr.v",
+        "Source code/rtl/dcache_biu.v",
+        "Source code/rtl/dcache_dpram.v",
+        "Source code/rtl/dcache_ram_fsm.v",
+        "Source code/rtl/dcache_top.v",
+        "Source code/rtl/debouce.v",
+        "Source code/rtl/defines.v",
+        "Source code/rtl/ext_emulator.v",
+        "Source code/rtl/ext_emulator_secded.v",
+        "Source code/rtl/fet_dec_ex_mem.v",
+        "Source code/rtl/icache.v",
+        "Source code/rtl/intercon.v",
+        "Source code/rtl/interrupt_main.v",
+        "Source code/rtl/irq_interface.v",
+        "Source code/rtl/lcd.v",
+        "Source code/rtl/mem_hier.v",
+        "Source code/rtl/or1200_amultp2_32x32.v",
+        "Source code/rtl/or1200_fpu_div.v",
+        "Source code/rtl/or1200_wb_biu.v",
+        "Source code/rtl/raminfr.v",
+        "Source code/rtl/secded.v",
+        "Source code/rtl/timescale.v",
+        "Source code/rtl/uart_debug_if.v",
+        "Source code/rtl/uart_defines.v",
+        "Source code/rtl/uart_receiver.v",
+        "Source code/rtl/uart_regs.v",
+        "Source code/rtl/uart_rfifo.v",
+        "Source code/rtl/uart_sync_flops.v",
+        "Source code/rtl/uart_tfifo.v",
+        "Source code/rtl/uart_top.v",
+        "Source code/rtl/uart_transmitter.v",
+        "Source code/rtl/uart_wb.v",
+        "Source code/rtl/wb_arbiter.v",
+        "Source code/rtl/wb_bus_ctrl.v",
+        "Source code/rtl/wb_mux.v",
+        "Source code/rtl/wishbone.v",
+        "Source code/rtl/BPU/Branch_Prediction_Unit.v",
+        "Source code/rtl/BPU/Branch_Target_Buff.v",
+        "Source code/rtl/BPU/Direction_Predictor.v",
+        "Source code/rtl/BPU/Return_Addr_Stack.v",
+        "Source code/rtl/CPU/DECODE.v",
+        "Source code/rtl/CPU/EXECUTE.v",
+        "Source code/rtl/CPU/IF_ID_EX.v",
+        "Source code/rtl/CPU/INST_FETCH.v",
+        "Source code/rtl/CPU/REG_FILE.v",
+        "Source code/rtl/EVA/EVA_ArgSort.v",
+        "Source code/rtl/EVA/EVA_update.v",
+        "Source code/rtl/EVA/access_ctr.v",
+        "Source code/rtl/EVA/addr_cal.v",
+        "Source code/rtl/EVA/age_set_ctr.v",
+        "Source code/rtl/EVA/block.v",
+        "Source code/rtl/EVA/class_bit.v",
+        "Source code/rtl/EVA/ctr_update.v",
+        "Source code/rtl/EVA/div_18.v",
+        "Source code/rtl/EVA/div_4_14.v",
+        "Source code/rtl/EVA/div_5_15.v",
+        "Source code/rtl/EVA/eviction_ctr.v",
+        "Source code/rtl/EVA/hit_ctr.v",
+        "Source code/rtl/EVA/replacement_algo.v",
+        "Source code/rtl/EVA/seq.v",
+        "Source code/rtl/FPU/FP_DECODE.v",
+        "Source code/rtl/FPU/FP_EXECUTE.v",
+        "Source code/rtl/FPU/FP_REG_FILE.v",
+        "Source code/rtl/FPU/fpu/ADD.v",
+        "Source code/rtl/FPU/fpu/COMPARE_1.v",
+        "Source code/rtl/FPU/fpu/CONVERT.v",
+        "Source code/rtl/FPU/fpu/Compare.v",
+        "Source code/rtl/FPU/fpu/DIV.v",
+        "Source code/rtl/FPU/fpu/FPU.v",
+        "Source code/rtl/FPU/fpu/FP_to_FP.v",
+        "Source code/rtl/FPU/fpu/FP_to_int.v",
+        "Source code/rtl/FPU/fpu/LZC.v",
+        "Source code/rtl/FPU/fpu/MULT.v",
+        "Source code/rtl/FPU/fpu/Rounding_Mode.v",
+        "Source code/rtl/FPU/fpu/SIGN_INJECTION.v",
+        "Source code/rtl/FPU/fpu/SQRT.v",
+        "Source code/rtl/FPU/fpu/TRANSFER.v",
+        "Source code/rtl/FPU/fpu/int_to_FP.v",
+        "Source code/rtl/ITLB/icam.v",
+        "Source code/rtl/ITLB/ilru.v",
+        "Source code/rtl/ITLB/itlb.v",
+        "Source code/rtl/tlb/cam.v",
+        "Source code/rtl/tlb/lru.v",
+        "Source code/rtl/tlb/tlb.v",
+        "Source code/rtl/vector_unit/v_wrapper.v",
+        "Source code/rtl/vector_unit/vec_decoder.v",
+        "Source code/rtl/vector_unit/vector_top.v",
+        "Source code/rtl/FPU/fpu/IEEE_to_flopoco_DP.vhdl",
+        "Source code/rtl/FPU/fpu/IEEE_to_flopoco_SP.vhdl",
+        "Source code/rtl/FPU/fpu/add_DP.vhdl",
+        "Source code/rtl/FPU/fpu/div_DP.vhdl",
+        "Source code/rtl/FPU/fpu/div_SP.vhdl",
+        "Source code/rtl/FPU/fpu/flopoco_to_IEEE_DP.vhdl",
+        "Source code/rtl/FPU/fpu/flopoco_to_IEEE_SP.vhdl",
+        "Source code/rtl/FPU/fpu/mul_DP.vhdl",
+        "Source code/rtl/FPU/fpu/mul_SP.vhdl",
+        "Source code/rtl/FPU/fpu/sqrt_DP.vhdl",
+        "Source code/rtl/FPU/fpu/sqrt_SP.vhdl",
+        "Source code/rtl/FPU/fpu/add_SP.vhd",
+        "Source code/rtl/vector_unit/alu.vhd",
+        "Source code/rtl/vector_unit/count_gen.vhd",
+        "Source code/rtl/vector_unit/cpu_inf.vhd",
+        "Source code/rtl/vector_unit/dmem_addr_xbar.vhd",
+        "Source code/rtl/vector_unit/exe_unit.vhd",
+        "Source code/rtl/vector_unit/lsu.vhd",
+        "Source code/rtl/vector_unit/multicycle_ops.vhd",
+        "Source code/rtl/vector_unit/mypack.vhd",
+        "Source code/rtl/vector_unit/stall_gen.vhd",
+        "Source code/rtl/vector_unit/vminmax.vhd",
+        "Source code/rtl/vector_unit/vrf_bank.vhd",
+        "Source code/rtl/vector_unit/wrapper.vhd",
+        "Source code/rtl/vector_unit/xoutreg.vhd"
+    ]
+}

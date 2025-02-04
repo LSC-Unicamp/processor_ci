@@ -1,0 +1,1811 @@
+{
+    "name": "",
+    "folder": "",
+    "sim_files": [
+        "FabScalar/cores/core-test/FabScalarParam.v",
+        "FabScalar/cores/core-test/ISA/SimpleScalar_ISA.v",
+        "FabScalar/cores/core-test/decode/Decode.v",
+        "FabScalar/cores/core-test/decode/DecodeRename.v",
+        "FabScalar/cores/core-test/decode/Decode_PISA.v",
+        "FabScalar/cores/core-test/decode/InstBufRename.v",
+        "FabScalar/cores/core-test/decode/InstructionBuffer.v",
+        "FabScalar/cores/core-test/decode/PreDecode_PISA.v",
+        "FabScalar/cores/core-test/dispatch/Dispatch.v",
+        "FabScalar/cores/core-test/execute/AGEN.v",
+        "FabScalar/cores/core-test/execute/AgenLsu.v",
+        "FabScalar/cores/core-test/execute/Complex_ALU.v",
+        "FabScalar/cores/core-test/execute/Ctrl_ALU.v",
+        "FabScalar/cores/core-test/execute/Execute.v",
+        "FabScalar/cores/core-test/execute/ForwardCheck.v",
+        "FabScalar/cores/core-test/execute/Simple_ALU.v",
+        "FabScalar/cores/core-test/execute/fu0.v",
+        "FabScalar/cores/core-test/execute/fu1.v",
+        "FabScalar/cores/core-test/execute/fu2.v",
+        "FabScalar/cores/core-test/execute/fu3.v",
+        "FabScalar/cores/core-test/fabscalar/FABSCALAR.v",
+        "FabScalar/cores/core-test/fabscalar/Interface.v",
+        "FabScalar/cores/core-test/fabscalar/simulate.v",
+        "FabScalar/cores/core-test/fetch/BTB.v",
+        "FabScalar/cores/core-test/fetch/BranchPrediction_2-bit.v",
+        "FabScalar/cores/core-test/fetch/CtrlQueue.v",
+        "FabScalar/cores/core-test/fetch/Fetch1Fetch2.v",
+        "FabScalar/cores/core-test/fetch/Fetch2Decode.v",
+        "FabScalar/cores/core-test/fetch/FetchStage1.v",
+        "FabScalar/cores/core-test/fetch/FetchStage2.v",
+        "FabScalar/cores/core-test/fetch/L1ICache.v",
+        "FabScalar/cores/core-test/fetch/RAS.v",
+        "FabScalar/cores/core-test/fetch/SelectInst.v",
+        "FabScalar/cores/core-test/issue/IssueQFreeList.v",
+        "FabScalar/cores/core-test/issue/IssueQSelect.v",
+        "FabScalar/cores/core-test/issue/IssueQueue.v",
+        "FabScalar/cores/core-test/issue/RSR.v",
+        "FabScalar/cores/core-test/issue/RegRead.v",
+        "FabScalar/cores/core-test/issue/RegReadExecute.v",
+        "FabScalar/cores/core-test/issue/issueqRegRead.v",
+        "FabScalar/cores/core-test/memory/CommitLoad.v",
+        "FabScalar/cores/core-test/memory/CommitStore.v",
+        "FabScalar/cores/core-test/memory/DispatchedLoad.v",
+        "FabScalar/cores/core-test/memory/DispatchedStore.v",
+        "FabScalar/cores/core-test/memory/L1DataCache.v",
+        "FabScalar/cores/core-test/memory/LoadStoreUnit.v",
+        "FabScalar/cores/core-test/pmems/CAM_4R4W.v",
+        "FabScalar/cores/core-test/pmems/SRAM.v",
+        "FabScalar/cores/core-test/pmems/SRAM_4R4W_AMT.v",
+        "FabScalar/cores/core-test/pmems/SRAM_4R4W_FREELIST.v",
+        "FabScalar/cores/core-test/pmems/SRAM_4R8W.v",
+        "FabScalar/cores/core-test/pmems/SRAM_8R4W_PIPE.v",
+        "FabScalar/cores/core-test/pmems/SRAM_8R4W_PIPE_NEXT.v",
+        "FabScalar/cores/core-test/pmems/SRAM_8R4W_RMT.v",
+        "FabScalar/cores/core-test/rename/Rename.v",
+        "FabScalar/cores/core-test/rename/RenameDispatch.v",
+        "FabScalar/cores/core-test/rename/RenameMapTable.v",
+        "FabScalar/cores/core-test/rename/SpecFreeList.v",
+        "FabScalar/cores/core-test/retire/ActiveList.v",
+        "FabScalar/cores/core-test/retire/ArchMapTable.v",
+        "FabScalar/cores/core-test/writeback/WriteBack.v",
+        "FabScalar/tools/FabGen/decode/InstBufRename_1w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstBufRename_2w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstBufRename_3w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstBufRename_4w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstBufRename_5w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstBufRename_6w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstBufRename_7w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstBufRename_8w_1d.v"
+    ],
+    "files": [
+        "FabScalar/tools/FabGen/common/SimpleScalar_ISA.v",
+        "FabScalar/tools/FabGen/common/simulate_rrd1.v",
+        "FabScalar/tools/FabGen/common/simulate_rrd2.v",
+        "FabScalar/tools/FabGen/common/simulate_rrd3.v",
+        "FabScalar/tools/FabGen/common/simulate_rrd4.v",
+        "FabScalar/tools/FabGen/decode/Decode_PISA.v",
+        "FabScalar/tools/FabGen/decode/Decode_w1_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w1_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w2_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w2_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w3_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w3_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w4_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w4_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w5_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w5_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w6_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w6_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w7_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w7_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w8_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w8_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_1w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_2w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_3w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_4w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_5w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_6w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_7w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_8w_1d.v",
+        "FabScalar/tools/FabGen/decode/PreDecode_PISA.v",
+        "FabScalar/tools/FabGen/decode/PreDecode_PISA_ba.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w1_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w2_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w3_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w4_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w5_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w6_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w7_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w8_d1.v",
+        "FabScalar/tools/FabGen/fabscalar/Interface.v",
+        "FabScalar/tools/FabGen/fetch/CtrlQueue_ba.v",
+        "FabScalar/tools/FabGen/fetch/Fetch1aFetch1b_ba.v",
+        "FabScalar/tools/FabGen/fetch/Fetch1a_ba.v",
+        "FabScalar/tools/FabGen/fetch/L1ICache.v",
+        "FabScalar/tools/FabGen/fetch/RAS.v",
+        "FabScalar/tools/FabGen/fetch/RAS_ba.v",
+        "FabScalar/tools/FabGen/fetch/SAS_ba.v",
+        "FabScalar/tools/FabGen/fetch/SRAM.v",
+        "FabScalar/tools/FabGen/fetch/SRAM_ba.v",
+        "FabScalar/tools/FabGen/fetch/SelectInst.v",
+        "FabScalar/tools/FabGen/memory/CommitLoad.v",
+        "FabScalar/tools/FabGen/memory/CommitStore.v",
+        "FabScalar/tools/FabGen/memory/L1DataCache.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w1_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w2_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w3_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w4_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w5_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w6_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w7_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w8_d1.v",
+        "FabScalar/tools/FabGen/retire/ActiveList.v",
+        "FabScalar/tools/FabGen/retire/ArchMapTable.v",
+        "FabScalar/tools/FabGen/retire/ArchMapTable_2w.v",
+        "FabScalar/tools/FabGen/retire/ArchMapTable_4w.v",
+        "FabScalar/tools/FabGen/retire/ArchMapTable_5w.v",
+        "FabScalar/tools/FabGen/retire/ArchMapTable_6w.v",
+        "FabScalar/tools/FabGen/retire/SRAM_4R4W_AMT.v",
+        "FabScalar/tools/FabGen/writeback/WriteBack4.v",
+        "FabScalar/tools/FabGen/writeback/WriteBack5.v",
+        "FabScalar/tools/FabGen/writeback/WriteBack6.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/tylerjaywilson/fabscalar/",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "Decode",
+            "file": "FabScalar/cores/core-test/decode/Decode.v"
+        },
+        {
+            "module": "DecodeRename",
+            "file": "FabScalar/cores/core-test/decode/DecodeRename.v"
+        },
+        {
+            "module": "Decode_PISA",
+            "file": "FabScalar/cores/core-test/decode/Decode_PISA.v"
+        },
+        {
+            "module": "InstBufRename",
+            "file": "FabScalar/cores/core-test/decode/InstBufRename.v"
+        },
+        {
+            "module": "InstructionBuffer",
+            "file": "FabScalar/cores/core-test/decode/InstructionBuffer.v"
+        },
+        {
+            "module": "PreDecode_PISA",
+            "file": "FabScalar/cores/core-test/decode/PreDecode_PISA.v"
+        },
+        {
+            "module": "dispatches",
+            "file": "FabScalar/cores/core-test/dispatch/Dispatch.v"
+        },
+        {
+            "module": "Dispatch",
+            "file": "FabScalar/cores/core-test/dispatch/Dispatch.v"
+        },
+        {
+            "module": "AGEN",
+            "file": "FabScalar/cores/core-test/execute/AGEN.v"
+        },
+        {
+            "module": "AgenLsu",
+            "file": "FabScalar/cores/core-test/execute/AgenLsu.v"
+        },
+        {
+            "module": "Complex_ALU",
+            "file": "FabScalar/cores/core-test/execute/Complex_ALU.v"
+        },
+        {
+            "module": "Ctrl_ALU",
+            "file": "FabScalar/cores/core-test/execute/Ctrl_ALU.v"
+        },
+        {
+            "module": "Execute",
+            "file": "FabScalar/cores/core-test/execute/Execute.v"
+        },
+        {
+            "module": "ForwardCheck",
+            "file": "FabScalar/cores/core-test/execute/ForwardCheck.v"
+        },
+        {
+            "module": "Simple_ALU",
+            "file": "FabScalar/cores/core-test/execute/Simple_ALU.v"
+        },
+        {
+            "module": "FU0",
+            "file": "FabScalar/cores/core-test/execute/fu0.v"
+        },
+        {
+            "module": "FU1",
+            "file": "FabScalar/cores/core-test/execute/fu1.v"
+        },
+        {
+            "module": "FU2",
+            "file": "FabScalar/cores/core-test/execute/fu2.v"
+        },
+        {
+            "module": "FU3",
+            "file": "FabScalar/cores/core-test/execute/fu3.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "FABSCALAR",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "wire",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "provides",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "contains",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "contains",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "also",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "decodes",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "decouples",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "contains",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "remaps",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "contains",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "dispatches",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "also",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "has",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "has",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "has",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "writes",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "also",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "has",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "interfaces",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "interfaces",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "interfaces",
+            "file": "FabScalar/cores/core-test/fabscalar/FABSCALAR.v"
+        },
+        {
+            "module": "Interface",
+            "file": "FabScalar/cores/core-test/fabscalar/Interface.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/cores/core-test/fabscalar/simulate.v"
+        },
+        {
+            "module": "simulate",
+            "file": "FabScalar/cores/core-test/fabscalar/simulate.v"
+        },
+        {
+            "module": "BTB",
+            "file": "FabScalar/cores/core-test/fetch/BTB.v"
+        },
+        {
+            "module": "BranchPrediction",
+            "file": "FabScalar/cores/core-test/fetch/BranchPrediction_2-bit.v"
+        },
+        {
+            "module": "CtrlQueue",
+            "file": "FabScalar/cores/core-test/fetch/CtrlQueue.v"
+        },
+        {
+            "module": "Fetch1Fetch2",
+            "file": "FabScalar/cores/core-test/fetch/Fetch1Fetch2.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/fetch/Fetch2Decode.v"
+        },
+        {
+            "module": "Fetch2Decode",
+            "file": "FabScalar/cores/core-test/fetch/Fetch2Decode.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/fetch/FetchStage1.v"
+        },
+        {
+            "module": "FetchStage1",
+            "file": "FabScalar/cores/core-test/fetch/FetchStage1.v"
+        },
+        {
+            "module": "generates",
+            "file": "FabScalar/cores/core-test/fetch/FetchStage1.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/fetch/FetchStage2.v"
+        },
+        {
+            "module": "FetchStage2",
+            "file": "FabScalar/cores/core-test/fetch/FetchStage2.v"
+        },
+        {
+            "module": "L1ICache",
+            "file": "FabScalar/cores/core-test/fetch/L1ICache.v"
+        },
+        {
+            "module": "RAS",
+            "file": "FabScalar/cores/core-test/fetch/RAS.v"
+        },
+        {
+            "module": "SelectInst",
+            "file": "FabScalar/cores/core-test/fetch/SelectInst.v"
+        },
+        {
+            "module": "IssueQFreeList",
+            "file": "FabScalar/cores/core-test/issue/IssueQFreeList.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/cores/core-test/issue/IssueQFreeList.v"
+        },
+        {
+            "module": "to",
+            "file": "FabScalar/cores/core-test/issue/IssueQFreeList.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/cores/core-test/issue/IssueQFreeList.v"
+        },
+        {
+            "module": "Select",
+            "file": "FabScalar/cores/core-test/issue/IssueQSelect.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/cores/core-test/issue/IssueQSelect.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/cores/core-test/issue/IssueQSelect.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/cores/core-test/issue/IssueQSelect.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/cores/core-test/issue/IssueQSelect.v"
+        },
+        {
+            "module": "IssueQueue",
+            "file": "FabScalar/cores/core-test/issue/IssueQueue.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/issue/RSR.v"
+        },
+        {
+            "module": "receives",
+            "file": "FabScalar/cores/core-test/issue/RSR.v"
+        },
+        {
+            "module": "RSR2",
+            "file": "FabScalar/cores/core-test/issue/RSR.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/issue/RegRead.v"
+        },
+        {
+            "module": "RegRead",
+            "file": "FabScalar/cores/core-test/issue/RegRead.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/issue/RegReadExecute.v"
+        },
+        {
+            "module": "RegReadExecute",
+            "file": "FabScalar/cores/core-test/issue/RegReadExecute.v"
+        },
+        {
+            "module": "IssueqRegRead",
+            "file": "FabScalar/cores/core-test/issue/issueqRegRead.v"
+        },
+        {
+            "module": "CommitLoad",
+            "file": "FabScalar/cores/core-test/memory/CommitLoad.v"
+        },
+        {
+            "module": "CommitStore",
+            "file": "FabScalar/cores/core-test/memory/CommitStore.v"
+        },
+        {
+            "module": "DispatchedLoad",
+            "file": "FabScalar/cores/core-test/memory/DispatchedLoad.v"
+        },
+        {
+            "module": "DispatchedStore",
+            "file": "FabScalar/cores/core-test/memory/DispatchedStore.v"
+        },
+        {
+            "module": "L1DataCache",
+            "file": "FabScalar/cores/core-test/memory/L1DataCache.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/memory/LoadStoreUnit.v"
+        },
+        {
+            "module": "LSU",
+            "file": "FabScalar/cores/core-test/memory/LoadStoreUnit.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/pmems/CAM_4R4W.v"
+        },
+        {
+            "module": "CAM_4R4W",
+            "file": "FabScalar/cores/core-test/pmems/CAM_4R4W.v"
+        },
+        {
+            "module": "SRAM_1R1W",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "SRAM_4R4W_PAYLOAD",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "SRAM_4R4W",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "SRAM_4R4W",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "SRAM_4R1W",
+            "file": "FabScalar/cores/core-test/pmems/SRAM.v"
+        },
+        {
+            "module": "implemets",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_4R4W_AMT.v"
+        },
+        {
+            "module": "SRAM_4R4W_AMT",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_4R4W_AMT.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_4R4W_FREELIST.v"
+        },
+        {
+            "module": "SRAM_4R4W_FREELIST",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_4R4W_FREELIST.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_4R8W.v"
+        },
+        {
+            "module": "SRAM_4R8W",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_4R8W.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_8R4W_PIPE.v"
+        },
+        {
+            "module": "SRAM_8R4W_PIPE",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_8R4W_PIPE.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_8R4W_PIPE_NEXT.v"
+        },
+        {
+            "module": "SRAM_8R4W_PIPE_NEXT",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_8R4W_PIPE_NEXT.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_8R4W_RMT.v"
+        },
+        {
+            "module": "SRAM_8R4W_RMT",
+            "file": "FabScalar/cores/core-test/pmems/SRAM_8R4W_RMT.v"
+        },
+        {
+            "module": "Rename",
+            "file": "FabScalar/cores/core-test/rename/Rename.v"
+        },
+        {
+            "module": "RenameDispatch",
+            "file": "FabScalar/cores/core-test/rename/RenameDispatch.v"
+        },
+        {
+            "module": "RenameMapTable",
+            "file": "FabScalar/cores/core-test/rename/RenameMapTable.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/rename/SpecFreeList.v"
+        },
+        {
+            "module": "SpecFreeList",
+            "file": "FabScalar/cores/core-test/rename/SpecFreeList.v"
+        },
+        {
+            "module": "and",
+            "file": "FabScalar/cores/core-test/retire/ActiveList.v"
+        },
+        {
+            "module": "ActiveList",
+            "file": "FabScalar/cores/core-test/retire/ActiveList.v"
+        },
+        {
+            "module": "ArchMapTable",
+            "file": "FabScalar/cores/core-test/retire/ArchMapTable.v"
+        },
+        {
+            "module": "implements",
+            "file": "FabScalar/cores/core-test/writeback/WriteBack.v"
+        },
+        {
+            "module": "WriteBack",
+            "file": "FabScalar/cores/core-test/writeback/WriteBack.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/tools/FabGen/common/simulate_rrd1.v"
+        },
+        {
+            "module": "simulate",
+            "file": "FabScalar/tools/FabGen/common/simulate_rrd1.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/tools/FabGen/common/simulate_rrd2.v"
+        },
+        {
+            "module": "simulate",
+            "file": "FabScalar/tools/FabGen/common/simulate_rrd2.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/tools/FabGen/common/simulate_rrd3.v"
+        },
+        {
+            "module": "simulate",
+            "file": "FabScalar/tools/FabGen/common/simulate_rrd3.v"
+        },
+        {
+            "module": "is",
+            "file": "FabScalar/tools/FabGen/common/simulate_rrd4.v"
+        },
+        {
+            "module": "simulate",
+            "file": "FabScalar/tools/FabGen/common/simulate_rrd4.v"
+        },
+        {
+            "module": "Decode_PISA",
+            "file": "FabScalar/tools/FabGen/decode/Decode_PISA.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w1_d1.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w1_d1_ba.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w2_d1.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w2_d1_ba.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w3_d1.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w3_d1_ba.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w4_d1.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w4_d1_ba.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w5_d1.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w5_d1_ba.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w6_d1.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w6_d1_ba.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w7_d1.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w7_d1_ba.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w8_d1.v"
+        },
+        {
+            "module": "Decode",
+            "file": "FabScalar/tools/FabGen/decode/Decode_w8_d1_ba.v"
+        },
+        {
+            "module": "InstBufRename",
+            "file": "FabScalar/tools/FabGen/decode/InstBufRename_1w_1d.v"
+        },
+        {
+            "module": "InstBufRename",
+            "file": "FabScalar/tools/FabGen/decode/InstBufRename_2w_1d.v"
+        },
+        {
+            "module": "InstBufRename",
+            "file": "FabScalar/tools/FabGen/decode/InstBufRename_3w_1d.v"
+        },
+        {
+            "module": "InstBufRename",
+            "file": "FabScalar/tools/FabGen/decode/InstBufRename_4w_1d.v"
+        },
+        {
+            "module": "InstBufRename",
+            "file": "FabScalar/tools/FabGen/decode/InstBufRename_5w_1d.v"
+        },
+        {
+            "module": "InstBufRename",
+            "file": "FabScalar/tools/FabGen/decode/InstBufRename_6w_1d.v"
+        },
+        {
+            "module": "InstBufRename",
+            "file": "FabScalar/tools/FabGen/decode/InstBufRename_7w_1d.v"
+        },
+        {
+            "module": "InstBufRename",
+            "file": "FabScalar/tools/FabGen/decode/InstBufRename_8w_1d.v"
+        },
+        {
+            "module": "InstructionBuffer",
+            "file": "FabScalar/tools/FabGen/decode/InstructionBuffer_1w_1d.v"
+        },
+        {
+            "module": "InstructionBuffer",
+            "file": "FabScalar/tools/FabGen/decode/InstructionBuffer_2w_1d.v"
+        },
+        {
+            "module": "InstructionBuffer",
+            "file": "FabScalar/tools/FabGen/decode/InstructionBuffer_3w_1d.v"
+        },
+        {
+            "module": "InstructionBuffer",
+            "file": "FabScalar/tools/FabGen/decode/InstructionBuffer_4w_1d.v"
+        },
+        {
+            "module": "InstructionBuffer",
+            "file": "FabScalar/tools/FabGen/decode/InstructionBuffer_5w_1d.v"
+        },
+        {
+            "module": "InstructionBuffer",
+            "file": "FabScalar/tools/FabGen/decode/InstructionBuffer_6w_1d.v"
+        },
+        {
+            "module": "InstructionBuffer",
+            "file": "FabScalar/tools/FabGen/decode/InstructionBuffer_7w_1d.v"
+        },
+        {
+            "module": "InstructionBuffer",
+            "file": "FabScalar/tools/FabGen/decode/InstructionBuffer_8w_1d.v"
+        },
+        {
+            "module": "PreDecode_PISA",
+            "file": "FabScalar/tools/FabGen/decode/PreDecode_PISA.v"
+        },
+        {
+            "module": "PreDecode_PISA",
+            "file": "FabScalar/tools/FabGen/decode/PreDecode_PISA_ba.v"
+        },
+        {
+            "module": "dispatches",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w1_d1.v"
+        },
+        {
+            "module": "Dispatch",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w1_d1.v"
+        },
+        {
+            "module": "dispatches",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w2_d1.v"
+        },
+        {
+            "module": "Dispatch",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w2_d1.v"
+        },
+        {
+            "module": "dispatches",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w3_d1.v"
+        },
+        {
+            "module": "Dispatch",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w3_d1.v"
+        },
+        {
+            "module": "dispatches",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w4_d1.v"
+        },
+        {
+            "module": "Dispatch",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w4_d1.v"
+        },
+        {
+            "module": "dispatches",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w5_d1.v"
+        },
+        {
+            "module": "Dispatch",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w5_d1.v"
+        },
+        {
+            "module": "dispatches",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w6_d1.v"
+        },
+        {
+            "module": "Dispatch",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w6_d1.v"
+        },
+        {
+            "module": "dispatches",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w7_d1.v"
+        },
+        {
+            "module": "Dispatch",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w7_d1.v"
+        },
+        {
+            "module": "dispatches",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w8_d1.v"
+        },
+        {
+            "module": "Dispatch",
+            "file": "FabScalar/tools/FabGen/dispatch/Dispatch_w8_d1.v"
+        },
+        {
+            "module": "Interface",
+            "file": "FabScalar/tools/FabGen/fabscalar/Interface.v"
+        },
+        {
+            "module": "CtrlQueue",
+            "file": "FabScalar/tools/FabGen/fetch/CtrlQueue_ba.v"
+        },
+        {
+            "module": "Fetch1aFetch1b",
+            "file": "FabScalar/tools/FabGen/fetch/Fetch1aFetch1b_ba.v"
+        },
+        {
+            "module": "FetchStage1a",
+            "file": "FabScalar/tools/FabGen/fetch/Fetch1a_ba.v"
+        },
+        {
+            "module": "L1ICache",
+            "file": "FabScalar/tools/FabGen/fetch/L1ICache.v"
+        },
+        {
+            "module": "RAS",
+            "file": "FabScalar/tools/FabGen/fetch/RAS.v"
+        },
+        {
+            "module": "RAS",
+            "file": "FabScalar/tools/FabGen/fetch/RAS_ba.v"
+        },
+        {
+            "module": "SAS",
+            "file": "FabScalar/tools/FabGen/fetch/SAS_ba.v"
+        },
+        {
+            "module": "SRAM_1R1W",
+            "file": "FabScalar/tools/FabGen/fetch/SRAM.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/tools/FabGen/fetch/SRAM.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/tools/FabGen/fetch/SRAM.v"
+        },
+        {
+            "module": "SRAM_1R1W",
+            "file": "FabScalar/tools/FabGen/fetch/SRAM_ba.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/tools/FabGen/fetch/SRAM_ba.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/tools/FabGen/fetch/SRAM_ba.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/tools/FabGen/fetch/SRAM_ba.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/tools/FabGen/fetch/SRAM_ba.v"
+        },
+        {
+            "module": "module",
+            "file": "FabScalar/tools/FabGen/fetch/SRAM_ba.v"
+        },
+        {
+            "module": "SelectInst",
+            "file": "FabScalar/tools/FabGen/fetch/SelectInst.v"
+        },
+        {
+            "module": "CommitLoad",
+            "file": "FabScalar/tools/FabGen/memory/CommitLoad.v"
+        },
+        {
+            "module": "CommitStore",
+            "file": "FabScalar/tools/FabGen/memory/CommitStore.v"
+        },
+        {
+            "module": "L1DataCache",
+            "file": "FabScalar/tools/FabGen/memory/L1DataCache.v"
+        },
+        {
+            "module": "RenameDispatch",
+            "file": "FabScalar/tools/FabGen/rename/RenameDispatch_w1_d1.v"
+        },
+        {
+            "module": "RenameDispatch",
+            "file": "FabScalar/tools/FabGen/rename/RenameDispatch_w2_d1.v"
+        },
+        {
+            "module": "RenameDispatch",
+            "file": "FabScalar/tools/FabGen/rename/RenameDispatch_w3_d1.v"
+        },
+        {
+            "module": "RenameDispatch",
+            "file": "FabScalar/tools/FabGen/rename/RenameDispatch_w4_d1.v"
+        },
+        {
+            "module": "RenameDispatch",
+            "file": "FabScalar/tools/FabGen/rename/RenameDispatch_w5_d1.v"
+        },
+        {
+            "module": "RenameDispatch",
+            "file": "FabScalar/tools/FabGen/rename/RenameDispatch_w6_d1.v"
+        },
+        {
+            "module": "RenameDispatch",
+            "file": "FabScalar/tools/FabGen/rename/RenameDispatch_w7_d1.v"
+        },
+        {
+            "module": "RenameDispatch",
+            "file": "FabScalar/tools/FabGen/rename/RenameDispatch_w8_d1.v"
+        },
+        {
+            "module": "and",
+            "file": "FabScalar/tools/FabGen/retire/ActiveList.v"
+        },
+        {
+            "module": "ActiveList",
+            "file": "FabScalar/tools/FabGen/retire/ActiveList.v"
+        },
+        {
+            "module": "ArchMapTable",
+            "file": "FabScalar/tools/FabGen/retire/ArchMapTable.v"
+        },
+        {
+            "module": "ArchMapTable",
+            "file": "FabScalar/tools/FabGen/retire/ArchMapTable_2w.v"
+        },
+        {
+            "module": "ArchMapTable",
+            "file": "FabScalar/tools/FabGen/retire/ArchMapTable_4w.v"
+        },
+        {
+            "module": "ArchMapTable",
+            "file": "FabScalar/tools/FabGen/retire/ArchMapTable_5w.v"
+        },
+        {
+            "module": "ArchMapTable",
+            "file": "FabScalar/tools/FabGen/retire/ArchMapTable_6w.v"
+        },
+        {
+            "module": "SRAM_4R4W_AMT",
+            "file": "FabScalar/tools/FabGen/retire/SRAM_4R4W_AMT.v"
+        },
+        {
+            "module": "WriteBack",
+            "file": "FabScalar/tools/FabGen/writeback/WriteBack4.v"
+        },
+        {
+            "module": "WriteBack",
+            "file": "FabScalar/tools/FabGen/writeback/WriteBack5.v"
+        },
+        {
+            "module": "WriteBack",
+            "file": "FabScalar/tools/FabGen/writeback/WriteBack6.v"
+        }
+    ],
+    "module_graph": {
+        "Decode": [
+            "is"
+        ],
+        "DecodeRename": [],
+        "Decode_PISA": [
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode",
+            "Decode"
+        ],
+        "InstBufRename": [
+            "is"
+        ],
+        "InstructionBuffer": [
+            "is"
+        ],
+        "PreDecode_PISA": [
+            "implements",
+            "implements",
+            "implements",
+            "implements"
+        ],
+        "dispatches": [],
+        "Dispatch": [
+            "is"
+        ],
+        "AGEN": [],
+        "AgenLsu": [
+            "is"
+        ],
+        "Complex_ALU": [],
+        "Ctrl_ALU": [],
+        "Execute": [
+            "is"
+        ],
+        "ForwardCheck": [
+            "Execute",
+            "Execute",
+            "Execute",
+            "Execute",
+            "Execute",
+            "Execute",
+            "Execute",
+            "Execute"
+        ],
+        "Simple_ALU": [],
+        "FU0": [
+            "Execute",
+            "is",
+            "is",
+            "is",
+            "is",
+            "is"
+        ],
+        "FU1": [
+            "Execute"
+        ],
+        "FU2": [
+            "Execute",
+            "is",
+            "is",
+            "is",
+            "is",
+            "is"
+        ],
+        "FU3": [
+            "Execute",
+            "is",
+            "is",
+            "is",
+            "is",
+            "is"
+        ],
+        "is": [],
+        "FABSCALAR": [],
+        "wire": [],
+        "provides": [],
+        "contains": [],
+        "also": [],
+        "decodes": [],
+        "decouples": [],
+        "remaps": [],
+        "implements": [],
+        "has": [],
+        "writes": [],
+        "interfaces": [],
+        "Interface": [
+            "is"
+        ],
+        "simulate": [],
+        "BTB": [
+            "implements"
+        ],
+        "BranchPrediction": [
+            "implements"
+        ],
+        "CtrlQueue": [
+            "implements"
+        ],
+        "Fetch1Fetch2": [
+            "is"
+        ],
+        "Fetch2Decode": [
+            "is"
+        ],
+        "FetchStage1": [
+            "is"
+        ],
+        "generates": [],
+        "FetchStage2": [
+            "is"
+        ],
+        "L1ICache": [
+            "implements"
+        ],
+        "RAS": [],
+        "SelectInst": [
+            "implements"
+        ],
+        "IssueQFreeList": [
+            "IssueQueue"
+        ],
+        "module": [
+            "IssueQFreeList",
+            "IssueQFreeList",
+            "Select",
+            "Select",
+            "Select"
+        ],
+        "to": [
+            "and",
+            "and"
+        ],
+        "Select": [],
+        "IssueQueue": [
+            "is"
+        ],
+        "receives": [],
+        "RSR2": [
+            "IssueQueue"
+        ],
+        "RegRead": [
+            "is"
+        ],
+        "RegReadExecute": [
+            "is"
+        ],
+        "IssueqRegRead": [
+            "is"
+        ],
+        "CommitLoad": [
+            "implements"
+        ],
+        "CommitStore": [
+            "implements"
+        ],
+        "DispatchedLoad": [
+            "implements"
+        ],
+        "DispatchedStore": [
+            "implements"
+        ],
+        "L1DataCache": [
+            "implements"
+        ],
+        "LSU": [
+            "is"
+        ],
+        "CAM_4R4W": [
+            "IssueQueue",
+            "IssueQueue"
+        ],
+        "SRAM_1R1W": [
+            "BTB",
+            "BTB",
+            "BTB",
+            "BTB",
+            "BTB",
+            "BTB",
+            "BTB",
+            "BTB"
+        ],
+        "SRAM_4R4W_PAYLOAD": [
+            "IssueQueue"
+        ],
+        "SRAM_4R4W": [
+            "and",
+            "and",
+            "and",
+            "and",
+            "and",
+            "and"
+        ],
+        "SRAM_4R1W": [
+            "and",
+            "and"
+        ],
+        "implemets": [],
+        "SRAM_4R4W_AMT": [
+            "ArchMapTable",
+            "ArchMapTable",
+            "ArchMapTable",
+            "ArchMapTable"
+        ],
+        "SRAM_4R4W_FREELIST": [
+            "implements"
+        ],
+        "SRAM_4R8W": [
+            "InstructionBuffer",
+            "InstructionBuffer"
+        ],
+        "SRAM_8R4W_PIPE": [
+            "implements"
+        ],
+        "SRAM_8R4W_PIPE_NEXT": [],
+        "SRAM_8R4W_RMT": [
+            "RenameMapTable"
+        ],
+        "Rename": [
+            "is"
+        ],
+        "RenameDispatch": [
+            "is"
+        ],
+        "RenameMapTable": [
+            "Rename"
+        ],
+        "SpecFreeList": [
+            "Rename"
+        ],
+        "and": [],
+        "ActiveList": [
+            "is"
+        ],
+        "ArchMapTable": [
+            "is"
+        ],
+        "WriteBack": [
+            "is"
+        ],
+        "Fetch1aFetch1b": [],
+        "FetchStage1a": [],
+        "SAS": []
+    },
+    "module_graph_inverse": {
+        "Decode": [
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA",
+            "Decode_PISA"
+        ],
+        "DecodeRename": [],
+        "Decode_PISA": [],
+        "InstBufRename": [],
+        "InstructionBuffer": [
+            "SRAM_4R8W",
+            "SRAM_4R8W"
+        ],
+        "PreDecode_PISA": [],
+        "dispatches": [],
+        "Dispatch": [],
+        "AGEN": [],
+        "AgenLsu": [],
+        "Complex_ALU": [],
+        "Ctrl_ALU": [],
+        "Execute": [
+            "FU0",
+            "FU1",
+            "FU2",
+            "FU3",
+            "ForwardCheck",
+            "ForwardCheck",
+            "ForwardCheck",
+            "ForwardCheck",
+            "ForwardCheck",
+            "ForwardCheck",
+            "ForwardCheck",
+            "ForwardCheck"
+        ],
+        "ForwardCheck": [],
+        "Simple_ALU": [],
+        "FU0": [],
+        "FU1": [],
+        "FU2": [],
+        "FU3": [],
+        "is": [
+            "Interface",
+            "FetchStage1",
+            "Fetch1Fetch2",
+            "FetchStage2",
+            "Fetch2Decode",
+            "Decode",
+            "InstructionBuffer",
+            "InstBufRename",
+            "Rename",
+            "RenameDispatch",
+            "Dispatch",
+            "IssueQueue",
+            "IssueqRegRead",
+            "RegRead",
+            "RegReadExecute",
+            "Execute",
+            "WriteBack",
+            "AgenLsu",
+            "LSU",
+            "ActiveList",
+            "ArchMapTable",
+            "FU0",
+            "FU2",
+            "FU3",
+            "FU0",
+            "FU2",
+            "FU3",
+            "FU0",
+            "FU2",
+            "FU3",
+            "FU0",
+            "FU2",
+            "FU3",
+            "FU0",
+            "FU2",
+            "FU3"
+        ],
+        "FABSCALAR": [],
+        "wire": [],
+        "provides": [],
+        "contains": [],
+        "also": [],
+        "decodes": [],
+        "decouples": [],
+        "remaps": [],
+        "implements": [
+            "BTB",
+            "BranchPrediction",
+            "L1ICache",
+            "SelectInst",
+            "CtrlQueue",
+            "PreDecode_PISA",
+            "PreDecode_PISA",
+            "PreDecode_PISA",
+            "PreDecode_PISA",
+            "SRAM_8R4W_PIPE",
+            "L1DataCache",
+            "DispatchedLoad",
+            "DispatchedStore",
+            "CommitLoad",
+            "CommitStore",
+            "SRAM_4R4W_FREELIST"
+        ],
+        "has": [],
+        "writes": [],
+        "interfaces": [],
+        "Interface": [],
+        "simulate": [],
+        "BTB": [
+            "SRAM_1R1W",
+            "SRAM_1R1W",
+            "SRAM_1R1W",
+            "SRAM_1R1W",
+            "SRAM_1R1W",
+            "SRAM_1R1W",
+            "SRAM_1R1W",
+            "SRAM_1R1W"
+        ],
+        "BranchPrediction": [],
+        "CtrlQueue": [],
+        "Fetch1Fetch2": [],
+        "Fetch2Decode": [],
+        "FetchStage1": [],
+        "generates": [],
+        "FetchStage2": [],
+        "L1ICache": [],
+        "RAS": [],
+        "SelectInst": [],
+        "IssueQFreeList": [
+            "module",
+            "module"
+        ],
+        "module": [],
+        "to": [],
+        "Select": [
+            "module",
+            "module",
+            "module"
+        ],
+        "IssueQueue": [
+            "SRAM_4R4W_PAYLOAD",
+            "CAM_4R4W",
+            "CAM_4R4W",
+            "IssueQFreeList",
+            "RSR2"
+        ],
+        "receives": [],
+        "RSR2": [],
+        "RegRead": [],
+        "RegReadExecute": [],
+        "IssueqRegRead": [],
+        "CommitLoad": [],
+        "CommitStore": [],
+        "DispatchedLoad": [],
+        "DispatchedStore": [],
+        "L1DataCache": [],
+        "LSU": [],
+        "CAM_4R4W": [],
+        "SRAM_1R1W": [],
+        "SRAM_4R4W_PAYLOAD": [],
+        "SRAM_4R4W": [],
+        "SRAM_4R1W": [],
+        "implemets": [],
+        "SRAM_4R4W_AMT": [],
+        "SRAM_4R4W_FREELIST": [],
+        "SRAM_4R8W": [],
+        "SRAM_8R4W_PIPE": [],
+        "SRAM_8R4W_PIPE_NEXT": [],
+        "SRAM_8R4W_RMT": [],
+        "Rename": [
+            "SpecFreeList",
+            "RenameMapTable"
+        ],
+        "RenameDispatch": [],
+        "RenameMapTable": [
+            "SRAM_8R4W_RMT"
+        ],
+        "SpecFreeList": [],
+        "and": [
+            "SRAM_4R4W",
+            "SRAM_4R4W",
+            "SRAM_4R4W",
+            "SRAM_4R1W",
+            "to",
+            "SRAM_4R4W",
+            "SRAM_4R4W",
+            "SRAM_4R4W",
+            "SRAM_4R1W",
+            "to"
+        ],
+        "ActiveList": [],
+        "ArchMapTable": [
+            "SRAM_4R4W_AMT",
+            "SRAM_4R4W_AMT",
+            "SRAM_4R4W_AMT",
+            "SRAM_4R4W_AMT"
+        ],
+        "WriteBack": [],
+        "Fetch1aFetch1b": [],
+        "FetchStage1a": [],
+        "SAS": []
+    },
+    "non_tb_files": [
+        "FabScalar/tools/FabGen/common/SimpleScalar_ISA.v",
+        "FabScalar/tools/FabGen/common/simulate_rrd1.v",
+        "FabScalar/tools/FabGen/common/simulate_rrd2.v",
+        "FabScalar/tools/FabGen/common/simulate_rrd3.v",
+        "FabScalar/tools/FabGen/common/simulate_rrd4.v",
+        "FabScalar/tools/FabGen/decode/Decode_PISA.v",
+        "FabScalar/tools/FabGen/decode/Decode_w1_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w1_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w2_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w2_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w3_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w3_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w4_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w4_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w5_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w5_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w6_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w6_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w7_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w7_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/Decode_w8_d1.v",
+        "FabScalar/tools/FabGen/decode/Decode_w8_d1_ba.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_1w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_2w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_3w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_4w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_5w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_6w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_7w_1d.v",
+        "FabScalar/tools/FabGen/decode/InstructionBuffer_8w_1d.v",
+        "FabScalar/tools/FabGen/decode/PreDecode_PISA.v",
+        "FabScalar/tools/FabGen/decode/PreDecode_PISA_ba.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w1_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w2_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w3_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w4_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w5_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w6_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w7_d1.v",
+        "FabScalar/tools/FabGen/dispatch/Dispatch_w8_d1.v",
+        "FabScalar/tools/FabGen/fabscalar/Interface.v",
+        "FabScalar/tools/FabGen/fetch/CtrlQueue_ba.v",
+        "FabScalar/tools/FabGen/fetch/Fetch1aFetch1b_ba.v",
+        "FabScalar/tools/FabGen/fetch/Fetch1a_ba.v",
+        "FabScalar/tools/FabGen/fetch/L1ICache.v",
+        "FabScalar/tools/FabGen/fetch/RAS.v",
+        "FabScalar/tools/FabGen/fetch/RAS_ba.v",
+        "FabScalar/tools/FabGen/fetch/SAS_ba.v",
+        "FabScalar/tools/FabGen/fetch/SRAM.v",
+        "FabScalar/tools/FabGen/fetch/SRAM_ba.v",
+        "FabScalar/tools/FabGen/fetch/SelectInst.v",
+        "FabScalar/tools/FabGen/memory/CommitLoad.v",
+        "FabScalar/tools/FabGen/memory/CommitStore.v",
+        "FabScalar/tools/FabGen/memory/L1DataCache.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w1_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w2_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w3_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w4_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w5_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w6_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w7_d1.v",
+        "FabScalar/tools/FabGen/rename/RenameDispatch_w8_d1.v",
+        "FabScalar/tools/FabGen/retire/ActiveList.v",
+        "FabScalar/tools/FabGen/retire/ArchMapTable.v",
+        "FabScalar/tools/FabGen/retire/ArchMapTable_2w.v",
+        "FabScalar/tools/FabGen/retire/ArchMapTable_4w.v",
+        "FabScalar/tools/FabGen/retire/ArchMapTable_5w.v",
+        "FabScalar/tools/FabGen/retire/ArchMapTable_6w.v",
+        "FabScalar/tools/FabGen/retire/SRAM_4R4W_AMT.v",
+        "FabScalar/tools/FabGen/writeback/WriteBack4.v",
+        "FabScalar/tools/FabGen/writeback/WriteBack5.v",
+        "FabScalar/tools/FabGen/writeback/WriteBack6.v"
+    ]
+}

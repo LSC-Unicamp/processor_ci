@@ -1,0 +1,26 @@
+{
+    "name": "microrv32",
+    "folder": "microrv32",
+    "sim_files": [
+        "microrv32/vtb/rtl/MicroRV32Top_TB.v"
+    ],
+    "files": [],
+    "include_dirs": [],
+    "repository": "https://github.com/agra-uni-bremen/microrv32",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "MicroRV32Top_TB",
+            "file": "microrv32/vtb/rtl/MicroRV32Top_TB.v"
+        }
+    ],
+    "module_graph": {
+        "MicroRV32Top_TB": []
+    },
+    "module_graph_inverse": {
+        "MicroRV32Top_TB": []
+    },
+    "non_tb_files": []
+}

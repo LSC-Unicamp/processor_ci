@@ -1,0 +1,318 @@
+{
+    "name": "riscv-atom",
+    "folder": "riscv-atom",
+    "sim_files": [
+        "rtl/tb/HydrogenSoC_tb.v"
+    ],
+    "files": [
+        "rtl/core/Alu.v",
+        "rtl/core/AtomRV.v",
+        "rtl/core/AtomRV_wb.v",
+        "rtl/core/CSR_Unit.v",
+        "rtl/core/Decode.v",
+        "rtl/core/RVC_Aligner.v",
+        "rtl/core/RVC_Decoder.v",
+        "rtl/core/RegisterFile.v",
+        "rtl/soc/atombones/AtomBones.v",
+        "rtl/soc/hydrogensoc/HydrogenSoC.v",
+        "rtl/uncore/gpio/GPIO.v",
+        "rtl/uncore/gpio/GPIO_old.v",
+        "rtl/uncore/gpio/IOBuf.v",
+        "rtl/uncore/mem/DualPortRAM_wb.v",
+        "rtl/uncore/mem/SinglePortRAM_wb.v",
+        "rtl/uncore/mem/SinglePortROM_wb.v",
+        "rtl/uncore/spi/SPI_core.v",
+        "rtl/uncore/spi/SPI_wb.v",
+        "rtl/uncore/timer/Timer_wb.v",
+        "rtl/uncore/uart/FIFO_sync.v",
+        "rtl/uncore/uart/UART.v",
+        "rtl/uncore/uart/UART_core.v",
+        "rtl/uncore/uart/simpleuart.v",
+        "rtl/uncore/uart/simpleuart_wb.v",
+        "rtl/uncore/wishbone/Arbiter.v",
+        "rtl/uncore/wishbone/Arbiter2_wb.v",
+        "rtl/uncore/wishbone/Arbiter3_wb.v",
+        "rtl/uncore/wishbone/Crossbar5_wb.v",
+        "rtl/uncore/wishbone/Crossbar6_wb.v",
+        "rtl/uncore/wishbone/Crossbar_wb.v",
+        "rtl/uncore/wishbone/Priority_encoder.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/saursin/riscv-atom",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "Alu",
+            "file": "rtl/core/Alu.v"
+        },
+        {
+            "module": "AtomRV",
+            "file": "rtl/core/AtomRV.v"
+        },
+        {
+            "module": "AtomRV_wb",
+            "file": "rtl/core/AtomRV_wb.v"
+        },
+        {
+            "module": "CSR_Unit",
+            "file": "rtl/core/CSR_Unit.v"
+        },
+        {
+            "module": "Decode",
+            "file": "rtl/core/Decode.v"
+        },
+        {
+            "module": "RVC_Aligner",
+            "file": "rtl/core/RVC_Aligner.v"
+        },
+        {
+            "module": "RVC_Decoder",
+            "file": "rtl/core/RVC_Decoder.v"
+        },
+        {
+            "module": "RegisterFile",
+            "file": "rtl/core/RegisterFile.v"
+        },
+        {
+            "module": "AtomBones",
+            "file": "rtl/soc/atombones/AtomBones.v"
+        },
+        {
+            "module": "HydrogenSoC",
+            "file": "rtl/soc/hydrogensoc/HydrogenSoC.v"
+        },
+        {
+            "module": "isim_tb",
+            "file": "rtl/tb/HydrogenSoC_tb.v"
+        },
+        {
+            "module": "GPIO",
+            "file": "rtl/uncore/gpio/GPIO.v"
+        },
+        {
+            "module": "is",
+            "file": "rtl/uncore/gpio/GPIO_old.v"
+        },
+        {
+            "module": "GPIO_old",
+            "file": "rtl/uncore/gpio/GPIO_old.v"
+        },
+        {
+            "module": "IOBuf",
+            "file": "rtl/uncore/gpio/IOBuf.v"
+        },
+        {
+            "module": "DualPortRAM_wb",
+            "file": "rtl/uncore/mem/DualPortRAM_wb.v"
+        },
+        {
+            "module": "SinglePortRAM_wb",
+            "file": "rtl/uncore/mem/SinglePortRAM_wb.v"
+        },
+        {
+            "module": "SinglePortROM_wb",
+            "file": "rtl/uncore/mem/SinglePortROM_wb.v"
+        },
+        {
+            "module": "SPI_core",
+            "file": "rtl/uncore/spi/SPI_core.v"
+        },
+        {
+            "module": "SPI_wb",
+            "file": "rtl/uncore/spi/SPI_wb.v"
+        },
+        {
+            "module": "Timer_wb",
+            "file": "rtl/uncore/timer/Timer_wb.v"
+        },
+        {
+            "module": "FIFO_sync",
+            "file": "rtl/uncore/uart/FIFO_sync.v"
+        },
+        {
+            "module": "UART",
+            "file": "rtl/uncore/uart/UART.v"
+        },
+        {
+            "module": "UART_core",
+            "file": "rtl/uncore/uart/UART_core.v"
+        },
+        {
+            "module": "simpleuart",
+            "file": "rtl/uncore/uart/simpleuart.v"
+        },
+        {
+            "module": "simpleuart_wb",
+            "file": "rtl/uncore/uart/simpleuart_wb.v"
+        },
+        {
+            "module": "behaves",
+            "file": "rtl/uncore/uart/simpleuart_wb.v"
+        },
+        {
+            "module": "Arbiter",
+            "file": "rtl/uncore/wishbone/Arbiter.v"
+        },
+        {
+            "module": "Arbiter2_wb",
+            "file": "rtl/uncore/wishbone/Arbiter2_wb.v"
+        },
+        {
+            "module": "Arbiter3_wb",
+            "file": "rtl/uncore/wishbone/Arbiter3_wb.v"
+        },
+        {
+            "module": "Crossbar5_wb",
+            "file": "rtl/uncore/wishbone/Crossbar5_wb.v"
+        },
+        {
+            "module": "Crossbar6_wb",
+            "file": "rtl/uncore/wishbone/Crossbar6_wb.v"
+        },
+        {
+            "module": "Crossbar_wb",
+            "file": "rtl/uncore/wishbone/Crossbar_wb.v"
+        },
+        {
+            "module": "Priority_encoder",
+            "file": "rtl/uncore/wishbone/Priority_encoder.v"
+        }
+    ],
+    "module_graph": {
+        "Alu": [],
+        "AtomRV": [
+            "AtomRV_wb",
+            "AtomBones"
+        ],
+        "AtomRV_wb": [
+            "HydrogenSoC"
+        ],
+        "CSR_Unit": [
+            "AtomRV"
+        ],
+        "Decode": [],
+        "RVC_Aligner": [],
+        "RVC_Decoder": [
+            "AtomRV"
+        ],
+        "RegisterFile": [],
+        "AtomBones": [],
+        "HydrogenSoC": [
+            "isim_tb"
+        ],
+        "isim_tb": [],
+        "GPIO": [],
+        "is": [],
+        "GPIO_old": [],
+        "IOBuf": [],
+        "DualPortRAM_wb": [],
+        "SinglePortRAM_wb": [],
+        "SinglePortROM_wb": [],
+        "SPI_core": [],
+        "SPI_wb": [],
+        "Timer_wb": [],
+        "FIFO_sync": [
+            "UART"
+        ],
+        "UART": [],
+        "UART_core": [],
+        "simpleuart": [
+            "simpleuart_wb"
+        ],
+        "simpleuart_wb": [],
+        "behaves": [],
+        "Arbiter": [],
+        "Arbiter2_wb": [],
+        "Arbiter3_wb": [],
+        "Crossbar5_wb": [],
+        "Crossbar6_wb": [],
+        "Crossbar_wb": [],
+        "Priority_encoder": []
+    },
+    "module_graph_inverse": {
+        "Alu": [],
+        "AtomRV": [
+            "RVC_Decoder",
+            "CSR_Unit"
+        ],
+        "AtomRV_wb": [
+            "AtomRV"
+        ],
+        "CSR_Unit": [],
+        "Decode": [],
+        "RVC_Aligner": [],
+        "RVC_Decoder": [],
+        "RegisterFile": [],
+        "AtomBones": [
+            "AtomRV"
+        ],
+        "HydrogenSoC": [
+            "AtomRV_wb"
+        ],
+        "isim_tb": [
+            "HydrogenSoC"
+        ],
+        "GPIO": [],
+        "is": [],
+        "GPIO_old": [],
+        "IOBuf": [],
+        "DualPortRAM_wb": [],
+        "SinglePortRAM_wb": [],
+        "SinglePortROM_wb": [],
+        "SPI_core": [],
+        "SPI_wb": [],
+        "Timer_wb": [],
+        "FIFO_sync": [],
+        "UART": [
+            "FIFO_sync"
+        ],
+        "UART_core": [],
+        "simpleuart": [],
+        "simpleuart_wb": [
+            "simpleuart"
+        ],
+        "behaves": [],
+        "Arbiter": [],
+        "Arbiter2_wb": [],
+        "Arbiter3_wb": [],
+        "Crossbar5_wb": [],
+        "Crossbar6_wb": [],
+        "Crossbar_wb": [],
+        "Priority_encoder": []
+    },
+    "non_tb_files": [
+        "rtl/core/Alu.v",
+        "rtl/core/AtomRV.v",
+        "rtl/core/AtomRV_wb.v",
+        "rtl/core/CSR_Unit.v",
+        "rtl/core/Decode.v",
+        "rtl/core/RVC_Aligner.v",
+        "rtl/core/RVC_Decoder.v",
+        "rtl/core/RegisterFile.v",
+        "rtl/soc/atombones/AtomBones.v",
+        "rtl/soc/hydrogensoc/HydrogenSoC.v",
+        "rtl/uncore/gpio/GPIO.v",
+        "rtl/uncore/gpio/GPIO_old.v",
+        "rtl/uncore/gpio/IOBuf.v",
+        "rtl/uncore/mem/DualPortRAM_wb.v",
+        "rtl/uncore/mem/SinglePortRAM_wb.v",
+        "rtl/uncore/mem/SinglePortROM_wb.v",
+        "rtl/uncore/spi/SPI_core.v",
+        "rtl/uncore/spi/SPI_wb.v",
+        "rtl/uncore/timer/Timer_wb.v",
+        "rtl/uncore/uart/FIFO_sync.v",
+        "rtl/uncore/uart/UART.v",
+        "rtl/uncore/uart/UART_core.v",
+        "rtl/uncore/uart/simpleuart.v",
+        "rtl/uncore/uart/simpleuart_wb.v",
+        "rtl/uncore/wishbone/Arbiter.v",
+        "rtl/uncore/wishbone/Arbiter2_wb.v",
+        "rtl/uncore/wishbone/Arbiter3_wb.v",
+        "rtl/uncore/wishbone/Crossbar5_wb.v",
+        "rtl/uncore/wishbone/Crossbar6_wb.v",
+        "rtl/uncore/wishbone/Crossbar_wb.v",
+        "rtl/uncore/wishbone/Priority_encoder.v"
+    ]
+}

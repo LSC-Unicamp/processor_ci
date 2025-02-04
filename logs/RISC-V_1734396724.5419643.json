@@ -1,0 +1,397 @@
+{
+    "name": "RISC-V",
+    "folder": "RISC-V",
+    "sim_files": [
+        "processor/barebones/barebones_top_tb.v"
+    ],
+    "files": [
+        "core/ALU.v",
+        "core/control_unit.v",
+        "core/core.v",
+        "core/core_wb.v",
+        "core/csr_unit.v",
+        "core/forwarding_unit.v",
+        "core/hazard_detection_unit.v",
+        "core/imm_decoder.v",
+        "core/load_store_unit.v",
+        "core/muldiv/MULDIV_ctrl.v",
+        "core/muldiv/MULDIV_in.v",
+        "core/muldiv/MULDIV_top.v",
+        "core/muldiv/MUL_DIV_out.v",
+        "core/muldiv/divider_32.v",
+        "core/muldiv/multiplier_32.v",
+        "peripherals/debug_interface_wb.v",
+        "peripherals/loader_wb.v",
+        "peripherals/memory_2rw_wb.v",
+        "peripherals/mtime_registers_wb.v",
+        "peripherals/uart_wb.v",
+        "processor/barebones/barebones_wb_top.v",
+        "processor/fpga_uart/fpga_top.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/yavuz650/RISC-V",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "is",
+            "file": "core/ALU.v"
+        },
+        {
+            "module": "ALU",
+            "file": "core/ALU.v"
+        },
+        {
+            "module": "is",
+            "file": "core/control_unit.v"
+        },
+        {
+            "module": "control_unit",
+            "file": "core/control_unit.v"
+        },
+        {
+            "module": "core",
+            "file": "core/core.v"
+        },
+        {
+            "module": "core_wb",
+            "file": "core/core_wb.v"
+        },
+        {
+            "module": "is",
+            "file": "core/csr_unit.v"
+        },
+        {
+            "module": "utilizes",
+            "file": "core/csr_unit.v"
+        },
+        {
+            "module": "csr_unit",
+            "file": "core/csr_unit.v"
+        },
+        {
+            "module": "is",
+            "file": "core/forwarding_unit.v"
+        },
+        {
+            "module": "forwarding_unit",
+            "file": "core/forwarding_unit.v"
+        },
+        {
+            "module": "is",
+            "file": "core/hazard_detection_unit.v"
+        },
+        {
+            "module": "hazard_detection_unit",
+            "file": "core/hazard_detection_unit.v"
+        },
+        {
+            "module": "imm_decoder",
+            "file": "core/imm_decoder.v"
+        },
+        {
+            "module": "load_store_unit",
+            "file": "core/load_store_unit.v"
+        },
+        {
+            "module": "MULDIV_ctrl",
+            "file": "core/muldiv/MULDIV_ctrl.v"
+        },
+        {
+            "module": "MULDIV_in",
+            "file": "core/muldiv/MULDIV_in.v"
+        },
+        {
+            "module": "MULDIV_top",
+            "file": "core/muldiv/MULDIV_top.v"
+        },
+        {
+            "module": "DIVout",
+            "file": "core/muldiv/MUL_DIV_out.v"
+        },
+        {
+            "module": "module",
+            "file": "core/muldiv/MUL_DIV_out.v"
+        },
+        {
+            "module": "divider_32",
+            "file": "core/muldiv/divider_32.v"
+        },
+        {
+            "module": "module",
+            "file": "core/muldiv/divider_32.v"
+        },
+        {
+            "module": "module",
+            "file": "core/muldiv/divider_32.v"
+        },
+        {
+            "module": "module",
+            "file": "core/muldiv/divider_32.v"
+        },
+        {
+            "module": "multiplier_32",
+            "file": "core/muldiv/multiplier_32.v"
+        },
+        {
+            "module": "module",
+            "file": "core/muldiv/multiplier_32.v"
+        },
+        {
+            "module": "debug_interface_wb",
+            "file": "peripherals/debug_interface_wb.v"
+        },
+        {
+            "module": "loader_wb",
+            "file": "peripherals/loader_wb.v"
+        },
+        {
+            "module": "memory_2rw_wb",
+            "file": "peripherals/memory_2rw_wb.v"
+        },
+        {
+            "module": "mtime_registers_wb",
+            "file": "peripherals/mtime_registers_wb.v"
+        },
+        {
+            "module": "parameter",
+            "file": "peripherals/mtime_registers_wb.v"
+        },
+        {
+            "module": "uart_wb",
+            "file": "peripherals/uart_wb.v"
+        },
+        {
+            "module": "UART_TX",
+            "file": "peripherals/uart_wb.v"
+        },
+        {
+            "module": "UART_RX",
+            "file": "peripherals/uart_wb.v"
+        },
+        {
+            "module": "barebones_top_tb",
+            "file": "processor/barebones/barebones_top_tb.v"
+        },
+        {
+            "module": "barebones_wb_top",
+            "file": "processor/barebones/barebones_wb_top.v"
+        },
+        {
+            "module": "fpga_top",
+            "file": "processor/fpga_uart/fpga_top.v"
+        }
+    ],
+    "module_graph": {
+        "is": [],
+        "ALU": [
+            "core"
+        ],
+        "control_unit": [],
+        "core": [
+            "core_wb"
+        ],
+        "core_wb": [],
+        "utilizes": [],
+        "csr_unit": [],
+        "forwarding_unit": [
+            "core"
+        ],
+        "hazard_detection_unit": [
+            "core"
+        ],
+        "imm_decoder": [
+            "core"
+        ],
+        "load_store_unit": [],
+        "MULDIV_ctrl": [
+            "MULDIV_top"
+        ],
+        "MULDIV_in": [
+            "MULDIV_top"
+        ],
+        "MULDIV_top": [],
+        "DIVout": [
+            "MULDIV_top"
+        ],
+        "module": [
+            "is",
+            "is",
+            "core",
+            "core_wb",
+            "is",
+            "is",
+            "imm_decoder",
+            "load_store_unit",
+            "MULDIV_ctrl",
+            "MULDIV_in",
+            "MULDIV_top",
+            "DIVout",
+            "DIVout",
+            "divider_32",
+            "divider_32",
+            "divider_32",
+            "multiplier_32",
+            "debug_interface_wb",
+            "loader_wb",
+            "memory_2rw_wb",
+            "mtime_registers_wb",
+            "uart_wb",
+            "barebones_top_tb",
+            "barebones_wb_top",
+            "fpga_top"
+        ],
+        "divider_32": [
+            "MULDIV_top"
+        ],
+        "multiplier_32": [
+            "MULDIV_top"
+        ],
+        "debug_interface_wb": [
+            "barebones_wb_top"
+        ],
+        "loader_wb": [
+            "fpga_top"
+        ],
+        "memory_2rw_wb": [
+            "barebones_wb_top",
+            "fpga_top"
+        ],
+        "mtime_registers_wb": [
+            "barebones_wb_top",
+            "fpga_top"
+        ],
+        "parameter": [],
+        "uart_wb": [
+            "fpga_top"
+        ],
+        "UART_TX": [],
+        "UART_RX": [
+            "uart_wb"
+        ],
+        "barebones_top_tb": [],
+        "barebones_wb_top": [
+            "barebones_top_tb"
+        ],
+        "fpga_top": []
+    },
+    "module_graph_inverse": {
+        "is": [
+            "module",
+            "module",
+            "module",
+            "module"
+        ],
+        "ALU": [],
+        "control_unit": [],
+        "core": [
+            "module",
+            "imm_decoder",
+            "hazard_detection_unit",
+            "forwarding_unit",
+            "ALU"
+        ],
+        "core_wb": [
+            "module",
+            "core"
+        ],
+        "utilizes": [],
+        "csr_unit": [],
+        "forwarding_unit": [],
+        "hazard_detection_unit": [],
+        "imm_decoder": [
+            "module"
+        ],
+        "load_store_unit": [
+            "module"
+        ],
+        "MULDIV_ctrl": [
+            "module"
+        ],
+        "MULDIV_in": [
+            "module"
+        ],
+        "MULDIV_top": [
+            "module",
+            "MULDIV_ctrl",
+            "MULDIV_in",
+            "multiplier_32",
+            "divider_32",
+            "DIVout"
+        ],
+        "DIVout": [
+            "module",
+            "module"
+        ],
+        "module": [],
+        "divider_32": [
+            "module",
+            "module",
+            "module"
+        ],
+        "multiplier_32": [
+            "module"
+        ],
+        "debug_interface_wb": [
+            "module"
+        ],
+        "loader_wb": [
+            "module"
+        ],
+        "memory_2rw_wb": [
+            "module"
+        ],
+        "mtime_registers_wb": [
+            "module"
+        ],
+        "parameter": [],
+        "uart_wb": [
+            "module",
+            "UART_RX"
+        ],
+        "UART_TX": [],
+        "UART_RX": [],
+        "barebones_top_tb": [
+            "module",
+            "barebones_wb_top"
+        ],
+        "barebones_wb_top": [
+            "module",
+            "memory_2rw_wb",
+            "mtime_registers_wb",
+            "debug_interface_wb"
+        ],
+        "fpga_top": [
+            "module",
+            "memory_2rw_wb",
+            "mtime_registers_wb",
+            "uart_wb",
+            "loader_wb"
+        ]
+    },
+    "non_tb_files": [
+        "core/ALU.v",
+        "core/control_unit.v",
+        "core/core.v",
+        "core/core_wb.v",
+        "core/csr_unit.v",
+        "core/forwarding_unit.v",
+        "core/hazard_detection_unit.v",
+        "core/imm_decoder.v",
+        "core/load_store_unit.v",
+        "core/muldiv/MULDIV_ctrl.v",
+        "core/muldiv/MULDIV_in.v",
+        "core/muldiv/MULDIV_top.v",
+        "core/muldiv/MUL_DIV_out.v",
+        "core/muldiv/divider_32.v",
+        "core/muldiv/multiplier_32.v",
+        "peripherals/debug_interface_wb.v",
+        "peripherals/loader_wb.v",
+        "peripherals/memory_2rw_wb.v",
+        "peripherals/mtime_registers_wb.v",
+        "peripherals/uart_wb.v",
+        "processor/barebones/barebones_wb_top.v",
+        "processor/fpga_uart/fpga_top.v"
+    ]
+}

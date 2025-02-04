@@ -1,0 +1,1213 @@
+{
+    "name": "mmRISC-1",
+    "folder": "mmRISC-1",
+    "sim_files": [
+        "simulation/modelsim/mmRISC_Simulation/tb_TOP.v",
+        "simulation/modelsim/riscv-arch-test/tb_TOP.v",
+        "simulation/modelsim/riscv-tests/tb_TOP.v",
+        "verilog/ahb_sdram/model/test.v",
+        "verilog/spi/simple_spi/tags/initial/rtl/verilog/fifo4.v",
+        "verilog/spi/simple_spi/tags/initial/rtl/verilog/simple_spi_top.v",
+        "verilog/spi/simple_spi/trunk/bench/verilog/spi_slave_model.v",
+        "verilog/spi/simple_spi/trunk/bench/verilog/tst_bench_top.v",
+        "verilog/spi/simple_spi/trunk/bench/verilog/wb_master_model.v",
+        "verilog/spi/simple_spi/trunk/rtl/verilog/fifo4.v",
+        "verilog/spi/simple_spi/trunk/rtl/verilog/simple_spi_top.v",
+        "verilog/spi/simple_spi/trunk/sim/rtl_sim/run/simvision.sv"
+    ],
+    "files": [
+        "fpga/PLL.v",
+        "fpga/PLL_bb.v",
+        "fpga/RAM128KB_DP.v",
+        "fpga/RAM128KB_DP_bb.v",
+        "verilog/ahb_matrix/ahb_arb.v",
+        "verilog/ahb_matrix/ahb_interconnect.v",
+        "verilog/ahb_matrix/ahb_master_port.v",
+        "verilog/ahb_matrix/ahb_slave_port.v",
+        "verilog/ahb_matrix/ahb_top.v",
+        "verilog/ahb_sdram/logic/ahb_lite_sdram.v",
+        "verilog/ahb_sdram/model/sdr.v",
+        "verilog/ahb_sdram/model/sdr_module.v",
+        "verilog/chip/chip_top.v",
+        "verilog/chip/chip_top_wrap.v",
+        "verilog/chip/slaves_ahb.v",
+        "verilog/cjtag/cjtag_2_jtag.v",
+        "verilog/cjtag/cjtag_adapter.v",
+        "verilog/common/defines_chip.v",
+        "verilog/common/defines_core.v",
+        "verilog/cpu/cpu_csr.v",
+        "verilog/cpu/cpu_csr_dbg.v",
+        "verilog/cpu/cpu_csr_int.v",
+        "verilog/cpu/cpu_datapath.v",
+        "verilog/cpu/cpu_debug.v",
+        "verilog/cpu/cpu_fetch.v",
+        "verilog/cpu/cpu_fpu32.v",
+        "verilog/cpu/cpu_pipeline.v",
+        "verilog/cpu/cpu_top.v",
+        "verilog/debug/debug_cdc.v",
+        "verilog/debug/debug_dm.v",
+        "verilog/debug/debug_dtm_jtag.v",
+        "verilog/debug/debug_top.v",
+        "verilog/i2c/i2c.v",
+        "verilog/i2c/i2c_slave_model.v",
+        "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_bit_ctrl.v",
+        "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_byte_ctrl.v",
+        "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_defines.v",
+        "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_top.v",
+        "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/timescale.v",
+        "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_bit_ctrl.v",
+        "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_byte_ctrl.v",
+        "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_defines.v",
+        "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_top.v",
+        "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/timescale.v",
+        "verilog/i2c/i2c/tags/rel_1/bench/verilog/i2c_slave_model.v",
+        "verilog/i2c/i2c/tags/rel_1/bench/verilog/tst_bench_top.v",
+        "verilog/i2c/i2c/tags/rel_1/bench/verilog/wb_master_model.v",
+        "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_bit_ctrl.v",
+        "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_byte_ctrl.v",
+        "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_defines.v",
+        "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_top.v",
+        "verilog/i2c/i2c/tags/rel_1/rtl/verilog/timescale.v",
+        "verilog/i2c/i2c/trunk/bench/verilog/i2c_slave_model.v",
+        "verilog/i2c/i2c/trunk/bench/verilog/spi_slave_model.v",
+        "verilog/i2c/i2c/trunk/bench/verilog/tst_bench_top.v",
+        "verilog/i2c/i2c/trunk/bench/verilog/wb_master_model.v",
+        "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_bit_ctrl.v",
+        "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_byte_ctrl.v",
+        "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_defines.v",
+        "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_top.v",
+        "verilog/i2c/i2c/trunk/rtl/verilog/timescale.v",
+        "verilog/int_gen/int_gen.v",
+        "verilog/mmRISC/bus_m_ahb.v",
+        "verilog/mmRISC/csr_mtime.v",
+        "verilog/mmRISC/mmRISC.v",
+        "verilog/port/port.v",
+        "verilog/ram/ram.v",
+        "verilog/ram/ram_fpga.v",
+        "verilog/spi/spi.v",
+        "verilog/uart/uart.v",
+        "verilog/uart/sasc/tags/start/rtl/verilog/sasc_brg.v",
+        "verilog/uart/sasc/tags/start/rtl/verilog/sasc_fifo4.v",
+        "verilog/uart/sasc/tags/start/rtl/verilog/sasc_top.v",
+        "verilog/uart/sasc/tags/start/rtl/verilog/timescale.v",
+        "verilog/uart/sasc/trunk/rtl/verilog/sasc_brg.v",
+        "verilog/uart/sasc/trunk/rtl/verilog/sasc_fifo4.v",
+        "verilog/uart/sasc/trunk/rtl/verilog/sasc_top.v",
+        "verilog/uart/sasc/trunk/rtl/verilog/timescale.v",
+        "verilog/i2c/i2c/tags/first/tst_ds1621.vhd",
+        "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/i2c_master_bit_ctrl.vhd",
+        "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/i2c_master_byte_ctrl.vhd",
+        "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/i2c_master_top.vhd",
+        "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/tst_ds1621.vhd",
+        "verilog/i2c/i2c/trunk/rtl/vhdl/i2c_master_bit_ctrl.vhd",
+        "verilog/i2c/i2c/trunk/rtl/vhdl/i2c_master_byte_ctrl.vhd",
+        "verilog/i2c/i2c/trunk/rtl/vhdl/i2c_master_top.vhd",
+        "verilog/i2c/i2c/trunk/rtl/vhdl/tst_ds1621.vhd"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/munetomo-maruyama/mmRISC-1",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "PLL",
+            "file": "fpga/PLL.v"
+        },
+        {
+            "module": "PLL",
+            "file": "fpga/PLL_bb.v"
+        },
+        {
+            "module": "RAM128KB_DP",
+            "file": "fpga/RAM128KB_DP.v"
+        },
+        {
+            "module": "RAM128KB_DP",
+            "file": "fpga/RAM128KB_DP_bb.v"
+        },
+        {
+            "module": "tb_TOP",
+            "file": "simulation/modelsim/mmRISC_Simulation/tb_TOP.v"
+        },
+        {
+            "module": "tb_TOP",
+            "file": "simulation/modelsim/riscv-arch-test/tb_TOP.v"
+        },
+        {
+            "module": "tb_TOP",
+            "file": "simulation/modelsim/riscv-tests/tb_TOP.v"
+        },
+        {
+            "module": "AHB_ARB",
+            "file": "verilog/ahb_matrix/ahb_arb.v"
+        },
+        {
+            "module": "AHB_ARB_RB",
+            "file": "verilog/ahb_matrix/ahb_arb.v"
+        },
+        {
+            "module": "AHB_INTERCONNECT",
+            "file": "verilog/ahb_matrix/ahb_interconnect.v"
+        },
+        {
+            "module": "AHB_MASTER_PORT",
+            "file": "verilog/ahb_matrix/ahb_master_port.v"
+        },
+        {
+            "module": "AHB_SLAVE_PORT",
+            "file": "verilog/ahb_matrix/ahb_slave_port.v"
+        },
+        {
+            "module": "AHB_MATRIX",
+            "file": "verilog/ahb_matrix/ahb_top.v"
+        },
+        {
+            "module": "ahb_lite_sdram",
+            "file": "verilog/ahb_sdram/logic/ahb_lite_sdram.v"
+        },
+        {
+            "module": "sdr",
+            "file": "verilog/ahb_sdram/model/sdr.v"
+        },
+        {
+            "module": "sdr_module",
+            "file": "verilog/ahb_sdram/model/sdr_module.v"
+        },
+        {
+            "module": "test",
+            "file": "verilog/ahb_sdram/model/test.v"
+        },
+        {
+            "module": "CHIP_TOP",
+            "file": "verilog/chip/chip_top.v"
+        },
+        {
+            "module": "CHIP_TOP_WRAP",
+            "file": "verilog/chip/chip_top_wrap.v"
+        },
+        {
+            "module": "SLAVES_AHB",
+            "file": "verilog/chip/slaves_ahb.v"
+        },
+        {
+            "module": "CJTAG_2_JTAG",
+            "file": "verilog/cjtag/cjtag_2_jtag.v"
+        },
+        {
+            "module": "BEFF",
+            "file": "verilog/cjtag/cjtag_2_jtag.v"
+        },
+        {
+            "module": "CJTAG_ADAPTER",
+            "file": "verilog/cjtag/cjtag_adapter.v"
+        },
+        {
+            "module": "CPU_CSR",
+            "file": "verilog/cpu/cpu_csr.v"
+        },
+        {
+            "module": "CPU_CSR_DBG",
+            "file": "verilog/cpu/cpu_csr_dbg.v"
+        },
+        {
+            "module": "CPU_CSR_INT",
+            "file": "verilog/cpu/cpu_csr_int.v"
+        },
+        {
+            "module": "CPU_DATAPATH",
+            "file": "verilog/cpu/cpu_datapath.v"
+        },
+        {
+            "module": "CPU_DEBUG",
+            "file": "verilog/cpu/cpu_debug.v"
+        },
+        {
+            "module": "CPU_FETCH",
+            "file": "verilog/cpu/cpu_fetch.v"
+        },
+        {
+            "module": "CPU_FPU32",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "CHECK_FTYPE",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FADD_SPECIAL_NUMBER",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FMUL_SPECIAL_NUMBER",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FMADD_SPECIAL_NUMBER",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FDIV_SPECIAL_NUMBER",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FSQRT_SPECIAL_NUMBER",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FIND_1ST_ONE_IN_FRAC27",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FIND_1ST_ONE_IN_FRAC66",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FIND_1ST_ONE_IN_FRAC70",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "SHIFT_RIGHT_FRAC27",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "SHIFT_RIGHT_FRAC66",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "SHIFT_RIGHT_FRAC70",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "ROUND_JUDGMENT",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FRAC27_ROUND_FRAC66",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FRAC70_ROUND_FRAC132",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "INNER79_FROM_FLOAT32",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FLOAT32_FROM_INNER79",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FADD_CORE",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FMUL_CORE",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FCVT_F2I",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "FCVT_I2F",
+            "file": "verilog/cpu/cpu_fpu32.v"
+        },
+        {
+            "module": "CPU_PIPELINE",
+            "file": "verilog/cpu/cpu_pipeline.v"
+        },
+        {
+            "module": "CPU_TOP",
+            "file": "verilog/cpu/cpu_top.v"
+        },
+        {
+            "module": "DEBUG_CDC",
+            "file": "verilog/debug/debug_cdc.v"
+        },
+        {
+            "module": "DEBUG_DM",
+            "file": "verilog/debug/debug_dm.v"
+        },
+        {
+            "module": "DEBUG_DTM_JTAG",
+            "file": "verilog/debug/debug_dtm_jtag.v"
+        },
+        {
+            "module": "DEBUG_TOP",
+            "file": "verilog/debug/debug_top.v"
+        },
+        {
+            "module": "I2C",
+            "file": "verilog/i2c/i2c.v"
+        },
+        {
+            "module": "i2c_slave_model",
+            "file": "verilog/i2c/i2c_slave_model.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c_slave_model.v"
+        },
+        {
+            "module": "i2c_master_bit_ctrl",
+            "file": "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_bit_ctrl.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_bit_ctrl.v"
+        },
+        {
+            "module": "i2c_master_byte_ctrl",
+            "file": "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_byte_ctrl.v"
+        },
+        {
+            "module": "i2c_master_top",
+            "file": "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_top.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_top.v"
+        },
+        {
+            "module": "i2c_master_bit_ctrl",
+            "file": "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_bit_ctrl.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_bit_ctrl.v"
+        },
+        {
+            "module": "i2c_master_byte_ctrl",
+            "file": "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_byte_ctrl.v"
+        },
+        {
+            "module": "i2c_master_top",
+            "file": "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_top.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_top.v"
+        },
+        {
+            "module": "i2c_slave_model",
+            "file": "verilog/i2c/i2c/tags/rel_1/bench/verilog/i2c_slave_model.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/tags/rel_1/bench/verilog/i2c_slave_model.v"
+        },
+        {
+            "module": "tst_bench_top",
+            "file": "verilog/i2c/i2c/tags/rel_1/bench/verilog/tst_bench_top.v"
+        },
+        {
+            "module": "wb_master_model",
+            "file": "verilog/i2c/i2c/tags/rel_1/bench/verilog/wb_master_model.v"
+        },
+        {
+            "module": "i2c_master_bit_ctrl",
+            "file": "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_bit_ctrl.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_bit_ctrl.v"
+        },
+        {
+            "module": "i2c_master_byte_ctrl",
+            "file": "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_byte_ctrl.v"
+        },
+        {
+            "module": "i2c_master_top",
+            "file": "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_top.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_top.v"
+        },
+        {
+            "module": "i2c_slave_model",
+            "file": "verilog/i2c/i2c/trunk/bench/verilog/i2c_slave_model.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/trunk/bench/verilog/i2c_slave_model.v"
+        },
+        {
+            "module": "spi_slave_model",
+            "file": "verilog/i2c/i2c/trunk/bench/verilog/spi_slave_model.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/trunk/bench/verilog/spi_slave_model.v"
+        },
+        {
+            "module": "tst_bench_top",
+            "file": "verilog/i2c/i2c/trunk/bench/verilog/tst_bench_top.v"
+        },
+        {
+            "module": "module",
+            "file": "verilog/i2c/i2c/trunk/bench/verilog/tst_bench_top.v"
+        },
+        {
+            "module": "wb_master_model",
+            "file": "verilog/i2c/i2c/trunk/bench/verilog/wb_master_model.v"
+        },
+        {
+            "module": "i2c_master_bit_ctrl",
+            "file": "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_bit_ctrl.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_bit_ctrl.v"
+        },
+        {
+            "module": "i2c_master_byte_ctrl",
+            "file": "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_byte_ctrl.v"
+        },
+        {
+            "module": "i2c_master_top",
+            "file": "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_top.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_top.v"
+        },
+        {
+            "module": "INT_GEN",
+            "file": "verilog/int_gen/int_gen.v"
+        },
+        {
+            "module": "BUS_M_AHB",
+            "file": "verilog/mmRISC/bus_m_ahb.v"
+        },
+        {
+            "module": "CSR_MTIME",
+            "file": "verilog/mmRISC/csr_mtime.v"
+        },
+        {
+            "module": "mmRISC",
+            "file": "verilog/mmRISC/mmRISC.v"
+        },
+        {
+            "module": "PORT",
+            "file": "verilog/port/port.v"
+        },
+        {
+            "module": "RAM",
+            "file": "verilog/ram/ram.v"
+        },
+        {
+            "module": "RAM_FPGA",
+            "file": "verilog/ram/ram_fpga.v"
+        },
+        {
+            "module": "SPI",
+            "file": "verilog/spi/spi.v"
+        },
+        {
+            "module": "fifo4",
+            "file": "verilog/spi/simple_spi/tags/initial/rtl/verilog/fifo4.v"
+        },
+        {
+            "module": "simple_spi_top",
+            "file": "verilog/spi/simple_spi/tags/initial/rtl/verilog/simple_spi_top.v"
+        },
+        {
+            "module": "spi_slave_model",
+            "file": "verilog/spi/simple_spi/trunk/bench/verilog/spi_slave_model.v"
+        },
+        {
+            "module": "body",
+            "file": "verilog/spi/simple_spi/trunk/bench/verilog/spi_slave_model.v"
+        },
+        {
+            "module": "tst_bench_top",
+            "file": "verilog/spi/simple_spi/trunk/bench/verilog/tst_bench_top.v"
+        },
+        {
+            "module": "wb_master_model",
+            "file": "verilog/spi/simple_spi/trunk/bench/verilog/wb_master_model.v"
+        },
+        {
+            "module": "fifo4",
+            "file": "verilog/spi/simple_spi/trunk/rtl/verilog/fifo4.v"
+        },
+        {
+            "module": "simple_spi_top",
+            "file": "verilog/spi/simple_spi/trunk/rtl/verilog/simple_spi_top.v"
+        },
+        {
+            "module": "UART",
+            "file": "verilog/uart/uart.v"
+        },
+        {
+            "module": "sasc_brg",
+            "file": "verilog/uart/sasc/tags/start/rtl/verilog/sasc_brg.v"
+        },
+        {
+            "module": "sasc_fifo4",
+            "file": "verilog/uart/sasc/tags/start/rtl/verilog/sasc_fifo4.v"
+        },
+        {
+            "module": "sasc_top",
+            "file": "verilog/uart/sasc/tags/start/rtl/verilog/sasc_top.v"
+        },
+        {
+            "module": "sasc_brg",
+            "file": "verilog/uart/sasc/trunk/rtl/verilog/sasc_brg.v"
+        },
+        {
+            "module": "sasc_fifo4",
+            "file": "verilog/uart/sasc/trunk/rtl/verilog/sasc_fifo4.v"
+        },
+        {
+            "module": "sasc_top",
+            "file": "verilog/uart/sasc/trunk/rtl/verilog/sasc_top.v"
+        },
+        {
+            "module": "endfunction",
+            "file": "verilog/spi/simple_spi/trunk/sim/rtl_sim/run/simvision.sv"
+        },
+        {
+            "module": "medium",
+            "file": "verilog/spi/simple_spi/trunk/sim/rtl_sim/run/simvision.sv"
+        },
+        {
+            "module": "nand",
+            "file": "verilog/spi/simple_spi/trunk/sim/rtl_sim/run/simvision.sv"
+        },
+        {
+            "module": "connect",
+            "file": "verilog/spi/simple_spi/trunk/sim/rtl_sim/run/simvision.sv"
+        },
+        {
+            "module": "DS1621_interface",
+            "file": "verilog/i2c/i2c/tags/first/tst_ds1621.vhd"
+        },
+        {
+            "module": "i2c_master_bit_ctrl",
+            "file": "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/i2c_master_bit_ctrl.vhd"
+        },
+        {
+            "module": "i2c_master_byte_ctrl",
+            "file": "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/i2c_master_byte_ctrl.vhd"
+        },
+        {
+            "module": "i2c_master_top",
+            "file": "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/i2c_master_top.vhd"
+        },
+        {
+            "module": "DS1621_interface",
+            "file": "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/tst_ds1621.vhd"
+        },
+        {
+            "module": "i2c_master_bit_ctrl",
+            "file": "verilog/i2c/i2c/trunk/rtl/vhdl/i2c_master_bit_ctrl.vhd"
+        },
+        {
+            "module": "i2c_master_byte_ctrl",
+            "file": "verilog/i2c/i2c/trunk/rtl/vhdl/i2c_master_byte_ctrl.vhd"
+        },
+        {
+            "module": "i2c_master_top",
+            "file": "verilog/i2c/i2c/trunk/rtl/vhdl/i2c_master_top.vhd"
+        },
+        {
+            "module": "DS1621_interface",
+            "file": "verilog/i2c/i2c/trunk/rtl/vhdl/tst_ds1621.vhd"
+        }
+    ],
+    "module_graph": {
+        "PLL": [],
+        "RAM128KB_DP": [
+            "RAM_FPGA"
+        ],
+        "tb_TOP": [],
+        "AHB_ARB": [],
+        "AHB_ARB_RB": [],
+        "AHB_INTERCONNECT": [
+            "AHB_MATRIX"
+        ],
+        "AHB_MASTER_PORT": [
+            "AHB_MATRIX"
+        ],
+        "AHB_SLAVE_PORT": [
+            "AHB_MATRIX"
+        ],
+        "AHB_MATRIX": [
+            "CHIP_TOP"
+        ],
+        "ahb_lite_sdram": [
+            "CHIP_TOP"
+        ],
+        "sdr": [
+            "tb_TOP",
+            "tb_TOP",
+            "tb_TOP",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "sdr_module",
+            "test"
+        ],
+        "sdr_module": [],
+        "test": [],
+        "CHIP_TOP": [
+            "CHIP_TOP_WRAP"
+        ],
+        "CHIP_TOP_WRAP": [
+            "tb_TOP",
+            "tb_TOP",
+            "tb_TOP"
+        ],
+        "SLAVES_AHB": [],
+        "CJTAG_2_JTAG": [],
+        "BEFF": [
+            "CJTAG_2_JTAG"
+        ],
+        "CJTAG_ADAPTER": [
+            "CHIP_TOP_WRAP"
+        ],
+        "CPU_CSR": [
+            "CPU_TOP"
+        ],
+        "CPU_CSR_DBG": [
+            "CPU_TOP"
+        ],
+        "CPU_CSR_INT": [
+            "CPU_TOP"
+        ],
+        "CPU_DATAPATH": [
+            "CPU_TOP"
+        ],
+        "CPU_DEBUG": [
+            "CPU_TOP"
+        ],
+        "CPU_FETCH": [],
+        "CPU_FPU32": [],
+        "CHECK_FTYPE": [
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32"
+        ],
+        "FADD_SPECIAL_NUMBER": [
+            "CPU_FPU32",
+            "CPU_FPU32"
+        ],
+        "FMUL_SPECIAL_NUMBER": [
+            "CPU_FPU32"
+        ],
+        "FMADD_SPECIAL_NUMBER": [
+            "CPU_FPU32"
+        ],
+        "FDIV_SPECIAL_NUMBER": [
+            "CPU_FPU32"
+        ],
+        "FSQRT_SPECIAL_NUMBER": [
+            "CPU_FPU32"
+        ],
+        "FIND_1ST_ONE_IN_FRAC27": [
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32"
+        ],
+        "FIND_1ST_ONE_IN_FRAC66": [
+            "CPU_FPU32",
+            "CPU_FPU32"
+        ],
+        "FIND_1ST_ONE_IN_FRAC70": [
+            "CPU_FPU32"
+        ],
+        "SHIFT_RIGHT_FRAC27": [
+            "CPU_FPU32",
+            "CPU_FPU32"
+        ],
+        "SHIFT_RIGHT_FRAC66": [
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32"
+        ],
+        "SHIFT_RIGHT_FRAC70": [
+            "CPU_FPU32"
+        ],
+        "ROUND_JUDGMENT": [
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32"
+        ],
+        "FRAC27_ROUND_FRAC66": [
+            "CPU_FPU32"
+        ],
+        "FRAC70_ROUND_FRAC132": [
+            "CPU_FPU32"
+        ],
+        "INNER79_FROM_FLOAT32": [
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32"
+        ],
+        "FLOAT32_FROM_INNER79": [
+            "CPU_FPU32"
+        ],
+        "FADD_CORE": [
+            "CPU_FPU32"
+        ],
+        "FMUL_CORE": [
+            "CPU_FPU32"
+        ],
+        "FCVT_F2I": [
+            "CPU_FPU32"
+        ],
+        "FCVT_I2F": [
+            "CPU_FPU32"
+        ],
+        "CPU_PIPELINE": [
+            "CPU_TOP"
+        ],
+        "CPU_TOP": [],
+        "DEBUG_CDC": [
+            "DEBUG_DTM_JTAG"
+        ],
+        "DEBUG_DM": [],
+        "DEBUG_DTM_JTAG": [],
+        "DEBUG_TOP": [],
+        "I2C": [
+            "CHIP_TOP",
+            "CHIP_TOP"
+        ],
+        "i2c_slave_model": [
+            "tb_TOP",
+            "tb_TOP",
+            "tb_TOP",
+            "tb_TOP",
+            "tb_TOP",
+            "tb_TOP",
+            "tst_bench_top",
+            "tst_bench_top"
+        ],
+        "body": [],
+        "i2c_master_bit_ctrl": [
+            "i2c_master_byte_ctrl",
+            "i2c_master_byte_ctrl",
+            "i2c_master_byte_ctrl",
+            "i2c_master_byte_ctrl"
+        ],
+        "i2c_master_byte_ctrl": [],
+        "i2c_master_top": [
+            "tst_bench_top",
+            "tst_bench_top"
+        ],
+        "tst_bench_top": [],
+        "wb_master_model": [
+            "tst_bench_top",
+            "tst_bench_top",
+            "tst_bench_top"
+        ],
+        "spi_slave_model": [
+            "tst_bench_top"
+        ],
+        "module": [
+            "sdr",
+            "sdr_module",
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "CPU_FPU32",
+            "tst_bench_top"
+        ],
+        "INT_GEN": [
+            "CHIP_TOP"
+        ],
+        "BUS_M_AHB": [
+            "mmRISC"
+        ],
+        "CSR_MTIME": [
+            "CHIP_TOP"
+        ],
+        "mmRISC": [],
+        "PORT": [
+            "CHIP_TOP"
+        ],
+        "RAM": [
+            "CHIP_TOP",
+            "CHIP_TOP"
+        ],
+        "RAM_FPGA": [
+            "CHIP_TOP"
+        ],
+        "SPI": [
+            "CHIP_TOP"
+        ],
+        "fifo4": [],
+        "simple_spi_top": [
+            "tst_bench_top"
+        ],
+        "UART": [
+            "CHIP_TOP"
+        ],
+        "sasc_brg": [
+            "UART"
+        ],
+        "sasc_fifo4": [
+            "sasc_top",
+            "sasc_top",
+            "sasc_top",
+            "sasc_top"
+        ],
+        "sasc_top": [],
+        "endfunction": [],
+        "medium": [],
+        "nand": [],
+        "connect": [],
+        "DS1621_interface": []
+    },
+    "module_graph_inverse": {
+        "PLL": [],
+        "RAM128KB_DP": [],
+        "tb_TOP": [
+            "CHIP_TOP_WRAP",
+            "i2c_slave_model",
+            "i2c_slave_model",
+            "sdr",
+            "CHIP_TOP_WRAP",
+            "i2c_slave_model",
+            "i2c_slave_model",
+            "sdr",
+            "CHIP_TOP_WRAP",
+            "i2c_slave_model",
+            "i2c_slave_model",
+            "sdr"
+        ],
+        "AHB_ARB": [],
+        "AHB_ARB_RB": [],
+        "AHB_INTERCONNECT": [],
+        "AHB_MASTER_PORT": [],
+        "AHB_SLAVE_PORT": [],
+        "AHB_MATRIX": [
+            "AHB_MASTER_PORT",
+            "AHB_INTERCONNECT",
+            "AHB_SLAVE_PORT"
+        ],
+        "ahb_lite_sdram": [],
+        "sdr": [
+            "module"
+        ],
+        "sdr_module": [
+            "module",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr",
+            "sdr"
+        ],
+        "test": [
+            "sdr"
+        ],
+        "CHIP_TOP": [
+            "AHB_MATRIX",
+            "CSR_MTIME",
+            "ahb_lite_sdram",
+            "RAM",
+            "RAM_FPGA",
+            "RAM",
+            "PORT",
+            "UART",
+            "INT_GEN",
+            "I2C",
+            "I2C",
+            "SPI"
+        ],
+        "CHIP_TOP_WRAP": [
+            "CJTAG_ADAPTER",
+            "CHIP_TOP"
+        ],
+        "SLAVES_AHB": [],
+        "CJTAG_2_JTAG": [
+            "BEFF"
+        ],
+        "BEFF": [],
+        "CJTAG_ADAPTER": [],
+        "CPU_CSR": [],
+        "CPU_CSR_DBG": [],
+        "CPU_CSR_INT": [],
+        "CPU_DATAPATH": [],
+        "CPU_DEBUG": [],
+        "CPU_FETCH": [],
+        "CPU_FPU32": [
+            "FADD_SPECIAL_NUMBER",
+            "FMADD_SPECIAL_NUMBER",
+            "FDIV_SPECIAL_NUMBER",
+            "FSQRT_SPECIAL_NUMBER",
+            "INNER79_FROM_FLOAT32",
+            "INNER79_FROM_FLOAT32",
+            "INNER79_FROM_FLOAT32",
+            "FMUL_CORE",
+            "FADD_CORE",
+            "FLOAT32_FROM_INNER79",
+            "FCVT_F2I",
+            "FCVT_I2F",
+            "CHECK_FTYPE",
+            "module",
+            "CHECK_FTYPE",
+            "CHECK_FTYPE",
+            "CHECK_FTYPE",
+            "CHECK_FTYPE",
+            "FMUL_SPECIAL_NUMBER",
+            "FADD_SPECIAL_NUMBER",
+            "module",
+            "CHECK_FTYPE",
+            "CHECK_FTYPE",
+            "CHECK_FTYPE",
+            "module",
+            "ROUND_JUDGMENT",
+            "module",
+            "ROUND_JUDGMENT",
+            "FIND_1ST_ONE_IN_FRAC66",
+            "SHIFT_RIGHT_FRAC66",
+            "FRAC27_ROUND_FRAC66",
+            "FIND_1ST_ONE_IN_FRAC27",
+            "SHIFT_RIGHT_FRAC27",
+            "FIND_1ST_ONE_IN_FRAC27",
+            "SHIFT_RIGHT_FRAC27",
+            "SHIFT_RIGHT_FRAC66",
+            "FIND_1ST_ONE_IN_FRAC66",
+            "SHIFT_RIGHT_FRAC66",
+            "module",
+            "FRAC70_ROUND_FRAC132",
+            "FIND_1ST_ONE_IN_FRAC70",
+            "SHIFT_RIGHT_FRAC70",
+            "FIND_1ST_ONE_IN_FRAC27",
+            "CHECK_FTYPE",
+            "ROUND_JUDGMENT"
+        ],
+        "CHECK_FTYPE": [],
+        "FADD_SPECIAL_NUMBER": [],
+        "FMUL_SPECIAL_NUMBER": [],
+        "FMADD_SPECIAL_NUMBER": [],
+        "FDIV_SPECIAL_NUMBER": [],
+        "FSQRT_SPECIAL_NUMBER": [],
+        "FIND_1ST_ONE_IN_FRAC27": [],
+        "FIND_1ST_ONE_IN_FRAC66": [],
+        "FIND_1ST_ONE_IN_FRAC70": [],
+        "SHIFT_RIGHT_FRAC27": [],
+        "SHIFT_RIGHT_FRAC66": [],
+        "SHIFT_RIGHT_FRAC70": [],
+        "ROUND_JUDGMENT": [],
+        "FRAC27_ROUND_FRAC66": [],
+        "FRAC70_ROUND_FRAC132": [],
+        "INNER79_FROM_FLOAT32": [],
+        "FLOAT32_FROM_INNER79": [],
+        "FADD_CORE": [],
+        "FMUL_CORE": [],
+        "FCVT_F2I": [],
+        "FCVT_I2F": [],
+        "CPU_PIPELINE": [],
+        "CPU_TOP": [
+            "CPU_DATAPATH",
+            "CPU_PIPELINE",
+            "CPU_CSR",
+            "CPU_CSR_INT",
+            "CPU_CSR_DBG",
+            "CPU_DEBUG"
+        ],
+        "DEBUG_CDC": [],
+        "DEBUG_DM": [],
+        "DEBUG_DTM_JTAG": [
+            "DEBUG_CDC"
+        ],
+        "DEBUG_TOP": [],
+        "I2C": [],
+        "i2c_slave_model": [],
+        "body": [],
+        "i2c_master_bit_ctrl": [],
+        "i2c_master_byte_ctrl": [
+            "i2c_master_bit_ctrl",
+            "i2c_master_bit_ctrl",
+            "i2c_master_bit_ctrl",
+            "i2c_master_bit_ctrl"
+        ],
+        "i2c_master_top": [],
+        "tst_bench_top": [
+            "wb_master_model",
+            "i2c_master_top",
+            "i2c_slave_model",
+            "wb_master_model",
+            "i2c_master_top",
+            "i2c_slave_model",
+            "module",
+            "wb_master_model",
+            "simple_spi_top",
+            "spi_slave_model"
+        ],
+        "wb_master_model": [],
+        "spi_slave_model": [],
+        "module": [],
+        "INT_GEN": [],
+        "BUS_M_AHB": [],
+        "CSR_MTIME": [],
+        "mmRISC": [
+            "BUS_M_AHB"
+        ],
+        "PORT": [],
+        "RAM": [],
+        "RAM_FPGA": [
+            "RAM128KB_DP"
+        ],
+        "SPI": [],
+        "fifo4": [],
+        "simple_spi_top": [],
+        "UART": [
+            "sasc_brg"
+        ],
+        "sasc_brg": [],
+        "sasc_fifo4": [],
+        "sasc_top": [
+            "sasc_fifo4",
+            "sasc_fifo4",
+            "sasc_fifo4",
+            "sasc_fifo4"
+        ],
+        "endfunction": [],
+        "medium": [],
+        "nand": [],
+        "connect": [],
+        "DS1621_interface": []
+    },
+    "non_tb_files": [
+        "fpga/PLL.v",
+        "fpga/PLL_bb.v",
+        "fpga/RAM128KB_DP.v",
+        "fpga/RAM128KB_DP_bb.v",
+        "verilog/ahb_matrix/ahb_arb.v",
+        "verilog/ahb_matrix/ahb_interconnect.v",
+        "verilog/ahb_matrix/ahb_master_port.v",
+        "verilog/ahb_matrix/ahb_slave_port.v",
+        "verilog/ahb_matrix/ahb_top.v",
+        "verilog/ahb_sdram/logic/ahb_lite_sdram.v",
+        "verilog/ahb_sdram/model/sdr.v",
+        "verilog/ahb_sdram/model/sdr_module.v",
+        "verilog/chip/chip_top.v",
+        "verilog/chip/chip_top_wrap.v",
+        "verilog/chip/slaves_ahb.v",
+        "verilog/cjtag/cjtag_2_jtag.v",
+        "verilog/cjtag/cjtag_adapter.v",
+        "verilog/common/defines_chip.v",
+        "verilog/common/defines_core.v",
+        "verilog/cpu/cpu_csr.v",
+        "verilog/cpu/cpu_csr_dbg.v",
+        "verilog/cpu/cpu_csr_int.v",
+        "verilog/cpu/cpu_datapath.v",
+        "verilog/cpu/cpu_debug.v",
+        "verilog/cpu/cpu_fetch.v",
+        "verilog/cpu/cpu_fpu32.v",
+        "verilog/cpu/cpu_pipeline.v",
+        "verilog/cpu/cpu_top.v",
+        "verilog/debug/debug_cdc.v",
+        "verilog/debug/debug_dm.v",
+        "verilog/debug/debug_dtm_jtag.v",
+        "verilog/debug/debug_top.v",
+        "verilog/i2c/i2c.v",
+        "verilog/i2c/i2c_slave_model.v",
+        "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_bit_ctrl.v",
+        "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_byte_ctrl.v",
+        "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_defines.v",
+        "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/i2c_master_top.v",
+        "verilog/i2c/i2c/tags/asyst_2/rtl/verilog/timescale.v",
+        "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_bit_ctrl.v",
+        "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_byte_ctrl.v",
+        "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_defines.v",
+        "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/i2c_master_top.v",
+        "verilog/i2c/i2c/tags/asyst_3/rtl/verilog/timescale.v",
+        "verilog/i2c/i2c/tags/rel_1/bench/verilog/i2c_slave_model.v",
+        "verilog/i2c/i2c/tags/rel_1/bench/verilog/tst_bench_top.v",
+        "verilog/i2c/i2c/tags/rel_1/bench/verilog/wb_master_model.v",
+        "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_bit_ctrl.v",
+        "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_byte_ctrl.v",
+        "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_defines.v",
+        "verilog/i2c/i2c/tags/rel_1/rtl/verilog/i2c_master_top.v",
+        "verilog/i2c/i2c/tags/rel_1/rtl/verilog/timescale.v",
+        "verilog/i2c/i2c/trunk/bench/verilog/i2c_slave_model.v",
+        "verilog/i2c/i2c/trunk/bench/verilog/spi_slave_model.v",
+        "verilog/i2c/i2c/trunk/bench/verilog/tst_bench_top.v",
+        "verilog/i2c/i2c/trunk/bench/verilog/wb_master_model.v",
+        "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_bit_ctrl.v",
+        "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_byte_ctrl.v",
+        "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_defines.v",
+        "verilog/i2c/i2c/trunk/rtl/verilog/i2c_master_top.v",
+        "verilog/i2c/i2c/trunk/rtl/verilog/timescale.v",
+        "verilog/int_gen/int_gen.v",
+        "verilog/mmRISC/bus_m_ahb.v",
+        "verilog/mmRISC/csr_mtime.v",
+        "verilog/mmRISC/mmRISC.v",
+        "verilog/port/port.v",
+        "verilog/ram/ram.v",
+        "verilog/ram/ram_fpga.v",
+        "verilog/spi/spi.v",
+        "verilog/uart/uart.v",
+        "verilog/uart/sasc/tags/start/rtl/verilog/sasc_brg.v",
+        "verilog/uart/sasc/tags/start/rtl/verilog/sasc_fifo4.v",
+        "verilog/uart/sasc/tags/start/rtl/verilog/sasc_top.v",
+        "verilog/uart/sasc/tags/start/rtl/verilog/timescale.v",
+        "verilog/uart/sasc/trunk/rtl/verilog/sasc_brg.v",
+        "verilog/uart/sasc/trunk/rtl/verilog/sasc_fifo4.v",
+        "verilog/uart/sasc/trunk/rtl/verilog/sasc_top.v",
+        "verilog/uart/sasc/trunk/rtl/verilog/timescale.v",
+        "verilog/i2c/i2c/tags/first/tst_ds1621.vhd",
+        "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/i2c_master_bit_ctrl.vhd",
+        "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/i2c_master_byte_ctrl.vhd",
+        "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/i2c_master_top.vhd",
+        "verilog/i2c/i2c/tags/rel_1/rtl/vhdl/tst_ds1621.vhd",
+        "verilog/i2c/i2c/trunk/rtl/vhdl/i2c_master_bit_ctrl.vhd",
+        "verilog/i2c/i2c/trunk/rtl/vhdl/i2c_master_byte_ctrl.vhd",
+        "verilog/i2c/i2c/trunk/rtl/vhdl/i2c_master_top.vhd",
+        "verilog/i2c/i2c/trunk/rtl/vhdl/tst_ds1621.vhd"
+    ]
+}

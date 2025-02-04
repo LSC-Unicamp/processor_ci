@@ -1,0 +1,2192 @@
+{
+    "name": "RiftCore",
+    "folder": "RiftCore",
+    "sim_files": [
+        "tb/debuger.v",
+        "tb/riftChip_CI.v",
+        "tb/riftChip_DS.v",
+        "tb/riftChip_TB.v",
+        "tb/module_test/axi_ccm_tb.v",
+        "tb/module_test/axi_full_cache_tb.v",
+        "tb/module_test/axi_full_l2l3c_tb.v",
+        "tb/module_test/axi_full_l3c_tb.v",
+        "tb/module_test/corssbar_tb.v",
+        "tb/module_test/dcache_tb.v",
+        "tb/module_test/div_tb.v",
+        "tb/module_test/icache_tb.v",
+        "tb/module_test/mem_access_tb.v"
+    ],
+    "files": [
+        "RiftChip/riftChip.v",
+        "RiftChip/SoC/Xbar_wrap.v",
+        "RiftChip/SoC/axi_ccm.v",
+        "RiftChip/SoC/axi_full_slv_sram.v",
+        "RiftChip/SoC/fxbar_wrap.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_addr_arbiter_sasd.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_addr_decoder.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_axi_crossbar.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_crossbar_sasd.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_decerr_slave.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_splitter.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_data_fifo_v2_1_vl_rfs.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_full_crossbar.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_infrastructure_v1_1_vl_rfs.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_21_axic_register_slice.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_0_carry_and.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_0_comparator_static.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_0_mux_enc.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v",
+        "RiftChip/axi/axi_full_mst.v",
+        "RiftChip/axi/axi_full_slv.v",
+        "RiftChip/axi/axi_lite_mst.v",
+        "RiftChip/axi/axi_lite_slv.v",
+        "RiftChip/axi/AXI BUS TEMPLE/axi4_full_master.v",
+        "RiftChip/axi/AXI BUS TEMPLE/axi4_full_slave.v",
+        "RiftChip/axi/AXI BUS TEMPLE/axi4_lite_master.v",
+        "RiftChip/axi/AXI BUS TEMPLE/axi4_lite_slave.v",
+        "RiftChip/debug/DM.v",
+        "RiftChip/debug/DMI.v",
+        "RiftChip/debug/DTM.v",
+        "RiftChip/debug/core_monitor.v",
+        "RiftChip/element/gen_asymmetricFIFO.v",
+        "RiftChip/element/gen_bypassfifo.v",
+        "RiftChip/element/gen_counter.v",
+        "RiftChip/element/gen_csrreg.v",
+        "RiftChip/element/gen_dffr.v",
+        "RiftChip/element/gen_dffren.v",
+        "RiftChip/element/gen_dpdffren.v",
+        "RiftChip/element/gen_fifo.v",
+        "RiftChip/element/gen_ppbuff.v",
+        "RiftChip/element/gen_ringStack.v",
+        "RiftChip/element/gen_rsffr.v",
+        "RiftChip/element/gen_slffr.v",
+        "RiftChip/element/gen_sram.v",
+        "RiftChip/element/gen_suffr.v",
+        "RiftChip/element/gen_syn.v",
+        "RiftChip/element/lfsr.v",
+        "RiftChip/element/lzp.v",
+        "RiftChip/riftCore/backEnd.v",
+        "RiftChip/riftCore/frontEnd.v",
+        "RiftChip/riftCore/instr_fifo.v",
+        "RiftChip/riftCore/riftCore.v",
+        "RiftChip/riftCore/backend/commit.v",
+        "RiftChip/riftCore/backend/csrFiles.v",
+        "RiftChip/riftCore/backend/dispatch.v",
+        "RiftChip/riftCore/backend/phyRegister.v",
+        "RiftChip/riftCore/backend/regFiles.v",
+        "RiftChip/riftCore/backend/rename.v",
+        "RiftChip/riftCore/backend/writeBack.v",
+        "RiftChip/riftCore/backend/execute/alu.v",
+        "RiftChip/riftCore/backend/execute/bru.v",
+        "RiftChip/riftCore/backend/execute/csr.v",
+        "RiftChip/riftCore/backend/execute/lsu.v",
+        "RiftChip/riftCore/backend/execute/mul.v",
+        "RiftChip/riftCore/backend/issue/alu_issue.v",
+        "RiftChip/riftCore/backend/issue/bru_issue.v",
+        "RiftChip/riftCore/backend/issue/csr_issue.v",
+        "RiftChip/riftCore/backend/issue/issue_buffer.v",
+        "RiftChip/riftCore/backend/issue/issue_fifo.v",
+        "RiftChip/riftCore/backend/issue/lsu_issue.v",
+        "RiftChip/riftCore/backend/issue/mul_issue.v",
+        "RiftChip/riftCore/cache/L2cache.v",
+        "RiftChip/riftCore/cache/L3cache.v",
+        "RiftChip/riftCore/cache/cache.v",
+        "RiftChip/riftCore/cache/cache_mem.v",
+        "RiftChip/riftCore/cache/dirty_block.v",
+        "RiftChip/riftCore/cache/wt_block.v",
+        "RiftChip/riftCore/frontend/branch_predict.v",
+        "RiftChip/riftCore/frontend/decoder.v",
+        "RiftChip/riftCore/frontend/decoder16.v",
+        "RiftChip/riftCore/frontend/decoder32.v",
+        "RiftChip/riftCore/frontend/iAlign.v",
+        "RiftChip/riftCore/frontend/icache.v",
+        "RiftChip/riftCore/frontend/iqueue.v",
+        "RiftChip/riftCore/frontend/pcGenerate.v",
+        "RiftChip/riftCore/frontend/preDecode.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/whutddk/RiftCore",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "riftChip",
+            "file": "RiftChip/riftChip.v"
+        },
+        {
+            "module": "Xbar_wrap",
+            "file": "RiftChip/SoC/Xbar_wrap.v"
+        },
+        {
+            "module": "axi_ccm",
+            "file": "RiftChip/SoC/axi_ccm.v"
+        },
+        {
+            "module": "axi_full_slv_sram",
+            "file": "RiftChip/SoC/axi_full_slv_sram.v"
+        },
+        {
+            "module": "fxbar_wrap",
+            "file": "RiftChip/SoC/fxbar_wrap.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_addr_arbiter_sasd",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_addr_arbiter_sasd.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_addr_decoder",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_addr_decoder.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_axi_crossbar",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_axi_crossbar.v"
+        },
+        {
+            "module": "is",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_crossbar_sasd.v"
+        },
+        {
+            "module": "consists",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_crossbar_sasd.v"
+        },
+        {
+            "module": "contains",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_crossbar_sasd.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_crossbar_sasd",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_crossbar_sasd.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_decerr_slave",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_decerr_slave.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_splitter",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_splitter.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_addr_arbiter",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_arbiter_resp",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "is",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "consists",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "contains",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_crossbar",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "manages",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "interface",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "maintains",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "decodes",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "mulitplexes",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_si_transactor",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_wdata_mux",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_crossbar_v2_1_22_wdata_router",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_data_fifo_v2_1_20_axic_fifo",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_data_fifo_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_data_fifo_v2_1_20_fifo_gen",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_data_fifo_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_data_fifo_v2_1_20_axic_srl_fifo",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_data_fifo_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_data_fifo_v2_1_20_axic_reg_srl_fifo",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_data_fifo_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_data_fifo_v2_1_20_ndeep_srl",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_data_fifo_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_data_fifo_v2_1_20_axi_data_fifo",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_data_fifo_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_full_crossbar",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_full_crossbar.v"
+        },
+        {
+            "module": "to",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_infrastructure_v1_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_infrastructure_v1_1_0_axi2vector",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_infrastructure_v1_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_infrastructure_v1_1_0_axic_srl_fifo",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_infrastructure_v1_1_vl_rfs.v"
+        },
+        {
+            "module": "to",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_infrastructure_v1_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_infrastructure_v1_1_0_vector2axi",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_infrastructure_v1_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_axic_register_slice",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_21_axic_register_slice.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_test_master",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_test_slave",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_tdm_sample",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_auto_slr",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_auto_src",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_auto_dest",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_auto_src",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_auto_dest",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_srl_rtl",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_multi_slr",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_middle_region_slr",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_source_region_slr",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_dest_region_slr",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_single_slr",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_axic_reg_srl_fifo",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_register_slice_v2_1_21_axi_register_slice",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_carry_and",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_0_carry_and.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_comparator_static",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_0_comparator_static.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_mux_enc",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_0_mux_enc.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_carry_latch_and",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_carry_latch_or",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_carry_or",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_carry",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_command_fifo",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_comparator_mask_static",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_comparator_mask",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_comparator_sel_mask_static",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_comparator_sel_mask",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_comparator_sel_static",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_comparator_sel",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_comparator",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_mux",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "generic_baseblocks_v2_1_0_nto1_mux",
+            "file": "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v"
+        },
+        {
+            "module": "axi_full_mst",
+            "file": "RiftChip/axi/axi_full_mst.v"
+        },
+        {
+            "module": "axi_full_slv",
+            "file": "RiftChip/axi/axi_full_slv.v"
+        },
+        {
+            "module": "axi_lite_mst",
+            "file": "RiftChip/axi/axi_lite_mst.v"
+        },
+        {
+            "module": "axi4_lite_slave",
+            "file": "RiftChip/axi/axi_lite_slv.v"
+        },
+        {
+            "module": "axi4_full_master",
+            "file": "RiftChip/axi/AXI BUS TEMPLE/axi4_full_master.v"
+        },
+        {
+            "module": "axi4_full_slave",
+            "file": "RiftChip/axi/AXI BUS TEMPLE/axi4_full_slave.v"
+        },
+        {
+            "module": "axi4_lite_master",
+            "file": "RiftChip/axi/AXI BUS TEMPLE/axi4_lite_master.v"
+        },
+        {
+            "module": "axi4_lite_slave",
+            "file": "RiftChip/axi/AXI BUS TEMPLE/axi4_lite_slave.v"
+        },
+        {
+            "module": "DM",
+            "file": "RiftChip/debug/DM.v"
+        },
+        {
+            "module": "DMI",
+            "file": "RiftChip/debug/DMI.v"
+        },
+        {
+            "module": "DTM",
+            "file": "RiftChip/debug/DTM.v"
+        },
+        {
+            "module": "core_monitor",
+            "file": "RiftChip/debug/core_monitor.v"
+        },
+        {
+            "module": "gen_asymmetricFIFO",
+            "file": "RiftChip/element/gen_asymmetricFIFO.v"
+        },
+        {
+            "module": "is",
+            "file": "RiftChip/element/gen_bypassfifo.v"
+        },
+        {
+            "module": "gen_bypassfifo",
+            "file": "RiftChip/element/gen_bypassfifo.v"
+        },
+        {
+            "module": "gen_counter",
+            "file": "RiftChip/element/gen_counter.v"
+        },
+        {
+            "module": "gen_csrreg",
+            "file": "RiftChip/element/gen_csrreg.v"
+        },
+        {
+            "module": "gen_dffr",
+            "file": "RiftChip/element/gen_dffr.v"
+        },
+        {
+            "module": "gen_dffren",
+            "file": "RiftChip/element/gen_dffren.v"
+        },
+        {
+            "module": "gen_dpdffren",
+            "file": "RiftChip/element/gen_dpdffren.v"
+        },
+        {
+            "module": "gen_fifo",
+            "file": "RiftChip/element/gen_fifo.v"
+        },
+        {
+            "module": "gen_ppbuff",
+            "file": "RiftChip/element/gen_ppbuff.v"
+        },
+        {
+            "module": "gen_ringStack",
+            "file": "RiftChip/element/gen_ringStack.v"
+        },
+        {
+            "module": "gen_rsffr",
+            "file": "RiftChip/element/gen_rsffr.v"
+        },
+        {
+            "module": "gen_slffr",
+            "file": "RiftChip/element/gen_slffr.v"
+        },
+        {
+            "module": "gen_sram",
+            "file": "RiftChip/element/gen_sram.v"
+        },
+        {
+            "module": "gen_suffr",
+            "file": "RiftChip/element/gen_suffr.v"
+        },
+        {
+            "module": "gen_syn",
+            "file": "RiftChip/element/gen_syn.v"
+        },
+        {
+            "module": "lfsr",
+            "file": "RiftChip/element/lfsr.v"
+        },
+        {
+            "module": "lzp",
+            "file": "RiftChip/element/lzp.v"
+        },
+        {
+            "module": "backEnd",
+            "file": "RiftChip/riftCore/backEnd.v"
+        },
+        {
+            "module": "frontEnd",
+            "file": "RiftChip/riftCore/frontEnd.v"
+        },
+        {
+            "module": "instr_fifo",
+            "file": "RiftChip/riftCore/instr_fifo.v"
+        },
+        {
+            "module": "riftCore",
+            "file": "RiftChip/riftCore/riftCore.v"
+        },
+        {
+            "module": "commit",
+            "file": "RiftChip/riftCore/backend/commit.v"
+        },
+        {
+            "module": "csrFiles",
+            "file": "RiftChip/riftCore/backend/csrFiles.v"
+        },
+        {
+            "module": "dispatch",
+            "file": "RiftChip/riftCore/backend/dispatch.v"
+        },
+        {
+            "module": "phyRegister",
+            "file": "RiftChip/riftCore/backend/phyRegister.v"
+        },
+        {
+            "module": "regFiles",
+            "file": "RiftChip/riftCore/backend/regFiles.v"
+        },
+        {
+            "module": "rename",
+            "file": "RiftChip/riftCore/backend/rename.v"
+        },
+        {
+            "module": "writeBack",
+            "file": "RiftChip/riftCore/backend/writeBack.v"
+        },
+        {
+            "module": "alu",
+            "file": "RiftChip/riftCore/backend/execute/alu.v"
+        },
+        {
+            "module": "bru",
+            "file": "RiftChip/riftCore/backend/execute/bru.v"
+        },
+        {
+            "module": "csr",
+            "file": "RiftChip/riftCore/backend/execute/csr.v"
+        },
+        {
+            "module": "lsu",
+            "file": "RiftChip/riftCore/backend/execute/lsu.v"
+        },
+        {
+            "module": "mul",
+            "file": "RiftChip/riftCore/backend/execute/mul.v"
+        },
+        {
+            "module": "alu_issue",
+            "file": "RiftChip/riftCore/backend/issue/alu_issue.v"
+        },
+        {
+            "module": "bru_issue",
+            "file": "RiftChip/riftCore/backend/issue/bru_issue.v"
+        },
+        {
+            "module": "csr_issue",
+            "file": "RiftChip/riftCore/backend/issue/csr_issue.v"
+        },
+        {
+            "module": "issue_buffer",
+            "file": "RiftChip/riftCore/backend/issue/issue_buffer.v"
+        },
+        {
+            "module": "issue_fifo",
+            "file": "RiftChip/riftCore/backend/issue/issue_fifo.v"
+        },
+        {
+            "module": "lsu_issue",
+            "file": "RiftChip/riftCore/backend/issue/lsu_issue.v"
+        },
+        {
+            "module": "mul_issue",
+            "file": "RiftChip/riftCore/backend/issue/mul_issue.v"
+        },
+        {
+            "module": "L2cache",
+            "file": "RiftChip/riftCore/cache/L2cache.v"
+        },
+        {
+            "module": "L3cache",
+            "file": "RiftChip/riftCore/cache/L3cache.v"
+        },
+        {
+            "module": "cache",
+            "file": "RiftChip/riftCore/cache/cache.v"
+        },
+        {
+            "module": "cache_mem",
+            "file": "RiftChip/riftCore/cache/cache_mem.v"
+        },
+        {
+            "module": "dirty_block",
+            "file": "RiftChip/riftCore/cache/dirty_block.v"
+        },
+        {
+            "module": "wt_block",
+            "file": "RiftChip/riftCore/cache/wt_block.v"
+        },
+        {
+            "module": "branch_predict",
+            "file": "RiftChip/riftCore/frontend/branch_predict.v"
+        },
+        {
+            "module": "decoder",
+            "file": "RiftChip/riftCore/frontend/decoder.v"
+        },
+        {
+            "module": "decoder16",
+            "file": "RiftChip/riftCore/frontend/decoder16.v"
+        },
+        {
+            "module": "decoder32",
+            "file": "RiftChip/riftCore/frontend/decoder32.v"
+        },
+        {
+            "module": "iAlign",
+            "file": "RiftChip/riftCore/frontend/iAlign.v"
+        },
+        {
+            "module": "icache",
+            "file": "RiftChip/riftCore/frontend/icache.v"
+        },
+        {
+            "module": "iqueue",
+            "file": "RiftChip/riftCore/frontend/iqueue.v"
+        },
+        {
+            "module": "pcGenerate",
+            "file": "RiftChip/riftCore/frontend/pcGenerate.v"
+        },
+        {
+            "module": "preDecode",
+            "file": "RiftChip/riftCore/frontend/preDecode.v"
+        },
+        {
+            "module": "debuger",
+            "file": "tb/debuger.v"
+        },
+        {
+            "module": "riftChip_CI",
+            "file": "tb/riftChip_CI.v"
+        },
+        {
+            "module": "riftChip_DS",
+            "file": "tb/riftChip_DS.v"
+        },
+        {
+            "module": "riftChip_TB",
+            "file": "tb/riftChip_TB.v"
+        },
+        {
+            "module": "axi_ccm_tb",
+            "file": "tb/module_test/axi_ccm_tb.v"
+        },
+        {
+            "module": "axi_full_cache_tb",
+            "file": "tb/module_test/axi_full_cache_tb.v"
+        },
+        {
+            "module": "axi_full_l2l3c_tb",
+            "file": "tb/module_test/axi_full_l2l3c_tb.v"
+        },
+        {
+            "module": "axi_full_mst_tb",
+            "file": "tb/module_test/axi_full_l3c_tb.v"
+        },
+        {
+            "module": "corssbar_tb",
+            "file": "tb/module_test/corssbar_tb.v"
+        },
+        {
+            "module": "dcache_tb",
+            "file": "tb/module_test/dcache_tb.v"
+        },
+        {
+            "module": "div_tb",
+            "file": "tb/module_test/div_tb.v"
+        },
+        {
+            "module": "icache_tb",
+            "file": "tb/module_test/icache_tb.v"
+        },
+        {
+            "module": "mem_access_tb",
+            "file": "tb/module_test/mem_access_tb.v"
+        }
+    ],
+    "module_graph": {
+        "riftChip": [
+            "riftChip_CI",
+            "riftChip_DS",
+            "riftChip_TB"
+        ],
+        "Xbar_wrap": [],
+        "axi_ccm": [
+            "axi_ccm",
+            "axi_ccm_tb"
+        ],
+        "axi_full_slv_sram": [
+            "riftChip",
+            "axi_full_cache_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_mst_tb",
+            "dcache_tb",
+            "icache_tb",
+            "mem_access_tb"
+        ],
+        "fxbar_wrap": [
+            "riftChip"
+        ],
+        "axi_crossbar_v2_1_22_addr_arbiter_sasd": [],
+        "axi_crossbar_v2_1_22_addr_decoder": [],
+        "axi_crossbar_v2_1_22_axi_crossbar": [
+            "axi_full_crossbar"
+        ],
+        "is": [
+            "iqueue"
+        ],
+        "consists": [],
+        "contains": [],
+        "axi_crossbar_v2_1_22_crossbar_sasd": [],
+        "axi_crossbar_v2_1_22_decerr_slave": [],
+        "axi_crossbar_v2_1_22_splitter": [
+            "is",
+            "is"
+        ],
+        "axi_crossbar_v2_1_22_addr_arbiter": [],
+        "axi_crossbar_v2_1_22_arbiter_resp": [],
+        "axi_crossbar_v2_1_22_crossbar": [
+            "axi_crossbar_v2_1_22_axi_crossbar"
+        ],
+        "manages": [],
+        "interface": [],
+        "maintains": [],
+        "decodes": [],
+        "mulitplexes": [],
+        "axi_crossbar_v2_1_22_si_transactor": [],
+        "axi_crossbar_v2_1_22_wdata_mux": [],
+        "axi_crossbar_v2_1_22_wdata_router": [],
+        "axi_data_fifo_v2_1_20_axic_fifo": [],
+        "axi_data_fifo_v2_1_20_fifo_gen": [
+            "axi_data_fifo_v2_1_20_axic_fifo"
+        ],
+        "axi_data_fifo_v2_1_20_axic_srl_fifo": [],
+        "axi_data_fifo_v2_1_20_axic_reg_srl_fifo": [
+            "axi_crossbar_v2_1_22_addr_arbiter"
+        ],
+        "axi_data_fifo_v2_1_20_ndeep_srl": [
+            "axi_data_fifo_v2_1_20_axic_fifo",
+            "axi_data_fifo_v2_1_20_axic_fifo"
+        ],
+        "axi_data_fifo_v2_1_20_axi_data_fifo": [],
+        "axi_full_crossbar": [
+            "fxbar_wrap"
+        ],
+        "to": [],
+        "axi_infrastructure_v1_1_0_axi2vector": [
+            "axi_register_slice_v2_1_21_test_master"
+        ],
+        "axi_infrastructure_v1_1_0_axic_srl_fifo": [],
+        "axi_infrastructure_v1_1_0_vector2axi": [
+            "axi_register_slice_v2_1_21_test_master"
+        ],
+        "axi_register_slice_v2_1_21_axic_register_slice": [
+            "is",
+            "axi_register_slice_v2_1_21_axic_register_slice"
+        ],
+        "axi_register_slice_v2_1_21_test_master": [],
+        "axi_register_slice_v2_1_21_test_slave": [],
+        "axi_register_slice_v2_1_21_tdm_sample": [],
+        "axi_register_slice_v2_1_21_auto_slr": [],
+        "axi_register_slice_v2_1_21_auto_src": [
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master"
+        ],
+        "axi_register_slice_v2_1_21_auto_dest": [
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master"
+        ],
+        "axi_register_slice_v2_1_21_srl_rtl": [],
+        "axi_register_slice_v2_1_21_multi_slr": [],
+        "axi_register_slice_v2_1_21_middle_region_slr": [
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master"
+        ],
+        "axi_register_slice_v2_1_21_source_region_slr": [
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master"
+        ],
+        "axi_register_slice_v2_1_21_dest_region_slr": [
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master"
+        ],
+        "axi_register_slice_v2_1_21_single_slr": [],
+        "axi_register_slice_v2_1_21_axic_reg_srl_fifo": [
+            "axi_register_slice_v2_1_21_test_master",
+            "axi_register_slice_v2_1_21_test_master"
+        ],
+        "axi_register_slice_v2_1_21_axi_register_slice": [],
+        "generic_baseblocks_v2_1_0_carry_and": [
+            "generic_baseblocks_v2_1_0_comparator_static",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and",
+            "generic_baseblocks_v2_1_0_carry_latch_and"
+        ],
+        "generic_baseblocks_v2_1_0_comparator_static": [],
+        "generic_baseblocks_v2_1_0_mux_enc": [
+            "axi_crossbar_v2_1_22_addr_arbiter_sasd",
+            "is",
+            "is",
+            "is",
+            "is",
+            "is",
+            "is",
+            "is",
+            "is",
+            "axi_crossbar_v2_1_22_addr_arbiter",
+            "axi_crossbar_v2_1_22_addr_arbiter",
+            "axi_crossbar_v2_1_22_addr_arbiter",
+            "axi_crossbar_v2_1_22_addr_arbiter",
+            "axi_crossbar_v2_1_22_addr_arbiter",
+            "axi_crossbar_v2_1_22_addr_arbiter"
+        ],
+        "generic_baseblocks_v2_1_0_carry_latch_and": [],
+        "generic_baseblocks_v2_1_0_carry_latch_or": [
+            "generic_baseblocks_v2_1_0_carry_latch_and"
+        ],
+        "generic_baseblocks_v2_1_0_carry_or": [],
+        "generic_baseblocks_v2_1_0_carry": [],
+        "generic_baseblocks_v2_1_0_command_fifo": [],
+        "generic_baseblocks_v2_1_0_comparator_mask_static": [],
+        "generic_baseblocks_v2_1_0_comparator_mask": [],
+        "generic_baseblocks_v2_1_0_comparator_sel_mask_static": [],
+        "generic_baseblocks_v2_1_0_comparator_sel_mask": [],
+        "generic_baseblocks_v2_1_0_comparator_sel_static": [],
+        "generic_baseblocks_v2_1_0_comparator_sel": [],
+        "generic_baseblocks_v2_1_0_comparator": [],
+        "generic_baseblocks_v2_1_0_mux": [
+            "generic_baseblocks_v2_1_0_carry_latch_and"
+        ],
+        "generic_baseblocks_v2_1_0_nto1_mux": [],
+        "axi_full_mst": [
+            "axi_full_mst"
+        ],
+        "axi_full_slv": [],
+        "axi_lite_mst": [],
+        "axi4_lite_slave": [],
+        "axi4_full_master": [],
+        "axi4_full_slave": [],
+        "axi4_lite_master": [],
+        "DM": [
+            "DM"
+        ],
+        "DMI": [],
+        "DTM": [],
+        "core_monitor": [],
+        "gen_asymmetricFIFO": [
+            "gen_asymmetricFIFO"
+        ],
+        "gen_bypassfifo": [
+            "is",
+            "decoder"
+        ],
+        "gen_counter": [
+            "gen_counter"
+        ],
+        "gen_csrreg": [
+            "gen_csrreg",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles",
+            "csrFiles"
+        ],
+        "gen_dffr": [
+            "axi_full_mst",
+            "axi_full_mst",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DTM",
+            "DTM",
+            "DTM",
+            "DTM",
+            "DTM",
+            "DTM",
+            "DTM",
+            "gen_asymmetricFIFO",
+            "gen_asymmetricFIFO",
+            "gen_counter",
+            "gen_fifo",
+            "gen_ringStack",
+            "phyRegister",
+            "phyRegister",
+            "alu",
+            "alu",
+            "bru",
+            "bru",
+            "bru",
+            "bru",
+            "bru",
+            "bru",
+            "csr",
+            "csr",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "mul",
+            "mul",
+            "mul",
+            "mul",
+            "mul",
+            "alu_issue",
+            "alu_issue",
+            "bru_issue",
+            "csr_issue",
+            "issue_buffer",
+            "mul_issue",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "wt_block",
+            "wt_block",
+            "wt_block",
+            "wt_block",
+            "icache",
+            "icache",
+            "icache",
+            "icache",
+            "icache",
+            "iqueue",
+            "iqueue",
+            "iqueue",
+            "iqueue",
+            "iqueue",
+            "iqueue",
+            "iqueue",
+            "axi_full_l2l3c_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_mst_tb",
+            "axi_full_mst_tb",
+            "div_tb",
+            "div_tb",
+            "div_tb"
+        ],
+        "gen_dffren": [
+            "axi_ccm",
+            "axi_ccm",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi4_lite_slave",
+            "axi4_lite_slave",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "DM",
+            "gen_dffren",
+            "gen_ppbuff",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "wt_block",
+            "pcGenerate"
+        ],
+        "gen_dpdffren": [
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_full_slv",
+            "gen_dpdffren",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L3cache",
+            "L3cache"
+        ],
+        "gen_fifo": [
+            "gen_fifo",
+            "backEnd",
+            "branch_predict",
+            "branch_predict"
+        ],
+        "gen_ppbuff": [
+            "gen_ppbuff"
+        ],
+        "gen_ringStack": [
+            "gen_ringStack",
+            "branch_predict"
+        ],
+        "gen_rsffr": [
+            "axi_ccm",
+            "axi_ccm",
+            "axi_ccm",
+            "axi_ccm",
+            "axi_ccm",
+            "axi_ccm",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_slv_sram",
+            "axi_full_mst",
+            "axi_full_mst",
+            "axi_full_mst",
+            "axi_full_mst",
+            "axi_full_mst",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_full_slv",
+            "axi_lite_mst",
+            "axi_lite_mst",
+            "axi_lite_mst",
+            "axi_lite_mst",
+            "axi_lite_mst",
+            "axi4_lite_slave",
+            "axi4_lite_slave",
+            "axi4_lite_slave",
+            "axi4_lite_slave",
+            "axi4_lite_slave",
+            "axi4_lite_slave",
+            "DM",
+            "DM",
+            "DM",
+            "is",
+            "gen_fifo",
+            "instr_fifo",
+            "riftCore",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "lsu",
+            "mul",
+            "lsu_issue",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L2cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "L3cache",
+            "icache",
+            "icache",
+            "icache",
+            "icache",
+            "icache",
+            "debuger",
+            "debuger",
+            "debuger",
+            "debuger",
+            "debuger",
+            "axi_full_cache_tb",
+            "axi_full_cache_tb",
+            "axi_full_cache_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_l2l3c_tb",
+            "axi_full_mst_tb",
+            "axi_full_mst_tb",
+            "axi_full_mst_tb",
+            "axi_full_mst_tb",
+            "axi_full_mst_tb",
+            "axi_full_mst_tb"
+        ],
+        "gen_slffr": [
+            "gen_slffr"
+        ],
+        "gen_sram": [
+            "axi_ccm",
+            "axi_full_slv_sram"
+        ],
+        "gen_suffr": [
+            "gen_suffr"
+        ],
+        "gen_syn": [
+            "DMI",
+            "DMI",
+            "DMI",
+            "DMI",
+            "DMI",
+            "DMI",
+            "DMI",
+            "DMI",
+            "DMI",
+            "DMI",
+            "gen_syn"
+        ],
+        "lfsr": [
+            "lsu",
+            "L2cache",
+            "icache"
+        ],
+        "lzp": [
+            "lsu",
+            "issue_buffer",
+            "L2cache",
+            "dirty_block",
+            "dirty_block",
+            "icache"
+        ],
+        "backEnd": [
+            "riftCore"
+        ],
+        "frontEnd": [
+            "riftCore"
+        ],
+        "instr_fifo": [
+            "instr_fifo",
+            "riftCore"
+        ],
+        "riftCore": [
+            "riftChip"
+        ],
+        "commit": [
+            "backEnd"
+        ],
+        "csrFiles": [
+            "backEnd"
+        ],
+        "dispatch": [],
+        "phyRegister": [
+            "backEnd"
+        ],
+        "regFiles": [
+            "phyRegister"
+        ],
+        "rename": [
+            "dispatch"
+        ],
+        "writeBack": [
+            "backEnd"
+        ],
+        "alu": [
+            "backEnd",
+            "alu"
+        ],
+        "bru": [
+            "backEnd",
+            "bru"
+        ],
+        "csr": [
+            "backEnd",
+            "csr"
+        ],
+        "lsu": [
+            "backEnd",
+            "backEnd",
+            "lsu"
+        ],
+        "mul": [
+            "backEnd",
+            "mul"
+        ],
+        "alu_issue": [
+            "backEnd",
+            "alu_issue"
+        ],
+        "bru_issue": [
+            "backEnd",
+            "bru_issue"
+        ],
+        "csr_issue": [
+            "backEnd",
+            "csr_issue"
+        ],
+        "issue_buffer": [
+            "backEnd",
+            "issue_buffer"
+        ],
+        "issue_fifo": [
+            "backEnd",
+            "backEnd",
+            "backEnd",
+            "backEnd",
+            "issue_fifo"
+        ],
+        "lsu_issue": [
+            "backEnd",
+            "lsu_issue"
+        ],
+        "mul_issue": [
+            "backEnd",
+            "mul_issue"
+        ],
+        "L2cache": [
+            "L2cache",
+            "cache",
+            "mem_access_tb"
+        ],
+        "L3cache": [
+            "L3cache",
+            "cache",
+            "axi_full_mst_tb",
+            "mem_access_tb"
+        ],
+        "cache": [
+            "riftCore",
+            "axi_full_cache_tb",
+            "axi_full_l2l3c_tb"
+        ],
+        "cache_mem": [
+            "lsu",
+            "L2cache",
+            "L3cache",
+            "cache_mem",
+            "icache"
+        ],
+        "dirty_block": [
+            "L3cache",
+            "dirty_block"
+        ],
+        "wt_block": [
+            "lsu",
+            "wt_block"
+        ],
+        "branch_predict": [
+            "iqueue"
+        ],
+        "decoder": [
+            "frontEnd"
+        ],
+        "decoder16": [
+            "decoder"
+        ],
+        "decoder32": [
+            "decoder"
+        ],
+        "iAlign": [
+            "iqueue"
+        ],
+        "icache": [
+            "frontEnd",
+            "icache",
+            "icache_tb",
+            "mem_access_tb"
+        ],
+        "iqueue": [
+            "frontEnd"
+        ],
+        "pcGenerate": [
+            "frontEnd"
+        ],
+        "preDecode": [
+            "iqueue"
+        ],
+        "debuger": [
+            "riftChip"
+        ],
+        "riftChip_CI": [],
+        "riftChip_DS": [],
+        "riftChip_TB": [],
+        "axi_ccm_tb": [],
+        "axi_full_cache_tb": [],
+        "axi_full_l2l3c_tb": [],
+        "axi_full_mst_tb": [],
+        "corssbar_tb": [],
+        "dcache_tb": [],
+        "div_tb": [],
+        "icache_tb": [],
+        "mem_access_tb": []
+    },
+    "module_graph_inverse": {
+        "riftChip": [
+            "riftCore",
+            "fxbar_wrap",
+            "axi_full_slv_sram",
+            "debuger"
+        ],
+        "Xbar_wrap": [],
+        "axi_ccm": [
+            "axi_ccm",
+            "gen_sram",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffren",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffren",
+            "gen_rsffr"
+        ],
+        "axi_full_slv_sram": [
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dpdffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dpdffren",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dpdffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_rsffr",
+            "gen_dpdffren",
+            "gen_rsffr",
+            "gen_sram"
+        ],
+        "fxbar_wrap": [
+            "axi_full_crossbar"
+        ],
+        "axi_crossbar_v2_1_22_addr_arbiter_sasd": [
+            "generic_baseblocks_v2_1_0_mux_enc"
+        ],
+        "axi_crossbar_v2_1_22_addr_decoder": [],
+        "axi_crossbar_v2_1_22_axi_crossbar": [
+            "axi_crossbar_v2_1_22_crossbar"
+        ],
+        "is": [
+            "axi_crossbar_v2_1_22_splitter",
+            "axi_crossbar_v2_1_22_splitter",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "axi_register_slice_v2_1_21_axic_register_slice",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "gen_bypassfifo",
+            "gen_rsffr"
+        ],
+        "consists": [],
+        "contains": [],
+        "axi_crossbar_v2_1_22_crossbar_sasd": [],
+        "axi_crossbar_v2_1_22_decerr_slave": [],
+        "axi_crossbar_v2_1_22_splitter": [],
+        "axi_crossbar_v2_1_22_addr_arbiter": [
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "generic_baseblocks_v2_1_0_mux_enc",
+            "axi_data_fifo_v2_1_20_axic_reg_srl_fifo"
+        ],
+        "axi_crossbar_v2_1_22_arbiter_resp": [],
+        "axi_crossbar_v2_1_22_crossbar": [],
+        "manages": [],
+        "interface": [],
+        "maintains": [],
+        "decodes": [],
+        "mulitplexes": [],
+        "axi_crossbar_v2_1_22_si_transactor": [],
+        "axi_crossbar_v2_1_22_wdata_mux": [],
+        "axi_crossbar_v2_1_22_wdata_router": [],
+        "axi_data_fifo_v2_1_20_axic_fifo": [
+            "axi_data_fifo_v2_1_20_fifo_gen",
+            "axi_data_fifo_v2_1_20_ndeep_srl",
+            "axi_data_fifo_v2_1_20_ndeep_srl"
+        ],
+        "axi_data_fifo_v2_1_20_fifo_gen": [],
+        "axi_data_fifo_v2_1_20_axic_srl_fifo": [],
+        "axi_data_fifo_v2_1_20_axic_reg_srl_fifo": [],
+        "axi_data_fifo_v2_1_20_ndeep_srl": [],
+        "axi_data_fifo_v2_1_20_axi_data_fifo": [],
+        "axi_full_crossbar": [
+            "axi_crossbar_v2_1_22_axi_crossbar"
+        ],
+        "to": [],
+        "axi_infrastructure_v1_1_0_axi2vector": [],
+        "axi_infrastructure_v1_1_0_axic_srl_fifo": [],
+        "axi_infrastructure_v1_1_0_vector2axi": [],
+        "axi_register_slice_v2_1_21_axic_register_slice": [
+            "axi_register_slice_v2_1_21_axic_register_slice"
+        ],
+        "axi_register_slice_v2_1_21_test_master": [
+            "axi_register_slice_v2_1_21_auto_src",
+            "axi_register_slice_v2_1_21_auto_dest",
+            "axi_register_slice_v2_1_21_auto_src",
+            "axi_register_slice_v2_1_21_auto_dest",
+            "axi_register_slice_v2_1_21_axic_reg_srl_fifo",
+            "axi_register_slice_v2_1_21_dest_region_slr",
+            "axi_register_slice_v2_1_21_source_region_slr",
+            "axi_register_slice_v2_1_21_dest_region_slr",
+            "axi_register_slice_v2_1_21_middle_region_slr",
+            "axi_register_slice_v2_1_21_dest_region_slr",
+            "axi_register_slice_v2_1_21_source_region_slr",
+            "axi_register_slice_v2_1_21_middle_region_slr",
+            "axi_register_slice_v2_1_21_dest_region_slr",
+            "axi_register_slice_v2_1_21_middle_region_slr",
+            "axi_register_slice_v2_1_21_middle_region_slr",
+            "axi_register_slice_v2_1_21_dest_region_slr",
+            "axi_register_slice_v2_1_21_source_region_slr",
+            "axi_register_slice_v2_1_21_middle_region_slr",
+            "axi_register_slice_v2_1_21_middle_region_slr",
+            "axi_register_slice_v2_1_21_dest_region_slr",
+            "axi_register_slice_v2_1_21_axic_reg_srl_fifo",
+            "axi_infrastructure_v1_1_0_axi2vector",
+            "axi_infrastructure_v1_1_0_vector2axi",
+            "axi_register_slice_v2_1_21_dest_region_slr",
+            "axi_register_slice_v2_1_21_dest_region_slr",
+            "axi_register_slice_v2_1_21_dest_region_slr",
+            "axi_register_slice_v2_1_21_dest_region_slr",
+            "axi_register_slice_v2_1_21_dest_region_slr"
+        ],
+        "axi_register_slice_v2_1_21_test_slave": [],
+        "axi_register_slice_v2_1_21_tdm_sample": [],
+        "axi_register_slice_v2_1_21_auto_slr": [],
+        "axi_register_slice_v2_1_21_auto_src": [],
+        "axi_register_slice_v2_1_21_auto_dest": [],
+        "axi_register_slice_v2_1_21_srl_rtl": [],
+        "axi_register_slice_v2_1_21_multi_slr": [],
+        "axi_register_slice_v2_1_21_middle_region_slr": [],
+        "axi_register_slice_v2_1_21_source_region_slr": [],
+        "axi_register_slice_v2_1_21_dest_region_slr": [],
+        "axi_register_slice_v2_1_21_single_slr": [],
+        "axi_register_slice_v2_1_21_axic_reg_srl_fifo": [],
+        "axi_register_slice_v2_1_21_axi_register_slice": [],
+        "generic_baseblocks_v2_1_0_carry_and": [],
+        "generic_baseblocks_v2_1_0_comparator_static": [
+            "generic_baseblocks_v2_1_0_carry_and"
+        ],
+        "generic_baseblocks_v2_1_0_mux_enc": [],
+        "generic_baseblocks_v2_1_0_carry_latch_and": [
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_latch_or",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_carry_and",
+            "generic_baseblocks_v2_1_0_mux"
+        ],
+        "generic_baseblocks_v2_1_0_carry_latch_or": [],
+        "generic_baseblocks_v2_1_0_carry_or": [],
+        "generic_baseblocks_v2_1_0_carry": [],
+        "generic_baseblocks_v2_1_0_command_fifo": [],
+        "generic_baseblocks_v2_1_0_comparator_mask_static": [],
+        "generic_baseblocks_v2_1_0_comparator_mask": [],
+        "generic_baseblocks_v2_1_0_comparator_sel_mask_static": [],
+        "generic_baseblocks_v2_1_0_comparator_sel_mask": [],
+        "generic_baseblocks_v2_1_0_comparator_sel_static": [],
+        "generic_baseblocks_v2_1_0_comparator_sel": [],
+        "generic_baseblocks_v2_1_0_comparator": [],
+        "generic_baseblocks_v2_1_0_mux": [],
+        "generic_baseblocks_v2_1_0_nto1_mux": [],
+        "axi_full_mst": [
+            "axi_full_mst",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_rsffr"
+        ],
+        "axi_full_slv": [
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dpdffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dpdffren",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dpdffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_rsffr",
+            "gen_dpdffren",
+            "gen_rsffr"
+        ],
+        "axi_lite_mst": [
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr"
+        ],
+        "axi4_lite_slave": [
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffren",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffren",
+            "gen_rsffr"
+        ],
+        "axi4_full_master": [],
+        "axi4_full_slave": [],
+        "axi4_lite_master": [],
+        "DM": [
+            "DM",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr"
+        ],
+        "DMI": [
+            "gen_syn",
+            "gen_syn",
+            "gen_syn",
+            "gen_syn",
+            "gen_syn",
+            "gen_syn",
+            "gen_syn",
+            "gen_syn",
+            "gen_syn",
+            "gen_syn"
+        ],
+        "DTM": [
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr"
+        ],
+        "core_monitor": [],
+        "gen_asymmetricFIFO": [
+            "gen_asymmetricFIFO",
+            "gen_dffr",
+            "gen_dffr"
+        ],
+        "gen_bypassfifo": [],
+        "gen_counter": [
+            "gen_counter",
+            "gen_dffr"
+        ],
+        "gen_csrreg": [
+            "gen_csrreg"
+        ],
+        "gen_dffr": [],
+        "gen_dffren": [
+            "gen_dffren"
+        ],
+        "gen_dpdffren": [
+            "gen_dpdffren"
+        ],
+        "gen_fifo": [
+            "gen_fifo",
+            "gen_dffr",
+            "gen_rsffr"
+        ],
+        "gen_ppbuff": [
+            "gen_ppbuff",
+            "gen_dffren"
+        ],
+        "gen_ringStack": [
+            "gen_ringStack",
+            "gen_dffr"
+        ],
+        "gen_rsffr": [],
+        "gen_slffr": [
+            "gen_slffr"
+        ],
+        "gen_sram": [],
+        "gen_suffr": [
+            "gen_suffr"
+        ],
+        "gen_syn": [
+            "gen_syn"
+        ],
+        "lfsr": [],
+        "lzp": [],
+        "backEnd": [
+            "issue_buffer",
+            "issue_fifo",
+            "issue_fifo",
+            "issue_fifo",
+            "issue_fifo",
+            "alu_issue",
+            "bru_issue",
+            "csr_issue",
+            "lsu_issue",
+            "mul_issue",
+            "alu",
+            "bru",
+            "csr",
+            "lsu",
+            "lsu",
+            "mul",
+            "writeBack",
+            "commit",
+            "gen_fifo",
+            "csrFiles",
+            "phyRegister"
+        ],
+        "frontEnd": [
+            "pcGenerate",
+            "icache",
+            "iqueue",
+            "decoder"
+        ],
+        "instr_fifo": [
+            "instr_fifo",
+            "gen_rsffr"
+        ],
+        "riftCore": [
+            "frontEnd",
+            "instr_fifo",
+            "backEnd",
+            "gen_rsffr",
+            "cache"
+        ],
+        "commit": [],
+        "csrFiles": [
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg",
+            "gen_csrreg"
+        ],
+        "dispatch": [
+            "rename"
+        ],
+        "phyRegister": [
+            "gen_dffr",
+            "gen_dffr",
+            "regFiles"
+        ],
+        "regFiles": [],
+        "rename": [],
+        "writeBack": [],
+        "alu": [
+            "alu",
+            "gen_dffr",
+            "gen_dffr"
+        ],
+        "bru": [
+            "bru",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr"
+        ],
+        "csr": [
+            "csr",
+            "gen_dffr",
+            "gen_dffr"
+        ],
+        "lsu": [
+            "lsu",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_dffr",
+            "cache_mem",
+            "gen_rsffr",
+            "lzp",
+            "lfsr",
+            "wt_block",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr"
+        ],
+        "mul": [
+            "mul",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_rsffr"
+        ],
+        "alu_issue": [
+            "alu_issue",
+            "gen_dffr",
+            "gen_dffr"
+        ],
+        "bru_issue": [
+            "bru_issue",
+            "gen_dffr"
+        ],
+        "csr_issue": [
+            "csr_issue",
+            "gen_dffr"
+        ],
+        "issue_buffer": [
+            "issue_buffer",
+            "gen_dffr",
+            "lzp"
+        ],
+        "issue_fifo": [
+            "issue_fifo"
+        ],
+        "lsu_issue": [
+            "lsu_issue",
+            "gen_rsffr"
+        ],
+        "mul_issue": [
+            "mul_issue",
+            "gen_dffr"
+        ],
+        "L2cache": [
+            "L2cache",
+            "gen_dpdffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_rsffr",
+            "gen_dpdffren",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dpdffren",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_rsffr",
+            "gen_dpdffren",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_dffr",
+            "cache_mem",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "lzp",
+            "lfsr"
+        ],
+        "L3cache": [
+            "L3cache",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_dpdffren",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffren",
+            "gen_dffren",
+            "gen_rsffr",
+            "gen_dpdffren",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "cache_mem",
+            "gen_dffr",
+            "dirty_block"
+        ],
+        "cache": [
+            "L2cache",
+            "L3cache"
+        ],
+        "cache_mem": [
+            "cache_mem"
+        ],
+        "dirty_block": [
+            "dirty_block",
+            "lzp",
+            "lzp"
+        ],
+        "wt_block": [
+            "wt_block",
+            "gen_dffr",
+            "gen_dffren",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr"
+        ],
+        "branch_predict": [
+            "gen_fifo",
+            "gen_ringStack",
+            "gen_fifo"
+        ],
+        "decoder": [
+            "gen_bypassfifo",
+            "decoder16",
+            "decoder32"
+        ],
+        "decoder16": [],
+        "decoder32": [],
+        "iAlign": [],
+        "icache": [
+            "icache",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "cache_mem",
+            "gen_rsffr",
+            "lzp",
+            "lfsr"
+        ],
+        "iqueue": [
+            "iAlign",
+            "is",
+            "preDecode",
+            "branch_predict",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr"
+        ],
+        "pcGenerate": [
+            "gen_dffren"
+        ],
+        "preDecode": [],
+        "debuger": [
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr"
+        ],
+        "riftChip_CI": [
+            "riftChip"
+        ],
+        "riftChip_DS": [
+            "riftChip"
+        ],
+        "riftChip_TB": [
+            "riftChip"
+        ],
+        "axi_ccm_tb": [
+            "axi_ccm"
+        ],
+        "axi_full_cache_tb": [
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "cache",
+            "axi_full_slv_sram"
+        ],
+        "axi_full_l2l3c_tb": [
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "cache",
+            "axi_full_slv_sram"
+        ],
+        "axi_full_mst_tb": [
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "gen_rsffr",
+            "gen_dffr",
+            "gen_rsffr",
+            "L3cache",
+            "axi_full_slv_sram"
+        ],
+        "corssbar_tb": [],
+        "dcache_tb": [
+            "axi_full_slv_sram"
+        ],
+        "div_tb": [
+            "gen_dffr",
+            "gen_dffr",
+            "gen_dffr"
+        ],
+        "icache_tb": [
+            "icache",
+            "axi_full_slv_sram"
+        ],
+        "mem_access_tb": [
+            "icache",
+            "L2cache",
+            "L3cache",
+            "axi_full_slv_sram"
+        ]
+    },
+    "non_tb_files": [
+        "RiftChip/riftChip.v",
+        "RiftChip/SoC/Xbar_wrap.v",
+        "RiftChip/SoC/axi_ccm.v",
+        "RiftChip/SoC/axi_full_slv_sram.v",
+        "RiftChip/SoC/fxbar_wrap.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_addr_arbiter_sasd.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_addr_decoder.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_axi_crossbar.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_crossbar_sasd.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_decerr_slave.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_22_splitter.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_crossbar_v2_1_vl_rfs.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_data_fifo_v2_1_vl_rfs.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_full_crossbar.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_infrastructure_v1_1_vl_rfs.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_21_axic_register_slice.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/axi_register_slice_v2_1_vl_rfs.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_0_carry_and.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_0_comparator_static.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_0_mux_enc.v",
+        "RiftChip/SoC/xilinx_IP/axi_full_Xbar/generic_baseblocks_v2_1_vl_rfs.v",
+        "RiftChip/axi/axi_full_mst.v",
+        "RiftChip/axi/axi_full_slv.v",
+        "RiftChip/axi/axi_lite_mst.v",
+        "RiftChip/axi/axi_lite_slv.v",
+        "RiftChip/axi/AXI BUS TEMPLE/axi4_full_master.v",
+        "RiftChip/axi/AXI BUS TEMPLE/axi4_full_slave.v",
+        "RiftChip/axi/AXI BUS TEMPLE/axi4_lite_master.v",
+        "RiftChip/axi/AXI BUS TEMPLE/axi4_lite_slave.v",
+        "RiftChip/debug/DM.v",
+        "RiftChip/debug/DMI.v",
+        "RiftChip/debug/DTM.v",
+        "RiftChip/debug/core_monitor.v",
+        "RiftChip/element/gen_asymmetricFIFO.v",
+        "RiftChip/element/gen_bypassfifo.v",
+        "RiftChip/element/gen_counter.v",
+        "RiftChip/element/gen_csrreg.v",
+        "RiftChip/element/gen_dffr.v",
+        "RiftChip/element/gen_dffren.v",
+        "RiftChip/element/gen_dpdffren.v",
+        "RiftChip/element/gen_fifo.v",
+        "RiftChip/element/gen_ppbuff.v",
+        "RiftChip/element/gen_ringStack.v",
+        "RiftChip/element/gen_rsffr.v",
+        "RiftChip/element/gen_slffr.v",
+        "RiftChip/element/gen_sram.v",
+        "RiftChip/element/gen_suffr.v",
+        "RiftChip/element/gen_syn.v",
+        "RiftChip/element/lfsr.v",
+        "RiftChip/element/lzp.v",
+        "RiftChip/riftCore/backEnd.v",
+        "RiftChip/riftCore/frontEnd.v",
+        "RiftChip/riftCore/instr_fifo.v",
+        "RiftChip/riftCore/riftCore.v",
+        "RiftChip/riftCore/backend/commit.v",
+        "RiftChip/riftCore/backend/csrFiles.v",
+        "RiftChip/riftCore/backend/dispatch.v",
+        "RiftChip/riftCore/backend/phyRegister.v",
+        "RiftChip/riftCore/backend/regFiles.v",
+        "RiftChip/riftCore/backend/rename.v",
+        "RiftChip/riftCore/backend/writeBack.v",
+        "RiftChip/riftCore/backend/execute/alu.v",
+        "RiftChip/riftCore/backend/execute/bru.v",
+        "RiftChip/riftCore/backend/execute/csr.v",
+        "RiftChip/riftCore/backend/execute/lsu.v",
+        "RiftChip/riftCore/backend/execute/mul.v",
+        "RiftChip/riftCore/backend/issue/alu_issue.v",
+        "RiftChip/riftCore/backend/issue/bru_issue.v",
+        "RiftChip/riftCore/backend/issue/csr_issue.v",
+        "RiftChip/riftCore/backend/issue/issue_buffer.v",
+        "RiftChip/riftCore/backend/issue/issue_fifo.v",
+        "RiftChip/riftCore/backend/issue/lsu_issue.v",
+        "RiftChip/riftCore/backend/issue/mul_issue.v",
+        "RiftChip/riftCore/cache/L2cache.v",
+        "RiftChip/riftCore/cache/L3cache.v",
+        "RiftChip/riftCore/cache/cache.v",
+        "RiftChip/riftCore/cache/cache_mem.v",
+        "RiftChip/riftCore/cache/dirty_block.v",
+        "RiftChip/riftCore/cache/wt_block.v",
+        "RiftChip/riftCore/frontend/branch_predict.v",
+        "RiftChip/riftCore/frontend/decoder.v",
+        "RiftChip/riftCore/frontend/decoder16.v",
+        "RiftChip/riftCore/frontend/decoder32.v",
+        "RiftChip/riftCore/frontend/iAlign.v",
+        "RiftChip/riftCore/frontend/icache.v",
+        "RiftChip/riftCore/frontend/iqueue.v",
+        "RiftChip/riftCore/frontend/pcGenerate.v",
+        "RiftChip/riftCore/frontend/preDecode.v"
+    ]
+}

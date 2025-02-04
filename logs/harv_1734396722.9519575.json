@@ -1,0 +1,120 @@
+{
+    "name": "harv",
+    "folder": "harv",
+    "sim_files": [
+        "sim/sim_from_dump.vhd"
+    ],
+    "files": [
+        "hdl/alu.vhd",
+        "hdl/control.vhd",
+        "hdl/csr.vhd",
+        "hdl/harv.vhd",
+        "hdl/harv_pkg.vhd",
+        "hdl/instr_fetch.vhd",
+        "hdl/regfile.vhd",
+        "hdl/ft_components/alu_tmr.vhd",
+        "hdl/ft_components/control_tmr.vhd",
+        "hdl/ft_components/hamming_decoder.vhd",
+        "hdl/ft_components/hamming_encoder.vhd",
+        "hdl/ft_components/hamming_pkg.vhd",
+        "hdl/ft_components/hamming_register.vhd"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/xarc/harv",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "08",
+    "modules": [
+        {
+            "module": "alu",
+            "file": "hdl/alu.vhd"
+        },
+        {
+            "module": "control",
+            "file": "hdl/control.vhd"
+        },
+        {
+            "module": "csr",
+            "file": "hdl/csr.vhd"
+        },
+        {
+            "module": "harv",
+            "file": "hdl/harv.vhd"
+        },
+        {
+            "module": "instr_fetch",
+            "file": "hdl/instr_fetch.vhd"
+        },
+        {
+            "module": "regfile",
+            "file": "hdl/regfile.vhd"
+        },
+        {
+            "module": "alu_tmr",
+            "file": "hdl/ft_components/alu_tmr.vhd"
+        },
+        {
+            "module": "control_tmr",
+            "file": "hdl/ft_components/control_tmr.vhd"
+        },
+        {
+            "module": "hamming_decoder",
+            "file": "hdl/ft_components/hamming_decoder.vhd"
+        },
+        {
+            "module": "hamming_encoder",
+            "file": "hdl/ft_components/hamming_encoder.vhd"
+        },
+        {
+            "module": "hamming_register",
+            "file": "hdl/ft_components/hamming_register.vhd"
+        },
+        {
+            "module": "sim_from_dump",
+            "file": "sim/sim_from_dump.vhd"
+        }
+    ],
+    "module_graph": {
+        "alu": [],
+        "control": [],
+        "csr": [],
+        "harv": [],
+        "instr_fetch": [],
+        "regfile": [],
+        "alu_tmr": [],
+        "control_tmr": [],
+        "hamming_decoder": [],
+        "hamming_encoder": [],
+        "hamming_register": [],
+        "sim_from_dump": []
+    },
+    "module_graph_inverse": {
+        "alu": [],
+        "control": [],
+        "csr": [],
+        "harv": [],
+        "instr_fetch": [],
+        "regfile": [],
+        "alu_tmr": [],
+        "control_tmr": [],
+        "hamming_decoder": [],
+        "hamming_encoder": [],
+        "hamming_register": [],
+        "sim_from_dump": []
+    },
+    "non_tb_files": [
+        "hdl/alu.vhd",
+        "hdl/control.vhd",
+        "hdl/csr.vhd",
+        "hdl/harv.vhd",
+        "hdl/harv_pkg.vhd",
+        "hdl/instr_fetch.vhd",
+        "hdl/regfile.vhd",
+        "hdl/ft_components/alu_tmr.vhd",
+        "hdl/ft_components/control_tmr.vhd",
+        "hdl/ft_components/hamming_decoder.vhd",
+        "hdl/ft_components/hamming_encoder.vhd",
+        "hdl/ft_components/hamming_pkg.vhd",
+        "hdl/ft_components/hamming_register.vhd"
+    ]
+}

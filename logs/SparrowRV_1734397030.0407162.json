@@ -1,0 +1,384 @@
+{
+    "name": "SparrowRV",
+    "folder": "SparrowRV",
+    "sim_files": [
+        "rtl/perips/sm3/tb/tb_sm3_core_top.sv",
+        "tb/tb_core.sv"
+    ],
+    "files": [
+        "rtl/W25Q128JVxIM.v",
+        "rtl/config.v",
+        "rtl/defines.v",
+        "rtl/core/core.v",
+        "rtl/core/csr.v",
+        "rtl/core/div.v",
+        "rtl/core/dpram.v",
+        "rtl/core/idex.v",
+        "rtl/core/iram.v",
+        "rtl/core/regs.v",
+        "rtl/core/rstc.v",
+        "rtl/core/sctr.v",
+        "rtl/core/trap.v",
+        "rtl/jtag/full_handshake_rx.v",
+        "rtl/jtag/full_handshake_tx.v",
+        "rtl/jtag/jtag_dm.v",
+        "rtl/jtag/jtag_driver.v",
+        "rtl/jtag/jtag_top.v",
+        "rtl/perips/axi4lite_2mt16s.v",
+        "rtl/perips/sram.v",
+        "rtl/perips/sm3/sm3_cmprss_ceil_comb.v",
+        "rtl/perips/sm3/sm3_cmprss_core.v",
+        "rtl/perips/sm3/sm3_core_top.v",
+        "rtl/perips/sm3/sm3_expnd_core.v",
+        "rtl/perips/sm3/sm3_pad_core.v",
+        "rtl/perips/sysio/fpioa.v",
+        "rtl/perips/sysio/gpio.v",
+        "rtl/perips/sysio/spi.v",
+        "rtl/perips/sysio/sysio.v",
+        "rtl/perips/sysio/uart.v",
+        "rtl/soc/sparrow_soc.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/xiaowuzxc/SparrowRV",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "W25Q128JVxIM",
+            "file": "rtl/W25Q128JVxIM.v"
+        },
+        {
+            "module": "core",
+            "file": "rtl/core/core.v"
+        },
+        {
+            "module": "csr",
+            "file": "rtl/core/csr.v"
+        },
+        {
+            "module": "div",
+            "file": "rtl/core/div.v"
+        },
+        {
+            "module": "dpram",
+            "file": "rtl/core/dpram.v"
+        },
+        {
+            "module": "idex",
+            "file": "rtl/core/idex.v"
+        },
+        {
+            "module": "iram",
+            "file": "rtl/core/iram.v"
+        },
+        {
+            "module": "regs",
+            "file": "rtl/core/regs.v"
+        },
+        {
+            "module": "rstc",
+            "file": "rtl/core/rstc.v"
+        },
+        {
+            "module": "sctr",
+            "file": "rtl/core/sctr.v"
+        },
+        {
+            "module": "trap",
+            "file": "rtl/core/trap.v"
+        },
+        {
+            "module": "full_handshake_rx",
+            "file": "rtl/jtag/full_handshake_rx.v"
+        },
+        {
+            "module": "full_handshake_tx",
+            "file": "rtl/jtag/full_handshake_tx.v"
+        },
+        {
+            "module": "jtag_dm",
+            "file": "rtl/jtag/jtag_dm.v"
+        },
+        {
+            "module": "if",
+            "file": "rtl/jtag/jtag_dm.v"
+        },
+        {
+            "module": "jtag_driver",
+            "file": "rtl/jtag/jtag_driver.v"
+        },
+        {
+            "module": "always",
+            "file": "rtl/jtag/jtag_driver.v"
+        },
+        {
+            "module": "jtag_top",
+            "file": "rtl/jtag/jtag_top.v"
+        },
+        {
+            "module": "axi4lite_2mt16s",
+            "file": "rtl/perips/axi4lite_2mt16s.v"
+        },
+        {
+            "module": "sram",
+            "file": "rtl/perips/sram.v"
+        },
+        {
+            "module": "sm3_cmprss_ceil_comb",
+            "file": "rtl/perips/sm3/sm3_cmprss_ceil_comb.v"
+        },
+        {
+            "module": "sm3_cmprss_core",
+            "file": "rtl/perips/sm3/sm3_cmprss_core.v"
+        },
+        {
+            "module": "sm3_core_top",
+            "file": "rtl/perips/sm3/sm3_core_top.v"
+        },
+        {
+            "module": "sm3_expnd_core",
+            "file": "rtl/perips/sm3/sm3_expnd_core.v"
+        },
+        {
+            "module": "sm3_pad_core",
+            "file": "rtl/perips/sm3/sm3_pad_core.v"
+        },
+        {
+            "module": "fpioa",
+            "file": "rtl/perips/sysio/fpioa.v"
+        },
+        {
+            "module": "gpio",
+            "file": "rtl/perips/sysio/gpio.v"
+        },
+        {
+            "module": "spi",
+            "file": "rtl/perips/sysio/spi.v"
+        },
+        {
+            "module": "sysio",
+            "file": "rtl/perips/sysio/sysio.v"
+        },
+        {
+            "module": "uart",
+            "file": "rtl/perips/sysio/uart.v"
+        },
+        {
+            "module": "sparrow_soc",
+            "file": "rtl/soc/sparrow_soc.v"
+        },
+        {
+            "module": "tb_sm3_core_top",
+            "file": "rtl/perips/sm3/tb/tb_sm3_core_top.sv"
+        },
+        {
+            "module": "tb_core",
+            "file": "tb/tb_core.sv"
+        }
+    ],
+    "module_graph": {
+        "W25Q128JVxIM": [
+            "tb_core"
+        ],
+        "core": [
+            "sparrow_soc"
+        ],
+        "csr": [
+            "core"
+        ],
+        "div": [
+            "core"
+        ],
+        "dpram": [
+            "dpram"
+        ],
+        "idex": [
+            "core"
+        ],
+        "iram": [
+            "core"
+        ],
+        "regs": [
+            "core"
+        ],
+        "rstc": [
+            "sparrow_soc"
+        ],
+        "sctr": [
+            "core"
+        ],
+        "trap": [
+            "core"
+        ],
+        "full_handshake_rx": [
+            "jtag_dm",
+            "jtag_driver"
+        ],
+        "full_handshake_tx": [],
+        "jtag_dm": [
+            "jtag_dm",
+            "jtag_top"
+        ],
+        "if": [],
+        "jtag_driver": [
+            "jtag_driver",
+            "jtag_top"
+        ],
+        "always": [],
+        "jtag_top": [
+            "sparrow_soc"
+        ],
+        "axi4lite_2mt16s": [
+            "sparrow_soc"
+        ],
+        "sram": [
+            "sparrow_soc"
+        ],
+        "sm3_cmprss_ceil_comb": [
+            "sm3_cmprss_core",
+            "sm3_cmprss_core"
+        ],
+        "sm3_cmprss_core": [
+            "sm3_core_top"
+        ],
+        "sm3_core_top": [],
+        "sm3_expnd_core": [
+            "sm3_core_top"
+        ],
+        "sm3_pad_core": [
+            "sm3_core_top"
+        ],
+        "fpioa": [
+            "sysio"
+        ],
+        "gpio": [
+            "sysio"
+        ],
+        "spi": [
+            "sysio",
+            "sysio"
+        ],
+        "sysio": [
+            "sparrow_soc"
+        ],
+        "uart": [
+            "sysio"
+        ],
+        "sparrow_soc": [
+            "tb_core"
+        ],
+        "tb_sm3_core_top": [],
+        "tb_core": []
+    },
+    "module_graph_inverse": {
+        "W25Q128JVxIM": [],
+        "core": [
+            "sctr",
+            "regs",
+            "iram",
+            "idex",
+            "div",
+            "csr",
+            "trap"
+        ],
+        "csr": [],
+        "div": [],
+        "dpram": [
+            "dpram"
+        ],
+        "idex": [],
+        "iram": [],
+        "regs": [],
+        "rstc": [],
+        "sctr": [],
+        "trap": [],
+        "full_handshake_rx": [],
+        "full_handshake_tx": [],
+        "jtag_dm": [
+            "jtag_dm",
+            "full_handshake_rx"
+        ],
+        "if": [],
+        "jtag_driver": [
+            "jtag_driver",
+            "full_handshake_rx"
+        ],
+        "always": [],
+        "jtag_top": [
+            "jtag_driver",
+            "jtag_dm"
+        ],
+        "axi4lite_2mt16s": [],
+        "sram": [],
+        "sm3_cmprss_ceil_comb": [],
+        "sm3_cmprss_core": [
+            "sm3_cmprss_ceil_comb",
+            "sm3_cmprss_ceil_comb"
+        ],
+        "sm3_core_top": [
+            "sm3_pad_core",
+            "sm3_expnd_core",
+            "sm3_cmprss_core"
+        ],
+        "sm3_expnd_core": [],
+        "sm3_pad_core": [],
+        "fpioa": [],
+        "gpio": [],
+        "spi": [],
+        "sysio": [
+            "uart",
+            "spi",
+            "spi",
+            "gpio",
+            "fpioa"
+        ],
+        "uart": [],
+        "sparrow_soc": [
+            "core",
+            "jtag_top",
+            "sram",
+            "sysio",
+            "axi4lite_2mt16s",
+            "rstc"
+        ],
+        "tb_sm3_core_top": [],
+        "tb_core": [
+            "sparrow_soc",
+            "W25Q128JVxIM"
+        ]
+    },
+    "non_tb_files": [
+        "rtl/W25Q128JVxIM.v",
+        "rtl/config.v",
+        "rtl/defines.v",
+        "rtl/core/core.v",
+        "rtl/core/csr.v",
+        "rtl/core/div.v",
+        "rtl/core/dpram.v",
+        "rtl/core/idex.v",
+        "rtl/core/iram.v",
+        "rtl/core/regs.v",
+        "rtl/core/rstc.v",
+        "rtl/core/sctr.v",
+        "rtl/core/trap.v",
+        "rtl/jtag/full_handshake_rx.v",
+        "rtl/jtag/full_handshake_tx.v",
+        "rtl/jtag/jtag_dm.v",
+        "rtl/jtag/jtag_driver.v",
+        "rtl/jtag/jtag_top.v",
+        "rtl/perips/axi4lite_2mt16s.v",
+        "rtl/perips/sram.v",
+        "rtl/perips/sm3/sm3_cmprss_ceil_comb.v",
+        "rtl/perips/sm3/sm3_cmprss_core.v",
+        "rtl/perips/sm3/sm3_core_top.v",
+        "rtl/perips/sm3/sm3_expnd_core.v",
+        "rtl/perips/sm3/sm3_pad_core.v",
+        "rtl/perips/sysio/fpioa.v",
+        "rtl/perips/sysio/gpio.v",
+        "rtl/perips/sysio/spi.v",
+        "rtl/perips/sysio/sysio.v",
+        "rtl/perips/sysio/uart.v",
+        "rtl/soc/sparrow_soc.v"
+    ]
+}

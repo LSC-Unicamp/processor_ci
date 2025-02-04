@@ -1,0 +1,324 @@
+{
+    "name": "Baby-Risco-5",
+    "folder": "Baby-Risco-5",
+    "sim_files": [
+        "tests/alu_test.v",
+        "tests/clk_divider.v",
+        "tests/core_test.v",
+        "tests/fifo_test.v",
+        "tests/gpio_test.v",
+        "tests/immediate_generator_test.v",
+        "tests/mux_test.v",
+        "tests/pc_test.v",
+        "tests/registers_test.v",
+        "tests/reset_test.v",
+        "tests/soc_test.v"
+    ],
+    "files": [
+        "debug/clk_divider.v",
+        "debug/debug.v",
+        "debug/reset.v",
+        "fpga/colorlight_i9/main.v",
+        "fpga/cyclone10gx/main.v",
+        "fpga/de1soc/main.v",
+        "fpga/digilent_arty/main.v",
+        "fpga/nexys4_ddr/main.v",
+        "fpga/tangnano20k/main.v",
+        "fpga/tangnano20k_yosys/main.v",
+        "fpga/xilinx_vc709/main.v",
+        "src/core/alu.v",
+        "src/core/alu_control.v",
+        "src/core/control_unit.v",
+        "src/core/core.v",
+        "src/core/immediate_generator.v",
+        "src/core/registers.v",
+        "src/peripheral/leds.v",
+        "src/peripheral/memory.v",
+        "src/peripheral/soc.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/JN513/Baby-Risco-5",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "ClkDivider",
+            "file": "debug/clk_divider.v"
+        },
+        {
+            "module": "Debug",
+            "file": "debug/debug.v"
+        },
+        {
+            "module": "ResetBootSystem",
+            "file": "debug/reset.v"
+        },
+        {
+            "module": "top",
+            "file": "fpga/colorlight_i9/main.v"
+        },
+        {
+            "module": "top",
+            "file": "fpga/cyclone10gx/main.v"
+        },
+        {
+            "module": "top",
+            "file": "fpga/de1soc/main.v"
+        },
+        {
+            "module": "top",
+            "file": "fpga/digilent_arty/main.v"
+        },
+        {
+            "module": "top",
+            "file": "fpga/nexys4_ddr/main.v"
+        },
+        {
+            "module": "top",
+            "file": "fpga/tangnano20k/main.v"
+        },
+        {
+            "module": "top",
+            "file": "fpga/tangnano20k_yosys/main.v"
+        },
+        {
+            "module": "top",
+            "file": "fpga/xilinx_vc709/main.v"
+        },
+        {
+            "module": "Alu",
+            "file": "src/core/alu.v"
+        },
+        {
+            "module": "ALU_Control",
+            "file": "src/core/alu_control.v"
+        },
+        {
+            "module": "Control_Unit",
+            "file": "src/core/control_unit.v"
+        },
+        {
+            "module": "Core",
+            "file": "src/core/core.v"
+        },
+        {
+            "module": "Immediate_Generator",
+            "file": "src/core/immediate_generator.v"
+        },
+        {
+            "module": "Registers",
+            "file": "src/core/registers.v"
+        },
+        {
+            "module": "LEDs",
+            "file": "src/peripheral/leds.v"
+        },
+        {
+            "module": "Memory",
+            "file": "src/peripheral/memory.v"
+        },
+        {
+            "module": "Baby_Risco_5_SOC",
+            "file": "src/peripheral/soc.v"
+        },
+        {
+            "module": "alu_tb",
+            "file": "tests/alu_test.v"
+        },
+        {
+            "module": "clk_divider_tb",
+            "file": "tests/clk_divider.v"
+        },
+        {
+            "module": "core_tb",
+            "file": "tests/core_test.v"
+        },
+        {
+            "module": "fifo_tb",
+            "file": "tests/fifo_test.v"
+        },
+        {
+            "module": "gpio_tb",
+            "file": "tests/gpio_test.v"
+        },
+        {
+            "module": "immediate_generator_tb",
+            "file": "tests/immediate_generator_test.v"
+        },
+        {
+            "module": "mux_tb",
+            "file": "tests/mux_test.v"
+        },
+        {
+            "module": "pc_tb",
+            "file": "tests/pc_test.v"
+        },
+        {
+            "module": "registers_tb",
+            "file": "tests/registers_test.v"
+        },
+        {
+            "module": "reset_tb",
+            "file": "tests/reset_test.v"
+        },
+        {
+            "module": "soc_tb",
+            "file": "tests/soc_test.v"
+        }
+    ],
+    "module_graph": {
+        "ClkDivider": [
+            "clk_divider_tb"
+        ],
+        "Debug": [
+            "Debug"
+        ],
+        "ResetBootSystem": [
+            "top",
+            "top",
+            "top",
+            "top",
+            "top",
+            "top",
+            "top",
+            "top",
+            "reset_tb"
+        ],
+        "top": [],
+        "Alu": [
+            "Core"
+        ],
+        "ALU_Control": [
+            "Core"
+        ],
+        "Control_Unit": [],
+        "Core": [
+            "core_tb"
+        ],
+        "Immediate_Generator": [
+            "Core"
+        ],
+        "Registers": [
+            "Core",
+            "registers_tb"
+        ],
+        "LEDs": [
+            "Baby_Risco_5_SOC",
+            "core_tb"
+        ],
+        "Memory": [
+            "Baby_Risco_5_SOC",
+            "core_tb"
+        ],
+        "Baby_Risco_5_SOC": [
+            "top",
+            "top",
+            "top",
+            "top",
+            "top",
+            "top",
+            "top",
+            "Baby_Risco_5_SOC",
+            "soc_tb"
+        ],
+        "alu_tb": [],
+        "clk_divider_tb": [],
+        "core_tb": [],
+        "fifo_tb": [],
+        "gpio_tb": [],
+        "immediate_generator_tb": [],
+        "mux_tb": [],
+        "pc_tb": [],
+        "registers_tb": [],
+        "reset_tb": [],
+        "soc_tb": []
+    },
+    "module_graph_inverse": {
+        "ClkDivider": [],
+        "Debug": [
+            "Debug"
+        ],
+        "ResetBootSystem": [],
+        "top": [
+            "ResetBootSystem",
+            "Baby_Risco_5_SOC",
+            "ResetBootSystem",
+            "Baby_Risco_5_SOC",
+            "ResetBootSystem",
+            "Baby_Risco_5_SOC",
+            "ResetBootSystem",
+            "Baby_Risco_5_SOC",
+            "ResetBootSystem",
+            "ResetBootSystem",
+            "Baby_Risco_5_SOC",
+            "ResetBootSystem",
+            "Baby_Risco_5_SOC",
+            "ResetBootSystem",
+            "Baby_Risco_5_SOC"
+        ],
+        "Alu": [],
+        "ALU_Control": [],
+        "Control_Unit": [],
+        "Core": [
+            "Registers",
+            "ALU_Control",
+            "Alu",
+            "Immediate_Generator"
+        ],
+        "Immediate_Generator": [],
+        "Registers": [],
+        "LEDs": [],
+        "Memory": [],
+        "Baby_Risco_5_SOC": [
+            "Baby_Risco_5_SOC",
+            "Memory",
+            "LEDs"
+        ],
+        "alu_tb": [],
+        "clk_divider_tb": [
+            "ClkDivider"
+        ],
+        "core_tb": [
+            "Core",
+            "Memory",
+            "LEDs"
+        ],
+        "fifo_tb": [],
+        "gpio_tb": [],
+        "immediate_generator_tb": [],
+        "mux_tb": [],
+        "pc_tb": [],
+        "registers_tb": [
+            "Registers"
+        ],
+        "reset_tb": [
+            "ResetBootSystem"
+        ],
+        "soc_tb": [
+            "Baby_Risco_5_SOC"
+        ]
+    },
+    "non_tb_files": [
+        "debug/clk_divider.v",
+        "debug/debug.v",
+        "debug/reset.v",
+        "fpga/colorlight_i9/main.v",
+        "fpga/cyclone10gx/main.v",
+        "fpga/de1soc/main.v",
+        "fpga/digilent_arty/main.v",
+        "fpga/nexys4_ddr/main.v",
+        "fpga/tangnano20k/main.v",
+        "fpga/tangnano20k_yosys/main.v",
+        "fpga/xilinx_vc709/main.v",
+        "src/core/alu.v",
+        "src/core/alu_control.v",
+        "src/core/control_unit.v",
+        "src/core/core.v",
+        "src/core/immediate_generator.v",
+        "src/core/registers.v",
+        "src/peripheral/leds.v",
+        "src/peripheral/memory.v",
+        "src/peripheral/soc.v"
+    ]
+}

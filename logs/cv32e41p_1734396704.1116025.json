@@ -1,0 +1,477 @@
+{
+    "name": "cv32e41p",
+    "folder": "cv32e41p",
+    "sim_files": [
+        "example_tb/core/amo_shim.sv",
+        "example_tb/core/cv32e41p_fp_wrapper.sv",
+        "example_tb/core/cv32e41p_random_interrupt_generator.sv",
+        "example_tb/core/cv32e41p_tb_subsystem.sv",
+        "example_tb/core/dp_ram.sv",
+        "example_tb/core/mm_ram.sv",
+        "example_tb/core/riscv_gnt_stall.sv",
+        "example_tb/core/riscv_rvalid_stall.sv",
+        "example_tb/core/tb_top.sv",
+        "example_tb/core/include/perturbation_pkg.sv"
+    ],
+    "files": [
+        "bhv/cv32e41p_apu_tracer.sv",
+        "bhv/cv32e41p_core_log.sv",
+        "bhv/cv32e41p_sim_clock_gate.sv",
+        "bhv/cv32e41p_tracer.sv",
+        "bhv/cv32e41p_wrapper.sv",
+        "bhv/include/cv32e41p_tracer_pkg.sv",
+        "rtl/cv32e41p_aligner.sv",
+        "rtl/cv32e41p_alu.sv",
+        "rtl/cv32e41p_alu_div.sv",
+        "rtl/cv32e41p_apu_disp.sv",
+        "rtl/cv32e41p_controller.sv",
+        "rtl/cv32e41p_core.sv",
+        "rtl/cv32e41p_cs_registers.sv",
+        "rtl/cv32e41p_ex_stage.sv",
+        "rtl/cv32e41p_ff_one.sv",
+        "rtl/cv32e41p_fifo.sv",
+        "rtl/cv32e41p_hwloop_regs.sv",
+        "rtl/cv32e41p_id_stage.sv",
+        "rtl/cv32e41p_if_stage.sv",
+        "rtl/cv32e41p_int_controller.sv",
+        "rtl/cv32e41p_load_store_unit.sv",
+        "rtl/cv32e41p_merged_decoder.sv",
+        "rtl/cv32e41p_mult.sv",
+        "rtl/cv32e41p_obi_interface.sv",
+        "rtl/cv32e41p_popcnt.sv",
+        "rtl/cv32e41p_prefetch_buffer.sv",
+        "rtl/cv32e41p_prefetch_controller.sv",
+        "rtl/cv32e41p_register_file_ff.sv",
+        "rtl/cv32e41p_register_file_latch.sv",
+        "rtl/cv32e41p_sleep_unit.sv",
+        "rtl/include/cv32e41p_apu_core_pkg.sv",
+        "rtl/include/cv32e41p_fpu_pkg.sv",
+        "rtl/include/cv32e41p_pkg.sv",
+        "sva/cv32e41p_prefetch_controller_sva.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/openhwgroup/cv32e41p",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2012",
+    "modules": [
+        {
+            "module": "cv32e41p_apu_tracer",
+            "file": "bhv/cv32e41p_apu_tracer.sv"
+        },
+        {
+            "module": "cv32e41p_core_log",
+            "file": "bhv/cv32e41p_core_log.sv"
+        },
+        {
+            "module": "cv32e41p_clock_gate",
+            "file": "bhv/cv32e41p_sim_clock_gate.sv"
+        },
+        {
+            "module": "cv32e41p_tracer",
+            "file": "bhv/cv32e41p_tracer.sv"
+        },
+        {
+            "module": "cv32e41p_wrapper",
+            "file": "bhv/cv32e41p_wrapper.sv"
+        },
+        {
+            "module": "needs",
+            "file": "example_tb/core/amo_shim.sv"
+        },
+        {
+            "module": "amo_shim",
+            "file": "example_tb/core/amo_shim.sv"
+        },
+        {
+            "module": "cv32e41p_fp_wrapper",
+            "file": "example_tb/core/cv32e41p_fp_wrapper.sv"
+        },
+        {
+            "module": "cv32e41p_random_interrupt_generator",
+            "file": "example_tb/core/cv32e41p_random_interrupt_generator.sv"
+        },
+        {
+            "module": "cv32e41p_tb_subsystem",
+            "file": "example_tb/core/cv32e41p_tb_subsystem.sv"
+        },
+        {
+            "module": "dp_ram",
+            "file": "example_tb/core/dp_ram.sv"
+        },
+        {
+            "module": "to",
+            "file": "example_tb/core/mm_ram.sv"
+        },
+        {
+            "module": "mm_ram",
+            "file": "example_tb/core/mm_ram.sv"
+        },
+        {
+            "module": "for",
+            "file": "example_tb/core/riscv_gnt_stall.sv"
+        },
+        {
+            "module": "riscv_gnt_stall",
+            "file": "example_tb/core/riscv_gnt_stall.sv"
+        },
+        {
+            "module": "code",
+            "file": "example_tb/core/riscv_gnt_stall.sv"
+        },
+        {
+            "module": "riscv_rvalid_stall",
+            "file": "example_tb/core/riscv_rvalid_stall.sv"
+        },
+        {
+            "module": "code",
+            "file": "example_tb/core/riscv_rvalid_stall.sv"
+        },
+        {
+            "module": "tb_top",
+            "file": "example_tb/core/tb_top.sv"
+        },
+        {
+            "module": "cv32e41p_aligner",
+            "file": "rtl/cv32e41p_aligner.sv"
+        },
+        {
+            "module": "cv32e41p_alu",
+            "file": "rtl/cv32e41p_alu.sv"
+        },
+        {
+            "module": "cv32e41p_alu_div",
+            "file": "rtl/cv32e41p_alu_div.sv"
+        },
+        {
+            "module": "cv32e41p_apu_disp",
+            "file": "rtl/cv32e41p_apu_disp.sv"
+        },
+        {
+            "module": "cv32e41p_controller",
+            "file": "rtl/cv32e41p_controller.sv"
+        },
+        {
+            "module": "commands",
+            "file": "rtl/cv32e41p_controller.sv"
+        },
+        {
+            "module": "commands",
+            "file": "rtl/cv32e41p_controller.sv"
+        },
+        {
+            "module": "of",
+            "file": "rtl/cv32e41p_core.sv"
+        },
+        {
+            "module": "cv32e41p_core",
+            "file": "rtl/cv32e41p_core.sv"
+        },
+        {
+            "module": "cv32e41p_cs_registers",
+            "file": "rtl/cv32e41p_cs_registers.sv"
+        },
+        {
+            "module": "cv32e41p_ex_stage",
+            "file": "rtl/cv32e41p_ex_stage.sv"
+        },
+        {
+            "module": "cv32e41p_ff_one",
+            "file": "rtl/cv32e41p_ff_one.sv"
+        },
+        {
+            "module": "cv32e41p_fifo",
+            "file": "rtl/cv32e41p_fifo.sv"
+        },
+        {
+            "module": "cv32e41p_hwloop_regs",
+            "file": "rtl/cv32e41p_hwloop_regs.sv"
+        },
+        {
+            "module": "cv32e41p_id_stage",
+            "file": "rtl/cv32e41p_id_stage.sv"
+        },
+        {
+            "module": "cv32e41p_if_stage",
+            "file": "rtl/cv32e41p_if_stage.sv"
+        },
+        {
+            "module": "cv32e41p_int_controller",
+            "file": "rtl/cv32e41p_int_controller.sv"
+        },
+        {
+            "module": "cv32e41p_load_store_unit",
+            "file": "rtl/cv32e41p_load_store_unit.sv"
+        },
+        {
+            "module": "cv32e41p_merged_decoder",
+            "file": "rtl/cv32e41p_merged_decoder.sv"
+        },
+        {
+            "module": "cv32e41p_mult",
+            "file": "rtl/cv32e41p_mult.sv"
+        },
+        {
+            "module": "cv32e41p_obi_interface",
+            "file": "rtl/cv32e41p_obi_interface.sv"
+        },
+        {
+            "module": "cv32e41p_popcnt",
+            "file": "rtl/cv32e41p_popcnt.sv"
+        },
+        {
+            "module": "cv32e41p_prefetch_buffer",
+            "file": "rtl/cv32e41p_prefetch_buffer.sv"
+        },
+        {
+            "module": "cv32e41p_prefetch_controller",
+            "file": "rtl/cv32e41p_prefetch_controller.sv"
+        },
+        {
+            "module": "cv32e41p_register_file",
+            "file": "rtl/cv32e41p_register_file_ff.sv"
+        },
+        {
+            "module": "cv32e41p_register_file",
+            "file": "rtl/cv32e41p_register_file_latch.sv"
+        },
+        {
+            "module": "cv32e41p_sleep_unit",
+            "file": "rtl/cv32e41p_sleep_unit.sv"
+        },
+        {
+            "module": "parameter",
+            "file": "rtl/include/cv32e41p_pkg.sv"
+        },
+        {
+            "module": "cv32e41p_prefetch_controller_sva",
+            "file": "sva/cv32e41p_prefetch_controller_sva.sv"
+        }
+    ],
+    "module_graph": {
+        "cv32e41p_apu_tracer": [
+            "cv32e41p_wrapper"
+        ],
+        "cv32e41p_core_log": [
+            "cv32e41p_wrapper"
+        ],
+        "cv32e41p_clock_gate": [],
+        "cv32e41p_tracer": [
+            "cv32e41p_wrapper"
+        ],
+        "cv32e41p_wrapper": [],
+        "needs": [],
+        "amo_shim": [],
+        "cv32e41p_fp_wrapper": [],
+        "cv32e41p_random_interrupt_generator": [
+            "to"
+        ],
+        "cv32e41p_tb_subsystem": [
+            "cv32e41p_tb_subsystem"
+        ],
+        "dp_ram": [
+            "to"
+        ],
+        "to": [
+            "cv32e41p_prefetch_controller"
+        ],
+        "mm_ram": [
+            "cv32e41p_tb_subsystem",
+            "to"
+        ],
+        "for": [],
+        "riscv_gnt_stall": [
+            "to",
+            "to"
+        ],
+        "code": [],
+        "riscv_rvalid_stall": [
+            "to"
+        ],
+        "tb_top": [
+            "tb_top"
+        ],
+        "cv32e41p_aligner": [],
+        "cv32e41p_alu": [],
+        "cv32e41p_alu_div": [
+            "cv32e41p_alu"
+        ],
+        "cv32e41p_apu_disp": [],
+        "cv32e41p_controller": [
+            "cv32e41p_id_stage"
+        ],
+        "commands": [],
+        "of": [
+            "cv32e41p_cs_registers"
+        ],
+        "cv32e41p_core": [
+            "cv32e41p_wrapper"
+        ],
+        "cv32e41p_cs_registers": [
+            "of"
+        ],
+        "cv32e41p_ex_stage": [
+            "of"
+        ],
+        "cv32e41p_ff_one": [],
+        "cv32e41p_fifo": [
+            "cv32e41p_prefetch_buffer"
+        ],
+        "cv32e41p_hwloop_regs": [],
+        "cv32e41p_id_stage": [
+            "of"
+        ],
+        "cv32e41p_if_stage": [
+            "of"
+        ],
+        "cv32e41p_int_controller": [],
+        "cv32e41p_load_store_unit": [
+            "of",
+            "cv32e41p_load_store_unit"
+        ],
+        "cv32e41p_merged_decoder": [
+            "cv32e41p_id_stage"
+        ],
+        "cv32e41p_mult": [
+            "cv32e41p_ex_stage"
+        ],
+        "cv32e41p_obi_interface": [],
+        "cv32e41p_popcnt": [],
+        "cv32e41p_prefetch_buffer": [
+            "cv32e41p_prefetch_buffer"
+        ],
+        "cv32e41p_prefetch_controller": [],
+        "cv32e41p_register_file": [
+            "cv32e41p_id_stage"
+        ],
+        "cv32e41p_sleep_unit": [],
+        "parameter": [],
+        "cv32e41p_prefetch_controller_sva": [
+            "cv32e41p_wrapper"
+        ]
+    },
+    "module_graph_inverse": {
+        "cv32e41p_apu_tracer": [],
+        "cv32e41p_core_log": [],
+        "cv32e41p_clock_gate": [],
+        "cv32e41p_tracer": [],
+        "cv32e41p_wrapper": [
+            "cv32e41p_prefetch_controller_sva",
+            "cv32e41p_core_log",
+            "cv32e41p_apu_tracer",
+            "cv32e41p_tracer",
+            "cv32e41p_core"
+        ],
+        "needs": [],
+        "amo_shim": [],
+        "cv32e41p_fp_wrapper": [],
+        "cv32e41p_random_interrupt_generator": [],
+        "cv32e41p_tb_subsystem": [
+            "cv32e41p_tb_subsystem",
+            "mm_ram"
+        ],
+        "dp_ram": [],
+        "to": [
+            "mm_ram",
+            "dp_ram",
+            "riscv_rvalid_stall",
+            "riscv_gnt_stall",
+            "riscv_gnt_stall",
+            "cv32e41p_random_interrupt_generator"
+        ],
+        "mm_ram": [],
+        "for": [],
+        "riscv_gnt_stall": [],
+        "code": [],
+        "riscv_rvalid_stall": [],
+        "tb_top": [
+            "tb_top"
+        ],
+        "cv32e41p_aligner": [],
+        "cv32e41p_alu": [
+            "cv32e41p_alu_div"
+        ],
+        "cv32e41p_alu_div": [],
+        "cv32e41p_apu_disp": [],
+        "cv32e41p_controller": [],
+        "commands": [],
+        "of": [
+            "cv32e41p_if_stage",
+            "cv32e41p_id_stage",
+            "cv32e41p_ex_stage",
+            "cv32e41p_load_store_unit",
+            "cv32e41p_cs_registers"
+        ],
+        "cv32e41p_core": [],
+        "cv32e41p_cs_registers": [
+            "of"
+        ],
+        "cv32e41p_ex_stage": [
+            "cv32e41p_mult"
+        ],
+        "cv32e41p_ff_one": [],
+        "cv32e41p_fifo": [],
+        "cv32e41p_hwloop_regs": [],
+        "cv32e41p_id_stage": [
+            "cv32e41p_register_file",
+            "cv32e41p_merged_decoder",
+            "cv32e41p_controller"
+        ],
+        "cv32e41p_if_stage": [],
+        "cv32e41p_int_controller": [],
+        "cv32e41p_load_store_unit": [
+            "cv32e41p_load_store_unit"
+        ],
+        "cv32e41p_merged_decoder": [],
+        "cv32e41p_mult": [],
+        "cv32e41p_obi_interface": [],
+        "cv32e41p_popcnt": [],
+        "cv32e41p_prefetch_buffer": [
+            "cv32e41p_prefetch_buffer",
+            "cv32e41p_fifo"
+        ],
+        "cv32e41p_prefetch_controller": [
+            "to"
+        ],
+        "cv32e41p_register_file": [],
+        "cv32e41p_sleep_unit": [],
+        "parameter": [],
+        "cv32e41p_prefetch_controller_sva": []
+    },
+    "non_tb_files": [
+        "bhv/cv32e41p_apu_tracer.sv",
+        "bhv/cv32e41p_core_log.sv",
+        "bhv/cv32e41p_sim_clock_gate.sv",
+        "bhv/cv32e41p_tracer.sv",
+        "bhv/cv32e41p_wrapper.sv",
+        "bhv/include/cv32e41p_tracer_pkg.sv",
+        "rtl/cv32e41p_aligner.sv",
+        "rtl/cv32e41p_alu.sv",
+        "rtl/cv32e41p_alu_div.sv",
+        "rtl/cv32e41p_apu_disp.sv",
+        "rtl/cv32e41p_controller.sv",
+        "rtl/cv32e41p_core.sv",
+        "rtl/cv32e41p_cs_registers.sv",
+        "rtl/cv32e41p_ex_stage.sv",
+        "rtl/cv32e41p_ff_one.sv",
+        "rtl/cv32e41p_fifo.sv",
+        "rtl/cv32e41p_hwloop_regs.sv",
+        "rtl/cv32e41p_id_stage.sv",
+        "rtl/cv32e41p_if_stage.sv",
+        "rtl/cv32e41p_int_controller.sv",
+        "rtl/cv32e41p_load_store_unit.sv",
+        "rtl/cv32e41p_merged_decoder.sv",
+        "rtl/cv32e41p_mult.sv",
+        "rtl/cv32e41p_obi_interface.sv",
+        "rtl/cv32e41p_popcnt.sv",
+        "rtl/cv32e41p_prefetch_buffer.sv",
+        "rtl/cv32e41p_prefetch_controller.sv",
+        "rtl/cv32e41p_register_file_ff.sv",
+        "rtl/cv32e41p_register_file_latch.sv",
+        "rtl/cv32e41p_sleep_unit.sv",
+        "rtl/include/cv32e41p_apu_core_pkg.sv",
+        "rtl/include/cv32e41p_fpu_pkg.sv",
+        "rtl/include/cv32e41p_pkg.sv",
+        "sva/cv32e41p_prefetch_controller_sva.sv"
+    ]
+}

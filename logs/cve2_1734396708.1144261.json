@@ -1,0 +1,3588 @@
+{
+    "name": "cve2",
+    "folder": "cve2",
+    "sim_files": [
+        "dv/riscv_compliance/rtl/riscv_testutil.sv",
+        "formal/data_ind_timing/formal_tb.sv",
+        "formal/icache/formal_tb.sv",
+        "shared/rtl/sim/simulator_ctrl.sv",
+        "vendor/google_riscv-dv/test/riscv_instr_base_test.sv",
+        "vendor/google_riscv-dv/test/riscv_instr_cov_test.sv",
+        "vendor/google_riscv-dv/test/riscv_instr_gen_tb_top.sv",
+        "vendor/google_riscv-dv/test/riscv_instr_test.sv",
+        "vendor/google_riscv-dv/test/riscv_instr_test_lib.sv",
+        "vendor/google_riscv-dv/test/riscv_instr_test_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_test.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_utils/dv_test_status_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/dv/prim_alert/tb/prim_alert_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/dv/prim_esc/tb/prim_esc_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/dv/prim_lfsr/tb/prim_lfsr_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/dv/prim_present/tb/prim_present_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/dv/prim_prince/tb/prim_prince_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_async_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_async_fatal_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_async_fatal_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_async_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_fatal_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_fatal_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_arbiter_fixed_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_arbiter_ppc_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_arbiter_tree_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_count_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_esc_rxtx_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_esc_rxtx_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_fifo_async_sram_adapter_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_fifo_sync_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_fifo_sync_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_keccak_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_lfsr_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_packer_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_22_16_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_22_16_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_28_22_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_28_22_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_39_32_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_39_32_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_64_57_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_64_57_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_72_64_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_72_64_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_22_16_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_22_16_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_39_32_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_39_32_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_72_64_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_72_64_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_76_68_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_76_68_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_22_16_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_22_16_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_28_22_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_28_22_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_39_32_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_39_32_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_64_57_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_64_57_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_72_64_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_72_64_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_22_16_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_22_16_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_39_32_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_39_32_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_72_64_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_72_64_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_76_68_bind_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_76_68_tb.sv",
+        "vendor/lowrisc_ip/ip/prim/pre_dv/prim_sync_reqack/rtl/prim_sync_reqack_tb.sv"
+    ],
+    "files": [
+        "syn/rtl/cve2_clock_gating.v",
+        "syn/rtl/latch_map.v",
+        "syn/rtl/prim_clock_gating.v",
+        "bhv/cve2_sim_clock_gate.sv",
+        "dv/riscv_compliance/rtl/cve2_riscv_compliance.sv",
+        "examples/obi2ahb/obi2ahbm_adapter.sv",
+        "rtl/cve2_alu.sv",
+        "rtl/cve2_branch_predict.sv",
+        "rtl/cve2_compressed_decoder.sv",
+        "rtl/cve2_controller.sv",
+        "rtl/cve2_core.sv",
+        "rtl/cve2_counter.sv",
+        "rtl/cve2_cs_registers.sv",
+        "rtl/cve2_csr.sv",
+        "rtl/cve2_decoder.sv",
+        "rtl/cve2_ex_block.sv",
+        "rtl/cve2_fetch_fifo.sv",
+        "rtl/cve2_id_stage.sv",
+        "rtl/cve2_if_stage.sv",
+        "rtl/cve2_load_store_unit.sv",
+        "rtl/cve2_multdiv_fast.sv",
+        "rtl/cve2_multdiv_slow.sv",
+        "rtl/cve2_pkg.sv",
+        "rtl/cve2_pmp.sv",
+        "rtl/cve2_prefetch_buffer.sv",
+        "rtl/cve2_register_file_ff.sv",
+        "rtl/cve2_top.sv",
+        "rtl/cve2_top_tracing.sv",
+        "rtl/cve2_tracer.sv",
+        "rtl/cve2_tracer_pkg.sv",
+        "rtl/cve2_wb.sv",
+        "shared/rtl/bus.sv",
+        "shared/rtl/ram_1p.sv",
+        "shared/rtl/ram_2p.sv",
+        "shared/rtl/timer.sv",
+        "shared/rtl/fpga/xilinx/clkgen_xil7series.sv",
+        "vendor/google_riscv-dv/src/riscv_amo_instr_lib.sv",
+        "vendor/google_riscv-dv/src/riscv_asm_program_gen.sv",
+        "vendor/google_riscv-dv/src/riscv_callstack_gen.sv",
+        "vendor/google_riscv-dv/src/riscv_data_page_gen.sv",
+        "vendor/google_riscv-dv/src/riscv_debug_rom_gen.sv",
+        "vendor/google_riscv-dv/src/riscv_directed_instr_lib.sv",
+        "vendor/google_riscv-dv/src/riscv_illegal_instr.sv",
+        "vendor/google_riscv-dv/src/riscv_instr_cover_group.sv",
+        "vendor/google_riscv-dv/src/riscv_instr_gen_config.sv",
+        "vendor/google_riscv-dv/src/riscv_instr_pkg.sv",
+        "vendor/google_riscv-dv/src/riscv_instr_sequence.sv",
+        "vendor/google_riscv-dv/src/riscv_instr_stream.sv",
+        "vendor/google_riscv-dv/src/riscv_load_store_instr_lib.sv",
+        "vendor/google_riscv-dv/src/riscv_loop_instr.sv",
+        "vendor/google_riscv-dv/src/riscv_page_table.sv",
+        "vendor/google_riscv-dv/src/riscv_page_table_entry.sv",
+        "vendor/google_riscv-dv/src/riscv_page_table_exception_cfg.sv",
+        "vendor/google_riscv-dv/src/riscv_page_table_list.sv",
+        "vendor/google_riscv-dv/src/riscv_pmp_cfg.sv",
+        "vendor/google_riscv-dv/src/riscv_privil_reg.sv",
+        "vendor/google_riscv-dv/src/riscv_privileged_common_seq.sv",
+        "vendor/google_riscv-dv/src/riscv_pseudo_instr.sv",
+        "vendor/google_riscv-dv/src/riscv_reg.sv",
+        "vendor/google_riscv-dv/src/riscv_signature_pkg.sv",
+        "vendor/google_riscv-dv/src/riscv_vector_cfg.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_amo_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_b_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_compressed_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_floating_point_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_vector_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_zba_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_zbb_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_zbc_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_zbs_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv128c_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32a_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32b_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32c_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32d_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32dc_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32f_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32fc_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32i_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32m_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32v_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32zba_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32zbb_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32zbc_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32zbs_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64a_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64b_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64c_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64d_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64f_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64i_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64m_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64zba_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64zbb_instr.sv",
+        "vendor/google_riscv-dv/src/isa/custom/riscv_custom_instr.sv",
+        "vendor/google_riscv-dv/src/isa/custom/riscv_custom_instr_enum.sv",
+        "vendor/google_riscv-dv/src/isa/custom/rv32x_instr.sv",
+        "vendor/google_riscv-dv/src/isa/custom/rv64x_instr.sv",
+        "vendor/google_riscv-dv/target/ml/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/multi_harts/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv32i/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv32imafdc/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv32imc/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv32imc_sv32/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv32imcb/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv64gc/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv64gcv/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv64imc/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv64imcb/riscv_core_setting.sv",
+        "vendor/lowrisc_ip/dv/sv/common_ifs/clk_if.sv",
+        "vendor/lowrisc_ip/dv/sv/common_ifs/clk_rst_if.sv",
+        "vendor/lowrisc_ip/dv/sv/common_ifs/pins_if.sv",
+        "vendor/lowrisc_ip/dv/sv/common_ifs/rst_shadowed_if.sv",
+        "vendor/lowrisc_ip/dv/sv/csr_utils/csr_seq_lib.sv",
+        "vendor/lowrisc_ip/dv/sv/csr_utils/csr_utils_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/csr_excl_item.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_lockable_field_cov.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_mem.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_mubi_cov.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_reg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_reg_block.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_reg_field.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_reg_map.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_reg_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_agent.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_agent_cfg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_agent_cov.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_driver.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_env.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_env_cfg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_env_cov.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_monitor.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_scoreboard.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_seq.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_sequencer.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_virtual_sequencer.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_vseq.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_lib_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_utils/dv_report_catcher.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_utils/dv_report_server.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_utils/dv_utils_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_utils/dv_vif_wrap.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util__otp.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util__rom.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util__sram.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/otp_scrambler_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/sram_scrambler_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_model/mem_model.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_model/mem_model_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/str_utils/str_utils_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/dv/prim_present/crypto_dpi_present/crypto_dpi_present_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/dv/prim_prince/crypto_dpi_prince/crypto_dpi_prince_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_alert_rxtx_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_alert_rxtx_async_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_esc_rxtx_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_fifo_sync_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_22_16_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_28_22_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_39_32_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_64_57_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_72_64_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_22_16_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_39_32_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_72_64_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_76_68_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_22_16_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_28_22_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_39_32_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_64_57_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_72_64_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_22_16_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_39_32_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_72_64_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_76_68_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/pre_dv/prim_crc32/prim_crc32_sim.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_receiver.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_fixed.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_ppc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_tree.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_assert.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_cdc_rand_delay.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_cipher_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_div.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_gating_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_meas.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_timeout.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_count.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_count_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_crc32.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_diff_decode.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_dom_and_2share.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_double_lfsr.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_edge_detector.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_edn_req.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_receiver.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_async.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_async_sram_adapter.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_filter.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_filter_ctr.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_flop_2sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_gate_gen.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_gf_mult.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_intr_hw.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_keccak.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_combine.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_lfsr.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_max_tree.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_msb_extend.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_multibit_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_otp_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_packer.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_packer_fifo.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_pad_wrapper_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_present.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_prince.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_pulse_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_adv.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_scr.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_2p_adv.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_2p_async_adv.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_2p_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_reg_cdc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_rom_adv.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_rom_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sec_anchor_buf.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sec_anchor_flop.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_22_16_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_22_16_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_28_22_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_28_22_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_39_32_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_39_32_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_64_57_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_64_57_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_72_64_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_72_64_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_22_16_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_22_16_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_39_32_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_39_32_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_72_64_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_72_64_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_76_68_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_76_68_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_22_16_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_22_16_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_28_22_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_28_22_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_39_32_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_39_32_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_64_57_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_64_57_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_72_64_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_72_64_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_22_16_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_22_16_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_39_32_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_39_32_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_72_64_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_72_64_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_76_68_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_76_68_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_slicer.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sparse_fsm_flop.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sram_arbiter.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_arb.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_async.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_cdc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_ext.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_ext_async.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_shadow.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subst_perm.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sum_tree.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack_data.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_slow_fast.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_util_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_xoshiro256pp.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_and2.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_buf.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_buf.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_gating.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_inv.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_mux2.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flash.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flash_bank.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flop.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flop_en.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_otp.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_pad_attr.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_pad_wrapper.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_1p.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_2p.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_rom.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_usb_diff_rx.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_xor2.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_and2.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_buf.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_clock_buf.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_clock_gating.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_clock_mux2.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_flop.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_flop_en.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_pad_attr.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_pad_wrapper.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_xor2.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/openhwgroup/cve2",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "for",
+            "file": "syn/rtl/cve2_clock_gating.v"
+        },
+        {
+            "module": "cve2_clock_gate",
+            "file": "syn/rtl/cve2_clock_gating.v"
+        },
+        {
+            "module": "for",
+            "file": "syn/rtl/prim_clock_gating.v"
+        },
+        {
+            "module": "prim_clock_gating",
+            "file": "syn/rtl/prim_clock_gating.v"
+        },
+        {
+            "module": "cve2_clock_gate",
+            "file": "bhv/cve2_sim_clock_gate.sv"
+        },
+        {
+            "module": "cve2_riscv_compliance",
+            "file": "dv/riscv_compliance/rtl/cve2_riscv_compliance.sv"
+        },
+        {
+            "module": "lets",
+            "file": "dv/riscv_compliance/rtl/riscv_testutil.sv"
+        },
+        {
+            "module": "riscv_testutil",
+            "file": "dv/riscv_compliance/rtl/riscv_testutil.sv"
+        },
+        {
+            "module": "obi2ahbm_adapter",
+            "file": "examples/obi2ahb/obi2ahbm_adapter.sv"
+        },
+        {
+            "module": "formal_tb",
+            "file": "formal/data_ind_timing/formal_tb.sv"
+        },
+        {
+            "module": "formal_tb",
+            "file": "formal/icache/formal_tb.sv"
+        },
+        {
+            "module": "at",
+            "file": "formal/icache/formal_tb.sv"
+        },
+        {
+            "module": "cve2_alu",
+            "file": "rtl/cve2_alu.sv"
+        },
+        {
+            "module": "cve2_branch_predict",
+            "file": "rtl/cve2_branch_predict.sv"
+        },
+        {
+            "module": "is",
+            "file": "rtl/cve2_compressed_decoder.sv"
+        },
+        {
+            "module": "cve2_compressed_decoder",
+            "file": "rtl/cve2_compressed_decoder.sv"
+        },
+        {
+            "module": "cve2_controller",
+            "file": "rtl/cve2_controller.sv"
+        },
+        {
+            "module": "of",
+            "file": "rtl/cve2_core.sv"
+        },
+        {
+            "module": "cve2_core",
+            "file": "rtl/cve2_core.sv"
+        },
+        {
+            "module": "cve2_counter",
+            "file": "rtl/cve2_counter.sv"
+        },
+        {
+            "module": "cve2_cs_registers",
+            "file": "rtl/cve2_cs_registers.sv"
+        },
+        {
+            "module": "cve2_csr",
+            "file": "rtl/cve2_csr.sv"
+        },
+        {
+            "module": "is",
+            "file": "rtl/cve2_decoder.sv"
+        },
+        {
+            "module": "cve2_decoder",
+            "file": "rtl/cve2_decoder.sv"
+        },
+        {
+            "module": "cve2_ex_block",
+            "file": "rtl/cve2_ex_block.sv"
+        },
+        {
+            "module": "are",
+            "file": "rtl/cve2_ex_block.sv"
+        },
+        {
+            "module": "cve2_fetch_fifo",
+            "file": "rtl/cve2_fetch_fifo.sv"
+        },
+        {
+            "module": "cve2_id_stage",
+            "file": "rtl/cve2_id_stage.sv"
+        },
+        {
+            "module": "cve2_if_stage",
+            "file": "rtl/cve2_if_stage.sv"
+        },
+        {
+            "module": "cve2_load_store_unit",
+            "file": "rtl/cve2_load_store_unit.sv"
+        },
+        {
+            "module": "cve2_multdiv_fast",
+            "file": "rtl/cve2_multdiv_fast.sv"
+        },
+        {
+            "module": "cve2_multdiv_slow",
+            "file": "rtl/cve2_multdiv_slow.sv"
+        },
+        {
+            "module": "cve2_pmp",
+            "file": "rtl/cve2_pmp.sv"
+        },
+        {
+            "module": "cve2_prefetch_buffer",
+            "file": "rtl/cve2_prefetch_buffer.sv"
+        },
+        {
+            "module": "cve2_register_file_ff",
+            "file": "rtl/cve2_register_file_ff.sv"
+        },
+        {
+            "module": "of",
+            "file": "rtl/cve2_top.sv"
+        },
+        {
+            "module": "cve2_top",
+            "file": "rtl/cve2_top.sv"
+        },
+        {
+            "module": "of",
+            "file": "rtl/cve2_top_tracing.sv"
+        },
+        {
+            "module": "cve2_top_tracing",
+            "file": "rtl/cve2_top_tracing.sv"
+        },
+        {
+            "module": "cve2_tracer",
+            "file": "rtl/cve2_tracer.sv"
+        },
+        {
+            "module": "don",
+            "file": "rtl/cve2_tracer.sv"
+        },
+        {
+            "module": "currently",
+            "file": "rtl/cve2_tracer.sv"
+        },
+        {
+            "module": "acts",
+            "file": "rtl/cve2_wb.sv"
+        },
+        {
+            "module": "cve2_wb",
+            "file": "rtl/cve2_wb.sv"
+        },
+        {
+            "module": "is",
+            "file": "shared/rtl/bus.sv"
+        },
+        {
+            "module": "bus",
+            "file": "shared/rtl/bus.sv"
+        },
+        {
+            "module": "ram_1p",
+            "file": "shared/rtl/ram_1p.sv"
+        },
+        {
+            "module": "is",
+            "file": "shared/rtl/ram_1p.sv"
+        },
+        {
+            "module": "ram_2p",
+            "file": "shared/rtl/ram_2p.sv"
+        },
+        {
+            "module": "timer",
+            "file": "shared/rtl/timer.sv"
+        },
+        {
+            "module": "clkgen_xil7series",
+            "file": "shared/rtl/fpga/xilinx/clkgen_xil7series.sv"
+        },
+        {
+            "module": "simulator_ctrl",
+            "file": "shared/rtl/sim/simulator_ctrl.sv"
+        },
+        {
+            "module": "riscv_instr_gen_tb_top",
+            "file": "vendor/google_riscv-dv/test/riscv_instr_gen_tb_top.sv"
+        },
+        {
+            "module": "N",
+            "file": "vendor/lowrisc_ip/dv/sv/dv_utils/dv_utils_pkg.sv"
+        },
+        {
+            "module": "or",
+            "file": "vendor/lowrisc_ip/dv/sv/dv_utils/dv_utils_pkg.sv"
+        },
+        {
+            "module": "interfaces",
+            "file": "vendor/lowrisc_ip/dv/sv/dv_utils/dv_vif_wrap.sv"
+        },
+        {
+            "module": "interface",
+            "file": "vendor/lowrisc_ip/dv/sv/dv_utils/dv_vif_wrap.sv"
+        },
+        {
+            "module": "or",
+            "file": "vendor/lowrisc_ip/dv/sv/dv_utils/dv_vif_wrap.sv"
+        },
+        {
+            "module": "to",
+            "file": "vendor/lowrisc_ip/dv/sv/dv_utils/dv_vif_wrap.sv"
+        },
+        {
+            "module": "itself",
+            "file": "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util.sv"
+        },
+        {
+            "module": "where",
+            "file": "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/dv/prim_alert/tb/prim_alert_tb.sv"
+        },
+        {
+            "module": "prim_alert_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/dv/prim_alert/tb/prim_alert_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/dv/prim_esc/tb/prim_esc_tb.sv"
+        },
+        {
+            "module": "prim_esc_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/dv/prim_esc/tb/prim_esc_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/dv/prim_lfsr/tb/prim_lfsr_tb.sv"
+        },
+        {
+            "module": "prim_lfsr_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/dv/prim_lfsr/tb/prim_lfsr_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/dv/prim_present/tb/prim_present_tb.sv"
+        },
+        {
+            "module": "prim_present_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/dv/prim_present/tb/prim_present_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/dv/prim_prince/tb/prim_prince_tb.sv"
+        },
+        {
+            "module": "prim_prince_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/dv/prim_prince/tb/prim_prince_tb.sv"
+        },
+        {
+            "module": "prim_alert_rxtx_async_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_async_bind_fpv.sv"
+        },
+        {
+            "module": "prim_alert_rxtx_async_fatal_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_async_fatal_bind_fpv.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_async_fatal_tb.sv"
+        },
+        {
+            "module": "prim_alert_rxtx_async_fatal_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_async_fatal_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_async_tb.sv"
+        },
+        {
+            "module": "prim_alert_rxtx_async_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_async_tb.sv"
+        },
+        {
+            "module": "prim_alert_rxtx_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_bind_fpv.sv"
+        },
+        {
+            "module": "prim_alert_rxtx_fatal_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_fatal_bind_fpv.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_fatal_tb.sv"
+        },
+        {
+            "module": "prim_alert_rxtx_fatal_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_fatal_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_tb.sv"
+        },
+        {
+            "module": "prim_alert_rxtx_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_alert_rxtx_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_arbiter_fixed_tb.sv"
+        },
+        {
+            "module": "prim_arbiter_fixed_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_arbiter_fixed_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_arbiter_ppc_tb.sv"
+        },
+        {
+            "module": "prim_arbiter_ppc_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_arbiter_ppc_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_arbiter_tree_tb.sv"
+        },
+        {
+            "module": "prim_arbiter_tree_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_arbiter_tree_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_count_tb.sv"
+        },
+        {
+            "module": "prim_count_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_count_tb.sv"
+        },
+        {
+            "module": "prim_esc_rxtx_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_esc_rxtx_bind_fpv.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_esc_rxtx_tb.sv"
+        },
+        {
+            "module": "prim_esc_rxtx_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_esc_rxtx_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_fifo_async_sram_adapter_tb.sv"
+        },
+        {
+            "module": "prim_fifo_async_sram_adapter_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_fifo_async_sram_adapter_tb.sv"
+        },
+        {
+            "module": "prim_fifo_sync_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_fifo_sync_bind_fpv.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_fifo_sync_tb.sv"
+        },
+        {
+            "module": "prim_fifo_sync_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_fifo_sync_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_keccak_tb.sv"
+        },
+        {
+            "module": "prim_keccak_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_keccak_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_lfsr_tb.sv"
+        },
+        {
+            "module": "prim_lfsr_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_lfsr_tb.sv"
+        },
+        {
+            "module": "for",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_packer_tb.sv"
+        },
+        {
+            "module": "prim_packer_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_packer_tb.sv"
+        },
+        {
+            "module": "prim_secded_22_16_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_22_16_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_22_16_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_22_16_tb.sv"
+        },
+        {
+            "module": "prim_secded_28_22_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_28_22_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_28_22_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_28_22_tb.sv"
+        },
+        {
+            "module": "prim_secded_39_32_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_39_32_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_39_32_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_39_32_tb.sv"
+        },
+        {
+            "module": "prim_secded_64_57_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_64_57_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_64_57_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_64_57_tb.sv"
+        },
+        {
+            "module": "prim_secded_72_64_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_72_64_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_72_64_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_72_64_tb.sv"
+        },
+        {
+            "module": "prim_secded_hamming_22_16_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_22_16_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_hamming_22_16_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_22_16_tb.sv"
+        },
+        {
+            "module": "prim_secded_hamming_39_32_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_39_32_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_hamming_39_32_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_39_32_tb.sv"
+        },
+        {
+            "module": "prim_secded_hamming_72_64_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_72_64_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_hamming_72_64_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_72_64_tb.sv"
+        },
+        {
+            "module": "prim_secded_hamming_76_68_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_76_68_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_hamming_76_68_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_hamming_76_68_tb.sv"
+        },
+        {
+            "module": "prim_secded_inv_22_16_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_22_16_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_22_16_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_22_16_tb.sv"
+        },
+        {
+            "module": "prim_secded_inv_28_22_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_28_22_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_28_22_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_28_22_tb.sv"
+        },
+        {
+            "module": "prim_secded_inv_39_32_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_39_32_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_39_32_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_39_32_tb.sv"
+        },
+        {
+            "module": "prim_secded_inv_64_57_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_64_57_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_64_57_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_64_57_tb.sv"
+        },
+        {
+            "module": "prim_secded_inv_72_64_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_72_64_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_72_64_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_72_64_tb.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_22_16_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_22_16_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_22_16_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_22_16_tb.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_39_32_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_39_32_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_39_32_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_39_32_tb.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_72_64_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_72_64_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_72_64_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_72_64_tb.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_76_68_bind_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_76_68_bind_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_76_68_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/tb/prim_secded_inv_hamming_76_68_tb.sv"
+        },
+        {
+            "module": "prim_alert_rxtx_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_alert_rxtx_assert_fpv.sv"
+        },
+        {
+            "module": "prim_alert_rxtx_async_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_alert_rxtx_async_assert_fpv.sv"
+        },
+        {
+            "module": "prim_esc_rxtx_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_esc_rxtx_assert_fpv.sv"
+        },
+        {
+            "module": "prim_fifo_sync_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_fifo_sync_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_22_16_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_22_16_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_28_22_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_28_22_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_39_32_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_39_32_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_64_57_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_64_57_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_72_64_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_72_64_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_hamming_22_16_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_22_16_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_hamming_39_32_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_39_32_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_hamming_72_64_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_72_64_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_hamming_76_68_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_76_68_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_22_16_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_22_16_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_28_22_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_28_22_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_39_32_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_39_32_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_64_57_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_64_57_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_72_64_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_72_64_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_22_16_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_22_16_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_39_32_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_39_32_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_72_64_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_72_64_assert_fpv.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_76_68_assert_fpv",
+            "file": "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_76_68_assert_fpv.sv"
+        },
+        {
+            "module": "prim_crc32_sim",
+            "file": "vendor/lowrisc_ip/ip/prim/pre_dv/prim_crc32/prim_crc32_sim.sv"
+        },
+        {
+            "module": "prim_sync_reqack_tb",
+            "file": "vendor/lowrisc_ip/ip/prim/pre_dv/prim_sync_reqack/rtl/prim_sync_reqack_tb.sv"
+        },
+        {
+            "module": "will",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_receiver.sv"
+        },
+        {
+            "module": "supports",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_receiver.sv"
+        },
+        {
+            "module": "prim_alert_receiver",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_receiver.sv"
+        },
+        {
+            "module": "differentially",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_sender.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_sender.sv"
+        },
+        {
+            "module": "supports",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_sender.sv"
+        },
+        {
+            "module": "prim_alert_sender",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_sender.sv"
+        },
+        {
+            "module": "prim_arbiter_fixed",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_fixed.sv"
+        },
+        {
+            "module": "contains",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_ppc.sv"
+        },
+        {
+            "module": "contains",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_ppc.sv"
+        },
+        {
+            "module": "prim_arbiter_ppc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_ppc.sv"
+        },
+        {
+            "module": "contains",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_tree.sv"
+        },
+        {
+            "module": "contains",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_tree.sv"
+        },
+        {
+            "module": "prim_arbiter_tree",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_tree.sv"
+        },
+        {
+            "module": "should",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_cdc_rand_delay.sv"
+        },
+        {
+            "module": "acts",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_cdc_rand_delay.sv"
+        },
+        {
+            "module": "prim_cdc_rand_delay",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_cdc_rand_delay.sv"
+        },
+        {
+            "module": "parameters",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_cdc_rand_delay.sv"
+        },
+        {
+            "module": "prim_clock_div",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_div.sv"
+        },
+        {
+            "module": "are",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_div.sv"
+        },
+        {
+            "module": "prim_clock_gating_sync",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_gating_sync.sv"
+        },
+        {
+            "module": "that",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_meas.sv"
+        },
+        {
+            "module": "prim_clock_meas",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_meas.sv"
+        },
+        {
+            "module": "that",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_timeout.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_timeout.sv"
+        },
+        {
+            "module": "prim_clock_timeout",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_timeout.sv"
+        },
+        {
+            "module": "implements",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_count.sv"
+        },
+        {
+            "module": "prim_count",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_count.sv"
+        },
+        {
+            "module": "takes",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_crc32.sv"
+        },
+        {
+            "module": "prim_crc32",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_crc32.sv"
+        },
+        {
+            "module": "decodes",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_diff_decode.sv"
+        },
+        {
+            "module": "prim_diff_decode",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_diff_decode.sv"
+        },
+        {
+            "module": "prim_dom_and_2share",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_dom_and_2share.sv"
+        },
+        {
+            "module": "that",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_double_lfsr.sv"
+        },
+        {
+            "module": "prim_double_lfsr",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_double_lfsr.sv"
+        },
+        {
+            "module": "prim_edge_detector",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_edge_detector.sv"
+        },
+        {
+            "module": "can",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_edn_req.sv"
+        },
+        {
+            "module": "would",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_edn_req.sv"
+        },
+        {
+            "module": "also",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_edn_req.sv"
+        },
+        {
+            "module": "prim_edn_req",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_edn_req.sv"
+        },
+        {
+            "module": "decodes",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_receiver.sv"
+        },
+        {
+            "module": "supports",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_receiver.sv"
+        },
+        {
+            "module": "that",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_receiver.sv"
+        },
+        {
+            "module": "responds",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_receiver.sv"
+        },
+        {
+            "module": "prim_esc_receiver",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_receiver.sv"
+        },
+        {
+            "module": "differentially",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_sender.sv"
+        },
+        {
+            "module": "supports",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_sender.sv"
+        },
+        {
+            "module": "prim_esc_sender",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_sender.sv"
+        },
+        {
+            "module": "prim_fifo_async",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_async.sv"
+        },
+        {
+            "module": "prim_fifo_async_sram_adapter",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_async_sram_adapter.sv"
+        },
+        {
+            "module": "uses",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_async_sram_adapter.sv"
+        },
+        {
+            "module": "prim_fifo_sync",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_sync.sv"
+        },
+        {
+            "module": "under",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_sync.sv"
+        },
+        {
+            "module": "prim_filter",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_filter.sv"
+        },
+        {
+            "module": "prim_filter_ctr",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_filter_ctr.sv"
+        },
+        {
+            "module": "prim_flop_2sync",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_flop_2sync.sv"
+        },
+        {
+            "module": "leverages",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_gate_gen.sv"
+        },
+        {
+            "module": "prim_gate_gen",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_gate_gen.sv"
+        },
+        {
+            "module": "performs",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_gf_mult.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_gf_mult.sv"
+        },
+        {
+            "module": "prim_gf_mult",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_gf_mult.sv"
+        },
+        {
+            "module": "can",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_intr_hw.sv"
+        },
+        {
+            "module": "prim_intr_hw",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_intr_hw.sv"
+        },
+        {
+            "module": "prim_keccak",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_keccak.sv"
+        },
+        {
+            "module": "prim_lc_combine",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_combine.sv"
+        },
+        {
+            "module": "prim_lc_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_dec.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_sender.sv"
+        },
+        {
+            "module": "prim_lc_sender",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_sender.sv"
+        },
+        {
+            "module": "prim_lc_sync",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_sync.sv"
+        },
+        {
+            "module": "name",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_sync.sv"
+        },
+        {
+            "module": "implements",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_lfsr.sv"
+        },
+        {
+            "module": "prim_lfsr",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_lfsr.sv"
+        },
+        {
+            "module": "implements",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_max_tree.sv"
+        },
+        {
+            "module": "prim_max_tree",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_max_tree.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_max_tree.sv"
+        },
+        {
+            "module": "prim_msb_extend",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_msb_extend.sv"
+        },
+        {
+            "module": "prim_mubi12_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_dec.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sender.sv"
+        },
+        {
+            "module": "prim_mubi12_sender",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sender.sv"
+        },
+        {
+            "module": "prim_mubi12_sync",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sync.sv"
+        },
+        {
+            "module": "institutes",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sync.sv"
+        },
+        {
+            "module": "name",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sync.sv"
+        },
+        {
+            "module": "prim_mubi16_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_dec.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sender.sv"
+        },
+        {
+            "module": "prim_mubi16_sender",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sender.sv"
+        },
+        {
+            "module": "prim_mubi16_sync",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sync.sv"
+        },
+        {
+            "module": "institutes",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sync.sv"
+        },
+        {
+            "module": "name",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sync.sv"
+        },
+        {
+            "module": "prim_mubi4_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_dec.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sender.sv"
+        },
+        {
+            "module": "prim_mubi4_sender",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sender.sv"
+        },
+        {
+            "module": "prim_mubi4_sync",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sync.sv"
+        },
+        {
+            "module": "institutes",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sync.sv"
+        },
+        {
+            "module": "name",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sync.sv"
+        },
+        {
+            "module": "prim_mubi8_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_dec.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sender.sv"
+        },
+        {
+            "module": "prim_mubi8_sender",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sender.sv"
+        },
+        {
+            "module": "prim_mubi8_sync",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sync.sv"
+        },
+        {
+            "module": "institutes",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sync.sv"
+        },
+        {
+            "module": "name",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sync.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_multibit_sync.sv"
+        },
+        {
+            "module": "implements",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_multibit_sync.sv"
+        },
+        {
+            "module": "due",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_multibit_sync.sv"
+        },
+        {
+            "module": "prim_multibit_sync",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_multibit_sync.sv"
+        },
+        {
+            "module": "prim_packer",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_packer.sv"
+        },
+        {
+            "module": "prim_packer_fifo",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_packer_fifo.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_present.sv"
+        },
+        {
+            "module": "prim_present",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_present.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_prince.sv"
+        },
+        {
+            "module": "prim_prince",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_prince.sv"
+        },
+        {
+            "module": "prim_pulse_sync",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_pulse_sync.sv"
+        },
+        {
+            "module": "prim_ram_1p_adv",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_adv.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_scr.sv"
+        },
+        {
+            "module": "prim_ram_1p_scr",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_scr.sv"
+        },
+        {
+            "module": "should",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_scr.sv"
+        },
+        {
+            "module": "prim_ram_2p_adv",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_2p_adv.sv"
+        },
+        {
+            "module": "prim_ram_2p_async_adv",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_2p_async_adv.sv"
+        },
+        {
+            "module": "prim_reg_cdc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_reg_cdc.sv"
+        },
+        {
+            "module": "asserts",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_reg_cdc.sv"
+        },
+        {
+            "module": "prim_rom_adv",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_rom_adv.sv"
+        },
+        {
+            "module": "prim_sec_anchor_buf",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sec_anchor_buf.sv"
+        },
+        {
+            "module": "prim_sec_anchor_flop",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sec_anchor_flop.sv"
+        },
+        {
+            "module": "prim_secded_22_16_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_22_16_dec.sv"
+        },
+        {
+            "module": "prim_secded_22_16_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_22_16_enc.sv"
+        },
+        {
+            "module": "prim_secded_28_22_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_28_22_dec.sv"
+        },
+        {
+            "module": "prim_secded_28_22_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_28_22_enc.sv"
+        },
+        {
+            "module": "prim_secded_39_32_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_39_32_dec.sv"
+        },
+        {
+            "module": "prim_secded_39_32_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_39_32_enc.sv"
+        },
+        {
+            "module": "prim_secded_64_57_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_64_57_dec.sv"
+        },
+        {
+            "module": "prim_secded_64_57_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_64_57_enc.sv"
+        },
+        {
+            "module": "prim_secded_72_64_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_72_64_dec.sv"
+        },
+        {
+            "module": "prim_secded_72_64_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_72_64_enc.sv"
+        },
+        {
+            "module": "prim_secded_hamming_22_16_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_22_16_dec.sv"
+        },
+        {
+            "module": "prim_secded_hamming_22_16_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_22_16_enc.sv"
+        },
+        {
+            "module": "prim_secded_hamming_39_32_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_39_32_dec.sv"
+        },
+        {
+            "module": "prim_secded_hamming_39_32_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_39_32_enc.sv"
+        },
+        {
+            "module": "prim_secded_hamming_72_64_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_72_64_dec.sv"
+        },
+        {
+            "module": "prim_secded_hamming_72_64_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_72_64_enc.sv"
+        },
+        {
+            "module": "prim_secded_hamming_76_68_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_76_68_dec.sv"
+        },
+        {
+            "module": "prim_secded_hamming_76_68_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_76_68_enc.sv"
+        },
+        {
+            "module": "prim_secded_inv_22_16_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_22_16_dec.sv"
+        },
+        {
+            "module": "prim_secded_inv_22_16_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_22_16_enc.sv"
+        },
+        {
+            "module": "prim_secded_inv_28_22_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_28_22_dec.sv"
+        },
+        {
+            "module": "prim_secded_inv_28_22_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_28_22_enc.sv"
+        },
+        {
+            "module": "prim_secded_inv_39_32_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_39_32_dec.sv"
+        },
+        {
+            "module": "prim_secded_inv_39_32_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_39_32_enc.sv"
+        },
+        {
+            "module": "prim_secded_inv_64_57_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_64_57_dec.sv"
+        },
+        {
+            "module": "prim_secded_inv_64_57_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_64_57_enc.sv"
+        },
+        {
+            "module": "prim_secded_inv_72_64_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_72_64_dec.sv"
+        },
+        {
+            "module": "prim_secded_inv_72_64_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_72_64_enc.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_22_16_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_22_16_dec.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_22_16_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_22_16_enc.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_39_32_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_39_32_dec.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_39_32_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_39_32_enc.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_72_64_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_72_64_dec.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_72_64_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_72_64_enc.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_76_68_dec",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_76_68_dec.sv"
+        },
+        {
+            "module": "prim_secded_inv_hamming_76_68_enc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_76_68_enc.sv"
+        },
+        {
+            "module": "prim_slicer",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_slicer.sv"
+        },
+        {
+            "module": "prim_sparse_fsm_flop",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sparse_fsm_flop.sv"
+        },
+        {
+            "module": "prim_sram_arbiter",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sram_arbiter.sv"
+        },
+        {
+            "module": "prim_subreg",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg.sv"
+        },
+        {
+            "module": "prim_subreg_arb",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_arb.sv"
+        },
+        {
+            "module": "prim_subreg_async",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_async.sv"
+        },
+        {
+            "module": "prim_subreg_cdc",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_cdc.sv"
+        },
+        {
+            "module": "asserts",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_cdc.sv"
+        },
+        {
+            "module": "prim_subreg_ext",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_ext.sv"
+        },
+        {
+            "module": "prim_subreg_ext_async",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_ext_async.sv"
+        },
+        {
+            "module": "prim_subreg_shadow",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_shadow.sv"
+        },
+        {
+            "module": "prim_subst_perm",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_subst_perm.sv"
+        },
+        {
+            "module": "implements",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sum_tree.sv"
+        },
+        {
+            "module": "prim_sum_tree",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sum_tree.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sum_tree.sv"
+        },
+        {
+            "module": "synchronizes",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack.sv"
+        },
+        {
+            "module": "works",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack.sv"
+        },
+        {
+            "module": "uses",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack.sv"
+        },
+        {
+            "module": "prim_sync_reqack",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack.sv"
+        },
+        {
+            "module": "synchronizes",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack_data.sv"
+        },
+        {
+            "module": "to",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack_data.sv"
+        },
+        {
+            "module": "uses",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack_data.sv"
+        },
+        {
+            "module": "prim_sync_reqack_data",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack_data.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_slow_fast.sv"
+        },
+        {
+            "module": "prim_sync_slow_fast",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_slow_fast.sv"
+        },
+        {
+            "module": "implements",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_xoshiro256pp.sv"
+        },
+        {
+            "module": "prim_xoshiro256pp",
+            "file": "vendor/lowrisc_ip/ip/prim/rtl/prim_xoshiro256pp.sv"
+        },
+        {
+            "module": "prim_generic_and2",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_and2.sv"
+        },
+        {
+            "module": "prim_generic_buf",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_buf.sv"
+        },
+        {
+            "module": "prim_generic_clock_buf",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_buf.sv"
+        },
+        {
+            "module": "prim_generic_clock_gating",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_gating.sv"
+        },
+        {
+            "module": "prim_generic_clock_inv",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_inv.sv"
+        },
+        {
+            "module": "prim_generic_clock_mux2",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_mux2.sv"
+        },
+        {
+            "module": "prim_generic_flash",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flash.sv"
+        },
+        {
+            "module": "prim_generic_flash_bank",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flash_bank.sv"
+        },
+        {
+            "module": "prim_generic_flop",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flop.sv"
+        },
+        {
+            "module": "prim_generic_flop_en",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flop_en.sv"
+        },
+        {
+            "module": "prim_generic_otp",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_otp.sv"
+        },
+        {
+            "module": "prim_generic_pad_attr",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_pad_attr.sv"
+        },
+        {
+            "module": "prim_generic_pad_wrapper",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_pad_wrapper.sv"
+        },
+        {
+            "module": "prim_generic_ram_1p",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_1p.sv"
+        },
+        {
+            "module": "in",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_1p.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_1p.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_2p.sv"
+        },
+        {
+            "module": "prim_generic_ram_2p",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_2p.sv"
+        },
+        {
+            "module": "in",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_2p.sv"
+        },
+        {
+            "module": "is",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_2p.sv"
+        },
+        {
+            "module": "prim_generic_rom",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_rom.sv"
+        },
+        {
+            "module": "prim_generic_usb_diff_rx",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_usb_diff_rx.sv"
+        },
+        {
+            "module": "prim_generic_xor2",
+            "file": "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_xor2.sv"
+        },
+        {
+            "module": "prim_xilinx_and2",
+            "file": "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_and2.sv"
+        },
+        {
+            "module": "prim_xilinx_buf",
+            "file": "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_buf.sv"
+        },
+        {
+            "module": "prim_xilinx_clock_buf",
+            "file": "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_clock_buf.sv"
+        },
+        {
+            "module": "prim_xilinx_clock_gating",
+            "file": "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_clock_gating.sv"
+        },
+        {
+            "module": "prim_xilinx_clock_mux2",
+            "file": "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_clock_mux2.sv"
+        },
+        {
+            "module": "prim_xilinx_flop",
+            "file": "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_flop.sv"
+        },
+        {
+            "module": "prim_xilinx_flop_en",
+            "file": "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_flop_en.sv"
+        },
+        {
+            "module": "prim_xilinx_pad_attr",
+            "file": "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_pad_attr.sv"
+        },
+        {
+            "module": "prim_xilinx_pad_wrapper",
+            "file": "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_pad_wrapper.sv"
+        },
+        {
+            "module": "prim_xilinx_xor2",
+            "file": "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_xor2.sv"
+        }
+    ],
+    "module_graph": {
+        "for": [
+            "prim_generic_pad_wrapper",
+            "prim_xilinx_pad_wrapper"
+        ],
+        "cve2_clock_gate": [
+            "of"
+        ],
+        "prim_clock_gating": [
+            "prim_clock_gating_sync"
+        ],
+        "cve2_riscv_compliance": [],
+        "lets": [],
+        "riscv_testutil": [
+            "cve2_riscv_compliance"
+        ],
+        "obi2ahbm_adapter": [],
+        "formal_tb": [],
+        "at": [],
+        "cve2_alu": [],
+        "cve2_branch_predict": [],
+        "is": [
+            "cve2_cs_registers",
+            "prim_generic_clock_gating"
+        ],
+        "cve2_compressed_decoder": [
+            "cve2_if_stage"
+        ],
+        "cve2_controller": [
+            "cve2_controller",
+            "cve2_id_stage"
+        ],
+        "of": [
+            "formal_tb",
+            "of",
+            "for",
+            "for",
+            "performs"
+        ],
+        "cve2_core": [
+            "of"
+        ],
+        "cve2_counter": [
+            "cve2_cs_registers"
+        ],
+        "cve2_cs_registers": [
+            "of"
+        ],
+        "cve2_csr": [
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers",
+            "cve2_cs_registers"
+        ],
+        "cve2_decoder": [
+            "is"
+        ],
+        "cve2_ex_block": [
+            "of",
+            "cve2_ex_block"
+        ],
+        "are": [
+            "decodes"
+        ],
+        "cve2_fetch_fifo": [
+            "cve2_fetch_fifo"
+        ],
+        "cve2_id_stage": [
+            "of",
+            "cve2_id_stage"
+        ],
+        "cve2_if_stage": [],
+        "cve2_load_store_unit": [
+            "of"
+        ],
+        "cve2_multdiv_fast": [],
+        "cve2_multdiv_slow": [],
+        "cve2_pmp": [],
+        "cve2_prefetch_buffer": [
+            "cve2_prefetch_buffer"
+        ],
+        "cve2_register_file_ff": [],
+        "cve2_top": [
+            "of"
+        ],
+        "cve2_top_tracing": [
+            "cve2_riscv_compliance"
+        ],
+        "cve2_tracer": [
+            "of"
+        ],
+        "don": [],
+        "currently": [],
+        "acts": [],
+        "cve2_wb": [
+            "of"
+        ],
+        "bus": [
+            "cve2_riscv_compliance"
+        ],
+        "ram_1p": [
+            "cve2_riscv_compliance",
+            "ram_1p"
+        ],
+        "ram_2p": [
+            "ram_2p"
+        ],
+        "timer": [],
+        "clkgen_xil7series": [],
+        "simulator_ctrl": [],
+        "riscv_instr_gen_tb_top": [],
+        "N": [],
+        "or": [],
+        "interfaces": [],
+        "interface": [],
+        "to": [
+            "is",
+            "is"
+        ],
+        "itself": [],
+        "where": [],
+        "prim_alert_tb": [],
+        "prim_esc_tb": [],
+        "prim_lfsr_tb": [
+            "for"
+        ],
+        "prim_present_tb": [],
+        "prim_prince_tb": [],
+        "prim_alert_rxtx_async_bind_fpv": [],
+        "prim_alert_rxtx_async_fatal_bind_fpv": [],
+        "prim_alert_rxtx_async_fatal_tb": [],
+        "prim_alert_rxtx_async_tb": [],
+        "prim_alert_rxtx_bind_fpv": [],
+        "prim_alert_rxtx_fatal_bind_fpv": [],
+        "prim_alert_rxtx_fatal_tb": [],
+        "prim_alert_rxtx_tb": [],
+        "prim_arbiter_fixed_tb": [
+            "for"
+        ],
+        "prim_arbiter_ppc_tb": [
+            "for"
+        ],
+        "prim_arbiter_tree_tb": [
+            "for"
+        ],
+        "prim_count_tb": [],
+        "prim_esc_rxtx_bind_fpv": [],
+        "prim_esc_rxtx_tb": [],
+        "prim_fifo_async_sram_adapter_tb": [
+            "for"
+        ],
+        "prim_fifo_sync_bind_fpv": [],
+        "prim_fifo_sync_tb": [
+            "for"
+        ],
+        "prim_keccak_tb": [
+            "for"
+        ],
+        "prim_packer_tb": [
+            "for"
+        ],
+        "prim_secded_22_16_bind_fpv": [],
+        "prim_secded_22_16_tb": [],
+        "prim_secded_28_22_bind_fpv": [],
+        "prim_secded_28_22_tb": [],
+        "prim_secded_39_32_bind_fpv": [],
+        "prim_secded_39_32_tb": [],
+        "prim_secded_64_57_bind_fpv": [],
+        "prim_secded_64_57_tb": [],
+        "prim_secded_72_64_bind_fpv": [],
+        "prim_secded_72_64_tb": [],
+        "prim_secded_hamming_22_16_bind_fpv": [],
+        "prim_secded_hamming_22_16_tb": [],
+        "prim_secded_hamming_39_32_bind_fpv": [],
+        "prim_secded_hamming_39_32_tb": [],
+        "prim_secded_hamming_72_64_bind_fpv": [],
+        "prim_secded_hamming_72_64_tb": [],
+        "prim_secded_hamming_76_68_bind_fpv": [],
+        "prim_secded_hamming_76_68_tb": [],
+        "prim_secded_inv_22_16_bind_fpv": [],
+        "prim_secded_inv_22_16_tb": [],
+        "prim_secded_inv_28_22_bind_fpv": [],
+        "prim_secded_inv_28_22_tb": [],
+        "prim_secded_inv_39_32_bind_fpv": [],
+        "prim_secded_inv_39_32_tb": [],
+        "prim_secded_inv_64_57_bind_fpv": [],
+        "prim_secded_inv_64_57_tb": [],
+        "prim_secded_inv_72_64_bind_fpv": [],
+        "prim_secded_inv_72_64_tb": [],
+        "prim_secded_inv_hamming_22_16_bind_fpv": [],
+        "prim_secded_inv_hamming_22_16_tb": [],
+        "prim_secded_inv_hamming_39_32_bind_fpv": [],
+        "prim_secded_inv_hamming_39_32_tb": [],
+        "prim_secded_inv_hamming_72_64_bind_fpv": [],
+        "prim_secded_inv_hamming_72_64_tb": [],
+        "prim_secded_inv_hamming_76_68_bind_fpv": [],
+        "prim_secded_inv_hamming_76_68_tb": [],
+        "prim_alert_rxtx_assert_fpv": [
+            "prim_alert_rxtx_bind_fpv",
+            "prim_alert_rxtx_fatal_bind_fpv"
+        ],
+        "prim_alert_rxtx_async_assert_fpv": [
+            "prim_alert_rxtx_async_bind_fpv",
+            "prim_alert_rxtx_async_fatal_bind_fpv"
+        ],
+        "prim_esc_rxtx_assert_fpv": [
+            "prim_esc_rxtx_bind_fpv"
+        ],
+        "prim_fifo_sync_assert_fpv": [
+            "prim_fifo_sync_bind_fpv",
+            "prim_fifo_sync_bind_fpv",
+            "prim_fifo_sync_bind_fpv",
+            "prim_fifo_sync_bind_fpv",
+            "prim_fifo_sync_bind_fpv",
+            "prim_fifo_sync_bind_fpv",
+            "prim_fifo_sync_bind_fpv",
+            "prim_fifo_sync_bind_fpv",
+            "prim_fifo_sync_bind_fpv",
+            "prim_fifo_sync_bind_fpv",
+            "prim_fifo_sync_bind_fpv"
+        ],
+        "prim_secded_22_16_assert_fpv": [
+            "prim_secded_22_16_bind_fpv"
+        ],
+        "prim_secded_28_22_assert_fpv": [
+            "prim_secded_28_22_bind_fpv"
+        ],
+        "prim_secded_39_32_assert_fpv": [
+            "prim_secded_39_32_bind_fpv"
+        ],
+        "prim_secded_64_57_assert_fpv": [
+            "prim_secded_64_57_bind_fpv"
+        ],
+        "prim_secded_72_64_assert_fpv": [
+            "prim_secded_72_64_bind_fpv"
+        ],
+        "prim_secded_hamming_22_16_assert_fpv": [
+            "prim_secded_hamming_22_16_bind_fpv"
+        ],
+        "prim_secded_hamming_39_32_assert_fpv": [
+            "prim_secded_hamming_39_32_bind_fpv"
+        ],
+        "prim_secded_hamming_72_64_assert_fpv": [
+            "prim_secded_hamming_72_64_bind_fpv"
+        ],
+        "prim_secded_hamming_76_68_assert_fpv": [
+            "prim_secded_hamming_76_68_bind_fpv"
+        ],
+        "prim_secded_inv_22_16_assert_fpv": [
+            "prim_secded_inv_22_16_bind_fpv"
+        ],
+        "prim_secded_inv_28_22_assert_fpv": [
+            "prim_secded_inv_28_22_bind_fpv"
+        ],
+        "prim_secded_inv_39_32_assert_fpv": [
+            "prim_secded_inv_39_32_bind_fpv"
+        ],
+        "prim_secded_inv_64_57_assert_fpv": [
+            "prim_secded_inv_64_57_bind_fpv"
+        ],
+        "prim_secded_inv_72_64_assert_fpv": [
+            "prim_secded_inv_72_64_bind_fpv"
+        ],
+        "prim_secded_inv_hamming_22_16_assert_fpv": [
+            "prim_secded_inv_hamming_22_16_bind_fpv"
+        ],
+        "prim_secded_inv_hamming_39_32_assert_fpv": [
+            "prim_secded_inv_hamming_39_32_bind_fpv"
+        ],
+        "prim_secded_inv_hamming_72_64_assert_fpv": [
+            "prim_secded_inv_hamming_72_64_bind_fpv"
+        ],
+        "prim_secded_inv_hamming_76_68_assert_fpv": [
+            "prim_secded_inv_hamming_76_68_bind_fpv"
+        ],
+        "prim_crc32_sim": [],
+        "prim_sync_reqack_tb": [
+            "prim_sync_reqack_tb"
+        ],
+        "will": [],
+        "supports": [],
+        "prim_alert_receiver": [
+            "for",
+            "for",
+            "for",
+            "for",
+            "for"
+        ],
+        "differentially": [],
+        "prim_alert_sender": [
+            "for",
+            "for",
+            "for"
+        ],
+        "prim_arbiter_fixed": [],
+        "contains": [],
+        "prim_arbiter_ppc": [],
+        "prim_arbiter_tree": [],
+        "should": [],
+        "prim_cdc_rand_delay": [],
+        "parameters": [],
+        "prim_clock_div": [
+            "prim_clock_div"
+        ],
+        "prim_clock_gating_sync": [],
+        "that": [],
+        "prim_clock_meas": [
+            "that"
+        ],
+        "prim_clock_timeout": [
+            "that"
+        ],
+        "implements": [],
+        "prim_count": [
+            "for",
+            "decodes"
+        ],
+        "takes": [],
+        "prim_crc32": [
+            "prim_crc32_sim"
+        ],
+        "decodes": [],
+        "prim_diff_decode": [
+            "will",
+            "differentially",
+            "differentially",
+            "decodes",
+            "differentially"
+        ],
+        "prim_dom_and_2share": [],
+        "prim_double_lfsr": [
+            "that"
+        ],
+        "prim_edge_detector": [
+            "prim_edge_detector"
+        ],
+        "can": [],
+        "would": [],
+        "also": [],
+        "prim_edn_req": [],
+        "responds": [],
+        "prim_esc_receiver": [
+            "for",
+            "for"
+        ],
+        "prim_esc_sender": [
+            "for",
+            "for"
+        ],
+        "prim_fifo_async": [
+            "prim_fifo_async"
+        ],
+        "prim_fifo_async_sram_adapter": [],
+        "uses": [],
+        "prim_fifo_sync": [
+            "for",
+            "for",
+            "for",
+            "for",
+            "for",
+            "for",
+            "for",
+            "for",
+            "for",
+            "for",
+            "prim_sram_arbiter"
+        ],
+        "under": [],
+        "prim_filter": [
+            "prim_filter"
+        ],
+        "prim_filter_ctr": [
+            "prim_filter_ctr"
+        ],
+        "prim_flop_2sync": [
+            "prim_clock_gating_sync",
+            "decodes",
+            "prim_fifo_async_sram_adapter",
+            "prim_fifo_async_sram_adapter",
+            "prim_flop_2sync",
+            "synchronizes",
+            "synchronizes",
+            "is"
+        ],
+        "leverages": [],
+        "prim_gate_gen": [],
+        "performs": [],
+        "prim_gf_mult": [],
+        "prim_intr_hw": [],
+        "prim_keccak": [],
+        "prim_lc_combine": [],
+        "prim_lc_dec": [],
+        "prim_lc_sender": [
+            "is"
+        ],
+        "prim_lc_sync": [
+            "prim_lc_sync"
+        ],
+        "name": [],
+        "prim_lfsr": [
+            "for",
+            "that"
+        ],
+        "prim_max_tree": [],
+        "prim_msb_extend": [],
+        "prim_mubi12_dec": [],
+        "prim_mubi12_sender": [],
+        "prim_mubi12_sync": [],
+        "institutes": [],
+        "prim_mubi16_dec": [],
+        "prim_mubi16_sender": [],
+        "prim_mubi16_sync": [],
+        "prim_mubi4_dec": [],
+        "prim_mubi4_sender": [],
+        "prim_mubi4_sync": [],
+        "prim_mubi8_dec": [],
+        "prim_mubi8_sender": [],
+        "prim_mubi8_sync": [],
+        "due": [],
+        "prim_multibit_sync": [],
+        "prim_packer": [
+            "for"
+        ],
+        "prim_packer_fifo": [
+            "can"
+        ],
+        "prim_present": [
+            "for"
+        ],
+        "prim_prince": [],
+        "prim_pulse_sync": [],
+        "prim_ram_1p_adv": [],
+        "prim_ram_1p_scr": [],
+        "prim_ram_2p_adv": [],
+        "prim_ram_2p_async_adv": [
+            "prim_ram_2p_adv"
+        ],
+        "prim_reg_cdc": [],
+        "asserts": [],
+        "prim_rom_adv": [],
+        "prim_sec_anchor_buf": [
+            "will",
+            "differentially",
+            "differentially",
+            "differentially",
+            "decodes",
+            "differentially",
+            "differentially",
+            "prim_sec_anchor_buf"
+        ],
+        "prim_sec_anchor_flop": [
+            "will",
+            "will",
+            "decodes",
+            "prim_sec_anchor_flop"
+        ],
+        "prim_secded_22_16_dec": [
+            "prim_secded_22_16_tb"
+        ],
+        "prim_secded_22_16_enc": [
+            "prim_secded_22_16_tb"
+        ],
+        "prim_secded_28_22_dec": [
+            "prim_secded_28_22_tb"
+        ],
+        "prim_secded_28_22_enc": [
+            "prim_secded_28_22_tb"
+        ],
+        "prim_secded_39_32_dec": [
+            "prim_secded_39_32_tb"
+        ],
+        "prim_secded_39_32_enc": [
+            "prim_secded_39_32_tb"
+        ],
+        "prim_secded_64_57_dec": [
+            "prim_secded_64_57_tb"
+        ],
+        "prim_secded_64_57_enc": [
+            "prim_secded_64_57_tb"
+        ],
+        "prim_secded_72_64_dec": [
+            "prim_secded_72_64_tb"
+        ],
+        "prim_secded_72_64_enc": [
+            "prim_secded_72_64_tb"
+        ],
+        "prim_secded_hamming_22_16_dec": [
+            "prim_secded_hamming_22_16_tb",
+            "prim_generic_otp"
+        ],
+        "prim_secded_hamming_22_16_enc": [
+            "prim_secded_hamming_22_16_tb",
+            "prim_generic_otp"
+        ],
+        "prim_secded_hamming_39_32_dec": [
+            "prim_secded_hamming_39_32_tb"
+        ],
+        "prim_secded_hamming_39_32_enc": [
+            "prim_secded_hamming_39_32_tb"
+        ],
+        "prim_secded_hamming_72_64_dec": [
+            "prim_secded_hamming_72_64_tb"
+        ],
+        "prim_secded_hamming_72_64_enc": [
+            "prim_secded_hamming_72_64_tb"
+        ],
+        "prim_secded_hamming_76_68_dec": [
+            "prim_secded_hamming_76_68_tb"
+        ],
+        "prim_secded_hamming_76_68_enc": [
+            "prim_secded_hamming_76_68_tb"
+        ],
+        "prim_secded_inv_22_16_dec": [
+            "prim_secded_inv_22_16_tb",
+            "prim_ram_1p_adv"
+        ],
+        "prim_secded_inv_22_16_enc": [
+            "prim_secded_inv_22_16_tb",
+            "prim_ram_1p_adv"
+        ],
+        "prim_secded_inv_28_22_dec": [
+            "prim_secded_inv_28_22_tb"
+        ],
+        "prim_secded_inv_28_22_enc": [
+            "prim_secded_inv_28_22_tb"
+        ],
+        "prim_secded_inv_39_32_dec": [
+            "prim_secded_inv_39_32_tb",
+            "prim_ram_1p_adv",
+            "prim_ram_2p_async_adv",
+            "prim_ram_2p_async_adv"
+        ],
+        "prim_secded_inv_39_32_enc": [
+            "prim_secded_inv_39_32_tb",
+            "prim_ram_1p_adv",
+            "prim_ram_2p_async_adv",
+            "prim_ram_2p_async_adv"
+        ],
+        "prim_secded_inv_64_57_dec": [
+            "prim_secded_inv_64_57_tb"
+        ],
+        "prim_secded_inv_64_57_enc": [
+            "prim_secded_inv_64_57_tb"
+        ],
+        "prim_secded_inv_72_64_dec": [
+            "prim_secded_inv_72_64_tb"
+        ],
+        "prim_secded_inv_72_64_enc": [
+            "prim_secded_inv_72_64_tb"
+        ],
+        "prim_secded_inv_hamming_22_16_dec": [
+            "prim_secded_inv_hamming_22_16_tb",
+            "prim_ram_1p_adv"
+        ],
+        "prim_secded_inv_hamming_22_16_enc": [
+            "prim_secded_inv_hamming_22_16_tb"
+        ],
+        "prim_secded_inv_hamming_39_32_dec": [
+            "prim_secded_inv_hamming_39_32_tb",
+            "prim_ram_1p_adv",
+            "prim_ram_2p_async_adv",
+            "prim_ram_2p_async_adv"
+        ],
+        "prim_secded_inv_hamming_39_32_enc": [
+            "prim_secded_inv_hamming_39_32_tb",
+            "prim_ram_2p_async_adv"
+        ],
+        "prim_secded_inv_hamming_72_64_dec": [
+            "prim_secded_inv_hamming_72_64_tb"
+        ],
+        "prim_secded_inv_hamming_72_64_enc": [
+            "prim_secded_inv_hamming_72_64_tb"
+        ],
+        "prim_secded_inv_hamming_76_68_dec": [
+            "prim_secded_inv_hamming_76_68_tb"
+        ],
+        "prim_secded_inv_hamming_76_68_enc": [
+            "prim_secded_inv_hamming_76_68_tb"
+        ],
+        "prim_slicer": [],
+        "prim_sparse_fsm_flop": [
+            "prim_sparse_fsm_flop"
+        ],
+        "prim_sram_arbiter": [],
+        "prim_subreg": [
+            "prim_subreg_async",
+            "prim_subreg_shadow",
+            "prim_subreg_shadow"
+        ],
+        "prim_subreg_arb": [
+            "prim_subreg"
+        ],
+        "prim_subreg_async": [],
+        "prim_subreg_cdc": [
+            "prim_subreg_async"
+        ],
+        "prim_subreg_ext": [],
+        "prim_subreg_ext_async": [
+            "prim_subreg_ext_async"
+        ],
+        "prim_subreg_shadow": [],
+        "prim_subst_perm": [
+            "is",
+            "is"
+        ],
+        "prim_sum_tree": [],
+        "synchronizes": [],
+        "works": [],
+        "prim_sync_reqack": [
+            "synchronizes"
+        ],
+        "prim_sync_reqack_data": [
+            "can"
+        ],
+        "prim_sync_slow_fast": [],
+        "prim_xoshiro256pp": [],
+        "prim_generic_and2": [],
+        "prim_generic_buf": [],
+        "prim_generic_clock_buf": [],
+        "prim_generic_clock_gating": [],
+        "prim_generic_clock_inv": [
+            "prim_generic_clock_inv"
+        ],
+        "prim_generic_clock_mux2": [],
+        "prim_generic_flash": [
+            "prim_generic_flash"
+        ],
+        "prim_generic_flash_bank": [
+            "prim_generic_flash_bank"
+        ],
+        "prim_generic_flop": [],
+        "prim_generic_flop_en": [
+            "prim_generic_flop_en"
+        ],
+        "prim_generic_otp": [],
+        "prim_generic_pad_attr": [],
+        "prim_generic_pad_wrapper": [],
+        "prim_generic_ram_1p": [],
+        "in": [],
+        "prim_generic_ram_2p": [],
+        "prim_generic_rom": [],
+        "prim_generic_usb_diff_rx": [],
+        "prim_generic_xor2": [],
+        "prim_xilinx_and2": [],
+        "prim_xilinx_buf": [],
+        "prim_xilinx_clock_buf": [],
+        "prim_xilinx_clock_gating": [
+            "prim_xilinx_clock_gating"
+        ],
+        "prim_xilinx_clock_mux2": [],
+        "prim_xilinx_flop": [],
+        "prim_xilinx_flop_en": [],
+        "prim_xilinx_pad_attr": [],
+        "prim_xilinx_pad_wrapper": [],
+        "prim_xilinx_xor2": []
+    },
+    "module_graph_inverse": {
+        "for": [
+            "prim_alert_sender",
+            "prim_alert_receiver",
+            "prim_esc_sender",
+            "prim_esc_receiver",
+            "prim_lfsr",
+            "prim_present",
+            "of",
+            "of",
+            "prim_alert_receiver",
+            "prim_alert_receiver",
+            "prim_alert_sender",
+            "prim_alert_receiver",
+            "prim_alert_sender",
+            "prim_alert_receiver",
+            "prim_arbiter_fixed_tb",
+            "prim_arbiter_ppc_tb",
+            "prim_arbiter_tree_tb",
+            "prim_count",
+            "prim_esc_sender",
+            "prim_esc_receiver",
+            "prim_fifo_async_sram_adapter_tb",
+            "prim_fifo_sync_tb",
+            "prim_fifo_sync",
+            "prim_fifo_sync",
+            "prim_fifo_sync",
+            "prim_fifo_sync",
+            "prim_fifo_sync",
+            "prim_fifo_sync",
+            "prim_fifo_sync",
+            "prim_fifo_sync",
+            "prim_fifo_sync",
+            "prim_fifo_sync",
+            "prim_keccak_tb",
+            "prim_lfsr_tb",
+            "prim_packer_tb",
+            "prim_packer"
+        ],
+        "cve2_clock_gate": [],
+        "prim_clock_gating": [],
+        "cve2_riscv_compliance": [
+            "bus",
+            "cve2_top_tracing",
+            "ram_1p",
+            "riscv_testutil"
+        ],
+        "lets": [],
+        "riscv_testutil": [],
+        "obi2ahbm_adapter": [],
+        "formal_tb": [
+            "of"
+        ],
+        "at": [],
+        "cve2_alu": [],
+        "cve2_branch_predict": [],
+        "is": [
+            "cve2_decoder",
+            "prim_lc_sender",
+            "to",
+            "to",
+            "prim_subst_perm",
+            "prim_subst_perm",
+            "prim_flop_2sync"
+        ],
+        "cve2_compressed_decoder": [],
+        "cve2_controller": [
+            "cve2_controller"
+        ],
+        "of": [
+            "cve2_id_stage",
+            "cve2_ex_block",
+            "cve2_load_store_unit",
+            "cve2_wb",
+            "cve2_cs_registers",
+            "of",
+            "cve2_clock_gate",
+            "cve2_core",
+            "cve2_top",
+            "cve2_tracer"
+        ],
+        "cve2_core": [],
+        "cve2_counter": [],
+        "cve2_cs_registers": [
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "cve2_csr",
+            "is",
+            "cve2_counter",
+            "cve2_csr",
+            "cve2_csr"
+        ],
+        "cve2_csr": [],
+        "cve2_decoder": [],
+        "cve2_ex_block": [
+            "cve2_ex_block"
+        ],
+        "are": [],
+        "cve2_fetch_fifo": [
+            "cve2_fetch_fifo"
+        ],
+        "cve2_id_stage": [
+            "cve2_id_stage",
+            "cve2_controller"
+        ],
+        "cve2_if_stage": [
+            "cve2_compressed_decoder"
+        ],
+        "cve2_load_store_unit": [],
+        "cve2_multdiv_fast": [],
+        "cve2_multdiv_slow": [],
+        "cve2_pmp": [],
+        "cve2_prefetch_buffer": [
+            "cve2_prefetch_buffer"
+        ],
+        "cve2_register_file_ff": [],
+        "cve2_top": [],
+        "cve2_top_tracing": [],
+        "cve2_tracer": [],
+        "don": [],
+        "currently": [],
+        "acts": [],
+        "cve2_wb": [],
+        "bus": [],
+        "ram_1p": [
+            "ram_1p"
+        ],
+        "ram_2p": [
+            "ram_2p"
+        ],
+        "timer": [],
+        "clkgen_xil7series": [],
+        "simulator_ctrl": [],
+        "riscv_instr_gen_tb_top": [],
+        "N": [],
+        "or": [],
+        "interfaces": [],
+        "interface": [],
+        "to": [],
+        "itself": [],
+        "where": [],
+        "prim_alert_tb": [],
+        "prim_esc_tb": [],
+        "prim_lfsr_tb": [],
+        "prim_present_tb": [],
+        "prim_prince_tb": [],
+        "prim_alert_rxtx_async_bind_fpv": [
+            "prim_alert_rxtx_async_assert_fpv"
+        ],
+        "prim_alert_rxtx_async_fatal_bind_fpv": [
+            "prim_alert_rxtx_async_assert_fpv"
+        ],
+        "prim_alert_rxtx_async_fatal_tb": [],
+        "prim_alert_rxtx_async_tb": [],
+        "prim_alert_rxtx_bind_fpv": [
+            "prim_alert_rxtx_assert_fpv"
+        ],
+        "prim_alert_rxtx_fatal_bind_fpv": [
+            "prim_alert_rxtx_assert_fpv"
+        ],
+        "prim_alert_rxtx_fatal_tb": [],
+        "prim_alert_rxtx_tb": [],
+        "prim_arbiter_fixed_tb": [],
+        "prim_arbiter_ppc_tb": [],
+        "prim_arbiter_tree_tb": [],
+        "prim_count_tb": [],
+        "prim_esc_rxtx_bind_fpv": [
+            "prim_esc_rxtx_assert_fpv"
+        ],
+        "prim_esc_rxtx_tb": [],
+        "prim_fifo_async_sram_adapter_tb": [],
+        "prim_fifo_sync_bind_fpv": [
+            "prim_fifo_sync_assert_fpv",
+            "prim_fifo_sync_assert_fpv",
+            "prim_fifo_sync_assert_fpv",
+            "prim_fifo_sync_assert_fpv",
+            "prim_fifo_sync_assert_fpv",
+            "prim_fifo_sync_assert_fpv",
+            "prim_fifo_sync_assert_fpv",
+            "prim_fifo_sync_assert_fpv",
+            "prim_fifo_sync_assert_fpv",
+            "prim_fifo_sync_assert_fpv",
+            "prim_fifo_sync_assert_fpv"
+        ],
+        "prim_fifo_sync_tb": [],
+        "prim_keccak_tb": [],
+        "prim_packer_tb": [],
+        "prim_secded_22_16_bind_fpv": [
+            "prim_secded_22_16_assert_fpv"
+        ],
+        "prim_secded_22_16_tb": [
+            "prim_secded_22_16_enc",
+            "prim_secded_22_16_dec"
+        ],
+        "prim_secded_28_22_bind_fpv": [
+            "prim_secded_28_22_assert_fpv"
+        ],
+        "prim_secded_28_22_tb": [
+            "prim_secded_28_22_enc",
+            "prim_secded_28_22_dec"
+        ],
+        "prim_secded_39_32_bind_fpv": [
+            "prim_secded_39_32_assert_fpv"
+        ],
+        "prim_secded_39_32_tb": [
+            "prim_secded_39_32_enc",
+            "prim_secded_39_32_dec"
+        ],
+        "prim_secded_64_57_bind_fpv": [
+            "prim_secded_64_57_assert_fpv"
+        ],
+        "prim_secded_64_57_tb": [
+            "prim_secded_64_57_enc",
+            "prim_secded_64_57_dec"
+        ],
+        "prim_secded_72_64_bind_fpv": [
+            "prim_secded_72_64_assert_fpv"
+        ],
+        "prim_secded_72_64_tb": [
+            "prim_secded_72_64_enc",
+            "prim_secded_72_64_dec"
+        ],
+        "prim_secded_hamming_22_16_bind_fpv": [
+            "prim_secded_hamming_22_16_assert_fpv"
+        ],
+        "prim_secded_hamming_22_16_tb": [
+            "prim_secded_hamming_22_16_enc",
+            "prim_secded_hamming_22_16_dec"
+        ],
+        "prim_secded_hamming_39_32_bind_fpv": [
+            "prim_secded_hamming_39_32_assert_fpv"
+        ],
+        "prim_secded_hamming_39_32_tb": [
+            "prim_secded_hamming_39_32_enc",
+            "prim_secded_hamming_39_32_dec"
+        ],
+        "prim_secded_hamming_72_64_bind_fpv": [
+            "prim_secded_hamming_72_64_assert_fpv"
+        ],
+        "prim_secded_hamming_72_64_tb": [
+            "prim_secded_hamming_72_64_enc",
+            "prim_secded_hamming_72_64_dec"
+        ],
+        "prim_secded_hamming_76_68_bind_fpv": [
+            "prim_secded_hamming_76_68_assert_fpv"
+        ],
+        "prim_secded_hamming_76_68_tb": [
+            "prim_secded_hamming_76_68_enc",
+            "prim_secded_hamming_76_68_dec"
+        ],
+        "prim_secded_inv_22_16_bind_fpv": [
+            "prim_secded_inv_22_16_assert_fpv"
+        ],
+        "prim_secded_inv_22_16_tb": [
+            "prim_secded_inv_22_16_enc",
+            "prim_secded_inv_22_16_dec"
+        ],
+        "prim_secded_inv_28_22_bind_fpv": [
+            "prim_secded_inv_28_22_assert_fpv"
+        ],
+        "prim_secded_inv_28_22_tb": [
+            "prim_secded_inv_28_22_enc",
+            "prim_secded_inv_28_22_dec"
+        ],
+        "prim_secded_inv_39_32_bind_fpv": [
+            "prim_secded_inv_39_32_assert_fpv"
+        ],
+        "prim_secded_inv_39_32_tb": [
+            "prim_secded_inv_39_32_enc",
+            "prim_secded_inv_39_32_dec"
+        ],
+        "prim_secded_inv_64_57_bind_fpv": [
+            "prim_secded_inv_64_57_assert_fpv"
+        ],
+        "prim_secded_inv_64_57_tb": [
+            "prim_secded_inv_64_57_enc",
+            "prim_secded_inv_64_57_dec"
+        ],
+        "prim_secded_inv_72_64_bind_fpv": [
+            "prim_secded_inv_72_64_assert_fpv"
+        ],
+        "prim_secded_inv_72_64_tb": [
+            "prim_secded_inv_72_64_enc",
+            "prim_secded_inv_72_64_dec"
+        ],
+        "prim_secded_inv_hamming_22_16_bind_fpv": [
+            "prim_secded_inv_hamming_22_16_assert_fpv"
+        ],
+        "prim_secded_inv_hamming_22_16_tb": [
+            "prim_secded_inv_hamming_22_16_enc",
+            "prim_secded_inv_hamming_22_16_dec"
+        ],
+        "prim_secded_inv_hamming_39_32_bind_fpv": [
+            "prim_secded_inv_hamming_39_32_assert_fpv"
+        ],
+        "prim_secded_inv_hamming_39_32_tb": [
+            "prim_secded_inv_hamming_39_32_enc",
+            "prim_secded_inv_hamming_39_32_dec"
+        ],
+        "prim_secded_inv_hamming_72_64_bind_fpv": [
+            "prim_secded_inv_hamming_72_64_assert_fpv"
+        ],
+        "prim_secded_inv_hamming_72_64_tb": [
+            "prim_secded_inv_hamming_72_64_enc",
+            "prim_secded_inv_hamming_72_64_dec"
+        ],
+        "prim_secded_inv_hamming_76_68_bind_fpv": [
+            "prim_secded_inv_hamming_76_68_assert_fpv"
+        ],
+        "prim_secded_inv_hamming_76_68_tb": [
+            "prim_secded_inv_hamming_76_68_enc",
+            "prim_secded_inv_hamming_76_68_dec"
+        ],
+        "prim_alert_rxtx_assert_fpv": [],
+        "prim_alert_rxtx_async_assert_fpv": [],
+        "prim_esc_rxtx_assert_fpv": [],
+        "prim_fifo_sync_assert_fpv": [],
+        "prim_secded_22_16_assert_fpv": [],
+        "prim_secded_28_22_assert_fpv": [],
+        "prim_secded_39_32_assert_fpv": [],
+        "prim_secded_64_57_assert_fpv": [],
+        "prim_secded_72_64_assert_fpv": [],
+        "prim_secded_hamming_22_16_assert_fpv": [],
+        "prim_secded_hamming_39_32_assert_fpv": [],
+        "prim_secded_hamming_72_64_assert_fpv": [],
+        "prim_secded_hamming_76_68_assert_fpv": [],
+        "prim_secded_inv_22_16_assert_fpv": [],
+        "prim_secded_inv_28_22_assert_fpv": [],
+        "prim_secded_inv_39_32_assert_fpv": [],
+        "prim_secded_inv_64_57_assert_fpv": [],
+        "prim_secded_inv_72_64_assert_fpv": [],
+        "prim_secded_inv_hamming_22_16_assert_fpv": [],
+        "prim_secded_inv_hamming_39_32_assert_fpv": [],
+        "prim_secded_inv_hamming_72_64_assert_fpv": [],
+        "prim_secded_inv_hamming_76_68_assert_fpv": [],
+        "prim_crc32_sim": [
+            "prim_crc32"
+        ],
+        "prim_sync_reqack_tb": [
+            "prim_sync_reqack_tb"
+        ],
+        "will": [
+            "prim_sec_anchor_buf",
+            "prim_diff_decode",
+            "prim_sec_anchor_flop",
+            "prim_sec_anchor_flop"
+        ],
+        "supports": [],
+        "prim_alert_receiver": [],
+        "differentially": [
+            "prim_sec_anchor_buf",
+            "prim_diff_decode",
+            "prim_sec_anchor_buf",
+            "prim_diff_decode",
+            "prim_sec_anchor_buf",
+            "prim_sec_anchor_buf",
+            "prim_diff_decode",
+            "prim_sec_anchor_buf"
+        ],
+        "prim_alert_sender": [],
+        "prim_arbiter_fixed": [],
+        "contains": [],
+        "prim_arbiter_ppc": [],
+        "prim_arbiter_tree": [],
+        "should": [],
+        "prim_cdc_rand_delay": [],
+        "parameters": [],
+        "prim_clock_div": [
+            "prim_clock_div"
+        ],
+        "prim_clock_gating_sync": [
+            "prim_flop_2sync",
+            "prim_clock_gating"
+        ],
+        "that": [
+            "prim_clock_meas",
+            "prim_clock_timeout",
+            "prim_double_lfsr",
+            "prim_lfsr"
+        ],
+        "prim_clock_meas": [],
+        "prim_clock_timeout": [],
+        "implements": [],
+        "prim_count": [],
+        "takes": [],
+        "prim_crc32": [],
+        "decodes": [
+            "are",
+            "prim_flop_2sync",
+            "prim_diff_decode",
+            "prim_count",
+            "prim_sec_anchor_buf",
+            "prim_sec_anchor_flop"
+        ],
+        "prim_diff_decode": [],
+        "prim_dom_and_2share": [],
+        "prim_double_lfsr": [],
+        "prim_edge_detector": [
+            "prim_edge_detector"
+        ],
+        "can": [
+            "prim_sync_reqack_data",
+            "prim_packer_fifo"
+        ],
+        "would": [],
+        "also": [],
+        "prim_edn_req": [],
+        "responds": [],
+        "prim_esc_receiver": [],
+        "prim_esc_sender": [],
+        "prim_fifo_async": [
+            "prim_fifo_async"
+        ],
+        "prim_fifo_async_sram_adapter": [
+            "prim_flop_2sync",
+            "prim_flop_2sync"
+        ],
+        "uses": [],
+        "prim_fifo_sync": [],
+        "under": [],
+        "prim_filter": [
+            "prim_filter"
+        ],
+        "prim_filter_ctr": [
+            "prim_filter_ctr"
+        ],
+        "prim_flop_2sync": [
+            "prim_flop_2sync"
+        ],
+        "leverages": [],
+        "prim_gate_gen": [],
+        "performs": [
+            "of"
+        ],
+        "prim_gf_mult": [],
+        "prim_intr_hw": [],
+        "prim_keccak": [],
+        "prim_lc_combine": [],
+        "prim_lc_dec": [],
+        "prim_lc_sender": [],
+        "prim_lc_sync": [
+            "prim_lc_sync"
+        ],
+        "name": [],
+        "prim_lfsr": [],
+        "prim_max_tree": [],
+        "prim_msb_extend": [],
+        "prim_mubi12_dec": [],
+        "prim_mubi12_sender": [],
+        "prim_mubi12_sync": [],
+        "institutes": [],
+        "prim_mubi16_dec": [],
+        "prim_mubi16_sender": [],
+        "prim_mubi16_sync": [],
+        "prim_mubi4_dec": [],
+        "prim_mubi4_sender": [],
+        "prim_mubi4_sync": [],
+        "prim_mubi8_dec": [],
+        "prim_mubi8_sender": [],
+        "prim_mubi8_sync": [],
+        "due": [],
+        "prim_multibit_sync": [],
+        "prim_packer": [],
+        "prim_packer_fifo": [],
+        "prim_present": [],
+        "prim_prince": [],
+        "prim_pulse_sync": [],
+        "prim_ram_1p_adv": [
+            "prim_secded_inv_hamming_22_16_dec",
+            "prim_secded_inv_22_16_enc",
+            "prim_secded_inv_22_16_dec",
+            "prim_secded_inv_hamming_39_32_dec",
+            "prim_secded_inv_39_32_enc",
+            "prim_secded_inv_39_32_dec"
+        ],
+        "prim_ram_1p_scr": [],
+        "prim_ram_2p_adv": [
+            "prim_ram_2p_async_adv"
+        ],
+        "prim_ram_2p_async_adv": [
+            "prim_secded_inv_hamming_39_32_dec",
+            "prim_secded_inv_hamming_39_32_enc",
+            "prim_secded_inv_hamming_39_32_dec",
+            "prim_secded_inv_39_32_enc",
+            "prim_secded_inv_39_32_dec",
+            "prim_secded_inv_39_32_enc",
+            "prim_secded_inv_39_32_dec"
+        ],
+        "prim_reg_cdc": [],
+        "asserts": [],
+        "prim_rom_adv": [],
+        "prim_sec_anchor_buf": [
+            "prim_sec_anchor_buf"
+        ],
+        "prim_sec_anchor_flop": [
+            "prim_sec_anchor_flop"
+        ],
+        "prim_secded_22_16_dec": [],
+        "prim_secded_22_16_enc": [],
+        "prim_secded_28_22_dec": [],
+        "prim_secded_28_22_enc": [],
+        "prim_secded_39_32_dec": [],
+        "prim_secded_39_32_enc": [],
+        "prim_secded_64_57_dec": [],
+        "prim_secded_64_57_enc": [],
+        "prim_secded_72_64_dec": [],
+        "prim_secded_72_64_enc": [],
+        "prim_secded_hamming_22_16_dec": [],
+        "prim_secded_hamming_22_16_enc": [],
+        "prim_secded_hamming_39_32_dec": [],
+        "prim_secded_hamming_39_32_enc": [],
+        "prim_secded_hamming_72_64_dec": [],
+        "prim_secded_hamming_72_64_enc": [],
+        "prim_secded_hamming_76_68_dec": [],
+        "prim_secded_hamming_76_68_enc": [],
+        "prim_secded_inv_22_16_dec": [],
+        "prim_secded_inv_22_16_enc": [],
+        "prim_secded_inv_28_22_dec": [],
+        "prim_secded_inv_28_22_enc": [],
+        "prim_secded_inv_39_32_dec": [],
+        "prim_secded_inv_39_32_enc": [],
+        "prim_secded_inv_64_57_dec": [],
+        "prim_secded_inv_64_57_enc": [],
+        "prim_secded_inv_72_64_dec": [],
+        "prim_secded_inv_72_64_enc": [],
+        "prim_secded_inv_hamming_22_16_dec": [],
+        "prim_secded_inv_hamming_22_16_enc": [],
+        "prim_secded_inv_hamming_39_32_dec": [],
+        "prim_secded_inv_hamming_39_32_enc": [],
+        "prim_secded_inv_hamming_72_64_dec": [],
+        "prim_secded_inv_hamming_72_64_enc": [],
+        "prim_secded_inv_hamming_76_68_dec": [],
+        "prim_secded_inv_hamming_76_68_enc": [],
+        "prim_slicer": [],
+        "prim_sparse_fsm_flop": [
+            "prim_sparse_fsm_flop"
+        ],
+        "prim_sram_arbiter": [
+            "prim_fifo_sync"
+        ],
+        "prim_subreg": [
+            "prim_subreg_arb"
+        ],
+        "prim_subreg_arb": [],
+        "prim_subreg_async": [
+            "prim_subreg_cdc",
+            "prim_subreg"
+        ],
+        "prim_subreg_cdc": [],
+        "prim_subreg_ext": [],
+        "prim_subreg_ext_async": [
+            "prim_subreg_ext_async"
+        ],
+        "prim_subreg_shadow": [
+            "prim_subreg",
+            "prim_subreg"
+        ],
+        "prim_subst_perm": [],
+        "prim_sum_tree": [],
+        "synchronizes": [
+            "prim_flop_2sync",
+            "prim_flop_2sync",
+            "prim_sync_reqack"
+        ],
+        "works": [],
+        "prim_sync_reqack": [],
+        "prim_sync_reqack_data": [],
+        "prim_sync_slow_fast": [],
+        "prim_xoshiro256pp": [],
+        "prim_generic_and2": [],
+        "prim_generic_buf": [],
+        "prim_generic_clock_buf": [],
+        "prim_generic_clock_gating": [
+            "is"
+        ],
+        "prim_generic_clock_inv": [
+            "prim_generic_clock_inv"
+        ],
+        "prim_generic_clock_mux2": [],
+        "prim_generic_flash": [
+            "prim_generic_flash"
+        ],
+        "prim_generic_flash_bank": [
+            "prim_generic_flash_bank"
+        ],
+        "prim_generic_flop": [],
+        "prim_generic_flop_en": [
+            "prim_generic_flop_en"
+        ],
+        "prim_generic_otp": [
+            "prim_secded_hamming_22_16_enc",
+            "prim_secded_hamming_22_16_dec"
+        ],
+        "prim_generic_pad_attr": [],
+        "prim_generic_pad_wrapper": [
+            "for"
+        ],
+        "prim_generic_ram_1p": [],
+        "in": [],
+        "prim_generic_ram_2p": [],
+        "prim_generic_rom": [],
+        "prim_generic_usb_diff_rx": [],
+        "prim_generic_xor2": [],
+        "prim_xilinx_and2": [],
+        "prim_xilinx_buf": [],
+        "prim_xilinx_clock_buf": [],
+        "prim_xilinx_clock_gating": [
+            "prim_xilinx_clock_gating"
+        ],
+        "prim_xilinx_clock_mux2": [],
+        "prim_xilinx_flop": [],
+        "prim_xilinx_flop_en": [],
+        "prim_xilinx_pad_attr": [],
+        "prim_xilinx_pad_wrapper": [
+            "for"
+        ],
+        "prim_xilinx_xor2": []
+    },
+    "non_tb_files": [
+        "syn/rtl/cve2_clock_gating.v",
+        "syn/rtl/latch_map.v",
+        "syn/rtl/prim_clock_gating.v",
+        "bhv/cve2_sim_clock_gate.sv",
+        "dv/riscv_compliance/rtl/cve2_riscv_compliance.sv",
+        "examples/obi2ahb/obi2ahbm_adapter.sv",
+        "rtl/cve2_alu.sv",
+        "rtl/cve2_branch_predict.sv",
+        "rtl/cve2_compressed_decoder.sv",
+        "rtl/cve2_controller.sv",
+        "rtl/cve2_core.sv",
+        "rtl/cve2_counter.sv",
+        "rtl/cve2_cs_registers.sv",
+        "rtl/cve2_csr.sv",
+        "rtl/cve2_decoder.sv",
+        "rtl/cve2_ex_block.sv",
+        "rtl/cve2_fetch_fifo.sv",
+        "rtl/cve2_id_stage.sv",
+        "rtl/cve2_if_stage.sv",
+        "rtl/cve2_load_store_unit.sv",
+        "rtl/cve2_multdiv_fast.sv",
+        "rtl/cve2_multdiv_slow.sv",
+        "rtl/cve2_pkg.sv",
+        "rtl/cve2_pmp.sv",
+        "rtl/cve2_prefetch_buffer.sv",
+        "rtl/cve2_register_file_ff.sv",
+        "rtl/cve2_top.sv",
+        "rtl/cve2_top_tracing.sv",
+        "rtl/cve2_tracer.sv",
+        "rtl/cve2_tracer_pkg.sv",
+        "rtl/cve2_wb.sv",
+        "shared/rtl/bus.sv",
+        "shared/rtl/ram_1p.sv",
+        "shared/rtl/ram_2p.sv",
+        "shared/rtl/timer.sv",
+        "shared/rtl/fpga/xilinx/clkgen_xil7series.sv",
+        "vendor/google_riscv-dv/src/riscv_amo_instr_lib.sv",
+        "vendor/google_riscv-dv/src/riscv_asm_program_gen.sv",
+        "vendor/google_riscv-dv/src/riscv_callstack_gen.sv",
+        "vendor/google_riscv-dv/src/riscv_data_page_gen.sv",
+        "vendor/google_riscv-dv/src/riscv_debug_rom_gen.sv",
+        "vendor/google_riscv-dv/src/riscv_directed_instr_lib.sv",
+        "vendor/google_riscv-dv/src/riscv_illegal_instr.sv",
+        "vendor/google_riscv-dv/src/riscv_instr_cover_group.sv",
+        "vendor/google_riscv-dv/src/riscv_instr_gen_config.sv",
+        "vendor/google_riscv-dv/src/riscv_instr_pkg.sv",
+        "vendor/google_riscv-dv/src/riscv_instr_sequence.sv",
+        "vendor/google_riscv-dv/src/riscv_instr_stream.sv",
+        "vendor/google_riscv-dv/src/riscv_load_store_instr_lib.sv",
+        "vendor/google_riscv-dv/src/riscv_loop_instr.sv",
+        "vendor/google_riscv-dv/src/riscv_page_table.sv",
+        "vendor/google_riscv-dv/src/riscv_page_table_entry.sv",
+        "vendor/google_riscv-dv/src/riscv_page_table_exception_cfg.sv",
+        "vendor/google_riscv-dv/src/riscv_page_table_list.sv",
+        "vendor/google_riscv-dv/src/riscv_pmp_cfg.sv",
+        "vendor/google_riscv-dv/src/riscv_privil_reg.sv",
+        "vendor/google_riscv-dv/src/riscv_privileged_common_seq.sv",
+        "vendor/google_riscv-dv/src/riscv_pseudo_instr.sv",
+        "vendor/google_riscv-dv/src/riscv_reg.sv",
+        "vendor/google_riscv-dv/src/riscv_signature_pkg.sv",
+        "vendor/google_riscv-dv/src/riscv_vector_cfg.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_amo_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_b_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_compressed_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_floating_point_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_vector_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_zba_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_zbb_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_zbc_instr.sv",
+        "vendor/google_riscv-dv/src/isa/riscv_zbs_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv128c_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32a_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32b_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32c_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32d_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32dc_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32f_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32fc_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32i_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32m_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32v_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32zba_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32zbb_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32zbc_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv32zbs_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64a_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64b_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64c_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64d_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64f_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64i_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64m_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64zba_instr.sv",
+        "vendor/google_riscv-dv/src/isa/rv64zbb_instr.sv",
+        "vendor/google_riscv-dv/src/isa/custom/riscv_custom_instr.sv",
+        "vendor/google_riscv-dv/src/isa/custom/riscv_custom_instr_enum.sv",
+        "vendor/google_riscv-dv/src/isa/custom/rv32x_instr.sv",
+        "vendor/google_riscv-dv/src/isa/custom/rv64x_instr.sv",
+        "vendor/google_riscv-dv/target/ml/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/multi_harts/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv32i/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv32imafdc/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv32imc/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv32imc_sv32/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv32imcb/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv64gc/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv64gcv/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv64imc/riscv_core_setting.sv",
+        "vendor/google_riscv-dv/target/rv64imcb/riscv_core_setting.sv",
+        "vendor/lowrisc_ip/dv/sv/common_ifs/clk_if.sv",
+        "vendor/lowrisc_ip/dv/sv/common_ifs/clk_rst_if.sv",
+        "vendor/lowrisc_ip/dv/sv/common_ifs/pins_if.sv",
+        "vendor/lowrisc_ip/dv/sv/common_ifs/rst_shadowed_if.sv",
+        "vendor/lowrisc_ip/dv/sv/csr_utils/csr_seq_lib.sv",
+        "vendor/lowrisc_ip/dv/sv/csr_utils/csr_utils_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/csr_excl_item.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_lockable_field_cov.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_mem.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_mubi_cov.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_reg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_reg_block.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_reg_field.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_reg_map.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_base_reg/dv_base_reg_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_agent.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_agent_cfg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_agent_cov.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_driver.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_env.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_env_cfg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_env_cov.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_monitor.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_scoreboard.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_seq.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_sequencer.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_virtual_sequencer.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_base_vseq.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_lib/dv_lib_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_utils/dv_report_catcher.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_utils/dv_report_server.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_utils/dv_utils_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/dv_utils/dv_vif_wrap.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util__otp.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util__rom.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util__sram.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/mem_bkdr_util_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/otp_scrambler_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_bkdr_util/sram_scrambler_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_model/mem_model.sv",
+        "vendor/lowrisc_ip/dv/sv/mem_model/mem_model_pkg.sv",
+        "vendor/lowrisc_ip/dv/sv/str_utils/str_utils_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/dv/prim_present/crypto_dpi_present/crypto_dpi_present_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/dv/prim_prince/crypto_dpi_prince/crypto_dpi_prince_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_alert_rxtx_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_alert_rxtx_async_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_esc_rxtx_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_fifo_sync_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_22_16_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_28_22_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_39_32_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_64_57_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_72_64_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_22_16_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_39_32_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_72_64_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_hamming_76_68_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_22_16_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_28_22_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_39_32_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_64_57_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_72_64_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_22_16_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_39_32_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_72_64_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/fpv/vip/prim_secded_inv_hamming_76_68_assert_fpv.sv",
+        "vendor/lowrisc_ip/ip/prim/pre_dv/prim_crc32/prim_crc32_sim.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_receiver.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_alert_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_fixed.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_ppc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_tree.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_assert.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_cdc_rand_delay.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_cipher_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_div.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_gating_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_meas.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_clock_timeout.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_count.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_count_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_crc32.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_diff_decode.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_dom_and_2share.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_double_lfsr.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_edge_detector.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_edn_req.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_receiver.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_esc_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_async.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_async_sram_adapter.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_filter.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_filter_ctr.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_flop_2sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_gate_gen.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_gf_mult.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_intr_hw.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_keccak.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_combine.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_lc_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_lfsr.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_max_tree.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_msb_extend.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sender.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_mubi_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_multibit_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_otp_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_packer.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_packer_fifo.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_pad_wrapper_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_present.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_prince.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_pulse_sync.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_adv.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_scr.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_2p_adv.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_2p_async_adv.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_ram_2p_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_reg_cdc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_rom_adv.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_rom_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sec_anchor_buf.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sec_anchor_flop.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_22_16_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_22_16_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_28_22_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_28_22_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_39_32_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_39_32_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_64_57_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_64_57_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_72_64_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_72_64_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_22_16_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_22_16_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_39_32_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_39_32_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_72_64_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_72_64_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_76_68_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_76_68_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_22_16_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_22_16_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_28_22_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_28_22_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_39_32_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_39_32_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_64_57_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_64_57_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_72_64_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_72_64_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_22_16_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_22_16_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_39_32_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_39_32_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_72_64_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_72_64_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_76_68_dec.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_76_68_enc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_secded_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_slicer.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sparse_fsm_flop.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sram_arbiter.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_arb.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_async.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_cdc.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_ext.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_ext_async.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_shadow.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_subst_perm.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sum_tree.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack_data.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_sync_slow_fast.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_util_pkg.sv",
+        "vendor/lowrisc_ip/ip/prim/rtl/prim_xoshiro256pp.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_and2.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_buf.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_buf.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_gating.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_inv.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_mux2.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flash.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flash_bank.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flop.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_flop_en.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_otp.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_pad_attr.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_pad_wrapper.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_1p.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_ram_2p.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_rom.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_usb_diff_rx.sv",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_xor2.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_and2.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_buf.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_clock_buf.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_clock_gating.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_clock_mux2.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_flop.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_flop_en.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_pad_attr.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_pad_wrapper.sv",
+        "vendor/lowrisc_ip/ip/prim_xilinx/rtl/prim_xilinx_xor2.sv"
+    ]
+}
