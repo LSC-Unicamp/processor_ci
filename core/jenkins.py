@@ -149,7 +149,7 @@ pipeline {{
                             steps {{
                                 dir("{folder}") {{
                                     echo 'Starting synthesis for FPGA {fpga}.'
-                                sh 'python3 {main_script_path} -c /eda/processor-ci/config.json \\
+                                sh 'python3 {main_script_path} -c /eda/processor_ci/config.json \\
                                             -p {folder} -b {fpga}'
                                 }}
                             }}
@@ -158,7 +158,7 @@ pipeline {{
                             steps {{
                                 dir("{folder}") {{
                                     echo 'Flashing FPGA {fpga}.'
-                                sh 'python3 {main_script_path} -c /eda/processor-ci/config.json \\
+                                sh 'python3 {main_script_path} -c /eda/processor_ci/config.json \\
                                             -p {folder} -b {fpga} -l'
                                 }}
                             }}

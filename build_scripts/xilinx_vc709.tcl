@@ -18,8 +18,8 @@ set MEMORY_SIZE [lindex $argv 2]
 set HIGH_CLK 1
 set DIFERENCIAL_CLK 1
 
-read_xdc "/eda/processor-ci/constraints/xilinx_vc709.xdc"
-set_property PROCESSING_ORDER EARLY [get_files /eda/processor-ci/constraints/xilinx_vc709.xdc]
+read_xdc "/eda/processor_ci/constraints/xilinx_vc709.xdc"
+set_property PROCESSING_ORDER EARLY [get_files /eda/processor_ci/constraints/xilinx_vc709.xdc]
 
 # synth
 synth_design -top "processorci_top" -part "xc7vx690tffg1761-2" -verilog_define $ID -verilog_define $CLOCK_FREQ -verilog_define $MEMORY_SIZE \

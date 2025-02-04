@@ -17,7 +17,7 @@ set CLOCK_FREQ [lindex $argv 1]
 set MEMORY_SIZE [lindex $argv 2]
 set HIGH_CLK 1
 
-read_xdc "/eda/processor-ci/constraints/digilent_nexys4_ddr.xdc"
+read_xdc "/eda/processor_ci/constraints/digilent_nexys4_ddr.xdc"
 set_property PROCESSING_ORDER EARLY [get_files /eda/processor-ci/constraints/digilent_nexys4_ddr.xdc]
 
 # synth

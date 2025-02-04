@@ -1,7 +1,7 @@
 set_device -name GW2AR-18C GW2AR-LV18QN88C8/I7
 
-add_file /eda/processor-ci/constraints/gowin_tangnano_20k.cst
-add_file /eda/processor-ci/constraints/gowin_tangnano_20k.sdc
+add_file /eda/processor_ci/constraints/gowin_tangnano_20k.cst
+add_file /eda/processor_ci/constraints/gowin_tangnano_20k.sdc
 
 add_file /eda/processor-ci-controller/modules/uart.v
 add_file /eda/processor-ci-controller/modules/UART/rtl/uart_rx.v
