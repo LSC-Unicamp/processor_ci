@@ -40,6 +40,7 @@ Note:
 
 import os
 import re
+import ast
 import time
 from ollama import Client
 
@@ -83,24 +84,64 @@ def parse_filtered_files(text: str) -> list:
         list: A list containing the names of filtered files.
               Returns an empty list if no files are found.
     """
-    match = re.search(r'filtered_files:\s*\[\s*(.*?)\s*\]', text, re.DOTALL)
+    match = re.search(r'filtered_files\s*=\s*\[.*?\]', text, re.DOTALL)
 
     if match:
-        file_list_str = match.group(1)
-        file_list = [
-            file.strip().strip("'") for file in file_list_str.split(',')
-        ]
-        return file_list
+        # Extract the matched list and parse it safely
+        filtered_files_str = match.group(0)
+        try:
+            # Convert the string to a Python list using `ast.literal_eval`
+            filtered_files = ast.literal_eval(
+                filtered_files_str.split('=', 1)[1].strip()
+            )
+            return [file.strip() for file in filtered_files]
+        except (SyntaxError, ValueError):
+            # Return an empty list if parsing fails
+            return []
+
+    match = re.search(r'core_files\s*=\s*\[.*?\]', text, re.DOTALL)
+
+    if match:
+        # Extract the matched list and parse it safely
+        filtered_files_str = match.group(0)
+        try:
+            # Convert the string to a Python list using `ast.literal_eval`
+            filtered_files = ast.literal_eval(
+                filtered_files_str.split('=', 1)[1].strip()
+            )
+            return [file.strip() for file in filtered_files]
+        except (SyntaxError, ValueError):
+            # Return an empty list if parsing fails
+            return []
+
+    match = re.search(r'relevant_files\s*=\s*\[.*?\]', text, re.DOTALL)
+
+    if match:
+        # Extract the matched list and parse it safely
+        filtered_files_str = match.group(0)
+        try:
+            # Convert the string to a Python list using `ast.literal_eval`
+            filtered_files = ast.literal_eval(
+                filtered_files_str.split('=', 1)[1].strip()
+            )
+            return [file.strip() for file in filtered_files]
+        except (SyntaxError, ValueError):
+            # Return an empty list if parsing fails
+            return []
 
     return []
 
 
-def remove_top_module(text: str) -> str:
+def extract_top_module(text: str) -> str:
     """
     Extracts the name of the top module from a given text.
 
-    Uses a regular expression to locate and capture a line following the format
-    `top_module: <module_name>`. If found, it returns the module name.
+    The function parses a string to locate and extract the name of the top module
+    based on various response formats, including:
+    1. A direct line in the format: top_module: <module_name>.
+    2. A final statement explicitly naming the module (e.g., "Therefore, the answer is: <module_name>").
+    3. A standalone module name at the top of the text or response.
+    4. A list-style format with the module name, such as top: ['<module_name>'].
 
     Args:
         text (str): The text to be parsed to find the top module.
@@ -110,10 +151,27 @@ def remove_top_module(text: str) -> str:
              Returns an empty string if no top module is found.
     """
     match = re.search(r'top_module:\s*(\S+)', text)
-
     if match:
-        top_module = match.group(1)
-        return top_module
+        return match.group(1)
+
+    # Pattern 2: Extracts the module from 'top: [<module_name>]'
+    match = re.search(r'top:\s*\[\'?([a-zA-Z_]\w*)\'?\]', text)
+    if match:
+        return match.group(1)
+
+    # Pattern 3: Explicit answer format "Therefore, the answer is: <module_name>"
+    match = re.search(r'Therefore, the answer is:\s*(\S+)', text)
+    if match:
+        return match.group(1)
+
+    # Pattern 4: Standalone module name at the top of the text (first line)
+    lines = text.strip().splitlines()
+    if lines:
+        first_line = lines[0].strip()
+        if re.match(
+            r'^[a-zA-Z_]\w*$', first_line
+        ):  # Check if it's a valid module name
+            return first_line
 
     return ''
 
@@ -140,6 +198,7 @@ def get_filtered_files_list(
         modules (list): List of modules present in the processor.
         tree (list): Dependency structure of the modules.
         repo_name (str): Name of the project repository.
+        model (str, optional): The model to use. Default is 'qwen2.5:32b'.
 
     Returns:
         list: A list containing the names of the files relevant to the processor.
@@ -148,34 +207,39 @@ def get_filtered_files_list(
         NameError: If an error occurs during the language model query.
     """
     prompt = f"""
-    Processors are generally divided into one or more modules; for example, I can have a module for the ALU, one for the register bank, etc. 
-    The files below are the hardware description language files for a processor and its peripherals. 
-    Additionally, we have a list of modules present in the processor (approximately, some modules might be missing) and which files they are in, 
-    along with their dependency tree. The provided data has two categories: sim_files and files. 
-    The sim_files are testbench and verification files (usually containing terms like tests, tb, testbench, among others in the name), 
-    while the files are the remaining files, including unnecessary ones such as SoC, peripherals (memory, GPIO, UART, etc.). 
-    Based on this, keep only the files that you deem relevant to a processor and return them in a Python list. 
-    Remember to ignore memory files such as ram.v or ram.vhdl, peripheral files, caches files, pll files, bus files, board and FPGA files, debug files, among others. 
-    Keep only the processor-related files. Return files in template: filtered_files: [<result>].
+    Processors are typically divided into multiple modules, such as an ALU module, a register bank, and others. 
+    The provided data includes hardware description language (HDL) files for a processor and its peripherals. 
+    Additionally, we have a list of the processor's modules (approximately, as some might be missing), their corresponding files, and their dependency tree. 
+    The data is categorized into two types: sim_files and files. 
 
-    TIP: generally directories with names like rtl, core, src, project_name, etc., usually have the processor files. Files with the project name are often processor files.
-    All processors have at least one useful file
+    - **sim_files**: Testbench and verification files (often containing terms like 'test', 'tb', or 'testbench' in their names).
+    - **files**: Remaining HDL files, including some unnecessary ones like SoC, peripherals (memory, GPIO, UART, etc.), PLL, board and FPGA-specific files, debug files, among others.
 
-    Return only the list of files in the requested template, excluding any additional files and comments.
+    Your task:
+    1. Identify and keep only the files directly relevant to the processor.
+    2. Exclude files related to peripherals (e.g., `ram.v`, `gpio.vhd`), memory, PLL, board/FPGA configuration, and debug functionalities.
+    3. Use the directory structure as a hint: directories named `rtl`, `core`, `src`, or matching the project name usually contain processor-related files. 
+    Files named after the project name are often essential processor files.
+    4. Note that every processor must have at least one relevant file.
 
-    project_name: {repo_name},
-    sim_files: [{sim_files}],
-    files: [{files}],
-    modules: [{modules}]
+    **Return format:**  
+    Return the filtered list of files in the following Python list template:  
+    `filtered_files: [<result>]`
+
+    **Important:** Do not include any comments, explanations, or unrelated files in the output. Provide only the requested list.
+
+    Input data:  
+    project_name: {repo_name},  
+    sim_files: [{sim_files}],  
+    files: [{files}],  
+    modules: [{modules}],  
     tree: [{tree}]
     """
 
     ok, response = send_prompt(prompt, model)
 
     if not ok:
-        raise NameError('Erro ao consultar modelo')
-
-    print(response)
+        raise NameError('\033[31mErro ao consultar modelo\033[0m')
 
     return parse_filtered_files(response)
 
@@ -201,6 +265,7 @@ def get_top_module(
         modules (list): List of modules present in the processor.
         tree (list): Dependency structure of the modules.
         repo_name (str): Name of the project repository.
+        model (str, optional): The model to use. Default is 'qwen2.5:32b'.
 
     Returns:
         str: The name of the processor's top module.
@@ -209,28 +274,42 @@ def get_top_module(
         NameError: If an error occurs during the language model query.
     """
     prompt = f"""
-    Processors are generally divided into one or more modules; for example, I can have a module for the ALU, one for the register bank, etc. 
-    The files below are the hardware description language files for a processor and its peripherals. 
-    Additionally, we have a list of modules present in the processor (approximately, some modules might be missing), and which files they are in, along with their dependency tree. 
-    The provided data has two categories: sim_files and files. The sim_files are testbench and verification files (usually containing terms like tests, tb, testbench, among others in the name), 
-    while the files are the remaining files, including unnecessary ones such as SoC and peripherals (memory, GPIO, UART, etc.). Based on this, find the processor's top module—remember, the processor's, not the SoC's.
-    Return the top module in the following template: top_module: <result>.
+    Processors are typically divided into multiple modules, such as an ALU module, a register bank, and others. 
+    The provided data includes hardware description language (HDL) files for a processor and its peripherals. 
+    Additionally, a list of modules present in the processor (approximately, as some might be missing) is provided, along with the files they belong to and their dependency tree.
 
-    project_name: {repo_name},
-    sim_files: [{sim_files}],
-    files: [{files}],
-    modules: [{modules}]
+    The data is categorized as follows:
+    - **sim_files**: Testbench and verification files (commonly containing terms like 'test', 'tb', or 'testbench' in their names).
+    - **files**: All other files, including unnecessary ones such as SoC files, peripheral-related files (e.g., memory, GPIO, UART), and others.
+
+    Your task:
+    1. Identify the **processor's top module**—specifically the processor's, not the SoC's.
+    2. Use the list of modules, file names, and dependency tree as clues to locate the top module.
+    3. Exclude:
+    - Modules related to SoC, peripherals (e.g., memory, GPIO, UART), or debugging infrastructure.
+    - Modules named `top` or equivalent generic wrappers if they merely instantiate the processor along with additional components (e.g., peripherals, SoC, or infrastructure).
+    4. Focus on identifying the actual top module for the **processor core**, which serves as the main entry point and integrates core components like the ALU, registers, and caches.
+
+    **Return format:**  
+    Provide the name of the top module in the following template:  
+    `top_module: <result>`
+
+    **Important:** Do not include any comments, explanations, or unrelated information—return only the requested result.
+
+    Input data:  
+    project_name: {repo_name},  
+    sim_files: [{sim_files}],  
+    files: [{files}],  
+    modules: [{modules}],  
     tree: [{tree}]
     """
 
     ok, response = send_prompt(prompt, model)
 
     if not ok:
-        raise NameError('Erro ao consultar modelo')
+        raise NameError('\033[31mErro ao consultar modelo\033[0m')
 
-    # print(response)
-
-    return remove_top_module(response)
+    return extract_top_module(response)
 
 
 def generate_top_file(
@@ -261,7 +340,7 @@ def generate_top_file(
     ) as top_module_file_:
         top_module_content = top_module_file_.read()
 
-    with open('rtl/Risco-5.v', 'r', encoding='utf-8') as example_file:
+    with open('rtl/tinyriscv.v', 'r', encoding='utf-8') as example_file:
         example = example_file.read()
 
     template_file.close()
@@ -269,33 +348,49 @@ def generate_top_file(
     example_file.close()
 
     prompt = f"""
-    In the context of processor verification, we use a hardware infrastructure to verify the processor. 
-    Both the processor and the infrastructure are hardware described in hardware description language (HDL), in our case Verilog. 
-    The processor connects to this infrastructure through a Verilog module that instantiates the infrastructure and the processor, 
-    making the necessary connections and adaptations. Below is an example of such a connection. Based on this example, 
-    the provided template, and the processor's top module, make the necessary connections and adaptations. 
-    Pay attention to details such as whether the processor has two memories or only one, if it always has the read signal enabled and only sends the write signal, 
-    among others. After this process, return the complete Verilog file based on the template.
-    
-    example file: 
-    {example}
+    In the context of processor verification, a hardware infrastructure is used to verify the processor. 
+    Both the processor and the verification infrastructure are described in hardware description language (HDL), specifically Verilog in this case. 
+    The processor connects to this infrastructure via a Verilog module that instantiates both the processor and the infrastructure, 
+    handling all necessary connections and adaptations.
 
-    template file: 
-    {template}
+    Your task:
+    1. Use the provided **example** as a reference for how the connections and adaptations are typically implemented.
+    2. Use the **template** as the base for your Verilog file.
+    3. Analyze the **processor's top module** and make the necessary connections and adaptations.  
+    - Pay close attention to processor-specific details, such as:
+        - Whether the processor uses one or two memories.
+        - How signals are handled (e.g., if the read signal is always enabled and only the write signal is controlled).
+        - Any unique requirements of the processor or infrastructure.
 
-    processor top file:
-    {top_module_content}
+    **Output format:**  
+    Return the complete and updated Verilog file based on the **template**, with all necessary connections and adaptations made.
 
+    **Input data:**  
+    - Example file:  
+    {example}  
+
+    - Template file:  
+    {template}  
+
+    - Processor top module content:  
+    {top_module_content}  
     """
 
     ok, response = send_prompt(prompt, model)
 
     if not ok:
-        raise NameError('Erro ao consultar modelo')
+        raise NameError('\033[31mErro ao consultar modelo\033[0m')
 
-    if os.path.exists(f'rtl/{processor_name}.v'):
+    # criar pasta rlt_{model} se não existir
+
+    if not os.path.exists(f'models_rtls/rtl_{model}'):
+        os.makedirs(f'models_rtls/rtl_{model}')
+
+    if os.path.exists(f'models_rtls/rtl_{model}/{processor_name}.v'):
         processor_name = f'{processor_name}_{time.time()}'
 
-    with open(f'rtl/{processor_name}.v', 'w', encoding='utf-8') as final_file:
+    with open(
+        f'models_rtls/rtl_{model}/{processor_name}.v', 'w', encoding='utf-8'
+    ) as final_file:
         final_file.write(response)
         final_file.close()

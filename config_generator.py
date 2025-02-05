@@ -81,8 +81,13 @@ from core.file_manager import (
     find_include_dirs,
 )
 from core.graph import build_module_graph
-from core.ollama import get_filtered_files_list, get_top_module
+from core.ollama import (
+    get_filtered_files_list,
+    get_top_module,
+    generate_top_file,
+)
 from core.jenkins import generate_jenkinsfile
+from core.log import print_blue, print_green, print_red, print_yellow
 
 
 EXTENSIONS = ['v', 'sv', 'vhdl', 'vhd']
@@ -133,7 +138,7 @@ def copy_hardware_template(repo_name: str) -> None:
     dest = f'rtl/{repo_name}.v'
 
     if os.path.exists(dest):
-        print('[RTL] Arquivo já existe')
+        print_yellow('[WARN] RTL - Arquivo já existe')
         return
 
     # Copiar o diretório
@@ -167,12 +172,24 @@ def generate_processor_config(
     destination_path = clone_repo(url, repo_name)
 
     if not destination_path:
-        print('Não foi possível clonar o repositório.')
+        print_red('[ERROR] Não foi possível clonar o repositório.')
         return
+
+    print_green('[LOG] Repositório clonado com sucesso\n')
+
+    print_green(
+        '[LOG] Procurando arquivos com extensão .v, .sv, .vhdl ou .vhd\n'
+    )
 
     files, extension = find_files_with_extension(destination_path, EXTENSIONS)
 
+    print_green('[LOG] Arquivos encontrados com sucesso\n')
+
+    print_green('[LOG] Extraindo módulos dos arquivos\n')
+
     modules = extract_modules(files)
+
+    print_green('[LOG] Módulos extraídos com sucesso\n')
 
     modulename_list = []
     for module_name, file_path in modules:
@@ -198,18 +215,35 @@ def generate_processor_config(
         for non_tb_f in non_tb_files
     ]
 
+    print_green('[LOG] Procurando diretórios de inclusão\n')
+
     include_dirs = find_include_dirs(destination_path)
+
+    print_green('[LOG] Diretórios de inclusão encontrados com sucesso\n')
+
+    print_green('[LOG] Construindo os grafos direto e inverso\n')
 
     # Construir os grafos direto e inverso
     module_graph, module_graph_inverse = build_module_graph(files, modules)
+
+    print_green('[LOG] Grafos construídos com sucesso\n')
 
     filtered_files = non_tb_files
     top_module = ''
 
     if not no_llama:
+        print_green(
+            '[LOG] Utilizando OLLAMA para identificar os arquivos do processador\n'
+        )
+
         filtered_files = get_filtered_files_list(
             non_tb_files, tb_files, modules, module_graph, repo_name, model
         )
+
+        print_green(
+            '[LOG] Utilizando OLLAMA para identificar o módulo principal\n'
+        )
+
         top_module = get_top_module(
             non_tb_files, tb_files, modules, module_graph, repo_name, model
         )
@@ -238,10 +272,17 @@ def generate_processor_config(
     print('Result: ')
     print(json.dumps(output_json, indent=4))
 
-    # output_json['modules'] = modulename_list
-    # output_json['module_graph'] = module_graph
-    # output_json['module_graph_inverse'] = module_graph_inverse
-    # output_json['non_tb_files'] = non_tb_files
+    if add_config:
+        config = load_config(config_file_path)
+
+        config['cores'][repo_name] = output_json
+
+        save_config(config_file_path, config)
+
+    output_json['modules'] = modulename_list
+    output_json['module_graph'] = module_graph
+    output_json['module_graph_inverse'] = module_graph_inverse
+    output_json['non_tb_files'] = non_tb_files
 
     with open(
         f'logs/{repo_name}_{time.time()}.json', 'w', encoding='utf-8'
@@ -249,18 +290,17 @@ def generate_processor_config(
         log_file.write(json.dumps(output_json, indent=4))
         log_file.close()
 
-    copy_hardware_template(repo_name)
-    # top_module_file = get_top_module_file(modulename_list, top_module)
-    # generate_top_file(top_module_file, repo_name)
+    if top_module:
+        top_module_file = get_top_module_file(modulename_list, top_module)
+        if top_module_file:
+            generate_top_file(top_module_file, repo_name)
+        else:
+            print_red('[ERROR] Módulo principal não encontrado')
+
+    else:
+        copy_hardware_template(repo_name)
 
     remove_repo(repo_name)
-
-    if add_config:
-        config = load_config(config_file_path)
-
-        config['cores'][repo_name] = output_json
-
-        save_config(config_file_path, config)
 
     if plot_graph:
         # Plotar os grafos
