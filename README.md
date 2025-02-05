@@ -176,19 +176,19 @@ Details:
 1. **Configure a processor for a specific board:**
 
 ```bash
-python3 script.py -c config.json -p processor_name -b board_name
+python3 main.py -c config.json -p processor_name -b board_name
 ```
 
 2. **Define a custom path for toolchains:**
 
 ```bash
-python3 script.py -c config.json -p processor_name -b board_name -t /custom/toolchain/path
+python3 main.py -c config.json -p processor_name -b board_name -t /custom/toolchain/path
 ```
 
 3. **Load the bitstream onto the FPGA after the build:**
 
 ```bash
-python3 script.py -c config.json -p processor_name -b board_name -l
+python3 main.py -c config.json -p processor_name -b board_name -l
 ```
 
 **Requirements:**

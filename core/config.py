@@ -13,6 +13,22 @@ import os
 import json
 
 
+def create_default_config(config_path: str) -> None:
+    """Creates a default configuration file with an empty dictionary.
+
+    Args:
+        config_path (str): Path to the JSON configuration file.
+
+    Returns:
+        None
+
+    Raises:
+        IOError: If there is an issue writing to the file.
+    """
+    with open(config_path, 'w', encoding='utf-8') as file:
+        json.dump({'cores': {}}, file, indent=4)
+
+
 def load_config(config_path: str) -> dict:
     """Loads a JSON configuration file and returns its content.
 
@@ -27,9 +43,10 @@ def load_config(config_path: str) -> dict:
         json.JSONDecodeError: If the file is not a valid JSON.
     """
     if not os.path.exists(config_path):
-        raise FileNotFoundError(
-            f'The configuration file {config_path} was not found.'
-        )
+        # raise FileNotFoundError(
+        #    f'The configuration file {config_path} was not found.'
+        # )
+        create_default_config(config_path)
 
     with open(config_path, 'r', encoding='utf-8') as file:
         config_data = json.load(file)

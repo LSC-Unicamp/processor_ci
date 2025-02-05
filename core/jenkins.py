@@ -132,10 +132,12 @@ pipeline {{
             + f' -s {config["top_module"]} {include_dirs} {files} {sim_files}"'
         )
     else:
-        simulation_command = f'echo "simulation not supported for mixed VHDL and Verilog files"'
-        #raise ValueError(
+        simulation_command = (
+            f'echo "simulation not supported for mixed VHDL and Verilog files"'
+        )
+        # raise ValueError(
         #    f'The files must be either exclusively VHDL or Verilog. Processor {config["repository"]}'
-        #)
+        # )
 
     # Prepare FPGA stages for each FPGA in parallel
     fpga_parallel_stages = '\n                '.join(
