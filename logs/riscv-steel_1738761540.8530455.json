@@ -1,0 +1,286 @@
+{
+    "name": "riscv-steel",
+    "folder": "riscv-steel",
+    "sim_files": [
+        "hardware/tests/core/verilator/unit_tests.v",
+        "hardware/tests/core/vivado/unit_tests.v",
+        "hardware/tests/spi/hardware/unit_tests.v",
+        "hardware/tests/spi/software/arty_a7/unit_tests.v",
+        "hardware/tests/top/verilator/mcu_sim.v"
+    ],
+    "files": [
+        "hardware/rvsteel.v",
+        "hardware/rvsteel_bus.v",
+        "hardware/rvsteel_core.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/riscv-steel/riscv-steel",
+    "top_module": "rvsteel",
+    "extra_flags": [],
+    "language_version": "2005",
+    "modules": [
+        {
+            "module": "freertos_arty_a7",
+            "file": "examples/freertos/boards/arty_a7/freertos_arty_a7.v"
+        },
+        {
+            "module": "freertos_cmod_a7",
+            "file": "examples/freertos/boards/cmod_a7/freertos_cmod_a7.v"
+        },
+        {
+            "module": "gpio_arty_a7",
+            "file": "examples/gpio/boards/arty_a7/gpio_arty_a7.v"
+        },
+        {
+            "module": "gpio_cmod_a7",
+            "file": "examples/gpio/boards/cmod_a7/gpio_cmod_a7.v"
+        },
+        {
+            "module": "hello_world_arty_a7",
+            "file": "examples/hello_world/boards/arty_a7/hello_world_arty_a7.v"
+        },
+        {
+            "module": "hello_world_cmod_a7",
+            "file": "examples/hello_world/boards/cmod_a7/hello_world_cmod_a7.v"
+        },
+        {
+            "module": "mtimer_arty_a7",
+            "file": "examples/mtimer/boards/arty_a7/mtimer_arty_a7.v"
+        },
+        {
+            "module": "mtimer_cmod_a7",
+            "file": "examples/mtimer/boards/cmod_a7/mtimer_cmod_a7.v"
+        },
+        {
+            "module": "spi_arty_a7",
+            "file": "examples/spi/boards/arty_a7/spi_arty_a7.v"
+        },
+        {
+            "module": "spi_cmod_a7",
+            "file": "examples/spi/boards/cmod_a7/spi_cmod_a7.v"
+        },
+        {
+            "module": "uart_arty_a7",
+            "file": "examples/uart/boards/arty_a7/uart_arty_a7.v"
+        },
+        {
+            "module": "uart_cmod_a7",
+            "file": "examples/uart/boards/cmod_a7/uart_cmod_a7.v"
+        },
+        {
+            "module": "rvsteel",
+            "file": "hardware/rvsteel.v"
+        },
+        {
+            "module": "rvsteel_bus",
+            "file": "hardware/rvsteel_bus.v"
+        },
+        {
+            "module": "rvsteel_core",
+            "file": "hardware/rvsteel_core.v"
+        },
+        {
+            "module": "rvsteel_gpio",
+            "file": "hardware/rvsteel_gpio.v"
+        },
+        {
+            "module": "rvsteel_mtimer",
+            "file": "hardware/rvsteel_mtimer.v"
+        },
+        {
+            "module": "rvsteel_ram",
+            "file": "hardware/rvsteel_ram.v"
+        },
+        {
+            "module": "rvsteel_spi",
+            "file": "hardware/rvsteel_spi.v"
+        },
+        {
+            "module": "rvsteel_uart",
+            "file": "hardware/rvsteel_uart.v"
+        },
+        {
+            "module": "unit_tests",
+            "file": "hardware/tests/core/verilator/unit_tests.v"
+        },
+        {
+            "module": "unit_tests",
+            "file": "hardware/tests/core/vivado/unit_tests.v"
+        },
+        {
+            "module": "module",
+            "file": "hardware/tests/core/vivado/unit_tests.v"
+        },
+        {
+            "module": "unit_tests",
+            "file": "hardware/tests/spi/hardware/unit_tests.v"
+        },
+        {
+            "module": "module",
+            "file": "hardware/tests/spi/hardware/unit_tests.v"
+        },
+        {
+            "module": "module",
+            "file": "hardware/tests/spi/hardware/unit_tests.v"
+        },
+        {
+            "module": "unit_tests",
+            "file": "hardware/tests/spi/software/arty_a7/unit_tests.v"
+        },
+        {
+            "module": "module",
+            "file": "hardware/tests/spi/software/arty_a7/unit_tests.v"
+        },
+        {
+            "module": "module",
+            "file": "hardware/tests/spi/software/arty_a7/unit_tests.v"
+        },
+        {
+            "module": "mcu_sim",
+            "file": "hardware/tests/top/verilator/mcu_sim.v"
+        },
+        {
+            "module": "rvsteel_wrapper",
+            "file": "templates/baremetal/rvsteel_wrapper.v"
+        },
+        {
+            "module": "rvsteel_wrapper",
+            "file": "templates/freertos/rvsteel_wrapper.v"
+        }
+    ],
+    "module_graph": {
+        "freertos_arty_a7": [],
+        "freertos_cmod_a7": [],
+        "gpio_arty_a7": [],
+        "gpio_cmod_a7": [],
+        "hello_world_arty_a7": [],
+        "hello_world_cmod_a7": [],
+        "mtimer_arty_a7": [],
+        "mtimer_cmod_a7": [],
+        "spi_arty_a7": [],
+        "spi_cmod_a7": [],
+        "uart_arty_a7": [],
+        "uart_cmod_a7": [],
+        "rvsteel": [
+            "hello_world_arty_a7",
+            "hello_world_cmod_a7",
+            "spi_arty_a7",
+            "spi_cmod_a7",
+            "unit_tests",
+            "mcu_sim",
+            "rvsteel_wrapper",
+            "rvsteel_wrapper"
+        ],
+        "rvsteel_bus": [
+            "rvsteel"
+        ],
+        "rvsteel_core": [
+            "unit_tests"
+        ],
+        "rvsteel_gpio": [
+            "rvsteel"
+        ],
+        "rvsteel_mtimer": [
+            "rvsteel"
+        ],
+        "rvsteel_ram": [
+            "rvsteel",
+            "unit_tests"
+        ],
+        "rvsteel_spi": [
+            "rvsteel",
+            "unit_tests"
+        ],
+        "rvsteel_uart": [
+            "rvsteel"
+        ],
+        "unit_tests": [],
+        "module": [
+            "unit_tests",
+            "unit_tests",
+            "rvsteel_wrapper",
+            "rvsteel_wrapper"
+        ],
+        "mcu_sim": [],
+        "rvsteel_wrapper": []
+    },
+    "module_graph_inverse": {
+        "freertos_arty_a7": [],
+        "freertos_cmod_a7": [],
+        "gpio_arty_a7": [],
+        "gpio_cmod_a7": [],
+        "hello_world_arty_a7": [
+            "rvsteel"
+        ],
+        "hello_world_cmod_a7": [
+            "rvsteel"
+        ],
+        "mtimer_arty_a7": [],
+        "mtimer_cmod_a7": [],
+        "spi_arty_a7": [
+            "rvsteel"
+        ],
+        "spi_cmod_a7": [
+            "rvsteel"
+        ],
+        "uart_arty_a7": [],
+        "uart_cmod_a7": [],
+        "rvsteel": [
+            "rvsteel_bus",
+            "rvsteel_ram",
+            "rvsteel_uart",
+            "rvsteel_mtimer",
+            "rvsteel_gpio",
+            "rvsteel_spi"
+        ],
+        "rvsteel_bus": [],
+        "rvsteel_core": [],
+        "rvsteel_gpio": [],
+        "rvsteel_mtimer": [],
+        "rvsteel_ram": [],
+        "rvsteel_spi": [],
+        "rvsteel_uart": [],
+        "unit_tests": [
+            "rvsteel_ram",
+            "rvsteel_core",
+            "rvsteel_spi",
+            "module",
+            "rvsteel",
+            "module"
+        ],
+        "module": [],
+        "mcu_sim": [
+            "rvsteel"
+        ],
+        "rvsteel_wrapper": [
+            "module",
+            "rvsteel",
+            "module",
+            "rvsteel"
+        ]
+    },
+    "non_tb_files": [
+        "examples/freertos/boards/arty_a7/freertos_arty_a7.v",
+        "examples/freertos/boards/cmod_a7/freertos_cmod_a7.v",
+        "examples/gpio/boards/arty_a7/gpio_arty_a7.v",
+        "examples/gpio/boards/cmod_a7/gpio_cmod_a7.v",
+        "examples/hello_world/boards/arty_a7/hello_world_arty_a7.v",
+        "examples/hello_world/boards/cmod_a7/hello_world_cmod_a7.v",
+        "examples/mtimer/boards/arty_a7/mtimer_arty_a7.v",
+        "examples/mtimer/boards/cmod_a7/mtimer_cmod_a7.v",
+        "examples/spi/boards/arty_a7/spi_arty_a7.v",
+        "examples/spi/boards/cmod_a7/spi_cmod_a7.v",
+        "examples/uart/boards/arty_a7/uart_arty_a7.v",
+        "examples/uart/boards/cmod_a7/uart_cmod_a7.v",
+        "hardware/rvsteel.v",
+        "hardware/rvsteel_bus.v",
+        "hardware/rvsteel_core.v",
+        "hardware/rvsteel_gpio.v",
+        "hardware/rvsteel_mtimer.v",
+        "hardware/rvsteel_ram.v",
+        "hardware/rvsteel_spi.v",
+        "hardware/rvsteel_uart.v",
+        "templates/baremetal/rvsteel_wrapper.v",
+        "templates/freertos/rvsteel_wrapper.v"
+    ]
+}
