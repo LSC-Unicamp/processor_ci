@@ -80,7 +80,7 @@ from core.file_manager import (
     is_testbench_file,
     find_include_dirs,
 )
-from core.graph import build_module_graph
+from core.graph import build_module_graph, plot_processor_graph
 from core.ollama import (
     get_filtered_files_list,
     get_top_module,
@@ -284,11 +284,19 @@ def generate_processor_config(
     output_json['module_graph_inverse'] = module_graph_inverse
     output_json['non_tb_files'] = non_tb_files
 
+    print_green('[LOG] Salvando o log em logs/\n')
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+
     with open(
         f'logs/{repo_name}_{time.time()}.json', 'w', encoding='utf-8'
     ) as log_file:
         log_file.write(json.dumps(output_json, indent=4))
         log_file.close()
+
+    print_green('[LOG] Arquivo de log salvo com sucesso\n')
+
+    print_green('[LOG] Copiando o arquivo de template de hardware\n')
 
     if top_module:
         top_module_file = get_top_module_file(modulename_list, top_module)
@@ -300,12 +308,23 @@ def generate_processor_config(
     else:
         copy_hardware_template(repo_name)
 
+    print_green('[LOG] Arquivo de template copiado com sucesso\n')
+
+    print_green('[LOG] Removendo o repositório clonado\n')
+
     remove_repo(repo_name)
 
+    print_green('[LOG] Repositório removido com sucesso\n')
+
+    print_green('[LOG] Configuração gerada com sucesso\n')
+
     if plot_graph:
+        print_green('[LOG] Plotando os grafos\n')
         # Plotar os grafos
-        plot_graph(module_graph, 'Grafo Direto dos Módulos')
-        plot_graph(module_graph_inverse, 'Grafo Inverso dos Módulos')
+        plot_processor_graph(module_graph, False)
+        plot_processor_graph(module_graph_inverse, True)
+
+        print_green('[LOG] Grafos plotados com sucesso\n')
 
 
 def generate_all_pipelines(config_file_path: str) -> None:
@@ -439,4 +458,11 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        print_red(f'[ERROR] {e}')
+        shutil.rmtree('temp')
+        exit(1)
+    finally:
+        shutil.rmtree('temp')

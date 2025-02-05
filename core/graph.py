@@ -144,7 +144,7 @@ def build_module_graph(files: list, modules: list[dict]) -> tuple[list, list]:
     return module_graph, module_graph_inverse
 
 
-def plot_graph(module_graph: dict, inverse: bool = False) -> None:
+def plot_processor_graph(module_graph: dict, inverse: bool = False) -> None:
     """
     Plots the module dependency graph using NetworkX and Matplotlib.
 
