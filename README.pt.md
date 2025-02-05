@@ -276,7 +276,7 @@ python3 config_generator.py -c -u https://github.com/example/example-processor.g
 **Exemplo de uso:**
 
 ```bash
-python3 script.py -c config.json
+python3 main.py -c config.json
 ```
 
 - `-p`, `--processor`
@@ -286,7 +286,7 @@ python3 script.py -c config.json
 **Exemplo de uso:**
 
 ```bash
-python3 script.py -c config.json -p nome_do_processador
+python3 main.py -c config.json -p nome_do_processador
 ```
 
 - `-b`, `--board`
@@ -296,7 +296,7 @@ python3 script.py -c config.json -p nome_do_processador
 **Exemplo de uso:**
 
 ```bash
-python3 script.py -c config.json -p nome_do_processador -b nome_da_placa
+python3 main.py -c config.json -p nome_do_processador -b nome_da_placa
 ```
 
 - `-t`, `--toolchain`
@@ -306,7 +306,7 @@ python3 script.py -c config.json -p nome_do_processador -b nome_da_placa
 **Exemplo de uso:**
 
 ```bash
-python3 script.py -c config.json -p nome_do_processador -b nome_da_placa -t /caminho/para/toolchain
+python3 main.py -c config.json -p nome_do_processador -b nome_da_placa -t /caminho/para/toolchain
 ```
 
 - `-l`, `--load`
@@ -316,7 +316,7 @@ python3 script.py -c config.json -p nome_do_processador -b nome_da_placa -t /cam
 **Exemplo de uso:**
 
 ```bash
-python3 script.py -c config.json -p nome_do_processador -b nome_da_placa -l
+python3 main.py -c config.json -p nome_do_processador -b nome_da_placa -l
 ```
 
 ### Exemplos de Uso
@@ -324,25 +324,25 @@ python3 script.py -c config.json -p nome_do_processador -b nome_da_placa -l
 1. **Configurar um processador para uma placa específica:**
 
 ```bash
-python3 script.py -c config.json -p nome_do_processador -b nome_da_placa
+python3 main.py -c config.json -p nome_do_processador -b nome_da_placa
 ```
 
 2. **Definir um caminho personalizado para as toolchains:**
 
 ```bash
-python3 script.py -c config.json -p nome_do_processador -b nome_da_placa -t /caminho/personalizado/toolchain
+python3 main.py -c config.json -p nome_do_processador -b nome_da_placa -t /caminho/personalizado/toolchain
 ```
 
 3. **Carregar o bitstream na FPGA após a construção:**
 
 ```bash
-python3 script.py -c config.json -p nome_do_processador -b nome_da_placa -l
+python3 main.py -c config.json -p nome_do_processador -b nome_da_placa -l
 ```
 
 4. **Usar o caminho padrão das toolchains (`/eda`):**
 
 ```bash
-python3 script.py -c config.json -p nome_do_processador -b nome_da_placa
+python3 main.py -c config.json -p nome_do_processador -b nome_da_placa
 ```
 
 **Requisitos:**
