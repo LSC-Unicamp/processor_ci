@@ -43,7 +43,7 @@ import re
 import time
 from ollama import Client
 
-SERVER_URL = 'http://enqii.lsc.ic.unicamp.br:11434'
+SERVER_URL = os.getenv('SERVER_URL', 'http://127.0.0.1:11434')
 
 client = Client(host=SERVER_URL)
 
@@ -124,6 +124,7 @@ def get_filtered_files_list(
     modules: list[str],
     tree,
     repo_name: str,
+    model: str = 'qwen2.5:32b',
 ) -> list[str]:
     """
     Generates a list of files relevant to a processor based on the provided data.
@@ -169,7 +170,7 @@ def get_filtered_files_list(
     tree: [{tree}]
     """
 
-    ok, response = send_prompt(prompt)
+    ok, response = send_prompt(prompt, model)
 
     if not ok:
         raise NameError('Erro ao consultar modelo')
@@ -185,6 +186,7 @@ def get_top_module(
     modules: list[str],
     tree,
     repo_name: str,
+    model: str = 'qwen2.5:32b',
 ) -> str:
     """
     Identifies the processor's top module within a set of files.
@@ -221,7 +223,7 @@ def get_top_module(
     tree: [{tree}]
     """
 
-    ok, response = send_prompt(prompt)
+    ok, response = send_prompt(prompt, model)
 
     if not ok:
         raise NameError('Erro ao consultar modelo')
@@ -231,7 +233,9 @@ def get_top_module(
     return remove_top_module(response)
 
 
-def generate_top_file(top_module_file: str, processor_name: str) -> None:
+def generate_top_file(
+    top_module_file: str, processor_name: str, model: str = 'qwen2.5:32b'
+) -> None:
     """
     Generates a Verilog file connecting a processor to a verification infrastructure.
 
@@ -284,7 +288,7 @@ def generate_top_file(top_module_file: str, processor_name: str) -> None:
 
     """
 
-    ok, response = send_prompt(prompt)
+    ok, response = send_prompt(prompt, model)
 
     if not ok:
         raise NameError('Erro ao consultar modelo')

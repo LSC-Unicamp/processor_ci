@@ -133,7 +133,7 @@ def copy_hardware_template(repo_name: str) -> None:
     dest = f'rtl/{repo_name}.v'
 
     if os.path.exists(dest):
-        print('Arquivo já existe')
+        print('[RTL] Arquivo já existe')
         return
 
     # Copiar o diretório
@@ -146,6 +146,7 @@ def generate_processor_config(
     plot_graph: bool,
     config_file_path: str,
     no_llama: bool,
+    model: str = 'qwen2.5:32b',
 ) -> None:
     """
     Generates a processor configuration by cloning a repository, analyzing its files,
@@ -207,10 +208,10 @@ def generate_processor_config(
 
     if not no_llama:
         filtered_files = get_filtered_files_list(
-            non_tb_files, tb_files, modules, module_graph, repo_name
+            non_tb_files, tb_files, modules, module_graph, repo_name, model
         )
         top_module = get_top_module(
-            non_tb_files, tb_files, modules, module_graph, repo_name
+            non_tb_files, tb_files, modules, module_graph, repo_name, model
         )
 
     language_version = '2005'
@@ -237,10 +238,10 @@ def generate_processor_config(
     print('Result: ')
     print(json.dumps(output_json, indent=4))
 
-    output_json['modules'] = modulename_list
-    output_json['module_graph'] = module_graph
-    output_json['module_graph_inverse'] = module_graph_inverse
-    output_json['non_tb_files'] = non_tb_files
+    # output_json['modules'] = modulename_list
+    # output_json['module_graph'] = module_graph
+    # output_json['module_graph_inverse'] = module_graph_inverse
+    # output_json['non_tb_files'] = non_tb_files
 
     with open(
         f'logs/{repo_name}_{time.time()}.json', 'w', encoding='utf-8'
@@ -307,6 +308,8 @@ def main() -> None:
         -a, --add-config: Adds the generated configuration to the config file.
         -p, --path-config: Path to the config file (default: 'config.json').
         -u, --processor-url: URL of the processor repository.
+        -n, --no-llama: Whether to use OLLAMA to identify the top module.
+        -m, --model: Model to use for OLLAMA (default: 'qwen2.5:32b').
 
     Raises:
         ValueError: If `--generate-config` is used without providing `--processor-url`.
@@ -365,6 +368,13 @@ def main() -> None:
         action='store_true',
         help='Não utilizar o OLLAMA para identificar o módulo principal',
     )
+    parser.add_argument(
+        '-m',
+        '--model',
+        type=str,
+        default='qwen2.5:32b',
+        help='Modelo a ser utilizado pelo OLLAMA',
+    )
 
     args = parser.parse_args()
 
@@ -378,6 +388,7 @@ def main() -> None:
             args.plot_graph,
             args.path_config,
             args.no_llama,
+            args.model,
         )
 
     if args.generate_all_jenkinsfiles:
