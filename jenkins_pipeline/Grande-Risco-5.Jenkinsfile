@@ -22,7 +22,7 @@ pipeline {
          stage('Utilities')  {
             steps {
                 dir("Grande-Risco-5") {
-                    sh "python3 /eda/processor-ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor-ci/config.json -o /jenkins/processor_ci_utils/labels.json"
+                    sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor_ci/config.json -o /jenkins/processor_ci_utils/labels.json"
                 }            
             }
         }
@@ -39,7 +39,7 @@ pipeline {
                             steps {
                                 dir("Grande-Risco-5") {
                                     echo 'Starting synthesis for FPGA colorlight_i9.'
-                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
                                             -p Grande-Risco-5 -b colorlight_i9'
                                 }
                             }
@@ -48,7 +48,7 @@ pipeline {
                             steps {
                                 dir("Grande-Risco-5") {
                                     echo 'Flashing FPGA colorlight_i9.'
-                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
                                             -p Grande-Risco-5 -b colorlight_i9 -l'
                                 }
                             }
@@ -73,7 +73,7 @@ pipeline {
                             steps {
                                 dir("Grande-Risco-5") {
                                     echo 'Starting synthesis for FPGA digilent_nexys4_ddr.'
-                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
                                             -p Grande-Risco-5 -b digilent_nexys4_ddr'
                                 }
                             }
@@ -82,7 +82,7 @@ pipeline {
                             steps {
                                 dir("Grande-Risco-5") {
                                     echo 'Flashing FPGA digilent_nexys4_ddr.'
-                                sh 'python3 /eda/processor-ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
                                             -p Grande-Risco-5 -b digilent_nexys4_ddr -l'
                                 }
                             }

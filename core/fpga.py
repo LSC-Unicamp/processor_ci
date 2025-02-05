@@ -126,7 +126,7 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
         toolchain_path = toolchain_path[:-1]
 
     base_config_path = (
-        f'{toolchain_path}/processor-ci/build_scripts/{board}.tcl'
+        f'{toolchain_path}/processor_ci/build_scripts/{board}.tcl'
     )
 
     if not os.path.exists(base_config_path):
@@ -150,7 +150,7 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
         prefix = get_prefix(board, False, False)
         file.write(
             prefix
-            + f' {toolchain_path}/processor-ci/rtl/{config["folder"]}.v\n'
+            + f' {toolchain_path}/processor_ci/rtl/{config["folder"]}.v\n'
         )
 
         for i in config['files']:
@@ -184,7 +184,7 @@ def build(build_script_path: str, board: str, toolchain_path: str) -> None:
     if toolchain_path[-1] == '/':
         toolchain_path = toolchain_path[:-1]
 
-    makefile_path = f'{toolchain_path}/processor-ci/makefiles/{board}.mk'
+    makefile_path = f'{toolchain_path}/processor_ci/makefiles/{board}.mk'
 
     macros = get_macros(board)
 
@@ -232,7 +232,7 @@ def flash(board: str, toolchain_path: str) -> None:
     if toolchain_path[-1] == '/':
         toolchain_path = toolchain_path[:-1]
 
-    makefile_path = f'{toolchain_path}/processor-ci/makefiles/{board}.mk'
+    makefile_path = f'{toolchain_path}/processor_ci/makefiles/{board}.mk'
 
     with subprocess.Popen(
         ['make', '-f', makefile_path, 'load'],

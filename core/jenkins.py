@@ -106,8 +106,8 @@ pipeline {{
 
     # Command for extra utilities in the pipeline
     utilities_command = (
-        r'sh "python3 /eda/processor-ci/core/labeler_prototype.py -d \$(pwd) '
-        + '-c /eda/processor-ci/config.json -o /jenkins/processor_ci_utils/labels.json"'
+        r'sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) '
+        + '-c /eda/processor_ci/config.json -o /jenkins/processor_ci_utils/labels.json"'
     )
 
     # Determine simulation command based on file types

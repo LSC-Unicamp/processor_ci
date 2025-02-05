@@ -11,8 +11,8 @@ Thank you for considering contributing to the project! We’re happy to welcome 
    Clone your forked repository to your local development environment.  
 
    ```bash  
-   git clone https://github.com/YOUR_USERNAME/processor-ci.git  
-   cd processor-ci  
+   git clone https://github.com/YOUR_USERNAME/processor_ci.git  
+   cd processor_ci  
    ```  
 
 3. **Create a Branch**  
@@ -83,4 +83,4 @@ Thank you for considering contributing to the project! We’re happy to welcome 
 
 ## License  
 
-By contributing to this project, you agree that your contributions will be licensed under the same license as the project. See the [license](https://github.com/LSC-Unicamp/processor-ci/blob/main/LICENSE) for details.  
+By contributing to this project, you agree that your contributions will be licensed under the same license as the project. See the [license](https://github.com/LSC-Unicamp/processor_ci/blob/main/LICENSE) for details.  

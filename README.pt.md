@@ -1,7 +1,7 @@
 # ProcessorCI
 
-[![Pylint](https://github.com/LSC-Unicamp/processor-ci/actions/workflows/pylint.yml/badge.svg)](https://github.com/LSC-Unicamp/processor-ci/actions/workflows/pylint.yml)  
-[![Python Code Format Check](https://github.com/LSC-Unicamp/processor-ci/actions/workflows/blue.yml/badge.svg)](https://github.com/LSC-Unicamp/processor-ci/actions/workflows/blue.yml)  
+[![Pylint](https://github.com/LSC-Unicamp/processor_ci/actions/workflows/pylint.yml/badge.svg)](https://github.com/LSC-Unicamp/processor_ci/actions/workflows/pylint.yml)  
+[![Python Code Format Check](https://github.com/LSC-Unicamp/processor_ci/actions/workflows/blue.yml/badge.svg)](https://github.com/LSC-Unicamp/processor_ci/actions/workflows/blue.yml)  
 
 Bem-vindo ao ProcessorCI!
 
@@ -19,8 +19,8 @@ Este repositório contém scripts utilitários para configurar processadores, re
 Clone o repositório para o seu ambiente de desenvolvimento local.
 
 ```bash
-git clone https://github.com/LSC-Unicamp/processor-ci.git  
-cd processor-ci  
+git clone https://github.com/LSC-Unicamp/processor_ci.git  
+cd processor_ci  
 ```
 
 2. **Configure um ambiente virtual e instale as dependências**  
@@ -125,7 +125,7 @@ Core #(
 );
 ```
 
-Mais detalhes na [documentação do Controller](https://lsc-unicamp.github.io/processor-ci-controller/).  
+Mais detalhes na [documentação do Controller](https://lsc-unicamp.github.io/processor_ci-controller/).  
 
 #### 3. Integrando ao Jenkins  
 

@@ -95,7 +95,7 @@ FPGAs = [
     # "digilent_arty_a7_100t"
 ]
 DESTINATION_DIR = './temp'
-MAIN_SCRIPT_PATH = '/eda/processor-ci/main.py'
+MAIN_SCRIPT_PATH = '/eda/processor_ci/main.py'
 
 
 def get_top_module_file(modules: list[dict[str, str]], top_module: str) -> str:
