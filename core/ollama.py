@@ -71,63 +71,32 @@ def send_prompt(prompt: str, model: str = 'qwen2.5:32b') -> tuple[bool, str]:
 
 def parse_filtered_files(text: str) -> list:
     """
-    Parses a text to extract a list of filtered files.
+    Parses a text to extract a list of filtered files from specific keys.
 
-    Uses a regular expression to locate and capture a list of files present
-    in a string formatted as `filtered_files: [<file list>]`.
+    Searches for keys like `filtered_files`, `core_files`, or `relevant_files`,
+    and extracts a list of files present in the associated list.
     Cleans up spaces and unnecessary characters before returning the results.
 
     Args:
-        text (str): The text to be parsed to find the filtered file list.
+        text (str): The text to be parsed to find the file list.
 
     Returns:
-        list: A list containing the names of filtered files.
-              Returns an empty list if no files are found.
+        list: A list containing the names of files.
+              Returns an empty list if no files are found or parsing fails.
     """
-    match = re.search(r'filtered_files\s*=\s*\[.*?\]', text, re.DOTALL)
+    keys = ['filtered_files', 'core_files', 'relevant_files']
 
-    if match:
-        # Extract the matched list and parse it safely
-        filtered_files_str = match.group(0)
-        try:
-            # Convert the string to a Python list using `ast.literal_eval`
-            filtered_files = ast.literal_eval(
-                filtered_files_str.split('=', 1)[1].strip()
-            )
-            return [file.strip() for file in filtered_files]
-        except (SyntaxError, ValueError):
-            # Return an empty list if parsing fails
-            return []
-
-    match = re.search(r'core_files\s*=\s*\[.*?\]', text, re.DOTALL)
-
-    if match:
-        # Extract the matched list and parse it safely
-        filtered_files_str = match.group(0)
-        try:
-            # Convert the string to a Python list using `ast.literal_eval`
-            filtered_files = ast.literal_eval(
-                filtered_files_str.split('=', 1)[1].strip()
-            )
-            return [file.strip() for file in filtered_files]
-        except (SyntaxError, ValueError):
-            # Return an empty list if parsing fails
-            return []
-
-    match = re.search(r'relevant_files\s*=\s*\[.*?\]', text, re.DOTALL)
-
-    if match:
-        # Extract the matched list and parse it safely
-        filtered_files_str = match.group(0)
-        try:
-            # Convert the string to a Python list using `ast.literal_eval`
-            filtered_files = ast.literal_eval(
-                filtered_files_str.split('=', 1)[1].strip()
-            )
-            return [file.strip() for file in filtered_files]
-        except (SyntaxError, ValueError):
-            # Return an empty list if parsing fails
-            return []
+    for key in keys:
+        match = re.search(rf'{key}\s*=\s*\[.*?\]', text, re.DOTALL)
+        if match:
+            try:
+                # Safely evaluate the list portion after splitting by '='
+                file_list_str = match.group(0).split('=', 1)[1].strip()
+                files = ast.literal_eval(file_list_str)
+                return [file.strip() for file in files]
+            except (SyntaxError, ValueError):
+                # Return an empty list if parsing fails
+                return []
 
     return []
 
@@ -136,42 +105,34 @@ def extract_top_module(text: str) -> str:
     """
     Extracts the name of the top module from a given text.
 
-    The function parses a string to locate and extract the name of the top module
-    based on various response formats, including:
-    1. A direct line in the format: top_module: <module_name>.
-    2. A final statement explicitly naming the module (e.g., "Therefore, the answer is: <module_name>").
-    3. A standalone module name at the top of the text or response.
-    4. A list-style format with the module name, such as top: ['<module_name>'].
+    Parses the input to find the top module based on multiple formats:
+    1. A line in the format: `top_module: <module_name>`.
+    2. A list-style format: `top: ['<module_name>']`.
+    3. Explicit statement: `Therefore, the answer is: <module_name>`.
+    4. A valid standalone module name on the first line of the text.
 
     Args:
         text (str): The text to be parsed to find the top module.
 
     Returns:
-        str: The name of the top module extracted from the text.
-             Returns an empty string if no top module is found.
+        str: The name of the top module, or an empty string if not found.
     """
-    match = re.search(r'top_module:\s*(\S+)', text)
-    if match:
-        return match.group(1)
+    patterns = [
+        r'top_module:\s*(\S+)',  # Pattern 1
+        r'top:\s*\[\'?([a-zA-Z_]\w*)\'?\]',  # Pattern 2
+        r'Therefore, the answer is:\s*(\S+)',  # Pattern 3
+    ]
 
-    # Pattern 2: Extracts the module from 'top: [<module_name>]'
-    match = re.search(r'top:\s*\[\'?([a-zA-Z_]\w*)\'?\]', text)
-    if match:
-        return match.group(1)
+    # Try each pattern in order
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return match.group(1)
 
-    # Pattern 3: Explicit answer format "Therefore, the answer is: <module_name>"
-    match = re.search(r'Therefore, the answer is:\s*(\S+)', text)
-    if match:
-        return match.group(1)
-
-    # Pattern 4: Standalone module name at the top of the text (first line)
-    lines = text.strip().splitlines()
-    if lines:
-        first_line = lines[0].strip()
-        if re.match(
-            r'^[a-zA-Z_]\w*$', first_line
-        ):  # Check if it's a valid module name
-            return first_line
+    # Check the first line for a standalone module name (Pattern 4)
+    first_line = text.strip().splitlines()[0] if text.strip() else ''
+    if re.match(r'^[a-zA-Z_]\w*$', first_line):
+        return first_line
 
     return ''
 
@@ -228,11 +189,11 @@ def get_filtered_files_list(
 
     **Important:** Do not include any comments, explanations, or unrelated files in the output. Provide only the requested list.
 
-    Input data:  
-    project_name: {repo_name},  
-    sim_files: [{sim_files}],  
-    files: [{files}],  
-    modules: [{modules}],  
+    Input data:
+    project_name: {repo_name},
+    sim_files: [{sim_files}],
+    files: [{files}],
+    modules: [{modules}],
     tree: [{tree}]
     """
 
@@ -296,11 +257,11 @@ def get_top_module(
 
     **Important:** Do not include any comments, explanations, or unrelated information—return only the requested result.
 
-    Input data:  
-    project_name: {repo_name},  
-    sim_files: [{sim_files}],  
-    files: [{files}],  
-    modules: [{modules}],  
+    Input data:
+    project_name: {repo_name},
+    sim_files: [{sim_files}],
+    files: [{files}],
+    modules: [{modules}],
     tree: [{tree}]
     """
 
@@ -366,14 +327,14 @@ def generate_top_file(
     Return the complete and updated Verilog file based on the **template**, with all necessary connections and adaptations made.
 
     **Input data:**  
-    - Example file:  
-    {example}  
+    - Example file:
+    {example}
 
-    - Template file:  
-    {template}  
+    - Template file:
+    {template}
 
-    - Processor top module content:  
-    {top_module_content}  
+    - Processor top module content:
+    {top_module_content}
     """
 
     ok, response = send_prompt(prompt, model)
