@@ -22,4 +22,4 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py' ':!utils/*') --max-locals=30 \
-         --disable=duplicate-code,import-error
+         --disable=duplicate-code,import-error,too-many-arguments,too-many-positional-arguments
