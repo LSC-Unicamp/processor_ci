@@ -72,6 +72,14 @@ python3 config_generator.py -u PROCESSOR_URL -c
 ```
 
 This command will clone the repository, list the files, and add a new entry to `config.json`. You can change the configuration file path using the `-p` flag. To disable AI-based models, use the `-n` flag.
+```
+===============
+=== GABRIEL ===
+===============
+It is necessary to add the export variable to allow the script to find the ollama model.
+Example:
+export SERVER_URL="http://enqii.lsc.ic.unicamp.br:11434
+```
 
 After generation, review the configuration to ensure its correctness.
 
@@ -149,6 +157,13 @@ python3 /path_to_script/main.py -c /path_to_config/config.json -p risc-v -b digi
 - `-p risc-v`: Name of the processor to be synthesized.  
 - `-b digilent_nexys4_ddr`: Target FPGA for synthesis and loading.  
 - `-l`: Load the design onto the FPGA after synthesis.  
+
+```
+===============
+=== GABRIEL ===
+===============
+When you put the -l flag the processor will not be synthesized
+```
 
 ## Usage Options  
 
