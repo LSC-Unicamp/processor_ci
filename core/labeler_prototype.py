@@ -4,6 +4,7 @@ import re
 import json
 import argparse
 import os
+import logging
 from config import load_config
 
 EXTENSIONS = ['v', 'sv', 'vhdl', 'vhd']
@@ -18,6 +19,10 @@ def find_license_files(directory: str) -> list[str]:
     Returns:
         list: A list of LICENSE file paths.
     """
+    logging.basicConfig(
+        level=logging.WARNING, format='%(levelname)s: %(message)s'
+    )
+
     try:
         result = subprocess.run(
             ['find', directory, '-type', 'f', '-iname', '*LICENSE*'],
@@ -27,16 +32,16 @@ def find_license_files(directory: str) -> list[str]:
             check=True,
         )
         if result.stderr:
-            print(f'Error: {result.stderr}')
+            logging.warning('Error: %s', result.stderr)
             return []
         return (
             result.stdout.strip().split('\n') if result.stdout.strip() else []
         )
     except subprocess.CalledProcessError as e:
-        print(f'Error executing find command: {e}')
+        logging.warning('Error executing find command: %s', e)
         return []
     except FileNotFoundError as e:
-        print(f'Find command not found: {e}')
+        logging.warning('Find command not found: %s', e)
         return []
 
 
@@ -126,47 +131,53 @@ def determine_cpu_bits(top_file):
     Returns:
         str: The CPU data width (32 or 64) if found, None otherwise.
     """
-    try:
-        with open(top_file, 'r', encoding='utf-8') as file:
-            content = file.read()
 
-        count_32 = 0
-        count_64 = 0
-        # Count occurrences of [31:0] and [63:0] for Verilog/SystemVerilog
-        if top_file.endswith('.v') or top_file.endswith('.sv'):
-            count_32 = len(re.findall(r'\[31:0\]', content))
-            count_64 = len(re.findall(r'\[63:0\]', content))
-        # Count occurrences of (31 downto 0) and (63 downto 0) for VHDL
-        elif top_file.endswith('.vhdl') or top_file.endswith('.vhd'):
-            count_32 = len(re.findall(r'\(31 downto 0\)', content))
-            count_64 = len(re.findall(r'\(63 downto 0\)', content))
+    logging.basicConfig(
+        level=logging.WARNING, format='%(levelname)s: %(message)s'
+    )
 
-        # Return the result based on the counts
-        if count_32 == 0 and count_64 == 0:
-            return None
-        return '32' if count_32 > count_64 else '64'
+    print(f'Trying to read file: {top_file}')
 
-    except FileNotFoundError as e:
-        subprocess.run(
-            ['echo', f'File not found: {top_file}: {e}'],
-            stderr=subprocess.PIPE,
-            check=True,
-        )
+    encodings = ['utf-8', 'latin-1', 'utf-16', 'utf-8-sig']
+
+    for encoding in encodings:
+        try:
+            with open(top_file, 'r', encoding=encoding) as file:
+                content = file.read()
+            break
+        except (
+            UnicodeDecodeError,
+            FileNotFoundError,
+            PermissionError,
+            OSError,
+        ) as e:
+            logging.warning(
+                'Error reading file %s with encoding %s: %s',
+                top_file,
+                encoding,
+                e,
+            )
+            content = None
+
+    if content is None:
         return None
-    except PermissionError as e:
-        subprocess.run(
-            ['echo', f'Permission denied: {top_file}: {e}'],
-            stderr=subprocess.PIPE,
-            check=True,
-        )
+
+    count_32 = 0
+    count_64 = 0
+
+    # Count occurrences of [31:0] and [63:0] for Verilog/SystemVerilog
+    if top_file.endswith('.v') or top_file.endswith('.sv'):
+        count_32 = len(re.findall(r'\[31:0\]', content))
+        count_64 = len(re.findall(r'\[63:0\]', content))
+    # Count occurrences of (31 downto 0) and (63 downto 0) for VHDL
+    elif top_file.endswith('.vhdl') or top_file.endswith('.vhd'):
+        count_32 = len(re.findall(r'\(31 downto 0\)', content))
+        count_64 = len(re.findall(r'\(63 downto 0\)', content))
+
+    # Return the result based on the counts
+    if count_32 == 0 and count_64 == 0:
         return None
-    except OSError as e:
-        subprocess.run(
-            ['echo', f'Error reading file {top_file}: {e}'],
-            stderr=subprocess.PIPE,
-            check=True,
-        )
-        return None
+    return '32' if count_32 > count_64 else '64'
 
 
 def generate_labels_file(processor_name, license_types, cpu_bits, output_file):
@@ -177,13 +188,19 @@ def generate_labels_file(processor_name, license_types, cpu_bits, output_file):
         config_file (str): The configuration JSON file path.
         output_file (str): The output JSON file path.
     """
+
+    logging.basicConfig(
+        level=logging.WARNING,
+        format='%(levelname)s: %(message)s',
+    )
+
     # Load existing JSON data if the file exists
     if os.path.exists(output_file):
         try:
             with open(output_file, 'r', encoding='utf-8') as json_file:
                 existing_data = json.load(json_file)
         except (json.JSONDecodeError, OSError) as e:
-            print(f'Error reading existing JSON file: {e}')
+            logging.warning('Error reading existing JSON file: %s', e)
             existing_data = {}
     else:
         existing_data = {}
@@ -217,7 +234,7 @@ def generate_labels_file(processor_name, license_types, cpu_bits, output_file):
             json.dump(output_data, json_file, indent=4)
         print(f'Results saved to {output_file}')
     except OSError as e:
-        print(f'Error writing to JSON file: {e}')
+        logging.warning('Error writing to JSON file: %s', e)
 
 
 def main(directory, config_file, output_file):
@@ -228,12 +245,15 @@ def main(directory, config_file, output_file):
         config_file (str): The configuration JSON file path.
         output_file (str): The output JSON file path.
     """
+    logging.basicConfig(
+        level=logging.WARNING, format='%(levelname)s: %(message)s'
+    )
+
     license_files = find_license_files(directory)
     if not license_files:
-        print('No LICENSE files found.')
+        logging.warning('No LICENSE files found.')
         return
 
-    # Extract the processor name from the directory
     processor_name = os.path.basename(os.path.normpath(directory))
     license_types = []
 
@@ -244,34 +264,38 @@ def main(directory, config_file, output_file):
                 license_type = identify_license_type(content)
                 license_types.append(license_type)
         except OSError as e:
-            print(f'Error reading file {license_file}: {e}')
+            logging.warning('Error reading file %s: %s', license_file, e)
             license_types.append('Error')
-
     config = load_config(config_file)
 
     top_module = config['cores'][processor_name]['top_module']
 
-    for files in config['cores'][processor_name]['files']:
-        files = os.path.join(directory, files)
-        with open(files, 'r', encoding='latin-1') as f:
-            content = f.read()
-            if top_module in content:
-                top_file = files
-                break
-            top_file = None
-
-    if top_file is None:
-        print('Top module not found in the core files.')
-        return
-
-    cpu_bits = determine_cpu_bits(top_file)
-
-    if cpu_bits is None:
+    try:
         for files in config['cores'][processor_name]['files']:
             files = os.path.join(directory, files)
-            cpu_bits = determine_cpu_bits(files)
-            if cpu_bits is not None:
-                break
+            with open(files, 'r', encoding='latin-1') as f:
+                content = f.read()
+                if top_module in content:
+                    top_file = files
+                    break
+                top_file = None
+
+        if top_file is None:
+            logging.warning('Top module not found in the core files.')
+            return
+
+        cpu_bits = determine_cpu_bits(top_file)
+
+        if cpu_bits is None:
+            for files in config['cores'][processor_name]['files']:
+                files = os.path.join(directory, files)
+                cpu_bits = determine_cpu_bits(files)
+                if cpu_bits is not None:
+                    break
+
+    except KeyError as e:
+        logging.warning('Error processing configuration: %s', e)
+        return
 
     generate_labels_file(processor_name, license_types, cpu_bits, output_file)
 
