@@ -64,32 +64,32 @@ pipeline {
                     }
                 }
                 
-                stage('digilent_nexys4_ddr') {
+                stage('digilent_arty_a7_100t') {
                     options {
-                        lock(resource: 'digilent_nexys4_ddr')
+                        lock(resource: 'digilent_arty_a7_100t')
                     }
                     stages {
                         stage('Synthesis and PnR') {
                             steps {
                                 dir("riscado-v") {
-                                    echo 'Starting synthesis for FPGA digilent_nexys4_ddr.'
+                                    echo 'Starting synthesis for FPGA digilent_arty_a7_100t.'
                                 sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
-                                            -p riscado-v -b digilent_nexys4_ddr'
+                                            -p riscado-v -b digilent_arty_a7_100t'
                                 }
                             }
                         }
-                        stage('Flash digilent_nexys4_ddr') {
+                        stage('Flash digilent_arty_a7_100t') {
                             steps {
                                 dir("riscado-v") {
-                                    echo 'Flashing FPGA digilent_nexys4_ddr.'
+                                    echo 'Flashing FPGA digilent_arty_a7_100t.'
                                 sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
-                                            -p riscado-v -b digilent_nexys4_ddr -l'
+                                            -p riscado-v -b digilent_arty_a7_100t -l'
                                 }
                             }
                         }
-                        stage('Test digilent_nexys4_ddr') {
+                        stage('Test digilent_arty_a7_100t') {
                             steps {
-                                echo 'Testing FPGA digilent_nexys4_ddr.'
+                                echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("riscado-v") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
                                 }

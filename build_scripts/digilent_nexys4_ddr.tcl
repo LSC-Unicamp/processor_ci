@@ -1,10 +1,10 @@
-
-set ID 0x6a6a6a6a
-set CLOCK_FREQ 50000000
-
 read_verilog /eda/processor-ci-controller/modules/uart.v
 read_verilog /eda/processor-ci-controller/modules/UART/rtl/uart_rx.v
 read_verilog /eda/processor-ci-controller/modules/UART/rtl/uart_tx.v
+
+#read_verilog /eda/processor-ci-controller/modules/spi.v;
+#read_verilog /eda/processor-ci-controller/modules/SPI-Slave/rtl/spi_slave.v;
+
 read_verilog /eda/processor-ci-controller/src/fifo.v
 read_verilog /eda/processor-ci-controller/src/reset.v
 read_verilog /eda/processor-ci-controller/src/clk_divider.v
@@ -18,7 +18,7 @@ set MEMORY_SIZE [lindex $argv 2]
 set HIGH_CLK 1
 
 read_xdc "/eda/processor_ci/constraints/digilent_nexys4_ddr.xdc"
-set_property PROCESSING_ORDER EARLY [get_files /eda/processor-ci/constraints/digilent_nexys4_ddr.xdc]
+set_property PROCESSING_ORDER EARLY [get_files /eda/processor_ci/constraints/digilent_nexys4_ddr.xdc]
 
 # synth
 synth_design -top "processorci_top" -part "xc7a100tcsg324-1" -verilog_define $ID -verilog_define $CLOCK_FREQ -verilog_define $MEMORY_SIZE \
@@ -44,3 +44,5 @@ report_power -file digilent_nexys4ddr_power.rpt
 
 # write bitstream
 write_bitstream -force "digilent_nexys4_ddr.bit"
+
+exit

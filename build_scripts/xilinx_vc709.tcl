@@ -1,10 +1,10 @@
-
-set ID 0x6a6a6a6a
-set CLOCK_FREQ 100000000
-
 read_verilog /eda/processor-ci-controller/modules/uart.v
 read_verilog /eda/processor-ci-controller/modules/UART/rtl/uart_rx.v
 read_verilog /eda/processor-ci-controller/modules/UART/rtl/uart_tx.v
+
+#read_verilog /eda/processor-ci-controller/modules/spi.v;
+#read_verilog /eda/processor-ci-controller/modules/SPI-Slave/rtl/spi_slave.v;
+
 read_verilog /eda/processor-ci-controller/src/fifo.v
 read_verilog /eda/processor-ci-controller/src/reset.v
 read_verilog /eda/processor-ci-controller/src/clk_divider.v
@@ -16,6 +16,7 @@ set ID [lindex $argv 0]
 set CLOCK_FREQ [lindex $argv 1]
 set MEMORY_SIZE [lindex $argv 2]
 set HIGH_CLK 1
+
 set DIFERENCIAL_CLK 1
 
 read_xdc "/eda/processor_ci/constraints/xilinx_vc709.xdc"

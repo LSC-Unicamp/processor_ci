@@ -86,6 +86,7 @@ def get_prefix(board: str, vhdl: bool, sverilog: bool) -> str:
     Args:
         board (str): The name of the board.
         vhdl (bool): Whether the file is a VHDL file.
+        sverilog (bool): Whether the file is a SystemVerilog file.
 
     Returns:
         str: The prefix command to use.
@@ -100,9 +101,11 @@ def get_prefix(board: str, vhdl: bool, sverilog: bool) -> str:
 
     if board == 'colorlight_i9':
         if sverilog:
-            return 'yosys read_verilog -sv'
+            return 'yosys read_slang'
         return 'yosys read_verilog'
 
+    if sverilog:
+        return 'read_verilog -sv'
     return 'read_verilog'
 
 

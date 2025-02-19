@@ -94,10 +94,10 @@ EXTENSIONS = ['v', 'sv', 'vhdl', 'vhd']
 BASE_DIR = 'jenkins_pipeline/'
 FPGAs = [
     'colorlight_i9',
-    'digilent_nexys4_ddr',
+    #'digilent_nexys4_ddr',
     # "gowin_tangnano_20k",
     # "xilinx_vc709",
-    # "digilent_arty_a7_100t"
+    'digilent_arty_a7_100t',
 ]
 DESTINATION_DIR = './temp'
 MAIN_SCRIPT_PATH = '/eda/processor_ci/main.py'

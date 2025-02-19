@@ -105,7 +105,7 @@
                 "rtl/core/aukv_gpr_regfilie.v",
                 "rtl/core/aukv_mem.v"
             ],
-            "include_dirs": [],
+            "include_dirs": ["rtl/wishbone/"],
             "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
             "top_module": "aukv",
             "extra_flags": [],

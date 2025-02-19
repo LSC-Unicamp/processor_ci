@@ -97,8 +97,6 @@ darkriscv #(
     .RES(reset_core),
     .HLT(1'b0),
 
-    .IRQ(1'b0),
-
     .IDATA(core_read_data),
     .IADDR(address),
 
@@ -112,7 +110,7 @@ darkriscv #(
     .DWR (memory_write),
     .DAS (), // memory address strobe
 
-    .BERR(1'b0), // bus error
+    .BERR(1'b0) // bus error
 );
 
 // Clock inflaestructure

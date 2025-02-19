@@ -64,32 +64,32 @@ pipeline {
                     }
                 }
                 
-                stage('digilent_nexys4_ddr') {
+                stage('digilent_arty_a7_100t') {
                     options {
-                        lock(resource: 'digilent_nexys4_ddr')
+                        lock(resource: 'digilent_arty_a7_100t')
                     }
                     stages {
                         stage('Synthesis and PnR') {
                             steps {
                                 dir("dv-cpu-rv") {
-                                    echo 'Starting synthesis for FPGA digilent_nexys4_ddr.'
+                                    echo 'Starting synthesis for FPGA digilent_arty_a7_100t.'
                                 sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
-                                            -p dv-cpu-rv -b digilent_nexys4_ddr'
+                                            -p dv-cpu-rv -b digilent_arty_a7_100t'
                                 }
                             }
                         }
-                        stage('Flash digilent_nexys4_ddr') {
+                        stage('Flash digilent_arty_a7_100t') {
                             steps {
                                 dir("dv-cpu-rv") {
-                                    echo 'Flashing FPGA digilent_nexys4_ddr.'
+                                    echo 'Flashing FPGA digilent_arty_a7_100t.'
                                 sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
-                                            -p dv-cpu-rv -b digilent_nexys4_ddr -l'
+                                            -p dv-cpu-rv -b digilent_arty_a7_100t -l'
                                 }
                             }
                         }
-                        stage('Test digilent_nexys4_ddr') {
+                        stage('Test digilent_arty_a7_100t') {
                             steps {
-                                echo 'Testing FPGA digilent_nexys4_ddr.'
+                                echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("dv-cpu-rv") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
                                 }
