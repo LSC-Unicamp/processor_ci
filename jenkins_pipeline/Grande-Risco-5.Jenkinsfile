@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("Grande-Risco-5") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s Grande_Risco5  src/core/alu.v src/core/alu_control.v src/core/core.v src/core/forwarding_unit.v src/core/immediate_generator.v src/core/mux.v src/core/registers.v "
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s Grande_Risco5 -I src/core src/core/alu.v src/core/alu_control.v src/core/core.v src/core/forwarding_unit.v src/core/immediate_generator.v src/core/mux.v src/core/registers.v src/core/mdu.v src/core/bmu.v src/core/csr_unit.v src/core/fpu.v src/core/ir_decomp.v "
                 }
             }
         }

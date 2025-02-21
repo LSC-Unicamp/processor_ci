@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("harv") {
-                    sh "ghdl -a --std=08               hdl/alu.vhd hdl/control.vhd hdl/csr.vhd hdl/harv.vhd hdl/harv_pkg.vhd hdl/instr_fetch.vhd hdl/regfile.vhd hdl/ft_components/alu_tmr.vhd hdl/ft_components/control_tmr.vhd hdl/ft_components/hamming_decoder.vhd hdl/ft_components/hamming_encoder.vhd hdl/ft_components/hamming_pkg.vhd hdl/ft_components/hamming_register.vhd sim/sim_from_dump.vhd"
+                    sh "/eda/oss-cad-suite/bin/ghdl -a --std=08               hdl/alu.vhd hdl/control.vhd hdl/csr.vhd hdl/harv.vhd hdl/harv_pkg.vhd hdl/instr_fetch.vhd hdl/regfile.vhd hdl/ft_components/alu_tmr.vhd hdl/ft_components/control_tmr.vhd hdl/ft_components/hamming_decoder.vhd hdl/ft_components/hamming_encoder.vhd hdl/ft_components/hamming_pkg.vhd hdl/ft_components/hamming_register.vhd "
                 }
             }
         }

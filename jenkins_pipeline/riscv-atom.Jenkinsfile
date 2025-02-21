@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("riscv-atom") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   rtl/core/Alu.v rtl/core/AtomRV.v rtl/core/AtomRV_wb.v rtl/core/CSR_Unit.v rtl/core/Decode.v rtl/core/RVC_Aligner.v rtl/core/RVC_Decoder.v rtl/core/RegisterFile.v rtl/soc/atombones/AtomBones.v rtl/soc/hydrogensoc/HydrogenSoC.v rtl/uncore/gpio/GPIO.v rtl/uncore/gpio/GPIO_old.v rtl/uncore/gpio/IOBuf.v rtl/uncore/mem/DualPortRAM_wb.v rtl/uncore/mem/SinglePortRAM_wb.v rtl/uncore/mem/SinglePortROM_wb.v rtl/uncore/spi/SPI_core.v rtl/uncore/spi/SPI_wb.v rtl/uncore/timer/Timer_wb.v rtl/uncore/uart/FIFO_sync.v rtl/uncore/uart/UART.v rtl/uncore/uart/UART_core.v rtl/uncore/uart/simpleuart.v rtl/uncore/uart/simpleuart_wb.v rtl/uncore/wishbone/Arbiter.v rtl/uncore/wishbone/Arbiter2_wb.v rtl/uncore/wishbone/Arbiter3_wb.v rtl/uncore/wishbone/Crossbar5_wb.v rtl/uncore/wishbone/Crossbar6_wb.v rtl/uncore/wishbone/Crossbar_wb.v rtl/uncore/wishbone/Priority_encoder.v rtl/tb/HydrogenSoC_tb.v"
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s AtomRV -I rtl/core/ rtl/core/Alu.v rtl/core/AtomRV.v rtl/core/AtomRV_wb.v rtl/core/CSR_Unit.v rtl/core/Decode.v rtl/core/RVC_Aligner.v rtl/core/RVC_Decoder.v rtl/core/RegisterFile.v "
                 }
             }
         }

@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("Baby-Risco-5") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   debug/clk_divider.v debug/debug.v debug/reset.v fpga/colorlight_i9/main.v fpga/cyclone10gx/main.v fpga/de1soc/main.v fpga/digilent_arty/main.v fpga/nexys4_ddr/main.v fpga/tangnano20k/main.v fpga/tangnano20k_yosys/main.v fpga/xilinx_vc709/main.v src/core/alu.v src/core/alu_control.v src/core/control_unit.v src/core/core.v src/core/immediate_generator.v src/core/registers.v src/peripheral/leds.v src/peripheral/memory.v src/peripheral/soc.v tests/alu_test.v tests/clk_divider.v tests/core_test.v tests/fifo_test.v tests/gpio_test.v tests/immediate_generator_test.v tests/mux_test.v tests/pc_test.v tests/registers_test.v tests/reset_test.v tests/soc_test.v"
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s Core  src/core/alu.v src/core/alu_control.v src/core/control_unit.v src/core/core.v src/core/immediate_generator.v src/core/registers.v "
                 }
             }
         }

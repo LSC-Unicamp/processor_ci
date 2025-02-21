@@ -10,11 +10,19 @@ pipeline {
         }
 
         
+        stage('Verilog Convert') {
+            steps {
+                dir("mr1") {
+                    sh 'sbt "run-main mr1.MR1Verilog"'
+                }
+            }
+        }
+        
 
         stage('Simulation') {
             steps {
                 dir("mr1") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   quartus_mr1/altera_models/cpu_ram.v quartus_mr1/altera_models/cpu_ram_bb.v quartus_mr1/altera_models/cpu_ram_inst.v quartus_pico/altera_models/cpu_ram.v quartus_pico/altera_models/cpu_ram_bb.v quartus_pico/altera_models/cpu_ram_inst.v "
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s MR1  MR1.v "
                 }
             }
         }

@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("simodense") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   FPGA_Implementation_AXI_peripheral/MAXI_ip.v FPGA_Implementation_AXI_peripheral/MAXI_ip_doublewidth.v FPGA_Implementation_AXI_peripheral/SAXI_ip.v FPGA_Implementation_AXI_peripheral/caches.v FPGA_Implementation_AXI_peripheral/cpu.v FPGA_Implementation_AXI_peripheral/custom.v FPGA_Implementation_AXI_peripheral/system.v Benchmarks/simple_vector_add/custom.v RTL_and_simulation/caches.v RTL_and_simulation/cpu.v RTL_and_simulation/custom.v RTL_and_simulation/system.v RTL_and_simulation/testbench.v"
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s Core  RTL_and_simulation/cpu.v "
                 }
             }
         }

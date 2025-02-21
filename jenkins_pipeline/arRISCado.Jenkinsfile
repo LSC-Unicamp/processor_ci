@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("arRISCado") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   boards/nano9k/top.v boards/primer20k/top.v project/cpu.v project/flash.v project/mmu.v project/ram.v project/rom.v project/top.v project/uart.v project/cpu/alu.v project/cpu/decode.v project/cpu/divider.v project/cpu/execute.v project/cpu/fetch.v project/cpu/memory.v project/cpu/register_bank.v project/cpu/writeback.v project/peripheral/buttons.v project/peripheral/peripheral_manager.v project/peripheral/pwm_port.v testbenches/alu_tb.v testbenches/cpu_tb.v testbenches/divider_tb.v testbenches/fetch_decode_tb.v testbenches/fetch_tb.v testbenches/if_de_ex_tb.v testbenches/if_de_ex_wb_tb.v testbenches/instruction_tb.v testbenches/memory_tb.v testbenches/pwm_tb.v testbenches/ram_tb.v testbenches/rom_tb.v testbenches/writeback_tb.v testbenches/utils/imports.v"
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s cpu  project/cpu.v project/flash.v project/mmu.v project/ram.v project/rom.v project/top.v project/uart.v project/cpu/alu.v project/cpu/decode.v project/cpu/divider.v project/cpu/execute.v project/cpu/fetch.v project/cpu/memory.v project/cpu/register_bank.v project/cpu/writeback.v project/peripheral/buttons.v project/peripheral/peripheral_manager.v project/peripheral/pwm_port.v "
                 }
             }
         }

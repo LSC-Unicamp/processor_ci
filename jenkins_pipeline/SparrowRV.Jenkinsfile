@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("SparrowRV") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   rtl/W25Q128JVxIM.v rtl/config.v rtl/defines.v rtl/core/core.v rtl/core/csr.v rtl/core/div.v rtl/core/dpram.v rtl/core/idex.v rtl/core/iram.v rtl/core/regs.v rtl/core/rstc.v rtl/core/sctr.v rtl/core/trap.v rtl/jtag/full_handshake_rx.v rtl/jtag/full_handshake_tx.v rtl/jtag/jtag_dm.v rtl/jtag/jtag_driver.v rtl/jtag/jtag_top.v rtl/perips/axi4lite_2mt16s.v rtl/perips/sram.v rtl/perips/sm3/sm3_cmprss_ceil_comb.v rtl/perips/sm3/sm3_cmprss_core.v rtl/perips/sm3/sm3_core_top.v rtl/perips/sm3/sm3_expnd_core.v rtl/perips/sm3/sm3_pad_core.v rtl/perips/sysio/fpioa.v rtl/perips/sysio/gpio.v rtl/perips/sysio/spi.v rtl/perips/sysio/sysio.v rtl/perips/sysio/uart.v rtl/soc/sparrow_soc.v rtl/perips/sm3/tb/tb_sm3_core_top.sv tb/tb_core.sv"
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s core -I rtl/ rtl/config.v rtl/defines.v rtl/core/core.v rtl/core/csr.v rtl/core/div.v rtl/core/dpram.v rtl/core/idex.v rtl/core/iram.v rtl/core/regs.v rtl/core/rstc.v rtl/core/sctr.v rtl/core/trap.v "
                 }
             }
         }

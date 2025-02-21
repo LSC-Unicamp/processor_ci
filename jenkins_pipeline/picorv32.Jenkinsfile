@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("picorv32") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   picorv32.v "
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s picorv32  picorv32.v "
                 }
             }
         }
