@@ -98,7 +98,7 @@ assign address = (memory_write == 1'b1) ? read_address : write_address;
 mriscvcore mriscvcore_inst (
     .clk    (clk_core       ),
     .rstn   (~reset_core    ),
-    .trap   (1'b0           ),
+    .trap   (          ),
     .AWvalid(),
     .AWready(1'b1),
     
@@ -108,7 +108,7 @@ mriscvcore mriscvcore_inst (
     .Wvalid (memory_write),
     .Wready (1'b1 ),
     .Wdata  (core_write_data  ),
-    .Wstrb  (  ),
+    .Wstrb  ( ),
     .Bvalid (1'b1 ),
     .Bready ( ),
     .ARvalid(memory_read),
