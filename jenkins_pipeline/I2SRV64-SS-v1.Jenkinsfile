@@ -22,7 +22,7 @@ pipeline {
          stage('Utilities')  {
             steps {
                 dir("I2SRV64-SS-v1") {
-                    sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor_ci/config.json -o /jenkins/processor_ci_utils/labels.json"
+                    sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor_ci/config.json -o /eda/processor_ci_utils/labels.json"
                 }            
             }
         }
