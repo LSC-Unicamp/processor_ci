@@ -58,11 +58,34 @@ def identify_license_type(license_content):
         # Permissive Licenses
         'MIT': r'(?i)permission is hereby granted, free of charge, to any person obtaining a copy',
         'Apache 2.0': r'(?i)licensed under the Apache License, Version 2\.0',
-        'BSD 3-Clause': (
-            r'(?i)neither the name of the copyright holder nor the names of its\s+contributors '
-            r'may be used to endorse or promote products derived from\s+this '
-            r'software without specific prior written permission\.'
+        'BSD 2-Clause': (
+            r'(?i)redistribution and use in source and binary forms, with or without modification, '
+            r'are permitted provided that the following conditions are met:\s*\* Redistributions '
+            r'of source code must retain the above copyright notice, this\s+list of conditions and '
+            r'the following disclaimer\.\s*\* Redistributions in binary form must reproduce the '
+            r'above copyright notice,\s+this list of conditions and the following disclaimer in '
+            r'the documentation\s+and/or other materials provided with the distribution\.'
+            r'\s+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"'
         ),
+        'BSD 3-Clause': (
+            r'(?i)redistribution and use in source and binary forms, with or without modification, '
+            r'are permitted provided that the following conditions are met:\s*\* Redistributions '
+            r'of source code must retain the above copyright notice, this\s+list of conditions '
+            r'and the following disclaimer\.\s*\* Redistributions in binary form must reproduce '
+            r'the above copyright notice,\s+this list of conditions and the following disclaimer '
+            r'in the documentation\s+and/or other materials provided with the distribution\.'
+            r'\s*\* Neither the name of the copyright holder nor the names of its\s+contributors '
+            r'may be used to endorse or promote products derived from\s+this software without '
+            r'specific prior written permission\.\s+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT '
+            r'HOLDERS AND CONTRIBUTORS "AS IS"'
+        ),
+        'ISC': (
+            r'(?i)permission to use, copy, modify, and distribute this software for any '
+            r'purpose\s*with or without fee is hereby granted, provided that the above '
+            r'copyright notice\s*and this permission notice appear in all copies\.\s*THE '
+            r'SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES'
+        ),
+        # Other licenses...
         'Zlib': (
             r'(?i)This software is provided \'as-is\', without any express or implied warranty'
         ),
