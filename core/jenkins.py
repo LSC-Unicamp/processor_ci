@@ -115,12 +115,17 @@ pipeline {{
         file.endswith('.vhdl') or file.endswith('.vhd')
         for file in config.get('files', [])
     )
-    is_verilog = any(
-        file.endswith('.v') or file.endswith('.sv')
-        for file in config.get('files', [])
+    is_verilog = any(file.endswith('.v') for file in config.get('files', []))
+
+    is_system_verilog = any(
+        file.endswith('.sv') for file in config.get('files', [])
     )
 
-    if is_vhdl and not is_verilog:
+    if is_system_verilog:
+        simulation_command = (
+            'echo "simulation not supported for System Verilog files"'
+        )
+    elif is_vhdl and not is_verilog:
         # VHDL simulation command
         simulation_command = f'sh "/eda/oss-cad-suite/bin/ghdl -a --std={lang_version} \
             {extra_flags_str} {include_dirs} {files} {sim_files}"'

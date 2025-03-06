@@ -49,6 +49,30 @@ import subprocess
 
 CURRENT_DIR = os.getcwd()
 
+VIVADO_BOARDS = [
+    'xilinx_vc709',
+    'digilent_arty_a7_100t',
+    'digilent_nexys4_ddr',
+]
+
+YOSYS_BOARDS = [
+    'colorlight_i9',
+]
+
+GOWIN_BOARDS = [
+    'tangnano_20k',
+    'tangnano_9k',
+]
+
+MACROS = {
+    'colorlight_i9': '-DID=0x6a6a6a6a -DCLOCK_FREQ=25000000 -DMEMORY_SIZE=4096',
+    'digilent_nexys4_ddr': '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"',
+    'digilent_arty_a7_100t': '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"',
+    'xilinx_vc709': '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=100000000" "MEMORY_SIZE=4096"',
+    'tangnano_20k': '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"',
+    'tangnano_9k': '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"',
+}
+
 
 def get_macros(board: str) -> str:
     """
@@ -60,23 +84,79 @@ def get_macros(board: str) -> str:
     Returns:
         str: The macro definitions as a string.
     """
-    if board == 'colorlight_i9':
-        return '-DID=0x6a6a6a6a -DCLOCK_FREQ=25000000 -DMEMORY_SIZE=4096'
 
-    if board == 'digilent_nexys4_ddr':
-        return (
-            '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"'
-        )
+    return MACROS.get(
+        board,
+        '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"',
+    )
 
-    if board == 'digilent_arty_a7_100t':
-        return (
-            '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"'
-        )
 
-    if board == 'xilinx_vc709':
-        return '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=100000000" "MEMORY_SIZE=4096"'
+def get_vivado_prefix(vhdl: bool, sverilog: bool) -> str:
+    """
+    Determines the file prefix command for Vivado based on the file type.
 
-    return '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"'
+    Args:
+        vhdl (bool): Whether the file is a VHDL file.
+        sverilog (bool): Whether the file is a SystemVerilog file.
+
+    Returns:
+        str: The prefix command to use.
+    """
+    if vhdl:
+        return 'read_vhdl'
+    if sverilog:
+        return 'read_verilog -sv'
+    return 'read_verilog'
+
+
+def get_yosys_prefix(vhdl: bool, sverilog: bool) -> str:
+    """
+    Determines the file prefix command for Yosys based on the file type.
+
+    Args:
+        vhdl (bool): Whether the file is a VHDL file.
+        sverilog (bool): Whether the file is a SystemVerilog file.
+
+    Returns:
+        str: The prefix command to use.
+    """
+    if vhdl:
+        return 'yosys ghdl -a'
+    if sverilog:
+        return 'yosys read_slang'
+    return 'yosys read_verilog'
+
+
+def get_gowin_prefix() -> str:
+    """
+    Determines the file prefix command for Gowin based on the file type.
+
+    Args:
+        vhdl (bool): Whether the file is a VHDL file.
+        sverilog (bool): Whether the file is a SystemVerilog file.
+
+    Returns:
+        str: The prefix command to use.
+    """
+    return 'add_file'
+
+
+def get_quartus_prefix(vhdl: bool, sverilog: bool) -> str:
+    """
+    Determines the file prefix command for Quartus based on the file type.
+
+    Args:
+        vhdl (bool): Whether the file is a VHDL file.
+        sverilog (bool): Whether the file is a SystemVerilog file.
+
+    Returns:
+        str: The prefix command to use.
+    """
+    if vhdl:
+        return 'vcom'
+    if sverilog:
+        return 'vlog'
+    return 'vlog'
 
 
 def get_prefix(board: str, vhdl: bool, sverilog: bool) -> str:
@@ -91,22 +171,16 @@ def get_prefix(board: str, vhdl: bool, sverilog: bool) -> str:
     Returns:
         str: The prefix command to use.
     """
-    if board == 'gowin_tangnano_20k':
-        return 'add_file'
+    if board in VIVADO_BOARDS:
+        return get_vivado_prefix(vhdl, sverilog)
 
-    if vhdl:
-        if board == 'colorlight_i9':
-            return 'yosys ghdl -a'
-        return 'read_vhdl'
+    if board in YOSYS_BOARDS:
+        return get_yosys_prefix(vhdl, sverilog)
 
-    if board == 'colorlight_i9':
-        if sverilog:
-            return 'yosys read_slang'
-        return 'yosys read_verilog'
+    if board in GOWIN_BOARDS:
+        return get_gowin_prefix()
 
-    if sverilog:
-        return 'read_verilog -sv'
-    return 'read_verilog'
+    return get_quartus_prefix(vhdl, sverilog)
 
 
 def make_build_file(config: dict, board: str, toolchain_path: str) -> str:

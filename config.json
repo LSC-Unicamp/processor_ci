@@ -1585,7 +1585,7 @@
             ],
             "include_dirs": ["src/core"],
             "repository": "https://github.com/JN513/Grande-Risco-5",
-            "top_module": "Grande_Risco5",
+            "top_module": "Core",
             "extra_flags": [],
             "language_version": "2005"
         },
