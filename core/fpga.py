@@ -223,18 +223,30 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
 
     final_config_path = CURRENT_DIR + f'/build_{board}.tcl'
 
+    sv_files = [f for f in config['files'] if f.endswith('.sv')]
+
     with open(final_config_path, 'w', encoding='utf-8') as file:
+        for i in config['files']:
+            if i in sv_files:
+                continue
+            prefix = get_prefix(
+                board, vhdl=i.endswith('.vhd'), sverilog=i.endswith('.sv')
+            )
+            file.write(prefix + f' {CURRENT_DIR}/' + i + '\n')
+
+
+        if len(sv_files) > 0:
+            prefix = get_prefix(board, False, True)
+
+            files_sv_str = ' '.join([f'{CURRENT_DIR}/{f}' for f in sv_files])
+
+            file.write(prefix + f' {files_sv_str}\n')
+            
         prefix = get_prefix(board, False, False)
         file.write(
             prefix
             + f' {toolchain_path}/processor_ci/rtl/{config["folder"]}.v\n'
         )
-
-        for i in config['files']:
-            prefix = get_prefix(
-                board, vhdl=i.endswith('.vhd'), sverilog=i.endswith('.sv')
-            )
-            file.write(prefix + f' {CURRENT_DIR}/' + i + '\n')
 
         file.write(base_config)
 

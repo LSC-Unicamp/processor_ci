@@ -28,9 +28,12 @@ module processorci_top (
 
 wire clk_core, reset_core, reset_o;
 
-wire [31:0] instruction_address, instruction_data;
-wire [31:0] data_address, data_write_data, data_read_data;
-wire data_read, data_write, instruction_response, data_memory_response;
+wire memory_response, memory_read_request,
+    memory_write_request;
+
+wire [31:0] memory_read_data,
+    memory_write_data, memory_addr;
+
 
 Controller #(
     .CLK_FREQ          (`CLOCK_FREQ),
@@ -46,61 +49,67 @@ Controller #(
     .MEMORY_SIZE       (`MEMORY_SIZE)
 ) Controller(
     `ifdef HIGH_CLK
-    .clk  (clk_o),
+    .clk        (clk_o),
     `else
-    .clk  (clk),
+    .clk        (clk),
     `endif
 
-    .reset(reset_o),
+    .reset      (reset_o),
 
-    .tx(tx),
-    .rx(rx),
+    .tx         (tx),
+    .rx         (rx),
 
-    .sck (sck),
-    .cs  (cs),
-    .mosi(mosi),
-    .miso(miso),
+    .sck        (sck),
+    .cs         (cs),
+    .mosi       (mosi),
+    .miso       (miso),
 
-    .rw  (rw),
-    .intr(intr),
+    .rw         (rw),
+    .intr       (intr),
 
-    .clk_core  (clk_core),
-    .reset_core(reset_core),
+    .clk_core   (clk_core),
+    .reset_core (reset_core),
     
     // main memory - instruction memory
-    .core_memory_response  (instruction_response), // Memory response signal, 1 means that the memory operation is done
-    .core_read_memory      (1'b1),                 // Read memory signal
-    .core_write_memory     (1'b0),                 // Write memory signal
-    .core_address_memory   (instruction_address),  // Address to read or write
-    .core_write_data_memory(32'h00000000),         // Data to write
-    .core_read_data_memory (instruction_data),     // Data read from memory
+    .core_memory_response        (memory_response),      // Memory response signal, 1 means that the memory operation is done
+    .core_read_memory            (memory_read_request),  // Read memory signal
+    .core_write_memory           (memory_write_request), // Write memory signal
+    .core_address_memory         (memory_addr),          // Address to read or write
+    .core_write_data_memory      (memory_write_data),    // Data to write
+    .core_read_data_memory       (memory_read_data),     // Data read from memory
 
     // Data memory
-    .core_memory_response_data  (data_memory_response), // Memory response signal, 1 means that the memory operation is done
-    .core_read_memory_data      (data_read),            // Read memory signal
-    .core_write_memory_data     (data_write),           // Write memory signal
-    .core_address_memory_data   (data_address),         // Address to read or write
-    .core_write_data_memory_data(data_write_data),      // Data to write
-    .core_read_data_memory_data (data_read_data)        // Data read from memory
+    .core_memory_response_data   (), // Memory response signal, 1 means that the memory operation is done
+    .core_read_memory_data       (), // Read memory signal
+    .core_write_memory_data      (), // Write memory signal
+    .core_address_memory_data    (), // Address to read or write
+    .core_write_data_memory_data (), // Data to write
+    .core_read_data_memory_data  ()  // Data read from memory
 );
 
 
 // Core space
 
-Grande_Risco5 Core(
-    .clk  (clk_core),
-    .reset(reset_core),
+Grande_Risco5 Processor(
+    .clk                      (clk_core),
+    .rst_n                    (!reset_core),
+    .halt                     (1'b0),
 
-    .instruction_response(instruction_response),
-    .instruction_address (instruction_address),
-    .instruction_data    (instruction_data),
+    .memory_response          (memory_response),
+    .memory_read_request      (memory_read_request),
+    .memory_write_request     (memory_write_request),
+    .memory_read_data         (memory_read_data),
+    .memory_write_data        (memory_write_data),
+    .memory_addr              (memory_addr),
 
-    .data_memory_response(data_memory_response),
-    .data_address        (data_address),
-    .data_memory_read    (data_read),
-    .data_memory_write   (data_write),
-    .write_data          (data_write_data),
-    .read_data           (data_read_data)
+    .peripheral_response      (1'b0),
+    .peripheral_read_request  (),
+    .peripheral_write_request (),
+    .peripheral_read_data     (32'h00000000),
+    .peripheral_write_data    (),
+    .peripheral_addr          (),
+
+    .interruption             (1'b0)
 );
 
 // Clock inflaestructure
