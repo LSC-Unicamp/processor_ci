@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("Grande-Risco-5") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s Core -I src/core src/core/alu.v src/core/alu_control.v src/core/core.v src/core/forwarding_unit.v src/core/immediate_generator.v src/core/mux.v src/core/registers.v src/core/mdu.v src/core/bmu.v src/core/csr_unit.v src/core/fpu.v src/core/ir_decomp.v "
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }
@@ -58,6 +58,7 @@ pipeline {
                                 echo 'Testing FPGA colorlight_i9.'
                                 dir("Grande-Risco-5") {
                                     sh 'echo "Test for FPGA in /dev/ttyACM0"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyACM0"'
                                 }
                             }
                         }
@@ -92,6 +93,7 @@ pipeline {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("Grande-Risco-5") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyUSB1"'
                                 }
                             }
                         }

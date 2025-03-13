@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("RS5") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2012                  -s RS5 -I rtl/ rtl/CSRBank.sv rtl/RS5.sv rtl/aes_unit.sv rtl/align.sv rtl/decode.sv rtl/decompresser.sv rtl/div.sv rtl/execute.sv rtl/fetch.sv rtl/mmu.sv rtl/mul.sv rtl/mulNbits.sv rtl/regbank.sv rtl/retire.sv rtl/vectorALU.sv rtl/vectorCSRs.sv rtl/vectorLSU.sv rtl/vectorRegbank.sv rtl/vectorUnit.sv rtl/aes/riscv_crypto_aes_fwd_sbox.sv rtl/aes/riscv_crypto_aes_sbox.sv rtl/aes/riscv_crypto_sbox_aes_out.sv rtl/aes/riscv_crypto_sbox_aes_top.sv rtl/aes/riscv_crypto_sbox_inv_mid.sv "
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }
@@ -58,6 +58,7 @@ pipeline {
                                 echo 'Testing FPGA colorlight_i9.'
                                 dir("RS5") {
                                     sh 'echo "Test for FPGA in /dev/ttyACM0"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyACM0"'
                                 }
                             }
                         }
@@ -92,6 +93,7 @@ pipeline {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("RS5") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyUSB1"'
                                 }
                             }
                         }

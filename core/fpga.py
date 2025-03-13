@@ -123,7 +123,7 @@ def get_yosys_prefix(vhdl: bool, sverilog: bool) -> str:
     if vhdl:
         return 'yosys ghdl -a'
     if sverilog:
-        return 'yosys read_slang'
+        return 'yosys read_systemverilog -defer'
     return 'yosys read_verilog'
 
 
@@ -223,30 +223,29 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
 
     final_config_path = CURRENT_DIR + f'/build_{board}.tcl'
 
-    sv_files = [f for f in config['files'] if f.endswith('.sv')]
+    exist_sv_file = False
+    include_dirs_str = " ".join(f"-I{CURRENT_DIR}/{d}" for d in config['include_dirs'])
 
     with open(final_config_path, 'w', encoding='utf-8') as file:
         for i in config['files']:
-            if i in sv_files:
-                continue
+            is_sv_file = i.endswith('.sv')
             prefix = get_prefix(
-                board, vhdl=i.endswith('.vhd'), sverilog=i.endswith('.sv')
+                board, vhdl=i.endswith('.vhd'), sverilog=is_sv_file
             )
-            file.write(prefix + f' {CURRENT_DIR}/' + i + '\n')
-
-
-        if len(sv_files) > 0:
-            prefix = get_prefix(board, False, True)
-
-            files_sv_str = ' '.join([f'{CURRENT_DIR}/{f}' for f in sv_files])
-
-            file.write(prefix + f' {files_sv_str}\n')
+            exist_sv_file = exist_sv_file or is_sv_file
+            if is_sv_file and board in YOSYS_BOARDS:
+                file.write(prefix + f' {include_dirs_str} {CURRENT_DIR}/' + i + '\n')
+            else:
+                file.write(prefix + f' {CURRENT_DIR}/' + i + '\n')
             
         prefix = get_prefix(board, False, False)
         file.write(
             prefix
             + f' {toolchain_path}/processor_ci/rtl/{config["folder"]}.v\n'
         )
+
+        if board in YOSYS_BOARDS and exist_sv_file:
+            file.write("yosys read_systemverilog -link\n")
 
         file.write(base_config)
 

@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("scr1") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2012                  -s scr1_core_top -I src/includes src/core/scr1_clk_ctrl.sv src/core/scr1_core_top.sv src/core/scr1_dm.sv src/core/scr1_dmi.sv src/core/scr1_scu.sv src/core/scr1_tapc.sv src/core/scr1_tapc_shift_reg.sv src/core/scr1_tapc_synchronizer.sv src/core/pipeline/scr1_ipic.sv src/core/pipeline/scr1_pipe_csr.sv src/core/pipeline/scr1_pipe_exu.sv src/core/pipeline/scr1_pipe_hdu.sv src/core/pipeline/scr1_pipe_ialu.sv src/core/pipeline/scr1_pipe_idu.sv src/core/pipeline/scr1_pipe_ifu.sv src/core/pipeline/scr1_pipe_lsu.sv src/core/pipeline/scr1_pipe_mprf.sv src/core/pipeline/scr1_pipe_tdu.sv src/core/pipeline/scr1_pipe_top.sv src/core/pipeline/scr1_tracelog.sv src/core/primitives/scr1_cg.sv src/core/primitives/scr1_reset_cells.sv "
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }
@@ -58,6 +58,7 @@ pipeline {
                                 echo 'Testing FPGA colorlight_i9.'
                                 dir("scr1") {
                                     sh 'echo "Test for FPGA in /dev/ttyACM0"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyACM0"'
                                 }
                             }
                         }
@@ -92,6 +93,7 @@ pipeline {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("scr1") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyUSB1"'
                                 }
                             }
                         }

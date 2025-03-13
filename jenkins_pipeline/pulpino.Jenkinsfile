@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("pulpino") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s  -I rtl/includes/ rtl/apb_mock_uart.sv rtl/axi2apb_wrap.sv rtl/axi_mem_if_SP_wrap.sv rtl/axi_node_intf_wrap.sv rtl/axi_slice_wrap.sv rtl/axi_spi_slave_wrap.sv rtl/boot_code.sv rtl/boot_rom_wrap.sv rtl/clk_rst_gen.sv rtl/core2axi_wrap.sv rtl/core_region.sv rtl/dp_ram_wrap.sv rtl/instr_ram_wrap.sv rtl/periph_bus_wrap.sv rtl/peripherals.sv rtl/pulpino_top.sv rtl/ram_mux.sv rtl/random_stalls.sv rtl/sp_ram_wrap.sv rtl/components/cluster_clock_gating.sv rtl/components/cluster_clock_inverter.sv rtl/components/cluster_clock_mux2.sv rtl/components/dp_ram.sv rtl/components/generic_fifo.sv rtl/components/pulp_clock_gating.sv rtl/components/pulp_clock_inverter.sv rtl/components/pulp_clock_mux2.sv rtl/components/rstgen.sv rtl/components/sp_ram.sv rtl/includes/apb_bus.sv rtl/includes/apu_defines.sv rtl/includes/axi_bus.sv rtl/includes/config.sv rtl/includes/debug_bus.sv "
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }
@@ -58,6 +58,7 @@ pipeline {
                                 echo 'Testing FPGA colorlight_i9.'
                                 dir("pulpino") {
                                     sh 'echo "Test for FPGA in /dev/ttyACM0"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyACM0"'
                                 }
                             }
                         }
@@ -92,6 +93,7 @@ pipeline {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("pulpino") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyUSB1"'
                                 }
                             }
                         }

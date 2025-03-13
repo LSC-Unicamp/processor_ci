@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("cv32e41p") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2012                  -s   bhv/cv32e41p_apu_tracer.sv bhv/cv32e41p_core_log.sv bhv/cv32e41p_sim_clock_gate.sv bhv/cv32e41p_tracer.sv bhv/cv32e41p_wrapper.sv bhv/include/cv32e41p_tracer_pkg.sv rtl/cv32e41p_aligner.sv rtl/cv32e41p_alu.sv rtl/cv32e41p_alu_div.sv rtl/cv32e41p_apu_disp.sv rtl/cv32e41p_controller.sv rtl/cv32e41p_core.sv rtl/cv32e41p_cs_registers.sv rtl/cv32e41p_ex_stage.sv rtl/cv32e41p_ff_one.sv rtl/cv32e41p_fifo.sv rtl/cv32e41p_hwloop_regs.sv rtl/cv32e41p_id_stage.sv rtl/cv32e41p_if_stage.sv rtl/cv32e41p_int_controller.sv rtl/cv32e41p_load_store_unit.sv rtl/cv32e41p_merged_decoder.sv rtl/cv32e41p_mult.sv rtl/cv32e41p_obi_interface.sv rtl/cv32e41p_popcnt.sv rtl/cv32e41p_prefetch_buffer.sv rtl/cv32e41p_prefetch_controller.sv rtl/cv32e41p_register_file_ff.sv rtl/cv32e41p_register_file_latch.sv rtl/cv32e41p_sleep_unit.sv rtl/include/cv32e41p_apu_core_pkg.sv rtl/include/cv32e41p_fpu_pkg.sv rtl/include/cv32e41p_pkg.sv sva/cv32e41p_prefetch_controller_sva.sv example_tb/core/amo_shim.sv example_tb/core/cv32e41p_fp_wrapper.sv example_tb/core/cv32e41p_random_interrupt_generator.sv example_tb/core/cv32e41p_tb_subsystem.sv example_tb/core/dp_ram.sv example_tb/core/mm_ram.sv example_tb/core/riscv_gnt_stall.sv example_tb/core/riscv_rvalid_stall.sv example_tb/core/tb_top.sv example_tb/core/include/perturbation_pkg.sv"
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }
@@ -58,6 +58,7 @@ pipeline {
                                 echo 'Testing FPGA colorlight_i9.'
                                 dir("cv32e41p") {
                                     sh 'echo "Test for FPGA in /dev/ttyACM0"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyACM0"'
                                 }
                             }
                         }
@@ -92,6 +93,7 @@ pipeline {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("cv32e41p") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyUSB1"'
                                 }
                             }
                         }

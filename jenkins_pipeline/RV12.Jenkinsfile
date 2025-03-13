@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("RV12") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2012                  -s riscv_core  rtl/verilog/ahb3lite/biu_ahb3lite.sv rtl/verilog/ahb3lite/riscv_top_ahb3lite.sv rtl/verilog/core/riscv_bp.sv rtl/verilog/core/riscv_core.sv rtl/verilog/core/riscv_du.sv rtl/verilog/core/riscv_dwb.sv rtl/verilog/core/riscv_ex.sv rtl/verilog/core/riscv_id.sv rtl/verilog/core/riscv_if.sv rtl/verilog/core/riscv_mem.sv rtl/verilog/core/riscv_parcel_queue.sv rtl/verilog/core/riscv_pd.sv rtl/verilog/core/riscv_rf.sv rtl/verilog/core/riscv_rsb.sv rtl/verilog/core/riscv_state1.10.sv rtl/verilog/core/riscv_state1.7.sv rtl/verilog/core/riscv_state1.9.sv rtl/verilog/core/riscv_state_20240411.sv rtl/verilog/core/riscv_wb.sv rtl/verilog/core/cache/riscv_cache_biu_ctrl.sv rtl/verilog/core/cache/riscv_cache_memory.sv rtl/verilog/core/cache/riscv_cache_setup.sv rtl/verilog/core/cache/riscv_cache_tag.sv rtl/verilog/core/cache/riscv_dcache_core.sv rtl/verilog/core/cache/riscv_dcache_fsm.sv rtl/verilog/core/cache/riscv_icache_core.sv rtl/verilog/core/cache/riscv_icache_fsm.sv rtl/verilog/core/cache/riscv_nodcache_core.sv rtl/verilog/core/cache/riscv_noicache_core.sv rtl/verilog/core/ex/riscv_alu.sv rtl/verilog/core/ex/riscv_bu.sv rtl/verilog/core/ex/riscv_div.sv rtl/verilog/core/ex/riscv_lsu.sv rtl/verilog/core/ex/riscv_mul.sv rtl/verilog/core/memory/riscv_dmem_ctrl.sv rtl/verilog/core/memory/riscv_imem_ctrl.sv rtl/verilog/core/memory/riscv_membuf.sv rtl/verilog/core/memory/riscv_memmisaligned.sv rtl/verilog/core/memory/riscv_mmu.sv rtl/verilog/core/memory/riscv_pmachk.sv rtl/verilog/core/memory/riscv_pmpchk.sv rtl/verilog/core/memory/riscv_wbuf.sv rtl/verilog/core/mmu/riscv_nommu.sv rtl/verilog/pkg/biu_constants_pkg.sv rtl/verilog/pkg/riscv_cache_pkg.sv rtl/verilog/pkg/riscv_du_pkg.sv rtl/verilog/pkg/riscv_opcodes_pkg.sv rtl/verilog/pkg/riscv_pma_pkg.sv rtl/verilog/pkg/riscv_rv12_pkg.sv rtl/verilog/pkg/riscv_state1.10_pkg.sv rtl/verilog/pkg/riscv_state1.7_pkg.sv rtl/verilog/pkg/riscv_state1.9_pkg.sv rtl/verilog/pkg/riscv_state_20240411_pkg.sv "
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }
@@ -58,6 +58,7 @@ pipeline {
                                 echo 'Testing FPGA colorlight_i9.'
                                 dir("RV12") {
                                     sh 'echo "Test for FPGA in /dev/ttyACM0"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyACM0"'
                                 }
                             }
                         }
@@ -92,6 +93,7 @@ pipeline {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("RV12") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyUSB1"'
                                 }
                             }
                         }

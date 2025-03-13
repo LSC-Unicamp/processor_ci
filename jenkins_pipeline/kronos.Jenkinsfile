@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("kronos") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2012                  -s kronos_core  rtl/core/kronos_EX.sv rtl/core/kronos_ID.sv rtl/core/kronos_IF.sv rtl/core/kronos_RF.sv rtl/core/kronos_agu.sv rtl/core/kronos_alu.sv rtl/core/kronos_branch.sv rtl/core/kronos_core.sv rtl/core/kronos_counter64.sv rtl/core/kronos_csr.sv rtl/core/kronos_hcu.sv rtl/core/kronos_lsu.sv rtl/core/kronos_types.sv "
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }
@@ -58,6 +58,7 @@ pipeline {
                                 echo 'Testing FPGA colorlight_i9.'
                                 dir("kronos") {
                                     sh 'echo "Test for FPGA in /dev/ttyACM0"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyACM0"'
                                 }
                             }
                         }
@@ -92,6 +93,7 @@ pipeline {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("kronos") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port /dev/ttyUSB1"'
                                 }
                             }
                         }
