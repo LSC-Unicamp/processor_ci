@@ -224,7 +224,9 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
     final_config_path = CURRENT_DIR + f'/build_{board}.tcl'
 
     exist_sv_file = False
-    include_dirs_str = " ".join(f"-I{CURRENT_DIR}/{d}" for d in config['include_dirs'])
+    include_dirs_str = ' '.join(
+        f'-I{CURRENT_DIR}/{d}' for d in config['include_dirs']
+    )
 
     with open(final_config_path, 'w', encoding='utf-8') as file:
         for i in config['files']:
@@ -234,10 +236,12 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
             )
             exist_sv_file = exist_sv_file or is_sv_file
             if is_sv_file and board in YOSYS_BOARDS:
-                file.write(prefix + f' {include_dirs_str} {CURRENT_DIR}/' + i + '\n')
+                file.write(
+                    prefix + f' {include_dirs_str} {CURRENT_DIR}/' + i + '\n'
+                )
             else:
                 file.write(prefix + f' {CURRENT_DIR}/' + i + '\n')
-            
+
         prefix = get_prefix(board, False, False)
         file.write(
             prefix
@@ -245,7 +249,7 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
         )
 
         if board in YOSYS_BOARDS and exist_sv_file:
-            file.write("yosys read_systemverilog -link\n")
+            file.write('yosys read_systemverilog -link\n')
 
         file.write(base_config)
 

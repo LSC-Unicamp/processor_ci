@@ -173,7 +173,8 @@ pipeline {{
                                 echo 'Testing FPGA {fpga}.'
                                 dir("{folder}") {{
                                     sh 'echo "Test for FPGA in {port}"'
-                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config "/eda/processor_ci_tests/test_runner/config.json" --port {port}"'
+                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config\
+                                    /eda/processor_ci_tests/test_runner/config.json --port {port}'
                                 }}
                             }}
                         }}
