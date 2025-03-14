@@ -59,31 +59,27 @@ def identify_license_type(license_content):
         'MIT': r'(?i)permission is hereby granted, free of charge, to any person obtaining a copy',
         'Apache 2.0': r'(?i)licensed under the Apache License, Version 2\.0',
         'BSD 2-Clause': (
-            r'(?i)redistribution and use in source and binary forms, with or without modification, '
-            r'are permitted provided that the following conditions are met:\s*\* Redistributions '
-            r'of source code must retain the above copyright notice, this\s+list of conditions and '
-            r'the following disclaimer\.\s*\* Redistributions in binary form must reproduce the '
-            r'above copyright notice,\s+this list of conditions and the following disclaimer in '
-            r'the documentation\s+and/or other materials provided with the distribution\.'
-            r'\s+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"'
+            r'(?i)Redistribution and use in source and binary forms, with or without modification, '
+            r'are permitted provided that the following conditions are met:\s*'
+            r'1\.\s*Redistributions of source code must retain the above copyright notice, '
+            r'this list of conditions and the following disclaimer\.\s*'
+            r'2\.\s*Redistributions in binary form must reproduce the above copyright notice, '
+            r'this list of conditions and the following disclaimer in the documentation '
+            r'and/or other materials provided with the distribution\.\s*'
+            r'THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"'
         ),
         'BSD 3-Clause': (
-            r'(?i)redistribution and use in source and binary forms, with or without modification, '
-            r'are permitted provided that the following conditions are met:\s*\* Redistributions '
-            r'of source code must retain the above copyright notice, this\s+list of conditions '
-            r'and the following disclaimer\.\s*\* Redistributions in binary form must reproduce '
-            r'the above copyright notice,\s+this list of conditions and the following disclaimer '
-            r'in the documentation\s+and/or other materials provided with the distribution\.'
-            r'\s*\* Neither the name of the copyright holder nor the names of its\s+contributors '
-            r'may be used to endorse or promote products derived from\s+this software without '
-            r'specific prior written permission\.\s+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT '
-            r'HOLDERS AND CONTRIBUTORS "AS IS"'
+            r'(?i)neither the name of the copyright holder nor the names of its\s+contributors '
+            r'may be used to endorse or promote products derived from\s+this '
+            r'software without specific prior written permission\.'
         ),
         'ISC': (
-            r'(?i)permission to use, copy, modify, and distribute this software for any '
-            r'purpose\s*with or without fee is hereby granted, provided that the above '
-            r'copyright notice\s*and this permission notice appear in all copies\.\s*THE '
-            r'SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES'
+            r'(?i)Permission to use, copy, modify, and distribute this software for any '
+            r'purpose(?:\n|\s)*with or without fee is hereby granted, provided that the above '
+            r'copyright notice(?:\n|\s)*and this permission notice appear in all copies\.(?:\n|\s)*'
+            r'THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES(?:\n|\s)*'
+            r'INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS '
+            r'FOR A PARTICULAR PURPOSE\.'
         ),
         # Other licenses...
         'Zlib': (
@@ -203,13 +199,15 @@ def determine_cpu_bits(top_file):
     return '32' if count_32 > count_64 else '64'
 
 
-def generate_labels_file(processor_name, license_types, cpu_bits, output_file):
-    """Generate a JSON file with labels for the processor cores.
+def has_cpu_cache(repository):
+    """
+    Analyzes a Verilog-based CPU directory to determine if it includes cache.
 
     Args:
-        directory (str): The directory to search for LICENSE files.
-        config_file (str): The configuration JSON file path.
-        output_file (str): The output JSON file path.
+        repository(str): Path to the directory containing the CPU Verilog files
+    
+    Returns:
+        Boolean: True if the CPU has a cache, False otherwise
     """
 
     logging.basicConfig(
@@ -217,56 +215,103 @@ def generate_labels_file(processor_name, license_types, cpu_bits, output_file):
         format='%(levelname)s: %(message)s',
     )
 
-    # Load existing JSON data if the file exists
-    if os.path.exists(output_file):
-        try:
-            with open(output_file, 'r', encoding='utf-8') as json_file:
-                existing_data = json.load(json_file)
-        except (json.JSONDecodeError, OSError) as e:
-            logging.warning('Error reading existing JSON file: %s', e)
-            existing_data = {}
-    else:
+    # Check if the directory exists
+    if not os.path.isdir(repository):
+        logging.warning(f"[!] Error: Directory '{repository}' does not exist.")
+        return False
+
+    # Verilog cache-related file names
+    cache_files = {"icache", "dcache", "cache", "l1_cache", "l2_cache", "cache_controller"}
+    
+    # Verilog cache-related keywords
+    cache_keywords = [
+        r"\b(cache_hit|cache_miss|tag|dirty|valid)\b",
+        r"\b(LRU|FIFO|replacement_policy)\b",
+        r"\b(write_back|write_through)\b"
+    ]
+
+    has_cache = False
+
+    # Walk through all Verilog and SystemVerilog files in the directory
+    for root, _, files in os.walk(repository):
+        for file in files:
+            if file.endswith((".v", ".sv")):  # Checks Verilog and SystemVerilog files
+                file_path = os.path.join(root, file)
+
+                # Check for cache-related filenames
+                if any(name in file.lower() for name in cache_files):
+                    print(f"Possible cache file: {file}")
+                    has_cache = True
+
+                # Scan for cache-related Verilog and SystemVerilog signals
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                    for keyword in cache_keywords:
+                        if re.search(keyword, content):
+                            print(f"Cache-related signals in {file}")
+                            has_cache = True
+                            break  # Stop scanning this file if we already found cache indicators
+
+    return has_cache
+
+
+def generate_labels_file(processor_name, license_types, cpu_bits, cache, output_folder):
+    """Generate a JSON file with labels for the processor.
+
+    Args:
+        processor_name (str): The name of the processor.
+        license_types (list{str}): List of license types.
+        cpu_bits (int): CPU bit architecture.
+        cache (bool): True if the CPU has cache, False otherwise.
+        output_folder (str): The folder where the JSON file will be saved.
+    """
+    logging.basicConfig(
+        level=logging.WARNING,
+        format='%(levelname)s: %(message)s',
+    )
+
+    # Ensure the output folder exists
+    os.makedirs(output_folder, exist_ok=True)
+    
+    # Define the output file path using the processor name
+    output_file = os.path.join(output_folder, f"{processor_name}.json")
+
+    # Ensure the JSON file exists
+    if not os.path.exists(output_file):
+        with open(output_file, 'w', encoding='utf-8') as json_file:
+            json.dump({}, json_file, indent=4)
+    
+    # Load existing JSON data
+    try:
+        with open(output_file, 'r', encoding='utf-8') as json_file:
+            existing_data = json.load(json_file)
+    except (json.JSONDecodeError, OSError) as e:
+        logging.warning('Error reading existing JSON file: %s', e)
         existing_data = {}
 
-    # Check if "cores" exists
-    if 'cores' not in existing_data:
-        # Overwrite the file completely if "cores" is missing
-        output_data = {
-            'cores': {
-                processor_name: {
-                    'license_types': list(
-                        set(license_types)
-                    ),  # Deduplicate license types
-                    'bits': cpu_bits,
-                }
-            }
-        }
-    else:
-        # Update only the cores section without overwriting other data
-        existing_data['cores'][processor_name] = {
-            'license_types': list(
-                set(license_types)
-            ),  # Deduplicate license types
-            'bits': cpu_bits,
-        }
-        output_data = existing_data
+    # Update the JSON data directly without "cores" section
+    existing_data[processor_name] = {
+        'license_types': list(set(license_types)),  # Deduplicate license types
+        'bits': cpu_bits,
+        'cache': cache,
+    }
 
     # Write updated results back to JSON file
     try:
         with open(output_file, 'w', encoding='utf-8') as json_file:
-            json.dump(output_data, json_file, indent=4)
+            json.dump(existing_data, json_file, indent=4)
         print(f'Results saved to {output_file}')
     except OSError as e:
         logging.warning('Error writing to JSON file: %s', e)
 
 
-def main(directory, config_file, output_file):
+def main(directory, config_file, output_folder):
     """Main function to find LICENSE files and identify their types.
 
     Args:
         directory (str): The directory to search for LICENSE files.
         config_file (str): The configuration JSON file path.
-        output_file (str): The output JSON file path.
+        output_folder (str): The output folder path.
     """
     logging.basicConfig(
         level=logging.WARNING, format='%(levelname)s: %(message)s'
@@ -320,7 +365,9 @@ def main(directory, config_file, output_file):
         logging.warning('Error processing configuration: %s', e)
         return
 
-    generate_labels_file(processor_name, license_types, cpu_bits, output_file)
+    cache = has_cpu_cache(directory)
+
+    generate_labels_file(processor_name, license_types, cpu_bits, cache, output_folder)
 
 
 if __name__ == '__main__':
@@ -342,11 +389,11 @@ if __name__ == '__main__':
     parser.add_argument(
         '-o',
         '--output',
-        default='labels.json',
-        help='The output JSON file path.',
+        default='labels',
+        help='The output folder path.',
     )
     args = parser.parse_args()
     dir_to_search = args.dir
     config_json = args.config
-    output_json = args.output
-    main(dir_to_search, config_json, output_json)
+    output_folder = args.output
+    main(dir_to_search, config_json, output_folder)
