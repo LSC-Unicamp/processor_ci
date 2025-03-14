@@ -241,6 +241,8 @@ def has_cpu_cache(repository):
 
     has_cache = False
 
+    encodings = ['utf-8', 'latin-1', 'utf-16', 'utf-8-sig']
+
     # Walk through all Verilog and SystemVerilog files in the directory
     for root, _, files in os.walk(repository):
         for file in files:
@@ -255,14 +257,28 @@ def has_cpu_cache(repository):
                     has_cache = True
 
                 # Scan for cache-related Verilog and SystemVerilog signals
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                    for keyword in cache_keywords:
-                        if re.search(keyword, content):
-                            print(f'Cache-related signals in {file}')
-                            has_cache = True
-                            break  # Stop scanning this file if we already found cache indicators
-
+                for encoding in encodings:
+                    try:
+                        with open(file_path, 'r', encoding=encoding) as f:
+                            content = f.read()
+                            for keyword in cache_keywords:
+                                if re.search(keyword, content):
+                                    print(f'Cache-related signals in {file}')
+                                    has_cache = True
+                                    break
+                        break
+                    except (
+                        UnicodeDecodeError,
+                        FileNotFoundError,
+                        PermissionError,
+                        OSError,
+                    ) as e:
+                        logging.warning(
+                            'Error reading file %s with encoding %s: %s',
+                            file_path,
+                            encoding,
+                            e,
+                        )
     return has_cache
 
 
