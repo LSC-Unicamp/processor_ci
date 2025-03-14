@@ -28,25 +28,25 @@ module processorci_top (
 
 wire clk_core, reset_core, reset_o;
 
-wire memory_response, memory_read_request,
-    memory_write_request;
+wire memory_response, master_stb, master_we,
+    master_cyc;
 
 wire [31:0] memory_read_data,
     memory_write_data, memory_addr;
 
 
 Controller #(
-    .CLK_FREQ          (`CLOCK_FREQ),
-    .BIT_RATE          (115200),
-    .PAYLOAD_BITS      (8),
-    .BUFFER_SIZE       (8),
-    .PULSE_CONTROL_BITS(32),
-    .BUS_WIDTH         (32),
-    .WORD_SIZE_BY      (4),
-    .ID                (0),
-    .RESET_CLK_CYCLES  (20),
-    .MEMORY_FILE       (""),
-    .MEMORY_SIZE       (`MEMORY_SIZE)
+    .CLK_FREQ           (`CLOCK_FREQ),
+    .BIT_RATE           (115200),
+    .PAYLOAD_BITS       (8),
+    .BUFFER_SIZE        (8),
+    .PULSE_CONTROL_BITS (32),
+    .BUS_WIDTH          (32),
+    .WORD_SIZE_BY       (4),
+    .ID                 (0),
+    .RESET_CLK_CYCLES   (20),
+    .MEMORY_FILE        (""),
+    .MEMORY_SIZE        (`MEMORY_SIZE)
 ) Controller(
     `ifdef HIGH_CLK
     .clk        (clk_o),
@@ -72,8 +72,8 @@ Controller #(
     
     // main memory - instruction memory
     .core_memory_response        (memory_response),      // Memory response signal, 1 means that the memory operation is done
-    .core_read_memory            (memory_read_request),  // Read memory signal
-    .core_write_memory           (memory_write_request), // Write memory signal
+    .core_read_memory            (master_stb & !master_we),  // Read memory signal
+    .core_write_memory           (master_stb & master_we), // Write memory signal
     .core_address_memory         (memory_addr),          // Address to read or write
     .core_write_data_memory      (memory_write_data),    // Data to write
     .core_read_data_memory       (memory_read_data),     // Data read from memory
@@ -91,23 +91,19 @@ Controller #(
 // Core space
 
 Grande_Risco5 Processor(
-    .clk                      (clk_core),
-    .rst_n                    (!reset_core),
-    .halt                     (1'b0),
+    .clk    (clk_core),
+    .rst_n  (!reset_core),
+    .halt   (1'b0),
 
-    .memory_response          (memory_response),
-    .memory_read_request      (memory_read_request),
-    .memory_write_request     (memory_write_request),
-    .memory_read_data         (memory_read_data),
-    .memory_write_data        (memory_write_data),
-    .memory_addr              (memory_addr),
+    .cyc_o  (master_cyc),
+    .stb_o  (master_stb),
+    .we_o   (master_we),
 
-    .peripheral_response      (1'b0),
-    .peripheral_read_request  (),
-    .peripheral_write_request (),
-    .peripheral_read_data     (32'h00000000),
-    .peripheral_write_data    (),
-    .peripheral_addr          (),
+    .addr_o (memory_addr),
+    .data_o (memory_write_data),
+
+    .ack_i  (memory_response),
+    .data_i (memory_read_data),
 
     .interruption             (1'b0)
 );
