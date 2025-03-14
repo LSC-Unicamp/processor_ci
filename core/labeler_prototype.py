@@ -205,7 +205,7 @@ def has_cpu_cache(repository):
 
     Args:
         repository(str): Path to the directory containing the CPU Verilog files
-    
+
     Returns:
         Boolean: True if the CPU has a cache, False otherwise
     """
@@ -217,17 +217,24 @@ def has_cpu_cache(repository):
 
     # Check if the directory exists
     if not os.path.isdir(repository):
-        logging.warning(f"[!] Error: Directory '{repository}' does not exist.")
+        logging.warning("[!] Error: Directory '%s' does not exist.", repository)
         return False
 
     # Verilog cache-related file names
-    cache_files = {"icache", "dcache", "cache", "l1_cache", "l2_cache", "cache_controller"}
-    
+    cache_files = {
+        'icache',
+        'dcache',
+        'cache',
+        'l1_cache',
+        'l2_cache',
+        'cache_controller',
+    }
+
     # Verilog cache-related keywords
     cache_keywords = [
-        r"\b(cache_hit|cache_miss|tag|dirty|valid)\b",
-        r"\b(LRU|FIFO|replacement_policy)\b",
-        r"\b(write_back|write_through)\b"
+        r'\b(cache_hit|cache_miss|tag|dirty|valid)\b',
+        r'\b(LRU|FIFO|replacement_policy)\b',
+        r'\b(write_back|write_through)\b',
     ]
 
     has_cache = False
@@ -235,27 +242,31 @@ def has_cpu_cache(repository):
     # Walk through all Verilog and SystemVerilog files in the directory
     for root, _, files in os.walk(repository):
         for file in files:
-            if file.endswith((".v", ".sv")):  # Checks Verilog and SystemVerilog files
+            if file.endswith(
+                ('.v', '.sv')
+            ):  # Checks Verilog and SystemVerilog files
                 file_path = os.path.join(root, file)
 
                 # Check for cache-related filenames
                 if any(name in file.lower() for name in cache_files):
-                    print(f"Possible cache file: {file}")
+                    print(f'Possible cache file: {file}')
                     has_cache = True
 
                 # Scan for cache-related Verilog and SystemVerilog signals
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
                     for keyword in cache_keywords:
                         if re.search(keyword, content):
-                            print(f"Cache-related signals in {file}")
+                            print(f'Cache-related signals in {file}')
                             has_cache = True
                             break  # Stop scanning this file if we already found cache indicators
 
     return has_cache
 
 
-def generate_labels_file(processor_name, license_types, cpu_bits, cache, output_folder):
+def generate_labels_file(
+    processor_name, license_types, cpu_bits, cache, output_dir
+):
     """Generate a JSON file with labels for the processor.
 
     Args:
@@ -263,7 +274,7 @@ def generate_labels_file(processor_name, license_types, cpu_bits, cache, output_
         license_types (list{str}): List of license types.
         cpu_bits (int): CPU bit architecture.
         cache (bool): True if the CPU has cache, False otherwise.
-        output_folder (str): The folder where the JSON file will be saved.
+        output_dir (str): The folder where the JSON file will be saved.
     """
     logging.basicConfig(
         level=logging.WARNING,
@@ -271,16 +282,16 @@ def generate_labels_file(processor_name, license_types, cpu_bits, cache, output_
     )
 
     # Ensure the output folder exists
-    os.makedirs(output_folder, exist_ok=True)
-    
+    os.makedirs(output_dir, exist_ok=True)
+
     # Define the output file path using the processor name
-    output_file = os.path.join(output_folder, f"{processor_name}.json")
+    output_file = os.path.join(output_dir, f'{processor_name}.json')
 
     # Ensure the JSON file exists
     if not os.path.exists(output_file):
         with open(output_file, 'w', encoding='utf-8') as json_file:
             json.dump({}, json_file, indent=4)
-    
+
     # Load existing JSON data
     try:
         with open(output_file, 'r', encoding='utf-8') as json_file:
@@ -305,7 +316,7 @@ def generate_labels_file(processor_name, license_types, cpu_bits, cache, output_
         logging.warning('Error writing to JSON file: %s', e)
 
 
-def main(directory, config_file, output_folder):
+def main(directory, config_file, output_dir):
     """Main function to find LICENSE files and identify their types.
 
     Args:
@@ -367,7 +378,9 @@ def main(directory, config_file, output_folder):
 
     cache = has_cpu_cache(directory)
 
-    generate_labels_file(processor_name, license_types, cpu_bits, cache, output_folder)
+    generate_labels_file(
+        processor_name, license_types, cpu_bits, cache, output_dir
+    )
 
 
 if __name__ == '__main__':
