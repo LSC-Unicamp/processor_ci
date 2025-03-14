@@ -217,7 +217,9 @@ def has_cpu_cache(repository):
 
     # Check if the directory exists
     if not os.path.isdir(repository):
-        logging.warning("[!] Error: Directory '%s' does not exist.", repository)
+        logging.warning(
+            "[!] Error: Directory '%s' does not exist.", repository
+        )
         return False
 
     # Verilog cache-related file names
