@@ -71,7 +71,7 @@ import time
 import json
 import shutil
 import argparse
-from core.config import load_config, get_processor_data, save_config
+from core.config import load_config, save_config
 from core.file_manager import (
     clone_repo,
     remove_repo,
@@ -484,9 +484,8 @@ def add_to_config_file(
     Returns:
         None
     """
-    config = load_config(config_file_path)
-    config['cores'][repo_name] = output_json
-    save_config(config_file_path, config)
+
+    save_config(config_file_path, output_json, repo_name)
 
 
 def save_log_and_generate_template(
@@ -639,8 +638,8 @@ def main() -> None:
         '-p',
         '--path-config',
         type=str,
-        default='config.json',
-        help='Path to the config file',
+        default='config',
+        help='Path to the config folder',
     )
     parser.add_argument(
         '-u',

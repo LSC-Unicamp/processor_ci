@@ -1,0 +1,11 @@
+{
+    "name": "Rift2Core",
+    "folder": "Rift2Core",
+    "sim_files": [],
+    "files": [],
+    "include_dirs": [],
+    "repository": "https://github.com/whutddk/Rift2Core",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005"
+}

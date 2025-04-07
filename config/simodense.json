@@ -1,0 +1,13 @@
+{
+    "name": "simodense",
+    "folder": "simodense",
+    "sim_files": [],
+    "files": [
+        "RTL_and_simulation/cpu.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/pphilippos/simodense",
+    "top_module": "Core",
+    "extra_flags": [],
+    "language_version": "2005"
+}

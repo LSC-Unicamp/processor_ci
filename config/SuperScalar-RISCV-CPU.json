@@ -1,0 +1,28 @@
+{
+    "name": "SuperScalar-RISCV-CPU",
+    "folder": "SuperScalar-RISCV-CPU",
+    "sim_files": [],
+    "files": [
+        "rtl/alu.v",
+        "rtl/define.v",
+        "rtl/define_para.v",
+        "rtl/include_func.v",
+        "rtl/instrbits.v",
+        "rtl/instrman.v",
+        "rtl/lsu.v",
+        "rtl/membuf.v",
+        "rtl/mprf.v",
+        "rtl/mul.v",
+        "rtl/predictor.v",
+        "rtl/schedule.v",
+        "rtl/ssrv_top.v",
+        "rtl/sys_csr.v"
+    ],
+    "include_dirs": [
+        "rtl/"
+    ],
+    "repository": "https://github.com/risclite/SuperScalar-RISCV-CPU",
+    "top_module": "ssrv_top",
+    "extra_flags": [],
+    "language_version": "2005"
+}

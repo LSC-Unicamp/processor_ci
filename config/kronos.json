@@ -1,0 +1,25 @@
+{
+    "name": "kronos",
+    "folder": "kronos",
+    "sim_files": [],
+    "files": [
+        "rtl/core/kronos_EX.sv",
+        "rtl/core/kronos_ID.sv",
+        "rtl/core/kronos_IF.sv",
+        "rtl/core/kronos_RF.sv",
+        "rtl/core/kronos_agu.sv",
+        "rtl/core/kronos_alu.sv",
+        "rtl/core/kronos_branch.sv",
+        "rtl/core/kronos_core.sv",
+        "rtl/core/kronos_counter64.sv",
+        "rtl/core/kronos_csr.sv",
+        "rtl/core/kronos_hcu.sv",
+        "rtl/core/kronos_lsu.sv",
+        "rtl/core/kronos_types.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/SonalPinto/kronos",
+    "top_module": "kronos_core",
+    "extra_flags": [],
+    "language_version": "2012"
+}

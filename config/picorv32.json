@@ -1,0 +1,13 @@
+{
+    "name": "picorv32",
+    "folder": "picorv32",
+    "sim_files": [],
+    "files": [
+        "picorv32.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/YosysHQ/picorv32",
+    "top_module": "picorv32",
+    "extra_flags": [],
+    "language_version": "2005"
+}

@@ -1,0 +1,22 @@
+{
+    "name": "riscv-atom",
+    "folder": "riscv-atom",
+    "sim_files": [],
+    "files": [
+        "rtl/core/Alu.v",
+        "rtl/core/AtomRV.v",
+        "rtl/core/AtomRV_wb.v",
+        "rtl/core/CSR_Unit.v",
+        "rtl/core/Decode.v",
+        "rtl/core/RVC_Aligner.v",
+        "rtl/core/RVC_Decoder.v",
+        "rtl/core/RegisterFile.v"
+    ],
+    "include_dirs": [
+        "rtl/core/"
+    ],
+    "repository": "https://github.com/saursin/riscv-atom",
+    "top_module": "AtomRV",
+    "extra_flags": [],
+    "language_version": "2005"
+}

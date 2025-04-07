@@ -1,0 +1,25 @@
+{
+    "name": "harv",
+    "folder": "harv",
+    "sim_files": [],
+    "files": [
+        "hdl/alu.vhd",
+        "hdl/control.vhd",
+        "hdl/csr.vhd",
+        "hdl/harv.vhd",
+        "hdl/harv_pkg.vhd",
+        "hdl/instr_fetch.vhd",
+        "hdl/regfile.vhd",
+        "hdl/ft_components/alu_tmr.vhd",
+        "hdl/ft_components/control_tmr.vhd",
+        "hdl/ft_components/hamming_decoder.vhd",
+        "hdl/ft_components/hamming_encoder.vhd",
+        "hdl/ft_components/hamming_pkg.vhd",
+        "hdl/ft_components/hamming_register.vhd"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/xarc/harv",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "08"
+}

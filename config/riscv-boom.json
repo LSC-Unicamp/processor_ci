@@ -1,0 +1,15 @@
+{
+    "name": "riscv-boom",
+    "folder": "riscv-boom",
+    "sim_files": [
+        "src/main/resources/vsrc/btb_harness.v"
+    ],
+    "files": [
+        "src/main/resources/vsrc/predictor_harness.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/riscv-boom/riscv-boom",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2005"
+}

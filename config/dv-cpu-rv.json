@@ -1,0 +1,24 @@
+{
+    "name": "dv-cpu-rv",
+    "folder": "dv-cpu-rv",
+    "sim_files": [],
+    "files": [
+        "core/rtl/rv_alu.v",
+        "core/rtl/rv_alu_ctrl.v",
+        "core/rtl/rv_branch_predict.v",
+        "core/rtl/rv_core.v",
+        "core/rtl/rv_ctrl.v",
+        "core/rtl/rv_div.v",
+        "core/rtl/rv_forward.v",
+        "core/rtl/rv_hzd_detect.v",
+        "core/rtl/rv_imm_gen.v",
+        "core/rtl/rv_mem_map.v",
+        "core/rtl/rv_mul.v",
+        "core/rtl/rv_rf.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/devindang/dv-cpu-rv",
+    "top_module": "rv_core",
+    "extra_flags": [],
+    "language_version": "2005"
+}

@@ -1,0 +1,29 @@
+{
+    "name": "SprintRV",
+    "folder": "SprintRV",
+    "sim_files": [],
+    "files": [
+        "rtl/core/core_top.v",
+        "rtl/core/ctrl/ctrl.v",
+        "rtl/core/dec/id.v",
+        "rtl/core/dec/id_ex.v",
+        "rtl/core/exu/div.v",
+        "rtl/core/exu/ex.v",
+        "rtl/core/exu/ex_mem.v",
+        "rtl/core/ifu/bp.v",
+        "rtl/core/ifu/if_id.v",
+        "rtl/core/ifu/ifu.v",
+        "rtl/core/include/defines.v",
+        "rtl/core/lsu/mem.v",
+        "rtl/core/lsu/mem_wb.v",
+        "rtl/core/wb/csr.v",
+        "rtl/core/wb/gpr.v"
+    ],
+    "include_dirs": [
+        "rtl/core/include/"
+    ],
+    "repository": "https://github.com/CastoHu/SprintRV",
+    "top_module": "core_top",
+    "extra_flags": [],
+    "language_version": "2005"
+}

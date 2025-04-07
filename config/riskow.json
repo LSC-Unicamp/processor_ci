@@ -1,0 +1,18 @@
+{
+    "name": "riskow",
+    "folder": "riskow",
+    "sim_files": [],
+    "files": [
+        "cpu/alu.v",
+        "cpu/comp.v",
+        "cpu/cpu.v",
+        "cpu/instruction_decoder.v",
+        "cpu/program_counter.v",
+        "cpu/register_bank.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/racerxdl/riskow",
+    "top_module": "CPU",
+    "extra_flags": [],
+    "language_version": "2005"
+}

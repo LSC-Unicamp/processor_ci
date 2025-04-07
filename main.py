@@ -35,7 +35,7 @@ Requirements:
 """
 
 import argparse
-from core.config import get_processor_data, load_config
+from core.config import load_config
 from core.fpga import make_build_file, flash, build
 
 
@@ -65,10 +65,7 @@ def main(
         KeyError: If the processor or board data is missing in the configuration file.
     """
     # Carrega o arquivo de configuração
-    config = load_config(config_path)
-
-    # Busca os dados do processador pelo nome
-    processor_data = get_processor_data(config, processor_name)
+    processor_data = load_config(config_path, processor_name)
 
     # Exibe os argumentos recebidos e os dados do processador
 
@@ -93,7 +90,7 @@ if __name__ == '__main__':
         '--config',
         type=str,
         required=True,
-        help='Caminho do arquivo de configuração do script.',
+        help='Caminho do diretorio de configuração do script.',
     )
     parser.add_argument(
         '-p',

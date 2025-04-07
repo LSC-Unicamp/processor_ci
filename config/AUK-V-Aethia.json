@@ -1,0 +1,22 @@
+{
+    "name": "AUK-V-Aethia",
+    "folder": "AUK-V-Aethia",
+    "sim_files": [],
+    "files": [
+        "rtl/core/aukv.v",
+        "rtl/core/aukv_alu.v",
+        "rtl/core/aukv_csr_regfile.v",
+        "rtl/core/aukv_decode.v",
+        "rtl/core/aukv_execute.v",
+        "rtl/core/aukv_fetch.v",
+        "rtl/core/aukv_gpr_regfilie.v",
+        "rtl/core/aukv_mem.v"
+    ],
+    "include_dirs": [
+        "rtl/wishbone/"
+    ],
+    "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
+    "top_module": "aukv",
+    "extra_flags": [],
+    "language_version": "2005"
+}

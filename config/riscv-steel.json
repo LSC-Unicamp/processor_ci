@@ -1,0 +1,13 @@
+{
+    "name": "riscv-steel",
+    "folder": "riscv-steel",
+    "sim_files": [],
+    "files": [
+        "hardware/rvsteel_core.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/riscv-steel/riscv-steel",
+    "top_module": "rvsteel_core",
+    "extra_flags": [],
+    "language_version": "2005"
+}

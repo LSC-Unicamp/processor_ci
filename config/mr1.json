@@ -1,0 +1,14 @@
+{
+    "name": "mr1",
+    "folder": "mr1",
+    "sim_files": [],
+    "files": [
+        "MR1.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/tomverbeure/mr1",
+    "top_module": "MR1",
+    "extra_flags": [],
+    "language_version": "2005",
+    "pre_script": "sbt \"run-main mr1.MR1Verilog\""
+}

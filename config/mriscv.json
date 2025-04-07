@@ -1,0 +1,21 @@
+{
+    "name": "mriscv",
+    "folder": "mriscv",
+    "sim_files": [],
+    "files": [
+        "mriscvcore/mriscvcore.v",
+        "mriscvcore/ALU/ALU.v",
+        "mriscvcore/DECO_INSTR/DECO_INSTR.v",
+        "mriscvcore/FSM/FSM.v",
+        "mriscvcore/IRQ/IRQ.v",
+        "mriscvcore/MEMORY_INTERFACE/MEMORY_INTERFACE.v",
+        "mriscvcore/MULT/MULT.v",
+        "mriscvcore/REG_FILE/REG_FILE.v",
+        "mriscvcore/UTILITIES/UTILITY.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/onchipuis/mriscv",
+    "top_module": "mriscvcore",
+    "extra_flags": [],
+    "language_version": "2005"
+}

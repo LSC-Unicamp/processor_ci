@@ -1,0 +1,38 @@
+{
+    "repository": "https://github.com/JN513/Risco-5.git",
+    "name": "Risco-5",
+    "folder": "Risco-5",
+    "files": [
+        "src/core/alu.v",
+        "src/core/alu_control.v",
+        "src/core/control_unit.v",
+        "src/core/core.v",
+        "src/core/csr_unit.v",
+        "src/core/immediate_generator.v",
+        "src/core/mdu.v",
+        "src/core/mux.v",
+        "src/core/pc.v",
+        "src/core/registers.v"
+    ],
+    "language_version": "2005",
+    "top_module": "soc_tb",
+    "sim_files": [
+        "tests/soc_test.v",
+        "src/peripheral/bus.v",
+        "src/peripheral/fifo.v",
+        "src/peripheral/gpios.v",
+        "src/peripheral/gpio.v",
+        "src/peripheral/leds.v",
+        "src/peripheral/memory.v",
+        "src/peripheral/pwm.v",
+        "src/peripheral/soc.v",
+        "src/peripheral/uart_rx.v",
+        "src/peripheral/uart_tx.v",
+        "src/peripheral/uart.v"
+    ],
+    "include_dirs": [
+        "src/core/"
+    ],
+    "extra_flags": [],
+    "enable": true
+}

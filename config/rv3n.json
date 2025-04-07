@@ -1,0 +1,30 @@
+{
+    "name": "rv3n",
+    "folder": "rv3n",
+    "sim_files": [],
+    "files": [
+        "rtl/define.v",
+        "rtl/define_para.v",
+        "rtl/include_func.v",
+        "rtl/rv3n_chain_manager.v",
+        "rtl/rv3n_csr.v",
+        "rtl/rv3n_func_jcond.v",
+        "rtl/rv3n_func_lsu.v",
+        "rtl/rv3n_func_muldiv.v",
+        "rtl/rv3n_func_op.v",
+        "rtl/rv3n_gsr.v",
+        "rtl/rv3n_predictor.v",
+        "rtl/rv3n_stage_ch.v",
+        "rtl/rv3n_stage_dc.v",
+        "rtl/rv3n_stage_id.v",
+        "rtl/rv3n_stage_if.v",
+        "rtl/rv3n_top.v"
+    ],
+    "include_dirs": [
+        "rtl"
+    ],
+    "repository": "https://github.com/risclite/rv3n",
+    "top_module": "rv3n_top",
+    "extra_flags": [],
+    "language_version": "2012"
+}

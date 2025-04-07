@@ -1,0 +1,18 @@
+{
+    "name": "riscado-v",
+    "folder": "riscado-v",
+    "sim_files": [],
+    "files": [
+        "alu.v",
+        "control_unit.v",
+        "program_counter.v",
+        "register_file.v",
+        "riscv.v",
+        "load_store.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/zxmarcos/riscado-v",
+    "top_module": "RISCV",
+    "extra_flags": [],
+    "language_version": "2005"
+}

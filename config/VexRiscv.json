@@ -1,0 +1,14 @@
+{
+    "name": "VexRiscv",
+    "folder": "VexRiscv",
+    "sim_files": [],
+    "files": [
+        "VexRiscv.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/SpinalHDL/VexRiscv",
+    "top_module": "VexRiscv",
+    "extra_flags": [],
+    "language_version": "2005",
+    "pre_script": "sbt \"runMain vexriscv.demo.GenFull\""
+}

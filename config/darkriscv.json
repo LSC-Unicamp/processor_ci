@@ -1,0 +1,15 @@
+{
+    "name": "darkriscv",
+    "folder": "darkriscv",
+    "sim_files": [],
+    "files": [
+        "rtl/darkriscv.v"
+    ],
+    "include_dirs": [
+        "rtl"
+    ],
+    "repository": "https://github.com/darklife/darkriscv",
+    "top_module": "darkriscv",
+    "extra_flags": [],
+    "language_version": "2005"
+}

@@ -1,0 +1,37 @@
+{
+    "name": "RS5",
+    "folder": "RS5",
+    "sim_files": [],
+    "files": [
+        "rtl/CSRBank.sv",
+        "rtl/RS5.sv",
+        "rtl/aes_unit.sv",
+        "rtl/decode.sv",
+        "rtl/decompresser.sv",
+        "rtl/div.sv",
+        "rtl/execute.sv",
+        "rtl/fetch.sv",
+        "rtl/mmu.sv",
+        "rtl/mul.sv",
+        "rtl/mulNbits.sv",
+        "rtl/regbank.sv",
+        "rtl/retire.sv",
+        "rtl/vectorALU.sv",
+        "rtl/vectorCSRs.sv",
+        "rtl/vectorLSU.sv",
+        "rtl/vectorRegbank.sv",
+        "rtl/vectorUnit.sv",
+        "rtl/aes/riscv_crypto_aes_fwd_sbox.sv",
+        "rtl/aes/riscv_crypto_aes_sbox.sv",
+        "rtl/aes/riscv_crypto_sbox_aes_out.sv",
+        "rtl/aes/riscv_crypto_sbox_aes_top.sv",
+        "rtl/aes/riscv_crypto_sbox_inv_mid.sv"
+    ],
+    "include_dirs": [
+        "rtl/"
+    ],
+    "repository": "https://github.com/gaph-pucrs/RS5",
+    "top_module": "RS5",
+    "extra_flags": [],
+    "language_version": "2012"
+}

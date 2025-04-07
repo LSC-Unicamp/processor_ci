@@ -1,0 +1,21 @@
+{
+    "name": "fedar-f1-rv64im",
+    "folder": "fedar-f1-rv64im",
+    "sim_files": [],
+    "files": [
+        "src/ALU.v",
+        "src/CPU.v",
+        "src/Encoders.v",
+        "src/ImmediateExtractor.v",
+        "src/RAM.v",
+        "src/ROM.v",
+        "src/RegFile.v"
+    ],
+    "include_dirs": [
+        "src/"
+    ],
+    "repository": "https://github.com/eminfedar/fedar-f1-rv64im",
+    "top_module": "CPU",
+    "extra_flags": [],
+    "language_version": "2005"
+}
