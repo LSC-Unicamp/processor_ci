@@ -242,14 +242,11 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
             else:
                 file.write(prefix + f' {CURRENT_DIR}/' + i + '\n')
 
-        prefix = get_prefix(board, False, False)
+        prefix = get_prefix(board, False, True)
         file.write(
             prefix
-            + f' {toolchain_path}/processor_ci/rtl/{config["folder"]}.v\n'
+            + f' {toolchain_path}/processor_ci/rtl/{config["folder"]}.sv\n'
         )
-
-        if board in YOSYS_BOARDS and exist_sv_file:
-            file.write('yosys read_systemverilog -link\n')
 
         file.write(base_config)
 

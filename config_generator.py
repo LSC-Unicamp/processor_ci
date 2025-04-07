@@ -132,10 +132,10 @@ def copy_hardware_template(repo_name: str) -> None:
     Returns:
         None
     """
-    orig = 'rtl/template.v'
+    orig = 'rtl/template.sv'
 
     # Caminho do diretório de destino
-    dest = f'rtl/{repo_name}.v'
+    dest = f'rtl/{repo_name}.sv'
 
     if os.path.exists(dest):
         print_yellow('[WARN] RTL - Arquivo já existe')

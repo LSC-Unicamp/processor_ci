@@ -3,15 +3,15 @@ set_device -name GW2AR-18C GW2AR-LV18QN88C8/I7
 add_file /eda/processor_ci/constraints/gowin_tangnano_20k.cst
 add_file /eda/processor_ci/constraints/gowin_tangnano_20k.sdc
 
-add_file /eda/processor-ci-controller/modules/uart.v
+add_file /eda/processor-ci-controller/modules/uart.sv
 add_file /eda/processor-ci-controller/modules/UART/rtl/uart_rx.v
 add_file /eda/processor-ci-controller/modules/UART/rtl/uart_tx.v
-add_file /eda/processor-ci-controller/src/fifo.v
-add_file /eda/processor-ci-controller/src/reset.v
-add_file /eda/processor-ci-controller/src/clk_divider.v
-add_file /eda/processor-ci-controller/src/memory.v
-add_file /eda/processor-ci-controller/src/interpreter.v
-add_file /eda/processor-ci-controller/src/controller.v
+add_file /eda/processor-ci-controller/rtl/fifo.sv
+add_file /eda/processor-ci-controller/rtl/reset.sv
+add_file /eda/processor-ci-controller/rtl/clk_divider.sv
+add_file /eda/processor-ci-controller/rtl/memory.sv
+add_file /eda/processor-ci-controller/rtl/interpreter.sv
+add_file /eda/processor-ci-controller/rtl/controller.sv
 
 set_option -top_module processorci 
 
