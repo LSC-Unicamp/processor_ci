@@ -107,7 +107,7 @@ def get_yosys_prefix(vhdl: bool, sverilog: bool) -> str:
     if vhdl:
         return 'yosys ghdl -a'
     if sverilog:
-        return 'yosys read_systemverilog -defer'
+        return 'yosys read_systemverilog -defer -I./'
     return 'yosys read_verilog'
 
 
