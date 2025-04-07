@@ -116,7 +116,66 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+klessydra_t1_3th_core #(
+  .N_EXT_PERF_COUNTERS   (0),
+  .INSTR_RDATA_WIDTH     (32),
+  .N_HWLP                (2),
+  .N_HWLP_BITS           (4)
+) u_klessydra_t1_3th_core (
+  // Clock, Reset, Test
+  .clk_i                 (clk_core),
+  .clock_en_i            (1),
+  .rst_ni                (~rst_core),
+  .test_en_i             (0),
+
+  // Initialization
+  .boot_addr_i           (0),
+  .core_id_i             (0),
+  .cluster_id_i          (0),
+
+  // Instruction memory interface
+  .instr_req_o           (core_cyc),
+  .instr_gnt_i           (1'b1),
+  .instr_rvalid_i        (core_ack),
+  .instr_addr_o          (core_addr),
+  .instr_rdata_i         (core_data_in),
+
+  // Data memory interface
+  .data_req_o            (data_mem_cyc),
+  .data_gnt_i            (1'b1),
+  .data_rvalid_i         (data_mem_ack),
+  .data_we_o             (data_mem_we),
+  .data_be_o             (),
+  .data_addr_o           (data_mem_addr),
+  .data_wdata_o          (data_mem_data_out),
+  .data_rdata_i          (data_mem_data_in),
+  .data_err_i            (0),
+
+  // Interrupt interface
+  .irq_i                 (0),
+  .irq_id_i              (0),
+  .irq_ack_o             (),
+  .irq_id_o              (),
+  .irq_sec_i             (0),
+  .sec_lvl_o             (),
+
+  // Debug interface
+  .debug_req_i           (0),
+  .debug_gnt_o           (),
+  .debug_rvalid_o        (),
+  .debug_addr_i          (0),
+  .debug_we_i            (0),
+  .debug_wdata_i         (0),
+  .debug_rdata_o         (),
+  .debug_halted_o        (),
+  .debug_halt_i          (0),
+  .debug_resume_i        (0),
+
+  // Miscellaneous control
+  .fetch_enable_i        (1),
+  .core_busy_o           (),
+  .ext_perf_counters_i   (1)
+);
 
 // Clock inflaestructure
 

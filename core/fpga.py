@@ -87,7 +87,7 @@ def get_vivado_prefix(vhdl: bool, sverilog: bool) -> str:
         str: The prefix command to use.
     """
     if vhdl:
-        return 'read_vhdl'
+        return 'read_vhdl -vhdl2008'
     if sverilog:
         return 'read_verilog -sv'
     return 'read_verilog'

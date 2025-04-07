@@ -116,18 +116,22 @@ Controller #(
 
 // Core space
 
+logic bus_valid;
+
 CPU Riskow (
     .clk            (clk_core),
     .reset          (rst_core),
-    .dataIn         (),
-    .dataOut        (),
-    .address        (),
-    .busValid       (),
+    .dataIn         (core_data_in),
+    .dataOut        (core_data_out),
+    .address        (core_addr),
+    .busValid       (bus_valid),
     .busInstr       (),
-    .busReady       (),
-    .busWriteEnable ()
+    .busReady       (core_ack),
+    .busWriteEnable (core_we),
 );
 
+assign core_cyc = bus_valid;
+assign core_stb = bus_valid;
 
 // Clock inflaestructure
 

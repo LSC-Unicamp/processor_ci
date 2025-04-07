@@ -116,19 +116,25 @@ Controller #(
 
 // Core space
 
+logic core_memory_read, core_memory_write;
+
 Core #(
     .BOOT_ADDRESS (32'h00000000)
 ) Core(
     .clk             (clk_core),
     .reset           (rst_core),
     .option          (),
-    .memory_response (),
-    .memory_read     (),
-    .memory_write    (),
-    .write_data      (),
-    .read_data       (),
-    .address         ()
+    .memory_response (core_ack),
+    .memory_read     (core_memory_read),
+    .memory_write    (core_memory_write),
+    .write_data      (core_data_out),
+    .read_data       (core_data_in),
+    .address         (core_addr)
 );
+
+assign core_cyc = core_memory_read | core_memory_write;
+assign core_stb = core_memory_read | core_memory_write;
+assign core_we  = core_memory_write;
 
 // Clock inflaestructure
 

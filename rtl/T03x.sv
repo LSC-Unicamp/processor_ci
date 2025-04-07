@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -116,6 +116,11 @@ Controller #(
 
 // Core space
 
+assign core_stb = core_cyc;
+assign core_we  = 1'b0; // Read only
+assign core_data_out = 32'b0;
+assign data_mem_stb = data_mem_cyc;
+
 klessydra_t0_3th_core #(
   .N_EXT_PERF_COUNTERS   (0),
   .INSTR_RDATA_WIDTH     (32),
@@ -125,7 +130,7 @@ klessydra_t0_3th_core #(
   // Clock, Reset, Test
   .clk_i                 (clk_core),
   .clock_en_i            (1),
-  .rst_ni                (rst_core),
+  .rst_ni                (~rst_core),
   .test_en_i             (0),
 
   // Initialization
@@ -134,22 +139,22 @@ klessydra_t0_3th_core #(
   .cluster_id_i          (0),
 
   // Instruction memory interface
-  .instr_req_o           (),
-  .instr_gnt_i           (),
-  .instr_rvalid_i        (),
-  .instr_addr_o          (),
-  .instr_rdata_i         (),
+  .instr_req_o           (core_cyc),
+  .instr_gnt_i           (1'b1),
+  .instr_rvalid_i        (core_ack),
+  .instr_addr_o          (core_addr),
+  .instr_rdata_i         (core_data_in),
 
   // Data memory interface
-  .data_req_o            (),
-  .data_gnt_i            (),
-  .data_rvalid_i         (),
-  .data_we_o             (),
+  .data_req_o            (data_mem_cyc),
+  .data_gnt_i            (1'b1),
+  .data_rvalid_i         (data_mem_ack),
+  .data_we_o             (data_mem_we),
   .data_be_o             (),
-  .data_addr_o           (),
-  .data_wdata_o          (),
-  .data_rdata_i          (),
-  .data_err_i            (),
+  .data_addr_o           (data_mem_addr),
+  .data_wdata_o          (data_mem_data_out),
+  .data_rdata_i          (data_mem_data_in),
+  .data_err_i            (0),
 
   // Interrupt interface
   .irq_i                 (0),

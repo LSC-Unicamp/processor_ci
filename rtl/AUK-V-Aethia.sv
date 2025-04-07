@@ -116,7 +116,8 @@ Controller #(
 
 
 // Core space
-wire core_cyc_stb;
+logic core_cyc_stb;
+logic data_mem_cyc_stb;
 
 aukv aukv_inst(
     .i_clk          (clk_core),
@@ -125,7 +126,7 @@ aukv aukv_inst(
     .o_ack          (),                  // Sem interligação de ACK
 
     // Sinais de memória de dados
-    .o_data_mem_en      (),
+    .o_data_mem_en      (data_mem_cyc_stb),
     .o_data_mem_we      (data_mem_we),
     .o_data_mem_addr    (data_mem_addr),
     .o_data_mem_data    (data_mem_data_out),
@@ -143,6 +144,11 @@ aukv aukv_inst(
 
 assign core_cyc = core_cyc_stb;
 assing core_stb = core_cyc_stb;
+assign data_mem_cyc = data_mem_cyc_stb;
+assign data_mem_stb = data_mem_cyc_stb;
+assign core_we = 1'b0; // core_we = 0
+assign core_data_out = 32'b0; // core_data_out = 0 because we never write to instruction memory
+
 
 // Clock inflaestructure
 

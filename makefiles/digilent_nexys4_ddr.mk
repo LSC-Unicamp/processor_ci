@@ -1,5 +1,5 @@
 ifndef VIVADO_PATH
-	VIVADO=/eda/vivado/Vivado/2023.2/bin/vivado
+	VIVADO=vivado
 else
 	VIVADO=$(VIVADO_PATH)/vivado
 endif
@@ -17,6 +17,6 @@ clean:
 
 load:
 	@echo "Flashing the FPGA..."
-	/eda/oss-cad-suite/bin/openFPGALoader -b nexys_a7_100 digilent_nexys4_ddr.bit
+	openFPGALoader -b nexys_a7_100 digilent_nexys4_ddr.bit
 
 run_all: digilent_nexys4_ddr.bit load

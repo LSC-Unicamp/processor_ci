@@ -119,11 +119,14 @@ Controller #(
 RISCV Riscado_V (
     .clk         (clk_core),
     .reset       (rst_core),
-    .dataIn      (),
-    .dataOut     (),
-    .address     (),
-    .writeEnable ()
+    .dataIn      (core_data_in),
+    .dataOut     (core_data_out),
+    .address     (core_addr),
+    .writeEnable (core_we),
 );
+
+assign core_cyc = 1'b1;
+assign core_stb = 1'b1;
 
 // Clock inflaestructure
 

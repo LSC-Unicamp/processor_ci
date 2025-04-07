@@ -122,16 +122,23 @@ nerv cpu (
     .stall      (1'b0),
     .trap       (),
  
-    .imem_addr  (),
-    .imem_data  (),
+    .imem_addr  (core_addr),
+    .imem_data  (core_data_in),
  
-    .dmem_valid (),
-    .dmem_addr  (),
+    .dmem_valid (data_mem_we),
+    .dmem_addr  (data_mem_addr),
     .dmem_wstrb (),
-    .dmem_wdata (),
-    .dmem_rdata (dataread)
+    .dmem_wdata (data_mem_data_out),
+    .dmem_rdata (data_mem_data_in),
 );
 
+assign core_cyc = 1'b1;
+assign core_stb = 1'b1;
+assign core_we  = 1'b0;
+assign core_data_out = 32'b0;
+
+assign data_mem_cyc = 1'b1;
+assign data_mem_stb = 1'b1;
 
 // Clock inflaestructure
 

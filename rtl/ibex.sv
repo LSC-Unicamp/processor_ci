@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -116,7 +116,69 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+assign core_stb = core_cyc;
+assign data_mem_stb = data_mem_cyc;
+assign core_we = 1'b0;
+
+ibex_top ibex_core_inst (
+  .clk_i                (clk_core),
+  .rst_ni               (~rst_core),
+  .test_en_i            (1'b0),
+  .ram_cfg_i            ('0),
+  .hart_id_i            (32'h0),
+  .boot_addr_i          (32'h0),
+
+  // Instruction memory interface
+  .instr_req_o          (core_cyc),
+  .instr_gnt_i          (1),
+  .instr_rvalid_i       (core_ack),
+  .instr_addr_o         (core_addr),
+  .instr_rdata_i        (core_data_in),
+  .instr_rdata_intg_i   (0),
+  .instr_err_i          (1'b0),
+
+  // Data memory interface
+  .data_req_o           (data_mem_cyc),
+  .data_gnt_i           (1'b1),
+  .data_rvalid_i        (data_mem_ack),
+  .data_we_o            (data_mem_we),
+  .data_be_o            (/* open */),
+  .data_addr_o          (data_mem_addr),
+  .data_wdata_o         (data_mem_data_out),
+  .data_wdata_intg_o    (),
+  .data_rdata_i         (data_mem_data_in),
+  .data_rdata_intg_i    (7'h0),
+  .data_err_i           (1'b0),
+
+  // Interrupt inputs - todos zerados
+  .irq_software_i       (1'b0),
+  .irq_timer_i          (1'b0),
+  .irq_external_i       (1'b0),
+  .irq_fast_i           (15'h0),
+  .irq_nm_i             (1'b0),
+
+  // Scrambling Interface - todos zerados
+  .scramble_key_valid_i (1'b0),
+  .scramble_key_i       ('0),
+  .scramble_nonce_i     ('0),
+  .scramble_req_o       (/* open */),
+
+  // Debug Interface - zerado
+  .debug_req_i          (1'b0),
+  .crash_dump_o         (/* open */),
+  .double_fault_seen_o  (/* open */),
+
+  // CPU Control Signals
+  .fetch_enable_i       (ibex_pkg::MuBiFalse),
+  .alert_minor_o        (/* open */),
+  .alert_major_internal_o (/* open */),
+  .alert_major_bus_o    (/* open */),
+  .core_sleep_o         (/* open */),
+
+  // DFT bypass controls
+  .scan_rst_ni          (1'b1)
+);
+
 
 // Clock inflaestructure
 

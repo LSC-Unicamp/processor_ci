@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -115,6 +115,7 @@ Controller #(
 );
 
 // Core space
+logic core_memory_read, core_memory_write;
 
 darkriscv #(
     .CPTR(0)
@@ -123,22 +124,31 @@ darkriscv #(
     .RES   (rst_core),
     .HLT   (1'b0),
 
-    .IDATA (),
-    .IADDR (),
+    .IDATA (core_data_in),
+    .IADDR (core_addr),
 
-    .DATAI (),
-    .DATAO (),
-    .DADDR (),
+    .DATAI (data_mem_data_in),
+    .DATAO (data_mem_data_out),
+    .DADDR (data_mem_addr),
 
     .DLEN  (), // data length
     .DRW   (), // memory read write
-    .DRD   (),
-    .DWR   (),
+    .DRD   (core_memory_read), // memory read data
+    .DWR   (core_memory_write), // memory write data
     .DAS   (), // memory address strobe
 
     .BERR  (1'b0) // bus error
 );
 
+
+assign core_cyc = 1'b1;
+assign core_stb = 1'b1;
+assign core_we  = 1'b0;
+assign core_data_out = 32'h0;
+
+assign data_mem_cyc = core_memory_read | core_memory_write;
+assign data_mem_stb = core_memory_read | core_memory_write;
+assign data_mem_we  = core_memory_write;
 
 // Clock inflaestructure
 

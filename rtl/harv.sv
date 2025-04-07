@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -116,7 +116,40 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+assign core_stb = core_cyc;
+assign core_we  = 1'b0;
+assign data_mem_stb = data_mem_cyc;
+
+harv harv_inst (
+    .rstn_i         (~rst_core),
+    .clk_i          (clk_core),
+
+    .start_i        (1'b1),
+    .poweron_rstn_i (~rst_core),
+
+    .wdt_rstn_i     (1'b0),
+
+    .imem_instr_i   (core_data_in),
+    .imem_pc_o      (core_addr),
+    .imem_req_o     (core_cyc),
+    .imem_gnt_i     (1'b1),
+    .imem_err_i     (1'b0),
+    
+    .hard_dmem_o    (),
+    
+    .dmem_req_o     (data_mem_cyc),
+    .dmem_wren_o    (data_mem_we),
+    .dmem_ben_o     (),
+    .dmem_usgn_o    (),
+    .dmem_addr_o    (data_mem_addr),
+    .dmem_wdata_o   (data_mem_data_out),
+    .dmem_gnt_i     (1'b1),
+    .dmem_err_i     (1'b0),
+    .dmem_sbu_i     (),
+    .dmem_dbu_i     (),
+    .dmem_rdata_i   (data_mem_data_in),
+);
+
 
 // Clock inflaestructure
 
