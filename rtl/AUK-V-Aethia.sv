@@ -96,9 +96,9 @@ Controller #(
     // Barramento padrão (Wishbone)
     .core_cyc_i         (core_cyc),
     .core_stb_i         (core_stb),
-    .core_we_i          (core_we),
+    .core_we_i          (1'b0), //core_we = 0
     .core_addr_i        (core_addr),
-    .core_data_i        (core_data_out),
+    .core_data_i        (1'b0), // core_data_out = 0 because we never write to instruction memory
     .core_data_o        (core_data_in),
     .core_ack_o         (core_ack)
 
@@ -114,7 +114,9 @@ Controller #(
     `endif
 );
 
+
 // Core space
+wire core_cyc_stb;
 
 aukv aukv_inst(
     .i_clk          (clk_core),
@@ -124,20 +126,23 @@ aukv aukv_inst(
 
     // Sinais de memória de dados
     .o_data_mem_en      (),
-    .o_data_mem_we      (),
-    .o_data_mem_addr    (),
-    .o_data_mem_data    (),
+    .o_data_mem_we      (data_mem_we),
+    .o_data_mem_addr    (data_mem_addr),
+    .o_data_mem_data    (data_mem_data_out),
     .o_data_mem_strobe  (),              // Sem strobe
-    .i_data_mem_valid   (),
-    .i_data_mem_data    (),
+    .i_data_mem_valid   (data_mem_ack),
+    .i_data_mem_data    (data_mem_data_in),
 
     // Sinais de memória de instruções
-    .o_code_mem_en      (),
-    .o_code_mem_addr    (),
-    .i_code_mem_data    (),
-    .i_code_mem_valid   ()
+    .o_code_mem_en      (core_cyc_stb),
+    .o_code_mem_addr    (core_addr),
+    .i_code_mem_data    (core_data_in),
+    .i_code_mem_valid   (core_ack)
 );
 
+
+assign core_cyc = core_cyc_stb;
+assing core_stb = core_cyc_stb;
 
 // Clock inflaestructure
 
