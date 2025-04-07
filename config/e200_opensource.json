@@ -54,5 +54,6 @@
     "repository": "https://github.com/SI-RISCV/e200_opensource",
     "top_module": "e203_cpu_top",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

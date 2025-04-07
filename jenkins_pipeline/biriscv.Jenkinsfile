@@ -14,7 +14,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("biriscv") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s riscv_core -I src/core src/core/biriscv_alu.v src/core/biriscv_csr.v src/core/biriscv_csr_regfile.v src/core/biriscv_decode.v src/core/biriscv_decoder.v src/core/biriscv_defs.v src/core/biriscv_divider.v src/core/biriscv_exec.v src/core/biriscv_fetch.v src/core/biriscv_frontend.v src/core/biriscv_issue.v src/core/biriscv_lsu.v src/core/biriscv_mmu.v src/core/biriscv_multiplier.v src/core/biriscv_npc.v src/core/biriscv_pipe_ctrl.v src/core/biriscv_regfile.v src/core/biriscv_trace_sim.v src/core/biriscv_xilinx_2r1w.v src/core/riscv_core.v "
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s riscv_top -I src/core -I src/dcache -I src/icache src/core/biriscv_alu.v src/core/biriscv_csr.v src/core/biriscv_csr_regfile.v src/core/biriscv_decode.v src/core/biriscv_decoder.v src/core/biriscv_defs.v src/core/biriscv_divider.v src/core/biriscv_exec.v src/core/biriscv_fetch.v src/core/biriscv_frontend.v src/core/biriscv_issue.v src/core/biriscv_lsu.v src/core/biriscv_mmu.v src/core/biriscv_multiplier.v src/core/biriscv_npc.v src/core/biriscv_pipe_ctrl.v src/core/biriscv_regfile.v src/core/biriscv_trace_sim.v src/core/biriscv_xilinx_2r1w.v src/core/riscv_core.v src/dcache/dcache.v src/dcache/dcache_axi.v src/dcache/dcache_axi_axi.v src/dcache/dcache_core.v src/dcache/dcache_core_data_ram.v src/dcache/dcache_core_tag_ram.v src/dcache/dcache_if_pmem.v src/dcache/dcache_mux.v src/dcache/dcache_pmem_mux.v src/icache/icache.v src/icache/icache_data_ram.v src/icache/icache_tag_ram.v src/top/riscv_top.v "
                 }
             }
         }
@@ -22,7 +22,7 @@ pipeline {
          stage('Utilities')  {
             steps {
                 dir("biriscv") {
-                    sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor_ci/config.json -o  /jenkins/processor_ci_utils/labels"
+                    sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor_ci/config -o /jenkins/processor_ci_utils/labels"
                 }            
             }
         }
@@ -39,7 +39,7 @@ pipeline {
                             steps {
                                 dir("biriscv") {
                                     echo 'Starting synthesis for FPGA colorlight_i9.'
-                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
                                             -p biriscv -b colorlight_i9'
                                 }
                             }
@@ -48,7 +48,7 @@ pipeline {
                             steps {
                                 dir("biriscv") {
                                     echo 'Flashing FPGA colorlight_i9.'
-                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
                                             -p biriscv -b colorlight_i9 -l'
                                 }
                             }
@@ -58,7 +58,7 @@ pipeline {
                                 echo 'Testing FPGA colorlight_i9.'
                                 dir("biriscv") {
                                     sh 'echo "Test for FPGA in /dev/ttyACM0"'
-                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config                                    /eda/processor_ci_tests/test_runner/config.json --port /dev/ttyACM0'
+                                    sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c                                    /eda/processor_ci_tests/config.json --p /dev/ttyACM0 -m rv32i -k 0x434F4C4F'
                                 }
                             }
                         }
@@ -74,7 +74,7 @@ pipeline {
                             steps {
                                 dir("biriscv") {
                                     echo 'Starting synthesis for FPGA digilent_arty_a7_100t.'
-                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
                                             -p biriscv -b digilent_arty_a7_100t'
                                 }
                             }
@@ -83,7 +83,7 @@ pipeline {
                             steps {
                                 dir("biriscv") {
                                     echo 'Flashing FPGA digilent_arty_a7_100t.'
-                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
                                             -p biriscv -b digilent_arty_a7_100t -l'
                                 }
                             }
@@ -93,7 +93,7 @@ pipeline {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("biriscv") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
-                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config                                    /eda/processor_ci_tests/test_runner/config.json --port /dev/ttyUSB1'
+                                    sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c                                    /eda/processor_ci_tests/config.json --p /dev/ttyUSB1 -m rv32i -k 0x41525459'
                                 }
                             }
                         }
@@ -104,7 +104,7 @@ pipeline {
     }
     post {
         always {
-            junit '**/test-reports/*.xml'
+            junit '**/*.xml'
         }
     }
 }

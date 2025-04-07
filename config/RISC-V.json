@@ -23,5 +23,6 @@
     "repository": "https://github.com/yavuz650/RISC-V",
     "top_module": "core",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

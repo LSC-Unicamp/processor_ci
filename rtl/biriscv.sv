@@ -116,43 +116,92 @@ Controller #(
 
 // Core space
 
-riscv_core
-u_dut
-//-----------------------------------------------------------------
-// Ports
-//-----------------------------------------------------------------
-(
-    // Inputs
-     .clk_i            (clk_core)
-    ,.rst_i            (rst_core)
-    ,.mem_d_data_rd_i  (data_read)
-    ,.mem_d_accept_i   (1'b1)
-    ,.mem_d_ack_i      (1'b1)
-    ,.mem_d_error_i    (1'b0)
-    ,.mem_d_resp_tag_i ()
-    ,.mem_i_accept_i   (1'b1)
-    ,.mem_i_valid_i    (1'b1)
-    ,.mem_i_error_i    (1'b0)
-    ,.mem_i_inst_i     ()
-    ,.intr_i           (1'b0)
-    ,.reset_vector_i   (32'h80000000)
-    ,.cpu_id_i         ('b0)
+riscv_top #(
+     .CORE_ID                (0),
+     .ICACHE_AXI_ID          (0),
+     .DCACHE_AXI_ID          (0),
+     .SUPPORT_BRANCH_PREDICTION (1),
+     .SUPPORT_MULDIV         (1),
+     .SUPPORT_SUPER          (0),
+     .SUPPORT_MMU            (0),
+     .SUPPORT_DUAL_ISSUE     (1),
+     .SUPPORT_LOAD_BYPASS    (1),
+     .SUPPORT_MUL_BYPASS     (1),
+     .SUPPORT_REGFILE_XILINX (0),
+     .EXTRA_DECODE_STAGE     (0),
+     .MEM_CACHE_ADDR_MIN     (32'h00000000),
+     .MEM_CACHE_ADDR_MAX     (32'h8fffffff),
+     .NUM_BTB_ENTRIES        (32),
+     .NUM_BTB_ENTRIES_W      (5),
+     .NUM_BHT_ENTRIES        (512),
+     .NUM_BHT_ENTRIES_W      (9),
+     .RAS_ENABLE             (1),
+     .GSHARE_ENABLE          (0),
+     .BHT_ENABLE             (1),
+     .NUM_RAS_ENTRIES        (8),
+     .NUM_RAS_ENTRIES_W      (3)
+) u_riscv_top (
+     .clk_i                  (clk_i),
+     .rst_i                  (rst_i),
+     .axi_i_awready_i        (axi_i_awready_i),
+     .axi_i_wready_i         (axi_i_wready_i),
+     .axi_i_bvalid_i         (axi_i_bvalid_i),
+     .axi_i_bresp_i          (axi_i_bresp_i),
+     .axi_i_bid_i            (axi_i_bid_i),
+     .axi_i_arready_i        (axi_i_arready_i),
+     .axi_i_rvalid_i         (axi_i_rvalid_i),
+     .axi_i_rdata_i          (axi_i_rdata_i),
+     .axi_i_rresp_i          (axi_i_rresp_i),
+     .axi_i_rid_i            (axi_i_rid_i),
+     .axi_i_rlast_i          (axi_i_rlast_i),
+     .axi_d_awready_i        (axi_d_awready_i),
+     .axi_d_wready_i         (axi_d_wready_i),
+     .axi_d_bvalid_i         (axi_d_bvalid_i),
+     .axi_d_bresp_i          (axi_d_bresp_i),
+     .axi_d_bid_i            (axi_d_bid_i),
+     .axi_d_arready_i        (axi_d_arready_i),
+     .axi_d_rvalid_i         (axi_d_rvalid_i),
+     .axi_d_rdata_i          (axi_d_rdata_i),
+     .axi_d_rresp_i          (axi_d_rresp_i),
+     .axi_d_rid_i            (axi_d_rid_i),
+     .axi_d_rlast_i          (axi_d_rlast_i),
+     .intr_i                 (intr_i),
+     .reset_vector_i         (reset_vector_i),
 
-    // Outputs
-    ,.mem_d_addr_o       ()
-    ,.mem_d_data_wr_o    ()
-    ,.mem_d_rd_o         ()
-    ,.mem_d_wr_o         ()
-    ,.mem_d_cacheable_o  ()
-    ,.mem_d_req_tag_o    ()
-    ,.mem_d_invalidate_o ()
-    ,.mem_d_writeback_o  ()
-    ,.mem_d_flush_o      ()
-    ,.mem_i_rd_o         ()
-    ,.mem_i_flush_o      ()
-    ,.mem_i_invalidate_o ()
-    ,.mem_i_pc_o         ()
+     .axi_i_awvalid_o        (axi_i_awvalid_o),
+     .axi_i_awaddr_o         (axi_i_awaddr_o),
+     .axi_i_awid_o           (axi_i_awid_o),
+     .axi_i_awlen_o          (axi_i_awlen_o),
+     .axi_i_awburst_o        (axi_i_awburst_o),
+     .axi_i_wvalid_o         (axi_i_wvalid_o),
+     .axi_i_wdata_o          (axi_i_wdata_o),
+     .axi_i_wstrb_o          (axi_i_wstrb_o),
+     .axi_i_wlast_o          (axi_i_wlast_o),
+     .axi_i_bready_o         (axi_i_bready_o),
+     .axi_i_arvalid_o        (axi_i_arvalid_o),
+     .axi_i_araddr_o         (axi_i_araddr_o),
+     .axi_i_arid_o           (axi_i_arid_o),
+     .axi_i_arlen_o          (axi_i_arlen_o),
+     .axi_i_arburst_o        (axi_i_arburst_o),
+     .axi_i_rready_o         (axi_i_rready_o),
+     .axi_d_awvalid_o        (axi_d_awvalid_o),
+     .axi_d_awaddr_o         (axi_d_awaddr_o),
+     .axi_d_awid_o           (axi_d_awid_o),
+     .axi_d_awlen_o          (axi_d_awlen_o),
+     .axi_d_awburst_o        (axi_d_awburst_o),
+     .axi_d_wvalid_o         (axi_d_wvalid_o),
+     .axi_d_wdata_o          (axi_d_wdata_o),
+     .axi_d_wstrb_o          (axi_d_wstrb_o),
+     .axi_d_wlast_o          (axi_d_wlast_o),
+     .axi_d_bready_o         (axi_d_bready_o),
+     .axi_d_arvalid_o        (axi_d_arvalid_o),
+     .axi_d_araddr_o         (axi_d_araddr_o),
+     .axi_d_arid_o           (axi_d_arid_o),
+     .axi_d_arlen_o          (axi_d_arlen_o),
+     .axi_d_arburst_o        (axi_d_arburst_o),
+     .axi_d_rready_o         (axi_d_rready_o)
 );
+
 
 
 // Clock inflaestructure

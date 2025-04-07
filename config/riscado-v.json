@@ -14,5 +14,6 @@
     "repository": "https://github.com/zxmarcos/riscado-v",
     "top_module": "RISCV",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

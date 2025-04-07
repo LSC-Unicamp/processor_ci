@@ -39,5 +39,6 @@
     "repository": "https://github.com/Wren6991/Hazard3",
     "top_module": "hazard3_core",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

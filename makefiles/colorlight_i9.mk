@@ -6,7 +6,7 @@ colorlight_i9.bit: colorlight_i9.config
 colorlight_i9.config: colorlight_i9.json
 	/eda/oss-cad-suite/bin/nextpnr-ecp5 --json colorlight_i9.json --write colorlight_i9_pnr.json --45k \
 		--lpf /eda/processor_ci/constraints/colorlight_i9.lpf --textcfg colorlight_i9.config --package CABGA381 \
-		--speed 6 --lpf-allow-unconstrained  --ignore-loops
+		--speed 6 --lpf-allow-unconstrained
 
 colorlight_i9.json:
 	/eda/oss-cad-suite/bin/synlig -c $(BUILD_SCRIPT)

@@ -115,6 +115,10 @@ Controller #(
 );
 
 // Core space
+assign core_stb = core_cyc;
+assign core_we  = 1'b0; // Read only
+assign core_data_out = 32'b0;
+assign data_mem_stb = data_mem_cyc;
 
 
 klessydra_f0_3th_core #(

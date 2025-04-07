@@ -167,5 +167,6 @@
     "repository": "https://github.com/rsd-devel/rsd",
     "top_module": "Core",
     "extra_flags": [],
-    "language_version": "2012"
+    "language_version": "2012",
+    "march": "rv32i"
 }

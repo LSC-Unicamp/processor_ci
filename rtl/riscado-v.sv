@@ -122,7 +122,7 @@ RISCV Riscado_V (
     .dataIn      (core_data_in),
     .dataOut     (core_data_out),
     .address     (core_addr),
-    .writeEnable (core_we),
+    .writeEnable (core_we)
 );
 
 assign core_cyc = 1'b1;

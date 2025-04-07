@@ -32,5 +32,6 @@
     "repository": "https://github.com/syntacore/scr1",
     "top_module": "scr1_core_top",
     "extra_flags": [],
-    "language_version": "2012"
+    "language_version": "2012",
+    "march": "rv32i"
 }

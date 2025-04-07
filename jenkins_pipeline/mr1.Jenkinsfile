@@ -30,7 +30,7 @@ pipeline {
          stage('Utilities')  {
             steps {
                 dir("mr1") {
-                    sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor_ci/config.json -o  /jenkins/processor_ci_utils/labels"
+                    sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor_ci/config -o /jenkins/processor_ci_utils/labels"
                 }            
             }
         }
@@ -47,7 +47,7 @@ pipeline {
                             steps {
                                 dir("mr1") {
                                     echo 'Starting synthesis for FPGA colorlight_i9.'
-                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
                                             -p mr1 -b colorlight_i9'
                                 }
                             }
@@ -56,7 +56,7 @@ pipeline {
                             steps {
                                 dir("mr1") {
                                     echo 'Flashing FPGA colorlight_i9.'
-                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
                                             -p mr1 -b colorlight_i9 -l'
                                 }
                             }
@@ -66,7 +66,7 @@ pipeline {
                                 echo 'Testing FPGA colorlight_i9.'
                                 dir("mr1") {
                                     sh 'echo "Test for FPGA in /dev/ttyACM0"'
-                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config                                    /eda/processor_ci_tests/test_runner/config.json --port /dev/ttyACM0'
+                                    sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c                                    /eda/processor_ci_tests/config.json --p /dev/ttyACM0 -m rv32i -k 0x434F4C4F'
                                 }
                             }
                         }
@@ -82,7 +82,7 @@ pipeline {
                             steps {
                                 dir("mr1") {
                                     echo 'Starting synthesis for FPGA digilent_arty_a7_100t.'
-                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
                                             -p mr1 -b digilent_arty_a7_100t'
                                 }
                             }
@@ -91,7 +91,7 @@ pipeline {
                             steps {
                                 dir("mr1") {
                                     echo 'Flashing FPGA digilent_arty_a7_100t.'
-                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config.json \
+                                sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
                                             -p mr1 -b digilent_arty_a7_100t -l'
                                 }
                             }
@@ -101,7 +101,7 @@ pipeline {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 dir("mr1") {
                                     sh 'echo "Test for FPGA in /dev/ttyUSB1"'
-                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config                                    /eda/processor_ci_tests/test_runner/config.json --port /dev/ttyUSB1'
+                                    sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c                                    /eda/processor_ci_tests/config.json --p /dev/ttyUSB1 -m rv32i -k 0x41525459'
                                 }
                             }
                         }
@@ -112,7 +112,7 @@ pipeline {
     }
     post {
         always {
-            junit '**/test-reports/*.xml'
+            junit '**/*.xml'
         }
     }
 }

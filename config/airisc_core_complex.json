@@ -35,5 +35,6 @@
     "repository": "https://github.com/Fraunhofer-IMS/airisc_core_complex",
     "top_module": "airi5c_core",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

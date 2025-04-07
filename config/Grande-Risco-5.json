@@ -32,5 +32,6 @@
     "repository": "https://github.com/JN513/Grande-Risco-5",
     "top_module": "Grande_Risco5",
     "extra_flags": [],
-    "language_version": "2012"
+    "language_version": "2012",
+    "march": "rv32i"
 }

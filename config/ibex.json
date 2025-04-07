@@ -39,5 +39,6 @@
     "repository": "https://github.com/lowRISC/ibex",
     "top_module": "ibex_core",
     "extra_flags": [],
-    "language_version": "2012"
+    "language_version": "2012",
+    "march": "rv32i"
 }

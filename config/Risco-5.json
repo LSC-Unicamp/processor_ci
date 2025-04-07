@@ -34,5 +34,6 @@
         "src/core/"
     ],
     "extra_flags": [],
-    "enable": true
+    "enable": true,
+    "march": "rv32i"
 }

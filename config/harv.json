@@ -21,5 +21,6 @@
     "repository": "https://github.com/xarc/harv",
     "top_module": "",
     "extra_flags": [],
-    "language_version": "08"
+    "language_version": "08",
+    "march": "rv32i"
 }

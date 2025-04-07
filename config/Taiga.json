@@ -72,5 +72,6 @@
     "repository": "https://gitlab.com/sfu-rcl/Taiga",
     "top_module": "taiga",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

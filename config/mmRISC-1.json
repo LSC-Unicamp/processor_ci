@@ -19,5 +19,6 @@
     "repository": "https://github.com/munetomo-maruyama/mmRISC-1",
     "top_module": "CPU_TOP",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

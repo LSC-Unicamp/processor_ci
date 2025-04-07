@@ -334,12 +334,12 @@ def generate_labels_file(
         logging.warning('Error writing to JSON file: %s', e)
 
 
-def main(directory, config_file, output_dir):
+def main(directory, config_dir, output_dir):
     """Main function to find LICENSE files and identify their types.
 
     Args:
         directory (str): The directory to search for LICENSE files.
-        config_file (str): The configuration JSON file path.
+        config_dir (str): The configuration dir path.
         output_folder (str): The output folder path.
     """
     logging.basicConfig(
@@ -363,12 +363,12 @@ def main(directory, config_file, output_dir):
         except OSError as e:
             logging.warning('Error reading file %s: %s', license_file, e)
             license_types.append('Error')
-    config = load_config(config_file)
+    config = load_config(config_dir, processor_name)
 
-    top_module = config['cores'][processor_name]['top_module']
+    top_module = config['top_module']
 
     try:
-        for files in config['cores'][processor_name]['files']:
+        for files in config['files']:
             files = os.path.join(directory, files)
             with open(files, 'r', encoding='latin-1') as f:
                 content = f.read()
@@ -384,7 +384,7 @@ def main(directory, config_file, output_dir):
         cpu_bits = determine_cpu_bits(top_file)
 
         if cpu_bits is None:
-            for files in config['cores'][processor_name]['files']:
+            for files in config['files']:
                 files = os.path.join(directory, files)
                 cpu_bits = determine_cpu_bits(files)
                 if cpu_bits is not None:
@@ -414,8 +414,8 @@ if __name__ == '__main__':
     parser.add_argument(
         '-c',
         '--config',
-        default='config.json',
-        help='The configuration file path.',
+        default='config',
+        help='The configuration dir path.',
     )
     parser.add_argument(
         '-o',
@@ -425,6 +425,6 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     dir_to_search = args.dir
-    config_json = args.config
+    config_dir = args.config
     output_folder = args.output
-    main(dir_to_search, config_json, output_folder)
+    main(dir_to_search, config_dir, output_folder)

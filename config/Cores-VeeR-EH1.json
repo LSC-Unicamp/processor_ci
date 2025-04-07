@@ -53,5 +53,6 @@
     "repository": "https://github.com/chipsalliance/Cores-VeeR-EH1",
     "top_module": "veer",
     "extra_flags": [],
-    "language_version": "2012"
+    "language_version": "2012",
+    "march": "rv32i"
 }

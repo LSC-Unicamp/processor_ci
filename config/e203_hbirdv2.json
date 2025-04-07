@@ -75,5 +75,6 @@
         " -DDISABLE_SV_ASSERTION=1",
         "-gsupported-assertions"
     ],
-    "language_version": "2009"
+    "language_version": "2009",
+    "march": "rv32i"
 }

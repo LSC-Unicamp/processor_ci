@@ -78,5 +78,6 @@
     "repository": "https://github.com/whutddk/RiftCore",
     "top_module": "riftChip",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

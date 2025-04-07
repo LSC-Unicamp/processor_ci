@@ -54,5 +54,6 @@
     "repository": "https://github.com/Kaigard/Anfield",
     "top_module": "Balotelli",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

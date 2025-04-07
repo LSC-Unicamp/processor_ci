@@ -127,5 +127,6 @@
     "repository": "https://github.com/openhwgroup/cva5",
     "top_module": "",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

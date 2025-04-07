@@ -25,5 +25,6 @@
     "repository": "https://github.com/CastoHu/SprintRV",
     "top_module": "core_top",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

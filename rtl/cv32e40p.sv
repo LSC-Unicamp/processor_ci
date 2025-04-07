@@ -116,7 +116,59 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+    cv32e40p_core #(
+                 .PULP_XPULP       (0),
+                 .PULP_CLUSTER     (0),
+                 .FPU              (0),
+                 .PULP_ZFINX       (0),
+                 .NUM_MHPMCOUNTERS (1)
+                )
+    cv32e40p_core_i
+        (
+         .clk_i                  ( clk_core                 ),
+         .rst_ni                 ( ~rst_core                ),
+
+         .pulp_clock_en_i        ( '1                    ),
+         .scan_cg_en_i           ( '0                    ),
+
+         .boot_addr_i            ( BOOT_ADDR             ),
+         .dm_halt_addr_i         ( DM_HALTADDRESS        ),
+         .hart_id_i              ( HART_ID               ),
+
+         .instr_req_o            ( instr_req             ),
+         .instr_gnt_i            ( instr_gnt             ),
+         .instr_rvalid_i         ( instr_rvalid          ),
+         .instr_addr_o           ( instr_addr            ),
+         .instr_rdata_i          ( instr_rdata           ),
+
+         .data_req_o             ( data_req              ),
+         .data_gnt_i             ( data_gnt              ),
+         .data_rvalid_i          ( data_rvalid           ),
+         .data_we_o              ( data_we               ),
+         .data_be_o              ( data_be               ),
+         .data_addr_o            ( data_addr             ),
+         .data_wdata_o           ( data_wdata            ),
+         .data_rdata_i           ( data_rdata            ),
+
+         .apu_req_o              (                       ),
+         .apu_gnt_i              ( 1'b0                  ),
+         .apu_operands_o         (                       ),
+         .apu_op_o               (                       ),
+         .apu_flags_o            (                       ),
+         .apu_rvalid_i           ( 1'b0                  ),
+         .apu_result_i           ( {32{1'b0}}            ),
+         .apu_flags_i            ( {5{1'b0}}             ), // APU_NUSFLAGS_CPU
+
+         // Interrupts verified in UVM environment
+         .irq_i                  ( {32{1'b0}}            ),
+         .irq_ack_o              ( irq_ack               ),
+         .irq_id_o               ( irq_id_out            ),
+
+         .debug_req_i            ( debug_req             ),
+
+         .fetch_enable_i         ( fetch_enable_i        ),
+         .core_sleep_o           ( core_sleep_o          )
+       );
 
 // Clock inflaestructure
 

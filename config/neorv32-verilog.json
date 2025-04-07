@@ -76,5 +76,6 @@
     "repository": "https://github.com/stnolting/neorv32-verilog",
     "top_module": "",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

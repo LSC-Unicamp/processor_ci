@@ -116,6 +116,13 @@ Controller #(
 
 // Core space
 
+logic [31:0] instruction, data_in;
+
+always_ff @(posedge clk_core) begin
+    data_in     <= data_mem_data_in;
+    instruction <= core_data_in;
+end
+
 nerv cpu (
     .clock      (clk_core),
     .reset      (rst_core),
@@ -123,13 +130,13 @@ nerv cpu (
     .trap       (),
  
     .imem_addr  (core_addr),
-    .imem_data  (core_data_in),
+    .imem_data  (instruction),
  
     .dmem_valid (data_mem_we),
     .dmem_addr  (data_mem_addr),
     .dmem_wstrb (),
     .dmem_wdata (data_mem_data_out),
-    .dmem_rdata (data_mem_data_in),
+    .dmem_rdata (data_in)
 );
 
 assign core_cyc = 1'b1;

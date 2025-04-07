@@ -22,13 +22,29 @@
         "src/core/biriscv_regfile.v",
         "src/core/biriscv_trace_sim.v",
         "src/core/biriscv_xilinx_2r1w.v",
-        "src/core/riscv_core.v"
+        "src/core/riscv_core.v",
+        "src/dcache/dcache.v",
+        "src/dcache/dcache_axi.v",
+        "src/dcache/dcache_axi_axi.v",
+        "src/dcache/dcache_core.v",
+        "src/dcache/dcache_core_data_ram.v",
+        "src/dcache/dcache_core_tag_ram.v",
+        "src/dcache/dcache_if_pmem.v",
+        "src/dcache/dcache_mux.v",
+        "src/dcache/dcache_pmem_mux.v",
+        "src/icache/icache.v",
+        "src/icache/icache_data_ram.v",
+        "src/icache/icache_tag_ram.v",
+        "src/top/riscv_top.v"
     ],
     "include_dirs": [
-        "src/core"
+        "src/core",
+        "src/dcache",
+        "src/icache"
     ],
     "repository": "https://github.com/ultraembedded/biriscv",
-    "top_module": "riscv_core",
+    "top_module": "riscv_top",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

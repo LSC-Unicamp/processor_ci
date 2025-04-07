@@ -58,5 +58,6 @@
     "repository": "https://github.com/openrisc/mor1kx",
     "top_module": "mor1kx",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

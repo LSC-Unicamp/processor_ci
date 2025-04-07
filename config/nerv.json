@@ -9,5 +9,6 @@
     "repository": "https://github.com/YosysHQ/nerv",
     "top_module": "nerv",
     "extra_flags": [],
-    "language_version": "2012"
+    "language_version": "2012",
+    "march": "rv32i"
 }

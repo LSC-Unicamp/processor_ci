@@ -116,7 +116,47 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+    cv32e40s_core #(
+                 .NUM_MHPMCOUNTERS (1)
+                )
+    cv32e40s_core_i
+        (
+         .clk_i                  (clk_core),
+         .rst_ni                 (~rst_core),
+         
+         .scan_cg_en_i           ( '0                    ),
+
+         .boot_addr_i            ( 32'h0                ),
+         .dm_halt_addr_i         ( 32'h1A11_0800        ),
+         .mhartid_i              ( 0               ),
+         .mimpid_i               ( 0                ),
+
+         .instr_req_o            ( instr_req             ),
+         .instr_gnt_i            ( instr_gnt             ),
+         .instr_rvalid_i         ( instr_rvalid          ),
+         .instr_addr_o           ( instr_addr            ),
+         .instr_rdata_i          ( instr_rdata           ),
+
+         .data_req_o             ( data_req              ),
+         .data_gnt_i             ( data_gnt              ),
+         .data_rvalid_i          ( data_rvalid           ),
+         .data_we_o              ( data_we               ),
+         .data_be_o              ( data_be               ),
+         .data_addr_o            ( data_addr             ),
+         .data_wdata_o           ( data_wdata            ),
+         .data_rdata_i           ( data_rdata            ),
+
+         // Interrupts verified in UVM environment
+         .irq_i                  ({32{1'b0}}),
+         .irq_ack_o              (),
+         .irq_id_o               (),
+
+         .debug_req_i            (0),
+
+         .fetch_enable_i         (1'b1),
+         .core_sleep_o           ()
+       );
+
 
 // Clock inflaestructure
 

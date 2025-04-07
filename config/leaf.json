@@ -67,5 +67,6 @@
     "repository": "https://github.com/daniel-santos-7/leaf",
     "top_module": "",
     "extra_flags": [],
-    "language_version": "08"
+    "language_version": "08",
+    "march": "rv32i"
 }

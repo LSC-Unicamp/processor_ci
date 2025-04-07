@@ -18,5 +18,6 @@
     "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
     "top_module": "aukv",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

@@ -14,5 +14,6 @@
     "repository": "https://github.com/JN513/Baby-Risco-5",
     "top_module": "Core",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

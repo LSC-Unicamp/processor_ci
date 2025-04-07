@@ -37,5 +37,6 @@
     "repository": "https://github.com/openhwgroup/cv32e40p",
     "top_module": "",
     "extra_flags": [],
-    "language_version": "2012"
+    "language_version": "2012",
+    "march": "rv32i"
 }

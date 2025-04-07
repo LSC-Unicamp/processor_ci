@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -115,8 +115,42 @@ Controller #(
 );
 
 // Core space
+assign core_stb = core_cyc;
+assign core_we  = 1'b0; // Read only
+assign core_data_out = 32'b0; // No data to write
 
-// Core instantiation
+assign data_mem_stb = data_mem_cyc;
+
+logic imem_resp, dmem_resp;
+logic [31:0] imem_data, dmem_data;
+
+always_ff @(posedge clk_core) begin
+    imem_resp <= core_ack;
+    dmem_resp <= data_mem_ack;
+    imem_data <= core_data_in;
+    dmem_data <= data_mem_data_in;
+end
+
+ssrv_top u_ssrv_top (
+    .clk            (clk_core),
+    .rst            (rst_core),
+
+    .imem_req       (core_cyc),
+    .imem_addr      (core_addr),
+    .imem_rdata     (imem_data),
+    .imem_resp      (imem_resp),
+    .imem_err       (1'b0),
+
+    .dmem_req       (data_mem_cyc),
+    .dmem_cmd       (data_mem_we),
+    .dmem_width     (), // strobe 2'b10 word, 2'b01 halfword, 2'b00 byte
+    .dmem_addr      (data_mem_addr),
+    .dmem_wdata     (data_mem_data_out),
+    .dmem_rdata     (dmem_data),
+    .dmem_resp      (dmem_resp),
+    .dmem_err       (1'b0)
+);
+
 
 // Clock inflaestructure
 

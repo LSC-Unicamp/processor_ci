@@ -23,5 +23,6 @@
     "repository": "https://github.com/liangkangnan/tinyriscv",
     "top_module": "tinyriscv",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

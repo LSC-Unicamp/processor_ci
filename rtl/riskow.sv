@@ -127,7 +127,7 @@ CPU Riskow (
     .busValid       (bus_valid),
     .busInstr       (),
     .busReady       (core_ack),
-    .busWriteEnable (core_we),
+    .busWriteEnable (core_we)
 );
 
 assign core_cyc = bus_valid;

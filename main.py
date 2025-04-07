@@ -37,6 +37,9 @@ Requirements:
 import argparse
 from core.config import load_config
 from core.fpga import make_build_file, flash, build
+from core.lock import wait_for_lock, create_lock, remove_lock
+
+LOCKFILE = 'run.lock'
 
 
 def main(
@@ -68,14 +71,21 @@ def main(
     processor_data = load_config(config_path, processor_name)
 
     # Exibe os argumentos recebidos e os dados do processador
-
-    build_file_path = make_build_file(
-        processor_data, board_name, toolchain_path
-    )
-
     if load:
         flash(board_name, toolchain_path)
     else:
+        # Verifica se o arquivo de bloqueio existe
+        wait_for_lock(LOCKFILE, check_interval=3)
+        # Cria o arquivo de bloqueio
+        create_lock(LOCKFILE)
+
+        build_file_path = make_build_file(
+            processor_data, board_name, toolchain_path
+        )
+
+        # Remove o arquivo de bloqueio após a construção
+        remove_lock(LOCKFILE)
+
         build(build_file_path, board_name, toolchain_path)
 
 

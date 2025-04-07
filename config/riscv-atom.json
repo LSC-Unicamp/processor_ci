@@ -18,5 +18,6 @@
     "repository": "https://github.com/saursin/riscv-atom",
     "top_module": "AtomRV",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

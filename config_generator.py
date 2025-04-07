@@ -553,30 +553,40 @@ def cleanup_repo_and_plot_graphs(
         print_green('[LOG] Grafos plotados com sucesso\n')
 
 
-def generate_all_pipelines(config_file_path: str) -> None:
+def generate_all_pipelines(config_dir: str) -> None:
     """
     Generates Jenkinsfiles for all processors defined in the configuration file.
 
     Args:
-        config_file_path (str): Path to the configuration file.
+        config_dir (str): Path to the configuration dir.
 
     Returns:
         None
     """
-    config = load_config(config_file_path)
+    if not os.path.exists(config_dir):
+        print_red('[ERROR] Config directory not found')
+        raise FileNotFoundError(f'Config directory {config_dir} not found')
 
-    for key in config['cores'].keys():
-        processor_data = get_processor_data(config, key)
+    files = os.listdir(config_dir)
+    if not files:
+        print_red('[ERROR] Config directory is empty')
+        raise FileNotFoundError('Config directory is empty')
+
+    for file in files:
+        if not file.endswith('.json'):
+            print_red(f'[ERROR] Invalid file: {file}')
+            continue
+
+        config = load_config(config_dir, file.replace('.json', ''))
+
         generate_jenkinsfile(
-            processor_data,
+            config,
             FPGAs,
             MAIN_SCRIPT_PATH,
-            processor_data['language_version'],
-            processor_data['extra_flags'],
+            config['language_version'],
+            config['extra_flags'],
         )
-        os.rename(
-            'Jenkinsfile', f'{BASE_DIR}{processor_data["name"]}.Jenkinsfile'
-        )
+        os.rename('Jenkinsfile', f'{BASE_DIR}{config["name"]}.Jenkinsfile')
 
     print('Jenkinsfiles generated successfully.')
 

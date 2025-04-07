@@ -25,5 +25,6 @@
     "sim_files": [],
     "include_dirs": [],
     "extra_flags": [],
-    "enable": false
+    "enable": false,
+    "march": "rv32i"
 }

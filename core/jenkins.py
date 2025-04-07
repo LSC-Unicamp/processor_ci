@@ -88,7 +88,7 @@ pipeline {{
     }}
     post {{
         always {{
-            junit '**/test-reports/*.xml'
+            junit '**/*.xml'
         }}
     }}
 }}
@@ -107,7 +107,7 @@ pipeline {{
     # Command for extra utilities in the pipeline
     utilities_command = (
         r'sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) '
-        + '-c /eda/processor_ci/config.json -o /jenkins/processor_ci_utils/labels"'
+        + '-c /eda/processor_ci/config -o /jenkins/processor_ci_utils/labels"'
     )
 
     # Determine simulation command based on file types
@@ -154,7 +154,7 @@ pipeline {{
                             steps {{
                                 dir("{folder}") {{
                                     echo 'Starting synthesis for FPGA {fpga}.'
-                                sh 'python3 {main_script_path} -c /eda/processor_ci/config.json \\
+                                sh 'python3 {main_script_path} -c /eda/processor_ci/config \\
                                             -p {folder} -b {fpga}'
                                 }}
                             }}
@@ -163,7 +163,7 @@ pipeline {{
                             steps {{
                                 dir("{folder}") {{
                                     echo 'Flashing FPGA {fpga}.'
-                                sh 'python3 {main_script_path} -c /eda/processor_ci/config.json \\
+                                sh 'python3 {main_script_path} -c /eda/processor_ci/config \\
                                             -p {folder} -b {fpga} -l'
                                 }}
                             }}
@@ -173,8 +173,8 @@ pipeline {{
                                 echo 'Testing FPGA {fpga}.'
                                 dir("{folder}") {{
                                     sh 'echo "Test for FPGA in {port}"'
-                                    sh 'python3 /eda/processor_ci_tests/test_runner/run.py --config\
-                                    /eda/processor_ci_tests/test_runner/config.json --port {port}'
+                                    sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c\
+                                    /eda/processor_ci_tests/config.json --p {port} -m {march} -k {sync_key}'
                                 }}
                             }}
                         }}
@@ -186,11 +186,16 @@ pipeline {{
                 port='/dev/ttyACM0'
                 if fpga == 'colorlight_i9'
                 else '/dev/ttyUSB1',
+                march=config['march'],
+                sync_key='0x41525459'
+                if fpga == 'digilent_arty_a7_100t'
+                else '0x434F4C4F',
             )
             for fpga in fpgas
         ]
     )
 
+    # python main.py -p /dev/ttyUSB2 -b 115200 -s 2 -c config.json -m rv32i -e coremark,dhrystone -k 0x4E455859
     pre_script = ''
 
     if 'pre_script' in config.keys():

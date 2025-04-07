@@ -33,5 +33,6 @@
     "repository": "https://github.com/gaph-pucrs/RS5",
     "top_module": "RS5",
     "extra_flags": [],
-    "language_version": "2012"
+    "language_version": "2012",
+    "march": "rv32i"
 }

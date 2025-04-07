@@ -42,5 +42,6 @@
     "repository": "https://github.com/djzenma/RV32IC-CPU",
     "top_module": "RISCV_TOP",
     "extra_flags": [],
-    "language_version": "2005"
+    "language_version": "2005",
+    "march": "rv32i"
 }

@@ -26,5 +26,6 @@
     "repository": "https://github.com/risclite/rv3n",
     "top_module": "rv3n_top",
     "extra_flags": [],
-    "language_version": "2012"
+    "language_version": "2012",
+    "march": "rv32i"
 }
