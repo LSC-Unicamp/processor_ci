@@ -1,6 +1,7 @@
+
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -33,7 +34,6 @@ module processorci_top (
 logic clk_o, rst_n;
 logic clk_core, rst_core;
 
-
 // Fios do barramento entre Controller e Processor
 logic        core_cyc;
 logic        core_stb;
@@ -52,7 +52,6 @@ logic [31:0] data_mem_data_out;
 logic [31:0] data_mem_data_in;
 logic        data_mem_ack;
 `endif
-
 
 Controller #(
     .CLK_FREQ           (`CLOCK_FREQ),
@@ -116,7 +115,40 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+// Instância do processador kronos_core
+kronos_core #(
+    .BOOT_ADDR             (32'h00000000),
+    .FAST_BRANCH           (1'b1),
+    .EN_COUNTERS           (1'b1),
+    .EN_COUNTERS64B        (1'b1),
+    .CATCH_ILLEGAL_INSTR   (1'b1),
+    .CATCH_MISALIGNED_JMP  (1'b1),
+    .CATCH_MISALIGNED_LDST (1'b1)
+) kronos_core_inst (
+    .clk            (clk_core),
+    .rstz           (~rst_core),
+
+    // Interface de instruções
+    .instr_addr     (core_addr),
+    .instr_data     (core_data_in),
+    .instr_req      (core_stb),
+    .instr_ack      (core_ack),
+
+    // Interface de dados
+    .data_addr      (data_mem_addr),
+    .data_rd_data   (data_mem_data_in),
+    .data_wr_data   (data_mem_data_out),
+    .data_mask      (), // depende da largura de escrita; pode ser ajustado se necessário
+    .data_wr_en     (data_mem_we),
+    .data_req       (data_mem_stb),
+    .data_ack       (data_mem_ack),
+
+    // Interrupções
+    .software_interrupt (1'b0),
+    .timer_interrupt    (1'b0),
+    .external_interrupt (1'b0)
+);
+
 
 // Clock inflaestructure
 
@@ -127,15 +159,15 @@ end
 `ifdef DIFERENCIAL_CLK
 logic clk_ref; // Sinal de clock single-ended
 
-// Differential clock input
+// Instância do buffer diferencial
 IBUFDS #(
-    .DIFF_TERM    ("FALSE"), // Enable or disable differential terminator
-    .IBUF_LOW_PWR ("TRUE"),  // Enable low power mode
+    .DIFF_TERM    ("FALSE"), // Habilita ou desabilita o terminador diferencial
+    .IBUF_LOW_PWR ("TRUE"),  // Ativa o modo de baixa potência
     .IOSTANDARD   ("DIFF_SSTL15")
 ) ibufds_inst (
-    .O  (clk_ref),   // Clock single-ended output
-    .I  (clk_ref_p), // Differential input positive
-    .IB (clk_ref_n)  // Differential input negative
+    .O  (clk_ref),   // Clock single-ended de saída
+    .I  (clk_ref_p), // Entrada diferencial positiva
+    .IB (clk_ref_n)  // Entrada diferencial negativa
 );
 
 
@@ -165,3 +197,5 @@ ResetBootSystem #(
 );
     
 endmodule
+
+

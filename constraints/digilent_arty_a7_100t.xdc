@@ -105,7 +105,7 @@ set_property -dict { PACKAGE_PIN M16   IOSTANDARD LVCMOS33 } [get_ports { mosi  
 set_property -dict { PACKAGE_PIN V17   IOSTANDARD LVCMOS33 } [get_ports { miso  }]; #IO_L8N_T1_D12_14 Sch=ck_io[2]
 
 set_property -dict { PACKAGE_PIN U18   IOSTANDARD LVCMOS33 } [get_ports { intr }]; #IO_L5P_T0_D06_14 Sch=ck_io[4]
-set_property -dict { PACKAGE_PIN R17   IOSTANDARD LVCMOS33 } [get_ports { reset  }]; #IO_L14P_T2_SRCC_14 Sch=ck_io[5]
+set_property -dict { PACKAGE_PIN R17   IOSTANDARD LVCMOS33 } [get_ports { rst  }]; #IO_L14P_T2_SRCC_14 Sch=ck_io[5]
 
 set_property -dict { PACKAGE_PIN P17   IOSTANDARD LVCMOS33 } [get_ports { sck }]; #IO_L12P_T1_MRCC_14 Sch=ck_io[13]
 create_clock -period 100.00 [get_ports { sck }];

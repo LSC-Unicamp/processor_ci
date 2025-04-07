@@ -9,7 +9,7 @@ all: digilent_nexys4_ddr.bit
 
 digilent_nexys4_ddr.bit:
 	@echo "Building the Design..."
-	$(VIVADO) -mode batch -nolog -nojournal -source $(BUILD_SCRIPT) $(MACROS)
+	$(VIVADO) -mode batch -nolog -nojournal -source $(BUILD_SCRIPT)
 
 clean:
 	@echo "Cleaning the build folder..."

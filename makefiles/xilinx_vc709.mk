@@ -9,8 +9,7 @@ all: xilinx_vc709.bit
 
 xilinx_vc709.bit:
 	@echo "Building the Design..."
-	$(VIVADO) -mode batch -nolog -nojournal -source $(BUILD_SCRIPT) $(MACROS)
-
+	$(VIVADO) -mode batch -nolog -nojournal -source $(BUILD_SCRIPT)
 clean:
 	@echo "Cleaning the build folder..."
 	rm -rf build

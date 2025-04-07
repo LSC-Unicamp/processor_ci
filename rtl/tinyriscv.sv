@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -116,7 +116,42 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+// Instância do tinyriscv
+tinyriscv u_tinyriscv (
+    .clk               (clk_core),
+    .rst               (rst_core),
+
+    // Barramento de memória de dados
+    .rib_ex_addr_o     (data_mem_addr),
+    .rib_ex_data_i     (data_mem_data_in),
+    .rib_ex_data_o     (data_mem_data_out),
+    .rib_ex_req_o      (data_mem_stb),
+    .rib_ex_we_o       (data_mem_we),
+
+    // Barramento de memória de instruções
+    .rib_pc_addr_o     (core_addr),
+    .rib_pc_data_i     (core_data_in),
+
+    // Sinais JTAG (não utilizados aqui)
+    .jtag_reg_addr_i   (5'b0),
+    .jtag_reg_data_i   (32'b0),
+    .jtag_reg_we_i     (1'b0),
+    .jtag_reg_data_o   (),
+
+    .rib_hold_flag_i   (1'b0),
+    .jtag_halt_flag_i  (1'b0),
+    .jtag_reset_flag_i (1'b0),
+
+    // Interrupções
+    .int_i             (32'b0)
+);
+
+assign core_cyc      = 1'b1;         // Sempre ativo para fetch
+assign core_stb      = 1'b1;         // Sempre requisitando instruções
+assign core_we       = 1'b0;         // Nunca escreve via fetch
+assign core_data_out = 32'd0;        // Não escreve no barramento de instruções
+assign core_ack      = 1'b1;         // ACK constante (caso sem espera)
+assign data_mem_cyc  = data_mem_stb; // simples ciclo igual a strobe
 
 // Clock inflaestructure
 
@@ -127,15 +162,15 @@ end
 `ifdef DIFERENCIAL_CLK
 logic clk_ref; // Sinal de clock single-ended
 
-// Differential clock input
+// Instância do buffer diferencial
 IBUFDS #(
-    .DIFF_TERM    ("FALSE"), // Enable or disable differential terminator
-    .IBUF_LOW_PWR ("TRUE"),  // Enable low power mode
+    .DIFF_TERM    ("FALSE"), // Habilita ou desabilita o terminador diferencial
+    .IBUF_LOW_PWR ("TRUE"),  // Ativa o modo de baixa potência
     .IOSTANDARD   ("DIFF_SSTL15")
 ) ibufds_inst (
-    .O  (clk_ref),   // Clock single-ended output
-    .I  (clk_ref_p), // Differential input positive
-    .IB (clk_ref_n)  // Differential input negative
+    .O  (clk_ref),   // Clock single-ended de saída
+    .I  (clk_ref_p), // Entrada diferencial positiva
+    .IB (clk_ref_n)  // Entrada diferencial negativa
 );
 
 
@@ -165,3 +200,6 @@ ResetBootSystem #(
 );
     
 endmodule
+
+
+

@@ -1,3 +1,6 @@
+`timescale 1ns / 1ps
+`include "processor_ci_defines.vh"
+
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
     input  logic clk_ref_p,
@@ -6,7 +9,7 @@ module processorci_top (
     input  logic clk,
     `endif
 
-    input  logic reset,
+    input  logic rst,
 
     // UART pins
     input  logic rx,
@@ -29,33 +32,38 @@ module processorci_top (
 logic clk_o, rst_n;
 logic clk_core, rst_core;
 
+
 // Fios do barramento entre Controller e Processor
-logic core_cyc;
-logic core_stb;
-logic core_we;
+logic        core_cyc;
+logic        core_stb;
+logic        core_we;
 logic [31:0] core_addr;
 logic [31:0] core_data_out;
 logic [31:0] core_data_in;
 logic        core_ack;
 
-`ifndef CLOCK_FREQ
-`define CLOCK_FREQ 25000000 // 100MHz
+`ifdef ENABLE_SECOND_MEMORY
+logic        data_mem_cyc;
+logic        data_mem_stb;
+logic        data_mem_we;
+logic [31:0] data_mem_addr;
+logic [31:0] data_mem_data_out;
+logic [31:0] data_mem_data_in;
+logic        data_mem_ack;
 `endif
-`ifndef MEMORY_SIZE
-`define MEMORY_SIZE 1024 // 1KB
-`endif
+
 
 Controller #(
     .CLK_FREQ           (`CLOCK_FREQ),
-    .BIT_RATE           (115200),
-    .PAYLOAD_BITS       (8),
-    .BUFFER_SIZE        (8),
-    .PULSE_CONTROL_BITS (32),
-    .BUS_WIDTH          (32),
-    .WORD_SIZE_BY       (4),
-    .ID                 (32'h7700006A),
-    .RESET_CLK_CYCLES   (20),
-    .MEMORY_FILE        (""),
+    .BIT_RATE           (`BIT_RATE),
+    .PAYLOAD_BITS       (`PAYLOAD_BITS),
+    .BUFFER_SIZE        (`BUFFER_SIZE),
+    .PULSE_CONTROL_BITS (`PULSE_CONTROL_BITS),
+    .BUS_WIDTH          (`BUS_WIDTH),
+    .WORD_SIZE_BY       (`WORD_SIZE_BY),
+    .ID                 (`ID),
+    .RESET_CLK_CYCLES   (`RESET_CLK_CYCLES),
+    .MEMORY_FILE        (`MEMORY_FILE),
     .MEMORY_SIZE        (`MEMORY_SIZE)
 ) u_Controller (
     `ifdef HIGH_CLK
@@ -84,7 +92,7 @@ Controller #(
     .clk_core_o         (clk_core),
     .rst_core_o         (rst_core),
     
-    // Barramento padrão (não AXI4-Lite)
+    // Barramento padrão (Wishbone)
     .core_cyc_i         (core_cyc),
     .core_stb_i         (core_stb),
     .core_we_i          (core_we),
@@ -92,6 +100,17 @@ Controller #(
     .core_data_i        (core_data_out),
     .core_data_o        (core_data_in),
     .core_ack_o         (core_ack)
+
+    `ifdef ENABLE_SECOND_MEMORY
+    ,
+    .data_mem_cyc_i     (data_mem_cyc),
+    .data_mem_stb_i     (data_mem_stb),
+    .data_mem_we_i      (data_mem_we),
+    .data_mem_addr_i    (data_mem_addr),
+    .data_mem_data_i    (data_mem_data_out),
+    .data_mem_data_o    (data_mem_data_in),
+    .data_mem_ack_o     (data_mem_ack)
+    `endif
 );
 
 // Core space
@@ -123,8 +142,6 @@ Grande_Risco5 #(
 
 // Clock inflaestructure
 
-`ifdef HIGH_CLK
-
 initial begin
     clk_o = 1'b0; // 50mhz or 100mhz
 end
@@ -134,26 +151,25 @@ logic clk_ref; // Sinal de clock single-ended
 
 // Instância do buffer diferencial
 IBUFDS #(
-    .DIFF_TERM("FALSE"),     // Habilita ou desabilita o terminador diferencial
-    .IBUF_LOW_PWR("TRUE"),   // Ativa o modo de baixa potência
-    .IOSTANDARD("DIFF_SSTL15")
+    .DIFF_TERM    ("FALSE"), // Habilita ou desabilita o terminador diferencial
+    .IBUF_LOW_PWR ("TRUE"),  // Ativa o modo de baixa potência
+    .IOSTANDARD   ("DIFF_SSTL15")
 ) ibufds_inst (
-    .O(clk_ref),    // Clock single-ended de saída
-    .I(clk_ref_p),  // Entrada diferencial positiva
-    .IB(clk_ref_n)  // Entrada diferencial negativa
+    .O  (clk_ref),   // Clock single-ended de saída
+    .I  (clk_ref_p), // Entrada diferencial positiva
+    .IB (clk_ref_n)  // Entrada diferencial negativa
 );
 
 
-always @(posedge clk_ref) begin
-    clk_o = ~clk_o;
+always_ff @(posedge clk_ref) begin
+    clk_o <= ~clk_o;
 end
 `else
-always @(posedge clk) begin
-    clk_o = ~clk_o;
+always_ff @(posedge clk) begin
+    clk_o <= ~clk_o;
 end
 `endif
 
-`endif
 
 // Reset Inflaestructure
 
@@ -162,12 +178,12 @@ ResetBootSystem #(
     .CYCLES(20)
 ) ResetBootSystem(
     `ifdef HIGH_CLK
-    .clk    (clk_o),
+    .clk     (clk_o),
     `else
-    .clk    (clk),
+    .clk     (clk),
     `endif
     
-    .rst_n_o(rst_n)
+    .rst_n_o (rst_n)
 );
     
 endmodule

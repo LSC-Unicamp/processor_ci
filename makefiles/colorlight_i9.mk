@@ -9,7 +9,7 @@ colorlight_i9.config: colorlight_i9.json
 		--speed 6 --lpf-allow-unconstrained  --ignore-loops
 
 colorlight_i9.json:
-	/eda/oss-cad-suite/bin/synlig -c $(BUILD_SCRIPT) $(MACROS)
+	/eda/oss-cad-suite/bin/synlig -c $(BUILD_SCRIPT)
 
 clean:
 	rm -rf build

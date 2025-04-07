@@ -45,6 +45,7 @@ Dependencies:
 
 import os
 import subprocess
+from core.board_defines import DEFINES_BY_BOARD
 
 
 CURRENT_DIR = os.getcwd()
@@ -64,31 +65,14 @@ GOWIN_BOARDS = [
     'tangnano_9k',
 ]
 
-MACROS = {
-    'colorlight_i9': '-DID=0x6a6a6a6a -DCLOCK_FREQ=25000000 -DMEMORY_SIZE=4096',
-    'digilent_nexys4_ddr': '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"',
-    'digilent_arty_a7_100t': '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"',
-    'xilinx_vc709': '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=100000000" "MEMORY_SIZE=4096"',
-    'tangnano_20k': '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"',
-    'tangnano_9k': '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"',
-}
 
+def write_defines(board_name, filename='processor_ci_defines.vh'):
+    if board_name not in DEFINES_BY_BOARD:
+        raise ValueError(f"Board '{board_name}' not found.")
 
-def get_macros(board: str) -> str:
-    """
-    Retrieves the macro definitions based on the target board.
-
-    Args:
-        board (str): The name of the board.
-
-    Returns:
-        str: The macro definitions as a string.
-    """
-
-    return MACROS.get(
-        board,
-        '-tclargs "ID=0x6a6a6a6a" "CLOCK_FREQ=50000000" "MEMORY_SIZE=4096"',
-    )
+    with open(filename, 'w') as f:
+        f.write(DEFINES_BY_BOARD[board_name])
+    print(f"File '{filename}' generated for board: '{board_name}'.")
 
 
 def get_vivado_prefix(vhdl: bool, sverilog: bool) -> str:
@@ -228,6 +212,8 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
         f'-I{CURRENT_DIR}/{d}' for d in config['include_dirs']
     )
 
+    write_defines(board, 'processor_ci_defines.vh')
+
     with open(final_config_path, 'w', encoding='utf-8') as file:
         for i in config['files']:
             is_sv_file = i.endswith('.sv')
@@ -275,8 +261,6 @@ def build(build_script_path: str, board: str, toolchain_path: str) -> None:
 
     makefile_path = f'{toolchain_path}/processor_ci/makefiles/{board}.mk'
 
-    macros = get_macros(board)
-
     # Set the BUILD_SCRIPT variable before running the make command
     with subprocess.Popen(
         [
@@ -284,7 +268,6 @@ def build(build_script_path: str, board: str, toolchain_path: str) -> None:
             '-f',
             makefile_path,
             f'BUILD_SCRIPT={build_script_path}',
-            f'MACROS={macros}',
         ],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
