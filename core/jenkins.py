@@ -171,11 +171,9 @@ pipeline {{
                         stage('Test {fpga}') {{
                             steps {{
                                 echo 'Testing FPGA {fpga}.'
-                                dir("{folder}") {{
-                                    sh 'echo "Test for FPGA in {port}"'
-                                    sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c\
-                                    /eda/processor_ci_tests/config.json --p {port} -m {march} -k {sync_key}'
-                                }}
+                                sh 'echo "Test for FPGA in {port}"'
+                                sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c\
+                                /eda/processor_ci_tests/config.json --p {port} -m {march} -k {sync_key}'
                             }}
                         }}
                     }}
