@@ -453,6 +453,8 @@ def create_output_json(
         'top_module': top_module,
         'extra_flags': [],
         'language_version': language_version,
+        'march': 'rv32i',
+        'two_memory': False,
     }
 
 

@@ -116,46 +116,7 @@ Controller #(
 
 // Core space
 
-rvx #(
-    .BOOT_ADDRESS (32'h00000000)
-) rvx_core_instance (
-
-    // Global signals
-
-    .clock                 (clk_core),
-    .reset                 (rst_core),
-    .halt                  (1'b0 ),
-
-    // IO interface
-
-    .rw_address            (),
-    .read_data             (),
-    .read_request          (),
-    .read_response         (),
-    .write_data            (),
-    .write_strobe          (),
-    .write_request         (),
-    .write_response        (),
-
-    // Interrupt request signals
-
-    .irq_fast              (16'h0),
-    .irq_external          (1'b0),
-    .irq_timer             (1'b0),
-    .irq_software          (1'b0),
-
-    // Interrupt response signals
-
-    .irq_fast_response     (),
-    .irq_external_response (),
-    .irq_timer_response    (),
-    .irq_software_response (),
-
-    // Real Time Clock
-
-    .real_time_clock       (64'h0)
-);
-
+// Core instantiation
 
 // Clock inflaestructure
 

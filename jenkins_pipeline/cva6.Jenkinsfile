@@ -5,8 +5,8 @@ pipeline {
         stage('Git Clone') {
             steps {
                 sh 'rm -rf *.xml'
-                sh 'rm -rf rvx'
-                sh 'git clone --recursive --depth=1 https://github.com/rafaelcalcada/rvx rvx'
+                sh 'rm -rf cva6'
+                sh 'git clone --recursive --depth=1 https://github.com/openhwgroup/cva6 cva6'
             }
         }
 
@@ -14,15 +14,15 @@ pipeline {
 
         stage('Simulation') {
             steps {
-                dir("rvx") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s rvx  hardware/rvx.v "
+                dir("cva6") {
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }
 
          stage('Utilities')  {
             steps {
-                dir("rvx") {
+                dir("cva6") {
                     sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor_ci/config -o /jenkins/processor_ci_utils/labels"
                 }            
             }
@@ -38,19 +38,19 @@ pipeline {
                     stages {
                         stage('Synthesis and PnR') {
                             steps {
-                                dir("rvx") {
+                                dir("cva6") {
                                     echo 'Starting synthesis for FPGA digilent_arty_a7_100t.'
                                 sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
-                                            -p rvx -b digilent_arty_a7_100t'
+                                            -p cva6 -b digilent_arty_a7_100t'
                                 }
                             }
                         }
                         stage('Flash digilent_arty_a7_100t') {
                             steps {
-                                dir("rvx") {
+                                dir("cva6") {
                                     echo 'Flashing FPGA digilent_arty_a7_100t.'
                                 sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
-                                            -p rvx -b digilent_arty_a7_100t -l'
+                                            -p cva6 -b digilent_arty_a7_100t -l'
                                 }
                             }
                         }

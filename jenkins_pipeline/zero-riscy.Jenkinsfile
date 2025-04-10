@@ -5,8 +5,8 @@ pipeline {
         stage('Git Clone') {
             steps {
                 sh 'rm -rf *.xml'
-                sh 'rm -rf rvx'
-                sh 'git clone --recursive --depth=1 https://github.com/rafaelcalcada/rvx rvx'
+                sh 'rm -rf zero-riscy'
+                sh 'git clone --recursive --depth=1 https://github.com/tom01h/zero-riscy zero-riscy'
             }
         }
 
@@ -14,15 +14,15 @@ pipeline {
 
         stage('Simulation') {
             steps {
-                dir("rvx") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s rvx  hardware/rvx.v "
+                dir("zero-riscy") {
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }
 
          stage('Utilities')  {
             steps {
-                dir("rvx") {
+                dir("zero-riscy") {
                     sh "python3 /eda/processor_ci/core/labeler_prototype.py -d \$(pwd) -c /eda/processor_ci/config -o /jenkins/processor_ci_utils/labels"
                 }            
             }
@@ -38,19 +38,19 @@ pipeline {
                     stages {
                         stage('Synthesis and PnR') {
                             steps {
-                                dir("rvx") {
+                                dir("zero-riscy") {
                                     echo 'Starting synthesis for FPGA digilent_arty_a7_100t.'
                                 sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
-                                            -p rvx -b digilent_arty_a7_100t'
+                                            -p zero-riscy -b digilent_arty_a7_100t'
                                 }
                             }
                         }
                         stage('Flash digilent_arty_a7_100t') {
                             steps {
-                                dir("rvx") {
+                                dir("zero-riscy") {
                                     echo 'Flashing FPGA digilent_arty_a7_100t.'
                                 sh 'python3 /eda/processor_ci/main.py -c /eda/processor_ci/config \
-                                            -p rvx -b digilent_arty_a7_100t -l'
+                                            -p zero-riscy -b digilent_arty_a7_100t -l'
                                 }
                             }
                         }
