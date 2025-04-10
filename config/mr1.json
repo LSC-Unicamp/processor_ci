@@ -11,5 +11,6 @@
     "extra_flags": [],
     "language_version": "2005",
     "pre_script": "sbt \"run-main mr1.MR1Verilog\"",
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": false
 }

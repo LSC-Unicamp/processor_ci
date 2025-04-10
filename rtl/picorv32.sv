@@ -115,8 +115,42 @@ Controller #(
 );
 
 // Core space
+logic mem_valid;
+logic [31:0] read_data;
 
-// Core instantiation
+picorv32 #(
+    .STACKADDR        ('h1000),
+    .PROGADDR_RESET   (32'h0000_0000),
+    .PROGADDR_IRQ     (32'h0000_0000),
+    .BARREL_SHIFTER   (1),
+    .COMPRESSED_ISA   (1),
+    .ENABLE_COUNTERS  (1),
+    .ENABLE_MUL       (1),
+    .ENABLE_DIV       (1),
+    .ENABLE_FAST_MUL  (0),
+    .ENABLE_IRQ       (0),
+    .ENABLE_IRQ_QREGS (0)
+) cpu (
+    .clk         (clk_core),
+    .resetn      (~rst_core),
+    .mem_valid   (mem_valid),
+    .mem_instr   (),
+    .mem_ready   (core_ack),
+    .mem_addr    (core_addr),
+    .mem_wdata   (core_data_out),
+    .mem_wstrb   (),
+    .mem_rdata   (read_data),
+    .irq         (0)
+); // Olhar o pico soc e adaptar
+
+
+assign core_stb = 1'b1;
+assign core_cyc = 1'b1;
+assign core_we  = mem_valid;
+
+always_ff @(posedge clk_core) begin
+    core_data_in <= read_data;
+end
 
 // Clock inflaestructure
 

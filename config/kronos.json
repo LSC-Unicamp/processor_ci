@@ -22,5 +22,6 @@
     "top_module": "kronos_core",
     "extra_flags": [],
     "language_version": "2012",
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": false
 }

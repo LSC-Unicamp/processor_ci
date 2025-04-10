@@ -57,5 +57,6 @@
     "top_module": "eh2_veer",
     "extra_flags": [],
     "language_version": "2012",
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": false
 }

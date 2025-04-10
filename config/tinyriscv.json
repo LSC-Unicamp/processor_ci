@@ -24,5 +24,6 @@
     "top_module": "tinyriscv",
     "extra_flags": [],
     "language_version": "2005",
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": true
 }

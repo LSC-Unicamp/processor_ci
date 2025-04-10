@@ -11,5 +11,6 @@
     "extra_flags": [],
     "language_version": "2005",
     "pre_script": "sbt \"runMain vexriscv.demo.GenFull\"",
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": false
 }

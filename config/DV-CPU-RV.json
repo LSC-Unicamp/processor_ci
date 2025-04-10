@@ -26,5 +26,6 @@
     "include_dirs": [],
     "extra_flags": [],
     "enable": false,
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": false
 }

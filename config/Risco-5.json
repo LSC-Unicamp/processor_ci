@@ -35,5 +35,6 @@
     ],
     "extra_flags": [],
     "enable": true,
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": false
 }

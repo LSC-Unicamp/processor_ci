@@ -57,6 +57,7 @@ pipeline {{
     stages {{
         stage('Git Clone') {{
             steps {{
+                sh 'rm -rf *.xml'
                 sh 'rm -rf {folder}'
                 sh 'git clone --recursive --depth=1 {repository} {folder}'
             }}
@@ -173,7 +174,7 @@ pipeline {{
                                 echo 'Testing FPGA {fpga}.'
                                 sh 'echo "Test for FPGA in {port}"'
                                 sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c\
-                                /eda/processor_ci_tests/config.json --p {port} -m {march} -k {sync_key}'
+                                /eda/processor_ci_tests/config.json --p {port} -m {march} -k {sync_key} {ctm}'
                             }}
                         }}
                     }}
@@ -188,6 +189,7 @@ pipeline {{
                 sync_key='0x41525459'
                 if fpga == 'digilent_arty_a7_100t'
                 else '0x434F4C4F',
+                ctm='-ctm' if config['two_memory'] else '',
             )
             for fpga in fpgas
         ]

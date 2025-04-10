@@ -57,5 +57,6 @@
     "top_module": "",
     "extra_flags": [],
     "language_version": "08",
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": false
 }

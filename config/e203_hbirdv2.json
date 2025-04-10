@@ -76,5 +76,6 @@
         "-gsupported-assertions"
     ],
     "language_version": "2009",
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": false
 }

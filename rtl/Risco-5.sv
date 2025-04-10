@@ -119,7 +119,7 @@ Controller #(
 logic core_memory_read, core_memory_write;
 
 Core #(
-    .BOOT_ADDRESS (32'h00000000),
+    .BOOT_ADDRESS (32'h00000000)
 ) Core(
     .clk             (clk_core),
     .reset           (rst_core),

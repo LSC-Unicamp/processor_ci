@@ -55,5 +55,6 @@
     "top_module": "e203_cpu_top",
     "extra_flags": [],
     "language_version": "2005",
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": false
 }

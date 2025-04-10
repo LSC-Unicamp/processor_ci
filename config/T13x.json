@@ -24,5 +24,6 @@
     "top_module": "klessydra_t1_3th_core",
     "extra_flags": [],
     "language_version": "08",
-    "march": "rv32i"
+    "march": "rv32i",
+    "two_memory": true
 }

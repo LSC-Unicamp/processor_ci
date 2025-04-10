@@ -93,7 +93,7 @@ from core.log import print_green, print_red, print_yellow
 EXTENSIONS = ['v', 'sv', 'vhdl', 'vhd']
 BASE_DIR = 'jenkins_pipeline/'
 FPGAs = [
-    'colorlight_i9',
+    #'colorlight_i9',
     #'digilent_nexys4_ddr',
     # "gowin_tangnano_20k",
     # "xilinx_vc709",
