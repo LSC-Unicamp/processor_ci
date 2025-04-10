@@ -212,6 +212,8 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
         f'-I{CURRENT_DIR}/{d}' for d in config['include_dirs']
     )
 
+    include_dirs_str_vivado = ''
+
     write_defines(board, 'processor_ci_defines.vh')
 
     with open(final_config_path, 'w', encoding='utf-8') as file:
@@ -233,6 +235,13 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
             prefix
             + f' {toolchain_path}/processor_ci/rtl/{config["folder"]}.sv\n'
         )
+
+        if board in VIVADO_BOARDS and config['include_dirs'] != []:
+            include_dirs_str_vivado = 'set_property include_dirs [list '
+            for i in config['include_dirs']:
+                include_dirs_str_vivado += f'"{CURRENT_DIR}/{i}" '
+            include_dirs_str_vivado += '] [get_filesets sources_1]\n'
+            file.write(include_dirs_str_vivado)
 
         file.write(base_config)
 

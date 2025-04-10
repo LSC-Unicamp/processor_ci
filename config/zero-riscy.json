@@ -3,7 +3,8 @@
     "folder": "zero-riscy",
     "sim_files": [],
     "files": [
-        "include/param0.v",
+        "include/zeroriscy_config.sv",
+        "include/zeroriscy_defines.sv",
         "cluster_clock_gating.sv",
         "zeroriscy_alu.sv",
         "zeroriscy_compressed_decoder.sv",
@@ -22,12 +23,8 @@
         "zeroriscy_multdiv_fast.sv",
         "zeroriscy_prefetch_buffer.sv",
         "zeroriscy_register_file.sv",
-        "zeroriscy_register_file_ff.sv",
-        "zeroriscy_tracer.sv",
-        "zeroriscy_tracer_verilator.sv",
-        "include/zeroriscy_config.sv",
-        "include/zeroriscy_defines.sv",
-        "include/zeroriscy_tracer_defines.sv"
+        "zeroriscy_register_file_ff.sv"
+
     ],
     "include_dirs": ["include"],
     "repository": "https://github.com/tom01h/zero-riscy",

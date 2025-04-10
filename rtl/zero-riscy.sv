@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -115,8 +115,81 @@ Controller #(
 );
 
 // Core space
+logic [31:0] instr_data, data_mem_r;
+logic instr_grant, data_grant;
 
-// Core instantiation
+// Instância do zeroriscy_core
+zeroriscy_core #(
+  .N_EXT_PERF_COUNTERS (0), // Substitua por quantos contadores externos você precisa
+  .RV32E               (0),
+  .RV32M               (1)
+) zeroriscy_core_inst (
+  // Clock and Reset
+  .clk_i              (clk_core),
+  .rst_ni             (~rst_core),
+
+  .clock_en_i         (1'b1),
+  .test_en_i          (1'b0),
+
+  // Core ID, Cluster ID and boot address
+  .core_id_i          (0),
+  .cluster_id_i       (0),
+  .boot_addr_i        (0),
+
+  // Instruction memory interface
+  .instr_req_o        (core_cyc),
+  .instr_gnt_i        (instr_grant),
+  .instr_rvalid_i     (instr_grant),
+  .instr_addr_o       (core_addr),
+  .instr_rdata_i      (instr_data),
+
+  // Data memory interface
+  .data_req_o         (data_mem_cyc),
+  .data_gnt_i         (data_grant),
+  .data_rvalid_i      (data_grant & !data_mem_we),
+  .data_we_o          (data_mem_we),
+  .data_be_o          (),
+  .data_addr_o        (data_mem_addr),
+  .data_wdata_o       (data_mem_data_out),
+  .data_rdata_i       (data_mem_r),
+  .data_err_i         (1'b1),
+
+  // Interrupt inputs
+  .irq_i              (0),
+  .irq_id_i           (0),
+  .irq_ack_o          (),
+  .irq_id_o           (),
+
+  // Debug Interface
+  .debug_req_i        (0),
+  .debug_gnt_o        (),
+  .debug_rvalid_o     (),
+  .debug_addr_i       (0),
+  .debug_we_i         (0),
+  .debug_wdata_i      (0),
+  .debug_rdata_o      (),
+  .debug_halted_o     (),
+  .debug_halt_i       (0),
+  .debug_resume_i     (0),
+
+  // CPU Control Signals
+  .fetch_enable_i     (1'b1),
+  .core_busy_o        (),
+
+  .ext_perf_counters_i()
+);
+
+assign core_data_out = 0;
+assign core_we = 0;
+assign core_stb = core_cyc;
+assign data_mem_stb = data_mem_cyc;
+
+always_ff @( posedge clk_core ) begin
+    instr_grant <= core_ack;
+    instr_data  <= core_data_in;
+    data_grant  <= data_mem_ack;
+    data_mem_r  <= data_mem_data_in;
+end
 
 // Clock inflaestructure
 
