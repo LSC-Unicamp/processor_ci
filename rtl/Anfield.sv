@@ -116,7 +116,24 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+Balotelli Anfield_Balotelli (
+    .Clk            (Clk),
+    .Rst            (Rst),
+    .InstIn         (InstIn),
+    .InstAddrToBus  (ReadAddrIn),
+    .RaddrOut       (RaddrOut),
+    .WaddrOut       (WaddrOut),
+    .MemDataOut     (MemDataOut),
+    .Wmask          (Wmask),
+    .MemDataIn      (MemDataInInside),
+    .BusRequest     (BusRequest),
+    .InstReadReady  (ReadInstReady),
+    .InstAddrIn     (InstAddr),
+    .DataReadReady  (DataReadReady),
+    .DataWriteOver  (DataWriteOver),
+    .ReadShakeHands (ReadShakeHands),
+    .Timer0IntIn    (Timer0IntIn)
+);
 
 // Clock inflaestructure
 

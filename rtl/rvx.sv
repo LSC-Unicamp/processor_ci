@@ -116,7 +116,10 @@ Controller #(
 
 // Core space
 
-rvx #(
+logic write_request, read_request, write_response, read_response;
+logic [31:0] read_data;
+
+rvx_core #(
     .BOOT_ADDRESS (32'h00000000)
 ) rvx_core_instance (
 
@@ -128,14 +131,14 @@ rvx #(
 
     // IO interface
 
-    .rw_address            (),
-    .read_data             (),
-    .read_request          (),
-    .read_response         (),
-    .write_data            (),
+    .rw_address            (core_addr),
+    .read_data             (read_data),
+    .read_request          (read_request),
+    .read_response         (read_response),
+    .write_data            (core_data_out),
     .write_strobe          (),
-    .write_request         (),
-    .write_response        (),
+    .write_request         (write_request),
+    .write_response        (write_response),
 
     // Interrupt request signals
 
@@ -156,6 +159,15 @@ rvx #(
     .real_time_clock       (64'h0)
 );
 
+assign core_cyc = read_request | write_request;
+assign core_stb = read_request | write_request;
+assign core_we  = write_request;
+
+always_ff @(posedge clk_core) begin
+    read_data <= core_data_in;
+    read_response <= core_ack & !write_request;
+    write_response <= core_ack & !read_request;
+end
 
 // Clock inflaestructure
 

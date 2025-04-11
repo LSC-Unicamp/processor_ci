@@ -3,11 +3,11 @@
     "folder": "rvx",
     "sim_files": [],
     "files": [
-        "hardware/rvx.v"
+        "hardware/rvx_core.v"
     ],
     "include_dirs": [],
     "repository": "https://github.com/rafaelcalcada/rvx",
-    "top_module": "rvx",
+    "top_module": "rvx_core",
     "extra_flags": [],
     "language_version": "2005",
     "march": "rv32i",

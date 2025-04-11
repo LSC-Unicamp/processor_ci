@@ -56,7 +56,8 @@
     ],
     "include_dirs": [
         "src/",
-        "src/modules/airi5c_mul_div/src/"
+        "src/modules/airi5c_mul_div/src/",
+        "src/modules/airi5c_fpu/"
     ],
     "repository": "https://github.com/Fraunhofer-IMS/airisc_core_complex",
     "top_module": "airi5c_core",
