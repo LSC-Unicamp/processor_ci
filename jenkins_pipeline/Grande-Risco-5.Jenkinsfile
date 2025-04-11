@@ -58,7 +58,7 @@ pipeline {
                             steps {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 sh 'echo "Test for FPGA in /dev/ttyUSB1"'
-                                sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c                                /eda/processor_ci_tests/config.json --p /dev/ttyUSB1 -m rv32i -k 0x41525459 '
+                                sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c                                /eda/processor_ci_tests/config.json --p /dev/ttyUSB1 -m rv32imc -k 0x41525459 '
                             }
                         }
                     }

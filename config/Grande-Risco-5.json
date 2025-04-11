@@ -33,6 +33,6 @@
     "top_module": "Grande_Risco5",
     "extra_flags": [],
     "language_version": "2012",
-    "march": "rv32i",
+    "march": "rv32imc",
     "two_memory": false
 }
