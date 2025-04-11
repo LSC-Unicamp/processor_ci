@@ -11,6 +11,14 @@ pipeline {
         }
 
         
+        stage('Verilog Convert') {
+            steps {
+                dir("Cores-VeeR-EL2") {
+                    sh 'RV_ROOT=$(pwd) configs/veer.config -set=fpga_optimize=1 -target=default -set=btb_size=128'
+                }
+            }
+        }
+        
 
         stage('Simulation') {
             steps {

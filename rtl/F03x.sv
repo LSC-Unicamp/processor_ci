@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -179,7 +179,7 @@ klessydra_f0_3th_core #(
   // Miscellaneous control
   .fetch_enable_i        (1),
   .core_busy_o           (),
-  .ext_perf_counters_i   (1)
+  .ext_perf_counters_i   (0)
 );
 
 

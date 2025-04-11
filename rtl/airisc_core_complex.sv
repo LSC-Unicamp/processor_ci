@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -116,7 +116,144 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+// AHB - Instruction bus
+logic [31:0] imem_haddr;
+logic        imem_hwrite;
+logic [2:0]  imem_hsize;
+logic [2:0]  imem_hburst;
+logic        imem_hmastlock;
+logic [3:0]  imem_hprot;
+logic [1:0]  imem_htrans;
+logic [31:0] imem_hwdata;
+logic [31:0] imem_hrdata;
+logic        imem_hready;
+logic        imem_hresp;
+
+// AHB - Data bus
+logic [31:0] dmem_haddr;
+logic        dmem_hwrite;
+logic [2:0]  dmem_hsize;
+logic [2:0]  dmem_hburst;
+logic        dmem_hmastlock;
+logic [3:0]  dmem_hprot;
+logic [1:0]  dmem_htrans;
+logic [31:0] dmem_hwdata;
+logic [31:0] dmem_hrdata;
+logic        dmem_hready;
+logic        dmem_hresp;
+
+ahb_to_wishbone #( // Instruction bus adapter
+    .ADDR_WIDTH(32),
+    .DATA_WIDTH(32)
+) ahb2wb_inst (
+    // Clock & Reset
+    .HCLK       (clk_core),
+    .HRESETn    (~rst_core),
+
+    // AHB interface
+    .HADDR      (imem_haddr),
+    .HTRANS     (imem_htrans),
+    .HWRITE     (imem_hwrite),
+    .HSIZE      (imem_hsize),
+    .HBURST     (imem_hburst),
+    .HPROT      (imem_hprot),
+    .HLOCK      (imem_hmastlock),
+    .HWDATA     (imem_hwdata),
+    .HREADY     (imem_hready),
+    .HRDATA     (imem_hrdata),
+    .HREADYOUT  (imem_hready), // normalmente igual a HREADY em designs simples
+    .HRESP      (imem_hresp),
+
+    // Wishbone interface
+    .wb_cyc     (core_cyc),
+    .wb_stb     (core_stb),
+    .wb_we      (core_we),
+    .wb_adr     (core_addr),
+    .wb_dat_w   (core_data_out),
+    .wb_dat_r   (core_data_in),
+    .wb_ack     (core_ack)
+);
+
+
+ahb_to_wishbone #( // Data bus adapter
+    .ADDR_WIDTH(32),
+    .DATA_WIDTH(32)
+) ahb2wb_data (
+    // Clock & Reset
+    .HCLK       (clk_core),
+    .HRESETn    (~rst_core),
+
+    // AHB interface
+    .HADDR      (dmem_haddr),
+    .HTRANS     (dmem_htrans),
+    .HWRITE     (dmem_hwrite),
+    .HSIZE      (dmem_hsize),
+    .HBURST     (dmem_hburst),
+    .HPROT      (dmem_hprot),
+    .HLOCK      (dmem_hmastlock),
+    .HWDATA     (dmem_hwdata),
+    .HREADY     (dmem_hready),
+    .HRDATA     (dmem_hrdata),
+    .HREADYOUT  (dmem_hready),
+    .HRESP      (dmem_hresp),
+
+    // Wishbone interface
+    .wb_cyc     (data_mem_cyc),
+    .wb_stb     (data_mem_stb),
+    .wb_we      (data_mem_we),
+    .wb_adr     (data_mem_addr),
+    .wb_dat_w   (data_mem_data_out),
+    .wb_dat_r   (data_mem_data_in),
+    .wb_ack     (data_mem_ack)
+);
+
+
+airi5c_core airi5c(
+    .rst_ni              (~rst_core),
+    .clk_i               (clk_core),
+    .testmode_i          (0),
+
+    .ndmreset_o          (),
+    .ext_interrupts_i    (0),
+    .system_timer_tick_i (0),
+
+    // Instruction memory (AHB)
+    .imem_haddr_o        (imem_haddr),
+    .imem_hwrite_o       (imem_hwrite),
+    .imem_hsize_o        (imem_hsize),
+    .imem_hburst_o       (imem_hburst),
+    .imem_hmastlock_o    (imem_hmastlock),
+    .imem_hprot_o        (imem_hprot),
+    .imem_htrans_o       (imem_htrans),
+    .imem_hwdata_o       (imem_hwdata),
+    .imem_hrdata_i       (imem_hrdata),
+    .imem_hready_i       (imem_hready),
+    .imem_hresp_i        (imem_hresp),
+
+    // Data memory (AHB)
+    .dmem_haddr_o        (dmem_haddr),
+    .dmem_hwrite_o       (dmem_hwrite),
+    .dmem_hsize_o        (dmem_hsize),
+    .dmem_hburst_o       (dmem_hburst),
+    .dmem_hmastlock_o    (dmem_hmastlock),
+    .dmem_hprot_o        (dmem_hprot),
+    .dmem_htrans_o       (dmem_htrans),
+    .dmem_hwdata_o       (dmem_hwdata),
+    .dmem_hrdata_i       (dmem_hrdata),
+    .dmem_hready_i       (dmem_hready),
+    .dmem_hresp_i        (dmem_hresp),
+
+    .lock_custom_i       (0),
+
+    .dmi_addr_i          (0),
+    .dmi_en_i            (0),
+    .dmi_error_o         (),
+    .dmi_wen_i           (0),
+    .dmi_wdata_i         (0),
+    .dmi_rdata_o         (),
+    .dmi_dm_busy_o       ()
+);
+
 
 // Clock inflaestructure
 

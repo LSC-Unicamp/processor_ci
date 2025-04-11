@@ -152,7 +152,7 @@ zeroriscy_core #(
   .data_addr_o        (data_mem_addr),
   .data_wdata_o       (data_mem_data_out),
   .data_rdata_i       (data_mem_r),
-  .data_err_i         (1'b1),
+  .data_err_i         (0),
 
   // Interrupt inputs
   .irq_i              (0),

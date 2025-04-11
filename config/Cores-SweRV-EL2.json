@@ -52,12 +52,13 @@
         "design/lsu/el2_lsu_trigger.sv"
     ],
     "include_dirs": [
-        "design/include"
+        "design/include", "snapshots/default/"
     ],
     "repository": "https://github.com/chipsalliance/Cores-SweRV-EL2",
     "top_module": "el2_veer",
     "extra_flags": [],
     "language_version": "2012",
     "march": "rv32i",
-    "two_memory": false
+    "two_memory": false,
+    "pre_script": "RV_ROOT=$(pwd) configs/veer.config -set=fpga_optimize=1 -target=default -set=btb_size=128"
 }

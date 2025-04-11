@@ -1,6 +1,7 @@
 `timescale 1ns / 1ps
+`include "common_defines.vh" // Veer defines
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -116,7 +117,45 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+veer u_veer (
+    .clk              (clk_core),
+    .rst_l            (rst_core),
+    .dbg_rst_l        (1'b1),
+    .rst_vec          (32'h00000000),
+    .nmi_int          (1'b0),
+    .nmi_vec          (32'h00000000),
+    .core_rst_l       (rst_core),
+
+    // Halt/debug
+    .i_cpu_halt_req   (1'b0),
+    .i_cpu_run_req    (1'b0),
+    .o_cpu_halt_ack   (),
+    .o_cpu_halt_status(),
+    .o_cpu_run_ack(),
+    .o_debug_mode_status(),
+
+    // LSU
+    .lsu_addr         (data_mem_addr),
+    .lsu_rdata        (data_mem_data_in),
+    .lsu_wdata        (data_mem_data_out),
+    .lsu_rv3store     (1'b0),
+    .lsu_we           (data_mem_we),
+    .lsu_req          (data_mem_cyc),
+    .lsu_ack          (data_mem_ack),
+    .lsu_atop         (6'b0),
+    .lsu_be           (),
+
+    // IFU
+    .ifu_paddr        (core_addr),
+    .ifu_fetch_req    (core_cyc),
+    .ifu_fetch_ack    (core_ack),
+    .ifu_instr_rdata  (core_data_in)
+);
+
+assign core_data_out = 32'h0;
+assign core_stb = core_cyc;
+assign core_we = 1'b0;
+assign data_mem_stb = data_mem_cyc;
 
 // Clock inflaestructure
 

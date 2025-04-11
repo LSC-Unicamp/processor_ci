@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`include "common_defines.vh" // Veer defines
 `include "processor_ci_defines.vh"
 // `define ENABLE_SECOND_MEMORY 1
 

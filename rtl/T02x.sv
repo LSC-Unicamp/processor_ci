@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "processor_ci_defines.vh"
-// `define ENABLE_SECOND_MEMORY 1
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     `ifdef DIFERENCIAL_CLK
@@ -115,6 +115,8 @@ Controller #(
 );
 
 // Core space
+logic [31:0] instr_data, data_mem_r;
+logic instr_grant, data_grant;
 
 assign core_stb = core_cyc;
 assign core_we  = 1'b0; // Read only
@@ -140,20 +142,20 @@ klessydra_t0_2th_core #(
 
   // Instruction memory interface
   .instr_req_o           (core_cyc),
-  .instr_gnt_i           (1'b1),
-  .instr_rvalid_i        (core_ack),
+  .instr_gnt_i           (instr_grant),
+  .instr_rvalid_i        (instr_grant),
   .instr_addr_o          (core_addr),
-  .instr_rdata_i         (core_data_in),
+  .instr_rdata_i         (instr_data),
 
   // Data memory interface
   .data_req_o            (data_mem_cyc),
-  .data_gnt_i            (1'b1),
-  .data_rvalid_i         (data_mem_ack),
+  .data_gnt_i            (data_grant),
+  .data_rvalid_i         (data_grant & !data_mem_we),
   .data_we_o             (data_mem_we),
   .data_be_o             (),
   .data_addr_o           (data_mem_addr),
   .data_wdata_o          (data_mem_data_out),
-  .data_rdata_i          (data_mem_data_in),
+  .data_rdata_i          (data_mem_r),
   .data_err_i            (0),
 
   // Interrupt interface
@@ -179,8 +181,15 @@ klessydra_t0_2th_core #(
   // Miscellaneous control
   .fetch_enable_i        (1),
   .core_busy_o           (),
-  .ext_perf_counters_i   (0)
+  .ext_perf_counters_i   ()
 );
+
+always_ff @( posedge clk_core ) begin
+    instr_grant <= core_ack;
+    instr_data  <= core_data_in;
+    data_grant  <= data_mem_ack;
+    data_mem_r  <= data_mem_data_in;
+end
 
 // Clock inflaestructure
 

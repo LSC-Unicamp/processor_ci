@@ -217,6 +217,12 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
     write_defines(board, 'processor_ci_defines.vh')
 
     with open(final_config_path, 'w', encoding='utf-8') as file:
+        prefix = get_prefix(board, False, True)
+        file.write(
+            prefix
+            + f' {toolchain_path}/processor_ci/rtl/{config["folder"]}.sv\n'
+        )
+
         for i in config['files']:
             is_sv_file = i.endswith('.sv')
             prefix = get_prefix(
@@ -229,12 +235,6 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
                 )
             else:
                 file.write(prefix + f' {CURRENT_DIR}/' + i + '\n')
-
-        prefix = get_prefix(board, False, True)
-        file.write(
-            prefix
-            + f' {toolchain_path}/processor_ci/rtl/{config["folder"]}.sv\n'
-        )
 
         if board in VIVADO_BOARDS and config['include_dirs'] != []:
             include_dirs_str_vivado = 'set_property include_dirs [list '

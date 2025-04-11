@@ -5,6 +5,7 @@ read_verilog /eda/processor-ci-controller/modules/UART/rtl/uart_tx.v
 #read_verilog -sv /eda/processor-ci-controller/modules/spi.sv;
 #read_verilog -sv /eda/processor-ci-controller/modules/SPI-Slave/rtl/spi_slave.sv;
 
+read_verilog -sv /eda/processor-ci-controller/rtl/ahblite_to_wishbone.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/axi4_to_wishbone.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/axi4lite_to_wishbone.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/fifo.sv
@@ -13,7 +14,6 @@ read_verilog -sv /eda/processor-ci-controller/rtl/clk_divider.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/memory.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/interpreter.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/controller.sv
-
 
 set_param general.maxThreads 16
 

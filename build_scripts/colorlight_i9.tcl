@@ -1,6 +1,7 @@
 yosys read_systemverilog -defer /eda/processor-ci-controller/modules/uart.sv
 yosys read_systemverilog -defer /eda/processor-ci-controller/modules/UART/rtl/uart_rx.v
 yosys read_systemverilog -defer /eda/processor-ci-controller/modules/UART/rtl/uart_tx.v
+yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/ahblite_to_wishbone.svls
 yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/axi4_to_wishbone.sv
 yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/axi4lite_to_wishbone.sv
 yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/fifo.sv
