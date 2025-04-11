@@ -117,22 +117,22 @@ Controller #(
 // Core space
 
 Balotelli Anfield_Balotelli (
-    .Clk            (Clk),
-    .Rst            (Rst),
-    .InstIn         (InstIn),
-    .InstAddrToBus  (ReadAddrIn),
-    .RaddrOut       (RaddrOut),
-    .WaddrOut       (WaddrOut),
-    .MemDataOut     (MemDataOut),
-    .Wmask          (Wmask),
-    .MemDataIn      (MemDataInInside),
-    .BusRequest     (BusRequest),
-    .InstReadReady  (ReadInstReady),
-    .InstAddrIn     (InstAddr),
-    .DataReadReady  (DataReadReady),
-    .DataWriteOver  (DataWriteOver),
-    .ReadShakeHands (ReadShakeHands),
-    .Timer0IntIn    (Timer0IntIn)
+    .Clk            (clk_core),
+    .Rst            (rst_core),
+    .InstIn         (),
+    .InstAddrToBus  (),
+    .RaddrOut       (),
+    .WaddrOut       (),
+    .MemDataOut     (),
+    .Wmask          (),
+    .MemDataIn      (),
+    .BusRequest     (),
+    .InstReadReady  (),
+    .InstAddrIn     (),
+    .DataReadReady  (),
+    .DataWriteOver  (),
+    .ReadShakeHands (),
+    .Timer0IntIn    ()
 );
 
 // Clock inflaestructure
