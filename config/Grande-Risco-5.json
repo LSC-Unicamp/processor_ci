@@ -22,7 +22,6 @@
         "rtl/core/mdu.sv",
         "rtl/core/MEMWB.sv",
         "rtl/core/mux.sv",
-        "rtl/core/ir_decomp.sv",
         "rtl/core/registers.sv",
         "rtl/core/core.sv"
     ],
