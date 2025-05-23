@@ -42,6 +42,19 @@ DEFINES_BY_BOARD = {
 `define RESET_CLK_CYCLES 20
 `define MEMORY_FILE ""
 """,
+    'opensdrlab_kintex7': """\
+`define CLOCK_FREQ 50_000_000
+`define MEMORY_SIZE 8192
+`define ID 32'h4B494E54 // KINTEX
+`define BIT_RATE 115200
+`define PAYLOAD_BITS 8
+`define BUFFER_SIZE 8
+`define PULSE_CONTROL_BITS 32
+`define BUS_WIDTH 32
+`define WORD_SIZE_BY 4
+`define RESET_CLK_CYCLES 20
+`define MEMORY_FILE ""
+""",
     'colorlight_i9': """\
 `define CLOCK_FREQ 25_000_000
 `define MEMORY_SIZE 4096

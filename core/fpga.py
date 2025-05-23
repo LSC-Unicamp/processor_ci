@@ -54,6 +54,7 @@ VIVADO_BOARDS = [
     'xilinx_vc709',
     'digilent_arty_a7_100t',
     'digilent_nexys4_ddr',
+    'opensdrlab_kintex7',
 ]
 
 YOSYS_BOARDS = [

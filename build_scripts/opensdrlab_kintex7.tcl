@@ -1,0 +1,50 @@
+read_verilog -sv /eda/processor-ci-controller/modules/uart.sv
+read_verilog /eda/processor-ci-controller/modules/UART/rtl/uart_rx.v
+read_verilog /eda/processor-ci-controller/modules/UART/rtl/uart_tx.v
+
+#read_verilog -sv /eda/processor-ci-controller/modules/spi.sv;
+#read_verilog -sv /eda/processor-ci-controller/modules/SPI-Slave/rtl/spi_slave.sv;
+
+read_verilog -sv /eda/processor-ci-controller/rtl/ahblite_to_wishbone.sv
+read_verilog -sv /eda/processor-ci-controller/rtl/axi4_to_wishbone.sv
+read_verilog -sv /eda/processor-ci-controller/rtl/axi4lite_to_wishbone.sv
+read_verilog -sv /eda/processor-ci-controller/rtl/fifo.sv
+read_verilog -sv /eda/processor-ci-controller/rtl/reset.sv
+read_verilog -sv /eda/processor-ci-controller/rtl/clk_divider.sv
+read_verilog -sv /eda/processor-ci-controller/rtl/memory.sv
+read_verilog -sv /eda/processor-ci-controller/rtl/interpreter.sv
+read_verilog -sv /eda/processor-ci-controller/rtl/controller.sv
+read_verilog -sv /eda/processor-ci-controller/rtl/timer.sv
+
+set_param general.maxThreads 16
+
+read_xdc "/eda/processor_ci/constraints/opensdrlab_kintex7.xdc"
+set_property PROCESSING_ORDER EARLY [get_files /eda/processor_ci/constraints/opensdrlab_kintex7.xdc]
+
+# synth
+synth_design -top "processorci_top" -part "xc7k325tffg676-2"
+
+# place and route
+opt_design
+place_design
+
+report_utilization -hierarchical -file opensdrlab_kintex7_utilization_hierarchical_place.rpt
+report_utilization               -file opensdrlab_kintex7_utilization_place.rpt
+report_io                        -file opensdrlab_kintex7_io.rpt
+report_control_sets -verbose     -file opensdrlab_kintex7_control_sets.rpt
+report_clock_utilization         -file opensdrlab_kintex7_clock_utilization.rpt
+
+
+route_design
+
+report_timing_summary -no_header -no_detailed_paths
+report_route_status                            -file opensdrlab_kintex7_route_status.rpt
+report_drc                                     -file opensdrlab_kintex7_drc.rpt
+report_timing_summary -datasheet -max_paths 10 -file opensdrlab_kintex7_timing.rpt
+report_power                                   -file opensdrlab_kintex7_power.rpt
+
+
+# write bitstream
+write_bitstream -force "opensdrlab_kintex7.bit"
+
+exit
