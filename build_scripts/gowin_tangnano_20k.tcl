@@ -12,6 +12,7 @@ add_file /eda/processor-ci-controller/rtl/clk_divider.sv
 add_file /eda/processor-ci-controller/rtl/memory.sv
 add_file /eda/processor-ci-controller/rtl/interpreter.sv
 add_file /eda/processor-ci-controller/rtl/controller.sv
+add_file /eda/processor-ci-controller/rtl/timer.sv
 
 set_option -top_module processorci 
 

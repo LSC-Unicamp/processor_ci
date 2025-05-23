@@ -14,6 +14,7 @@ read_verilog -sv /eda/processor-ci-controller/rtl/clk_divider.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/memory.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/interpreter.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/controller.sv
+read_verilog -sv /eda/processor-ci-controller/rtl/timer.sv
 
 set_param general.maxThreads 16
 

@@ -10,6 +10,7 @@ yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/clk_divider.sv
 yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/memory.sv
 yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/interpreter.sv
 yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/controller.sv
+yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/timer.sv
 
 yosys read_systemverilog -link
 
