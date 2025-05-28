@@ -1,5 +1,9 @@
 `timescale 1ns / 1ps
 
+`ifndef SIMULATION
+`include "processor_ci_defines.vh"
+`endif
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -25,8 +29,8 @@ module processorci_top (
     output logic        core_we,       // 1 = Write, 0 = Read
 
     output logic [31:0] core_addr,     // Endereço
-    output logic [31:0] core_data,     // Dados de entrada (para escrita)
-    input  logic [31:0] core_data,     // Dados de saída (para leitura)
+    output logic [31:0] core_data_out,     // Dados de entrada (para escrita)
+    input  logic [31:0] core_data_in,   // Dados de saída (para leitura)
 
     input  logic        core_ack       // Confirmação da transação
 

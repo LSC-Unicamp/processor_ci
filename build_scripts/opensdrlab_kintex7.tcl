@@ -15,6 +15,7 @@ read_verilog -sv /eda/processor-ci-controller/rtl/memory.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/interpreter.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/controller.sv
 read_verilog -sv /eda/processor-ci-controller/rtl/timer.sv
+read_verilog -sv /eda/processor_ci/internal/fpga_top.sv
 
 set_param general.maxThreads 16
 
@@ -22,7 +23,7 @@ read_xdc "/eda/processor_ci/constraints/opensdrlab_kintex7.xdc"
 set_property PROCESSING_ORDER EARLY [get_files /eda/processor_ci/constraints/opensdrlab_kintex7.xdc]
 
 # synth
-synth_design -top "processorci_top" -part "xc7k325tffg676-2"
+synth_design -top "fpga_top" -part "xc7k325tffg676-2"
 
 # place and route
 opt_design

@@ -13,8 +13,9 @@ add_file /eda/processor-ci-controller/rtl/memory.sv
 add_file /eda/processor-ci-controller/rtl/interpreter.sv
 add_file /eda/processor-ci-controller/rtl/controller.sv
 add_file /eda/processor-ci-controller/rtl/timer.sv
+add_file /eda/processor_ci/internal/fpga_top.sv
 
-set_option -top_module processorci 
+set_option -top_module fpga_top 
 
 set_option -use_mspi_as_gpio 1
 set_option -use_sspi_as_gpio 1

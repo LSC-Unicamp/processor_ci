@@ -11,7 +11,7 @@ yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/memory.sv
 yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/interpreter.sv
 yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/controller.sv
 yosys read_systemverilog -defer /eda/processor-ci-controller/rtl/timer.sv
-
+yosys read_systemverilog -defer /eda/processor_ci/internal/fpga_top.sv
 yosys read_systemverilog -link
 
-yosys synth_ecp5 -json colorlight_i9.json -top processorci_top -abc9
+yosys synth_ecp5 -json colorlight_i9.json -top fpga_top -abc9

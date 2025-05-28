@@ -1,22 +1,19 @@
 `timescale 1ns / 1ps
+
+`ifndef SIMULATION
 `include "processor_ci_defines.vh"
-`define ENABLE_SECOND_MEMORY 1
+`endif
+
+`define ENABLE_SECOND_MEMORY 1 // Habilita o segundo barramento de memória
 
 module processorci_top (
-    `ifdef DIFERENCIAL_CLK
-    input  logic clk_ref_p,
-    input  logic clk_ref_n,
-    `else
-    input  logic clk,
-    `endif
+    input logic sys_clk, // Clock de sistema
+    input logic rst_n,   // Reset do sistema
 
-    input  logic rst,
-
+    `ifndef SIMULATION
     // UART pins
     input  logic rx,
-    output logic tx
-    `ifndef DIFERENCIAL_CLK
-    ,
+    output logic tx,
 
     // SPI pins
     input  logic sck,
@@ -27,12 +24,32 @@ module processorci_top (
     //SPI control pins
     input  logic rw,
     output logic intr
+
+    `else
+    output logic        core_cyc,      // Indica uma transação ativa
+    output logic        core_stb,      // Indica uma solicitação ativa
+    output logic        core_we,       // 1 = Write, 0 = Read
+
+    output logic [31:0] core_addr,     // Endereço
+    output logic [31:0] core_data,     // Dados de entrada (para escrita)
+    input  logic [31:0] core_data,     // Dados de saída (para leitura)
+
+    input  logic        core_ack       // Confirmação da transação
+
+    `ifdef ENABLE_SECOND_MEMORY
+    output logic        data_mem_cyc;
+    output logic        data_mem_stb;
+    output logic        data_mem_we;
+    output logic [31:0] data_mem_addr;
+    output logic [31:0] data_mem_data_out;
+    input  logic [31:0] data_mem_data_in;
+    input  logic        data_mem_ack;
+    `endif
+
     `endif
 );
-
-logic clk_o, rst_n;
+`ifndef SIMULATION
 logic clk_core, rst_core;
-
 
 // Fios do barramento entre Controller e Processor
 logic        core_cyc;
@@ -52,8 +69,9 @@ logic [31:0] data_mem_data_out;
 logic [31:0] data_mem_data_in;
 logic        data_mem_ack;
 `endif
+`endif
 
-
+`ifndef SIMULATION
 Controller #(
     .CLK_FREQ           (`CLOCK_FREQ),
     .BIT_RATE           (`BIT_RATE),
@@ -67,11 +85,7 @@ Controller #(
     .MEMORY_FILE        (`MEMORY_FILE),
     .MEMORY_SIZE        (`MEMORY_SIZE)
 ) u_Controller (
-    `ifdef HIGH_CLK
-    .clk                (clk_o),
-    `else
-    .clk                (clk),
-    `endif
+    .clk                (sys_clk),
 
     .rst_n              (rst_n),
     
@@ -192,50 +206,4 @@ always_ff @( posedge clk_core ) begin
 end
 
 
-// Clock inflaestructure
-
-initial begin
-    clk_o = 1'b0; // 50mhz or 100mhz
-end
-
-`ifdef DIFERENCIAL_CLK
-logic clk_ref; // Sinal de clock single-ended
-
-// Differential clock input
-IBUFDS #(
-    .DIFF_TERM    ("FALSE"), // Enable or disable differential terminator
-    .IBUF_LOW_PWR ("TRUE"),  // Enable low power mode
-    .IOSTANDARD   ("DIFF_SSTL15")
-) ibufds_inst (
-    .O  (clk_ref),   // Clock single-ended output
-    .I  (clk_ref_p), // Differential input positive
-    .IB (clk_ref_n)  // Differential input negative
-);
-
-
-always_ff @(posedge clk_ref) begin
-    clk_o <= ~clk_o;
-end
-`else
-always_ff @(posedge clk) begin
-    clk_o <= ~clk_o;
-end
-`endif
-
-
-// Reset Inflaestructure
-
-
-ResetBootSystem #(
-    .CYCLES(20)
-) ResetBootSystem(
-    `ifdef HIGH_CLK
-    .clk     (clk_o),
-    `else
-    .clk     (clk),
-    `endif
-    
-    .rst_n_o (rst_n)
-);
-    
 endmodule
