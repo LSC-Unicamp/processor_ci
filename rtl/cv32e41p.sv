@@ -116,7 +116,73 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+cv32e41p_core #(
+    .PULP_XPULP         (0),
+    .PULP_CLUSTER       (0),
+    .FPU                (0),
+    .Zcea               (0),
+    .Zceb               (0),
+    .Zcec               (0),
+    .Zcee               (0),
+    .ZFINX              (0),
+    .NUM_MHPMCOUNTERS   (1)
+) core_inst (
+    // Clock and Reset
+    .clk_i              (clk),
+    .rst_ni             (rst_n),
+
+    .pulp_clock_en_i    (1'b1),       // if not using PULP_CLUSTER, tie high or low
+    .scan_cg_en_i       (1'b0),
+
+    .boot_addr_i        (32'h0000_1000),
+    .mtvec_addr_i       (32'h0000_2000),
+    .dm_halt_addr_i     (32'h0000_3000),
+    .hart_id_i          (32'd0),
+    .dm_exception_addr_i(32'h0000_4000),
+
+    // Instruction memory interface
+    .instr_req_o        (instr_req),
+    .instr_gnt_i        (instr_gnt),
+    .instr_rvalid_i     (instr_rvalid),
+    .instr_addr_o       (instr_addr),
+    .instr_rdata_i      (instr_rdata),
+
+    // Data memory interface
+    .data_req_o         (data_req),
+    .data_gnt_i         (data_gnt),
+    .data_rvalid_i      (data_rvalid),
+    .data_we_o          (data_we),
+    .data_be_o          (data_be),
+    .data_addr_o        (data_addr),
+    .data_wdata_o       (data_wdata),
+    .data_rdata_i       (data_rdata),
+
+    // APU interface
+    .apu_req_o          (),
+    .apu_gnt_i          (1'b0),
+    .apu_operands_o     (),
+    .apu_op_o           (),
+    .apu_flags_o        (),
+    .apu_rvalid_i       (1'b0),
+    .apu_result_i       (),
+    .apu_flags_i        (),
+
+    // Interrupts
+    .irq_i              (1'b0),
+    .irq_ack_o          (),
+    .irq_id_o           (),
+
+    // Debug interface
+    .debug_req_i        (1'b0),
+    .debug_havereset_o  (),
+    .debug_running_o    (),
+    .debug_halted_o     (),
+
+    // CPU control
+    .fetch_enable_i     (1'b1),
+    .core_sleep_o       ()
+);
+
 
 // Clock inflaestructure
 
