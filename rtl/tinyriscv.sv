@@ -46,8 +46,11 @@ module processorci_top (
 
     `endif
 );
-`ifndef SIMULATION
 logic clk_core, rst_core;
+`ifdef SIMULATION
+assign clk_core = sys_clk;
+assign rst_core = ~rst_n;
+`else
 
 // Fios do barramento entre Controller e Processor
 logic        core_cyc;
@@ -126,6 +129,7 @@ Controller #(
     `endif
 );
 `endif
+
 // Core space
 
 // Instância do tinyriscv

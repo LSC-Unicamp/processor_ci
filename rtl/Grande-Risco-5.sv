@@ -46,8 +46,11 @@ module processorci_top (
 
     `endif
 );
-`ifndef SIMULATION
 logic clk_core, rst_core;
+`ifdef SIMULATION
+assign clk_core = sys_clk;
+assign rst_core = ~rst_n;
+`else
 
 // Fios do barramento entre Controller e Processor
 logic        core_cyc;
@@ -137,13 +140,9 @@ Grande_Risco5 #(
     .ADDR_WIDTH             (32),
     .BRANCH_PREDICTION_SIZE (128)
 ) Processor (
-    `ifdef SIMULATION
-    .clk    (clk),
-    .rst_n  (rst_n),
-    `else
     .clk    (clk_core),
     .rst_n  (~rst_core),
-    `endif
+
     .halt   (1'b0),
 
     .cyc_o  (core_cyc),
