@@ -42,20 +42,65 @@ processorci_top ptop (
     .rst_n   (rst_n),   // Reset do sistema
 
     // SPI signals
-    .sck   (sck),
-    .cs    (cs),
-    .mosi  (mosi),
-    .miso  (miso),
+    .sck     (sck),
+    .cs      (cs),
+    .mosi    (mosi),
+    .miso    (miso),
     
     // SPI callback signals
-    .rw    (rw),
-    .intr  (intr),
+    .rw      (rw),
+    .intr    (intr),
     
     // UART signals
     .rx      (rx),
     .tx      (tx)
 );
 
+// Clock inflaestructure
 
+initial begin
+    clk_o = 1'b0; // 50mhz or 100mhz
+end
+
+`ifdef DIFERENCIAL_CLK
+logic clk_ref; // Sinal de clock single-ended
+
+// Instância do buffer diferencial
+IBUFDS #(
+    .DIFF_TERM    ("FALSE"), // Habilita ou desabilita o terminador diferencial
+    .IBUF_LOW_PWR ("TRUE"),  // Ativa o modo de baixa potência
+    .IOSTANDARD   ("DIFF_SSTL15")
+) ibufds_inst (
+    .O  (clk_ref),   // Clock single-ended de saída
+    .I  (clk_ref_p), // Entrada diferencial positiva
+    .IB (clk_ref_n)  // Entrada diferencial negativa
+);
+
+
+always_ff @(posedge clk_ref) begin
+    clk_o <= ~clk_o;
+end
+`else
+always_ff @(posedge clk) begin
+    clk_o <= ~clk_o;
+end
+`endif
+
+
+// Reset Inflaestructure
+
+
+ResetBootSystem #(
+    .CYCLES(20)
+) ResetBootSystem(
+    `ifdef HIGH_CLK
+    .clk     (clk_o),
+    `else
+    .clk     (clk),
+    `endif
+    
+    .rst_n_o (rst_n)
+);
+   
 
 endmodule

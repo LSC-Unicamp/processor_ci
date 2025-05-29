@@ -1,7 +1,7 @@
 import os
 
 # Diretório onde estão os arquivos .sv
-diretorio = "./rtl"  # Modifique se necessário
+diretorio = './rtl'  # Modifique se necessário
 
 # Parte do código original que será substituído
 codigo_antigo = """
@@ -170,20 +170,24 @@ Controller #(
 ) u_Controller (
     .clk                (sys_clk),"""
 
+
 def substituir_em_arquivos():
     for root, dirs, files in os.walk(diretorio):
         for arquivo in files:
-            if arquivo.endswith(".sv"):
+            if arquivo.endswith('.sv'):
                 caminho = os.path.join(root, arquivo)
-                with open(caminho, "r", encoding="utf-8") as f:
+                with open(caminho, 'r', encoding='utf-8') as f:
                     conteudo = f.read()
                 if codigo_antigo.strip() in conteudo:
-                    novo_conteudo = conteudo.replace(codigo_antigo.strip(), codigo_novo.strip())
-                    with open(caminho, "w", encoding="utf-8") as f:
+                    novo_conteudo = conteudo.replace(
+                        codigo_antigo.strip(), codigo_novo.strip()
+                    )
+                    with open(caminho, 'w', encoding='utf-8') as f:
                         f.write(novo_conteudo)
-                    print(f"✔ Substituído: {caminho}")
+                    print(f'✔ Substituído: {caminho}')
                 else:
-                    print(f"✘ Trecho não encontrado em: {caminho}")
+                    print(f'✘ Trecho não encontrado em: {caminho}')
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     substituir_em_arquivos()
