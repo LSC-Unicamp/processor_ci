@@ -211,6 +211,7 @@ def generate_processor_config(
         output_json,
         modulename_list,
         top_module,
+        model=model,
     )
 
     cleanup_repo_and_plot_graphs(
@@ -495,6 +496,7 @@ def save_log_and_generate_template(
     output_json,
     modules,
     top_module,
+    model: str = 'qwen3:14b',
 ):
     """
     Saves the log file and generates the hardware template.
@@ -523,7 +525,7 @@ def save_log_and_generate_template(
     if top_module:
         top_module_file = get_top_module_file(modules, top_module)
         if top_module_file:
-            generate_top_file(top_module_file, repo_name)
+            generate_top_file(top_module_file, repo_name, model=model)
         else:
             print_red('[ERROR] Módulo principal não encontrado')
     else:
