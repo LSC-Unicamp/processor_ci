@@ -37,13 +37,14 @@ module processorci_top (
     input  logic        core_ack       // Confirmação da transação
 
     `ifdef ENABLE_SECOND_MEMORY
-    output logic        data_mem_cyc;
-    output logic        data_mem_stb;
-    output logic        data_mem_we;
-    output logic [31:0] data_mem_addr;
-    output logic [31:0] data_mem_data_out;
-    input  logic [31:0] data_mem_data_in;
-    input  logic        data_mem_ack;
+,
+    output logic        data_mem_cyc,
+    output logic        data_mem_stb,
+    output logic        data_mem_we,
+    output logic [31:0] data_mem_addr,
+    output logic [31:0] data_mem_data_out,
+    input  logic [31:0] data_mem_data_in,
+    input  logic        data_mem_ack
     `endif
 
     `endif
