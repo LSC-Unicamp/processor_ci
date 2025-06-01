@@ -11,5 +11,6 @@
     "extra_flags": [],
     "language_version": "2005",
     "march": "rv32i",
-    "two_memory": false
+    "two_memory": false,
+    "pre_script": "cd microrv32 && sbt run"
 }

@@ -188,7 +188,7 @@ ibex_top ibex_core_inst (
   .double_fault_seen_o  (/* open */),
 
   // CPU Control Signals
-  .fetch_enable_i       (ibex_pkg::MuBiFalse),
+  .fetch_enable_i       (1'b1),
   .alert_minor_o        (/* open */),
   .alert_major_internal_o (/* open */),
   .alert_major_bus_o    (/* open */),

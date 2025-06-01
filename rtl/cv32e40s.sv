@@ -133,46 +133,64 @@ Controller #(
 
 // Core space
 
-    cv32e40s_core #(
-                 .NUM_MHPMCOUNTERS (1)
-                )
-    cv32e40s_core_i
-        (
-         .clk_i                  (clk_core),
-         .rst_ni                 (~rst_core),
-         
-         .scan_cg_en_i           ( '0                    ),
+cv32e40s_core #(
+    .NUM_MHPMCOUNTERS (1)
+) cv32e40s_core_i (
+    // Clock and Reset
+    .clk_i              (clk),
+    .rst_ni             (rst_n),
 
-         .boot_addr_i            ( 32'h0                ),
-         .dm_halt_addr_i         ( 32'h1A11_0800        ),
-         .mhartid_i              ( 0               ),
-         .mimpid_i               ( 0                ),
+    .pulp_clock_en_i    (1'b1),       // if not using PULP_CLUSTER, tie high or low
+    .scan_cg_en_i       (1'b0),
 
-         .instr_req_o            ( instr_req             ),
-         .instr_gnt_i            ( instr_gnt             ),
-         .instr_rvalid_i         ( instr_rvalid          ),
-         .instr_addr_o           ( instr_addr            ),
-         .instr_rdata_i          ( instr_rdata           ),
+    .boot_addr_i        (32'h0000_1000),
+    //.mtvec_addr_i       (32'h0000_2000),
+    .dm_halt_addr_i     (32'h0000_3000),
+    .hart_id_i          (32'd0),
+    //.dm_exception_addr_i(32'h0000_4000),
 
-         .data_req_o             ( data_req              ),
-         .data_gnt_i             ( data_gnt              ),
-         .data_rvalid_i          ( data_rvalid           ),
-         .data_we_o              ( data_we               ),
-         .data_be_o              ( data_be               ),
-         .data_addr_o            ( data_addr             ),
-         .data_wdata_o           ( data_wdata            ),
-         .data_rdata_i           ( data_rdata            ),
+    // Instruction memory interface
+    .instr_req_o        (core_cyc),
+    .instr_gnt_i        (core_ack),
+    .instr_rvalid_i     (1'b1), // Assuming instruction read is always valid
+    .instr_addr_o       (core_addr),
+    .instr_rdata_i      (core_data_in),
 
-         // Interrupts verified in UVM environment
-         .irq_i                  ({32{1'b0}}),
-         .irq_ack_o              (),
-         .irq_id_o               (),
+    // Data memory interface
+    .data_req_o         (data_mem_cyc),
+    .data_gnt_i         (data_mem_ack),
+    .data_rvalid_i      (1'b1), // Assuming data read is always valid
+    .data_we_o          (data_mem_we),
+    .data_be_o          (),
+    .data_addr_o        (data_mem_addr),
+    .data_wdata_o       (data_mem_data_out),
+    .data_rdata_i       (data_mem_data_in),
 
-         .debug_req_i            (0),
+    // APU interface
+    .apu_req_o          (),
+    .apu_gnt_i          (1'b0),
+    .apu_operands_o     (),
+    .apu_op_o           (),
+    .apu_flags_o        (),
+    .apu_rvalid_i       (1'b0),
+    .apu_result_i       (),
+    .apu_flags_i        (),
 
-         .fetch_enable_i         (1'b1),
-         .core_sleep_o           ()
-       );
+    // Interrupts
+    .irq_i              (0),
+    .irq_ack_o          (),
+    .irq_id_o           (),
+
+    // Debug interface
+    .debug_req_i        (1'b0),
+    .debug_havereset_o  (),
+    .debug_running_o    (),
+    .debug_halted_o     (),
+
+    // CPU control
+    .fetch_enable_i     (1'b1),
+    .core_sleep_o       ()
+);
 
 
 endmodule

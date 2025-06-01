@@ -4,6 +4,8 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1 // Habilita o segundo barramento de memória
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -133,6 +135,36 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+logic read_en, write_en;
+
+core #(
+    .RESET_ADDR(32'h0)
+) u_dut (
+    .clk        (clk_core),
+    .reset      (rst_core),
+
+    .imem_data  (core_data_in),
+    .imem_addr  (core_addr),
+
+    .dmrd_data  (data_mem_data_in),
+    .dmwr_data  (data_mem_data_out),
+    .dmrd_en    (read_en),
+    .dmwr_en    (write_en),
+    .dmrw_addr  (data_mem_addr),
+    .dm_byte_en (), // mask
+
+    .ex_irq     (0),
+    .sw_irq     (0),
+    .tm_irq     (0)
+);
+
+assign core_cyc = 1'b1; // Always active for now
+assign core_stb = core_cyc;
+assign core_we  = 1'b0; // Always read for now
+assign core_data_out = 32'h0; // No data to write
+
+assign data_mem_we = write_en;
+assign data_mem_cyc = read_en | write_en;
+assign data_mem_stb = data_mem_cyc;
 
 endmodule

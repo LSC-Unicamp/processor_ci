@@ -227,7 +227,7 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
         for i in config['files']:
             is_sv_file = i.endswith('.sv')
             prefix = get_prefix(
-                board, vhdl=i.endswith('.vhd'), sverilog=is_sv_file
+                board, vhdl=i.endswith('.vhd') or i.endswith('.vhdl'), sverilog=is_sv_file
             )
             exist_sv_file = exist_sv_file or is_sv_file
             if is_sv_file and board in YOSYS_BOARDS:

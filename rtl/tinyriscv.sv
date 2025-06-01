@@ -138,7 +138,7 @@ Controller #(
 // Instância do tinyriscv
 tinyriscv u_tinyriscv (
     .clk               (clk_core),
-    .rst               (rst_core),
+    .rst               (~rst_core),
 
     // Barramento de memória de dados
     .rib_ex_addr_o     (data_mem_addr),
@@ -169,7 +169,6 @@ assign core_cyc      = 1'b1;         // Sempre ativo para fetch
 assign core_stb      = 1'b1;         // Sempre requisitando instruções
 assign core_we       = 1'b0;         // Nunca escreve via fetch
 assign core_data_out = 32'd0;        // Não escreve no barramento de instruções
-assign core_ack      = 1'b1;         // ACK constante (caso sem espera)
 assign data_mem_cyc  = data_mem_stb; // simples ciclo igual a strobe
     
 endmodule

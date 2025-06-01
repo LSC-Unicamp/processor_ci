@@ -10,7 +10,9 @@
         "riscv.v",
         "load_store.v"
     ],
-    "include_dirs": [],
+    "include_dirs": [
+        "./"
+    ],
     "repository": "https://github.com/zxmarcos/riscado-v",
     "top_module": "RISCV",
     "extra_flags": [],

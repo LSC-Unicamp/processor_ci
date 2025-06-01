@@ -133,23 +133,39 @@ Controller #(
 
 // Core space
 
+logic [31:0] read_addr, write_addr;
+logic [3:0] write_mask;
+
 Balotelli Anfield_Balotelli (
     .Clk            (clk_core),
     .Rst            (rst_core),
-    .InstIn         (),
-    .InstAddrToBus  (),
-    .RaddrOut       (),
-    .WaddrOut       (),
-    .MemDataOut     (),
-    .Wmask          (),
-    .MemDataIn      (),
-    .BusRequest     (),
-    .InstReadReady  (),
-    .InstAddrIn     (),
-    .DataReadReady  (),
-    .DataWriteOver  (),
-    .ReadShakeHands (),
-    .Timer0IntIn    ()
+
+    .InstIn         (core_data_in),
+    .InstAddrToBus  (core_addr),
+    .InstReadReady  (core_ack),
+    .InstAddrIn     (core_addr),
+
+    .RaddrOut       (read_addr),
+    .WaddrOut       (write_addr),
+    .MemDataOut     (data_mem_data_out),
+    .Wmask          (write_mask),
+    .MemDataIn      (data_mem_data_in),
+    .BusRequest     (data_mem_cyc),
+
+    .DataReadReady  (data_mem_ack),
+    .DataWriteOver  (data_mem_ack),
+    .ReadShakeHands (data_mem_ack),
+    .Timer0IntIn    (1'b0) // Timer 0 interrupt input (not used)
 );
+
+assign core_cyc = 1'b1; // Always active for simulation
+assign core_stb = 1'b1; // Always active for simulation
+assign core_we  = 1'b0; // Always read for simulation
+assign core_data_out = 32'h0; // No data output for simulation
+
+assign data_mem_stb = data_mem_cyc; // Data memory strobe follows cycle
+assign data_mem_we = (|write_mask) ? 1'b1 : 1'b0; // Write if any mask bit is set
+assign data_mem_addr = (data_mem_we) ? write_addr : read_addr; // Use write address for write, read address for read
+
 
 endmodule

@@ -4,6 +4,8 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1 // Habilita o segundo barramento de memória
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -158,21 +160,21 @@ cv32e41p_core #(
     .dm_exception_addr_i(32'h0000_4000),
 
     // Instruction memory interface
-    .instr_req_o        (instr_req),
-    .instr_gnt_i        (instr_gnt),
-    .instr_rvalid_i     (instr_rvalid),
-    .instr_addr_o       (instr_addr),
-    .instr_rdata_i      (instr_rdata),
+    .instr_req_o        (core_cyc),
+    .instr_gnt_i        (core_ack),
+    .instr_rvalid_i     (1'b1), // Assuming instruction read is always valid
+    .instr_addr_o       (core_addr),
+    .instr_rdata_i      (core_data_in),
 
     // Data memory interface
-    .data_req_o         (data_req),
-    .data_gnt_i         (data_gnt),
-    .data_rvalid_i      (data_rvalid),
-    .data_we_o          (data_we),
-    .data_be_o          (data_be),
-    .data_addr_o        (data_addr),
-    .data_wdata_o       (data_wdata),
-    .data_rdata_i       (data_rdata),
+    .data_req_o         (data_mem_cyc),
+    .data_gnt_i         (data_mem_ack),
+    .data_rvalid_i      (1'b1), // Assuming data read is always valid
+    .data_we_o          (data_mem_we),
+    .data_be_o          (),
+    .data_addr_o        (data_mem_addr),
+    .data_wdata_o       (data_mem_data_out),
+    .data_rdata_i       (data_mem_data_in),
 
     // APU interface
     .apu_req_o          (),
@@ -185,7 +187,7 @@ cv32e41p_core #(
     .apu_flags_i        (),
 
     // Interrupts
-    .irq_i              (1'b0),
+    .irq_i              (0),
     .irq_ack_o          (),
     .irq_id_o           (),
 
@@ -200,5 +202,10 @@ cv32e41p_core #(
     .core_sleep_o       ()
 );
 
+assign core_stb = core_cyc; // Always active for fetch
+assign core_we  = 1'b0; // Write enable for data memory
+assign core_data_out = 32'b0; // No data output for instruction fetch
+
+assign data_mem_stb = data_mem_cyc; // Always active for data memory
 
 endmodule

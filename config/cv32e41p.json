@@ -14,12 +14,10 @@
         "example_tb/core/include/perturbation_pkg.sv"
     ],
     "files": [
-        "bhv/cv32e41p_apu_tracer.sv",
-        "bhv/cv32e41p_core_log.sv",
-        "bhv/cv32e41p_sim_clock_gate.sv",
-        "bhv/cv32e41p_tracer.sv",
-        "bhv/cv32e41p_wrapper.sv",
-        "bhv/include/cv32e41p_tracer_pkg.sv",
+
+        "rtl/include/cv32e41p_apu_core_pkg.sv",
+        "rtl/include/cv32e41p_fpu_pkg.sv",
+        "rtl/include/cv32e41p_pkg.sv",
         "rtl/cv32e41p_aligner.sv",
         "rtl/cv32e41p_alu.sv",
         "rtl/cv32e41p_alu_div.sv",
@@ -43,11 +41,7 @@
         "rtl/cv32e41p_prefetch_controller.sv",
         "rtl/cv32e41p_register_file_ff.sv",
         "rtl/cv32e41p_register_file_latch.sv",
-        "rtl/cv32e41p_sleep_unit.sv",
-        "rtl/include/cv32e41p_apu_core_pkg.sv",
-        "rtl/include/cv32e41p_fpu_pkg.sv",
-        "rtl/include/cv32e41p_pkg.sv",
-        "sva/cv32e41p_prefetch_controller_sva.sv"
+        "rtl/cv32e41p_sleep_unit.sv"
     ],
     "include_dirs": [],
     "repository": "https://github.com/openhwgroup/cv32e41p",

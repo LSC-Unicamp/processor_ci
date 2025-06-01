@@ -5,6 +5,7 @@
 `endif
 
 `define ENABLE_SECOND_MEMORY 1 // Habilita o segundo barramento de memória
+`undef TRACE_EXECUTION
 
 module processorci_top (
     input logic sys_clk, // Clock de sistema

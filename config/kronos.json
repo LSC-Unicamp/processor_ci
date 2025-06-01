@@ -3,6 +3,7 @@
     "folder": "kronos",
     "sim_files": [],
     "files": [
+        "rtl/core/kronos_types.sv",
         "rtl/core/kronos_EX.sv",
         "rtl/core/kronos_ID.sv",
         "rtl/core/kronos_IF.sv",
@@ -14,8 +15,7 @@
         "rtl/core/kronos_counter64.sv",
         "rtl/core/kronos_csr.sv",
         "rtl/core/kronos_hcu.sv",
-        "rtl/core/kronos_lsu.sv",
-        "rtl/core/kronos_types.sv"
+        "rtl/core/kronos_lsu.sv"
     ],
     "include_dirs": [],
     "repository": "https://github.com/SonalPinto/kronos",

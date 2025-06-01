@@ -132,7 +132,7 @@ Controller #(
 `endif
 
 // Core space
-logic mem_valid;
+logic mem_valid, instr_ack;
 logic [31:0] read_data;
 
 picorv32 #(
@@ -152,7 +152,7 @@ picorv32 #(
     .resetn      (~rst_core),
     .mem_valid   (mem_valid),
     .mem_instr   (),
-    .mem_ready   (core_ack),
+    .mem_ready   (instr_ack),
     .mem_addr    (core_addr),
     .mem_wdata   (core_data_out),
     .mem_wstrb   (),
@@ -166,7 +166,8 @@ assign core_cyc = 1'b1;
 assign core_we  = mem_valid;
 
 always_ff @(posedge clk_core) begin
-    core_data_in <= read_data;
+    read_data <= core_data_in;
+    instr_ack <= core_ack;
 end
 
 endmodule

@@ -116,7 +116,7 @@ Controller #(
     .core_stb_i         (core_stb),
     .core_we_i          (1'b0), //core_we = 0
     .core_addr_i        (core_addr),
-    .core_data_i        (1'b0), // core_data_out = 0 because we never write to instruction memory
+    .core_data_i        (0), // core_data_out = 0 because we never write to instruction memory
     .core_data_o        (core_data_in),
     .core_ack_o         (core_ack)
 

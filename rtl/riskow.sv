@@ -134,18 +134,31 @@ Controller #(
 // Core space
 
 logic bus_valid;
+logic [31:0] instr_data;
 
 CPU Riskow (
     .clk            (clk_core),
     .reset          (rst_core),
-    .dataIn         (core_data_in),
+    .dataIn         (instr_data),
     .dataOut        (core_data_out),
     .address        (core_addr),
     .busValid       (bus_valid),
     .busInstr       (),
-    .busReady       (core_ack),
-    .busWriteEnable (core_we)
+    .busReady       (ack),
+    .busWriteEnable (core_we),
+    .csrDataIn      (),
+    .csrDataOut     (),
+    .csrNumber      (),
+    .csrWriteEnable (),
+    .instructionsExecuted ()
 );
+
+logic ack;
+
+always_ff @( posedge sys_clk ) begin
+    ack <= core_ack;
+    instr_data <= core_data_in;
+end
 
 assign core_cyc = bus_valid;
 assign core_stb = bus_valid;

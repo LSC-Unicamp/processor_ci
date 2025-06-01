@@ -1,5 +1,7 @@
 `timescale 1ns / 1ps
 
+`define SIMULATION 1
+
 `ifndef SIMULATION
 `include "processor_ci_defines.vh"
 `endif

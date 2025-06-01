@@ -166,7 +166,7 @@ harv harv_inst (
     .dmem_err_i     (1'b0),
     .dmem_sbu_i     (),
     .dmem_dbu_i     (),
-    .dmem_rdata_i   (data_mem_data_in),
+    .dmem_rdata_i   (data_mem_data_in)
 );
 
 

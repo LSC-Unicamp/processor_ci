@@ -135,6 +135,8 @@ Controller #(
 
 // Core space
 
+logic data_req;
+
 // Instância do processador kronos_core
 kronos_core #(
     .BOOT_ADDR             (32'h00000000),
@@ -158,16 +160,27 @@ kronos_core #(
     .data_addr      (data_mem_addr),
     .data_rd_data   (data_mem_data_in),
     .data_wr_data   (data_mem_data_out),
-    .data_mask      (), // depende da largura de escrita; pode ser ajustado se necessário
+    .data_mask      (),
     .data_wr_en     (data_mem_we),
     .data_req       (data_mem_stb),
-    .data_ack       (data_mem_ack),
+    .data_ack       (data_ack),
 
     // Interrupções
     .software_interrupt (1'b0),
     .timer_interrupt    (1'b0),
     .external_interrupt (1'b0)
 );
+
+logic data_ack;
+
+always_ff @( posedge sys_clk ) begin
+    data_ack <= data_mem_ack;
+end
+
+assign core_cyc = core_stb;
+assign data_mem_cyc = data_mem_stb;
+assign core_we = 1'b0; // Sempre leitura para o barramento de instruções
+assign core_data_out = 32'b0; // Dados de saída para o barramento de instruções
 
 
 endmodule
