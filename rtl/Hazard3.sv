@@ -137,60 +137,104 @@ Controller #(
 
 // Core space
 
+// AHB - Instruction bus
+logic [31:0] haddr;
+logic        hwrite;
+logic [2:0]  hsize;
+logic [2:0]  hburst;
+logic        hmastlock;
+logic [3:0]  hprot;
+logic [1:0]  htrans;
+logic [31:0] hwdata;
+logic [31:0] hrdata;
+logic        hready;
+logic        hresp;
+
+ahb_to_wishbone #( // bus adapter
+    .ADDR_WIDTH(32),
+    .DATA_WIDTH(32)
+) ahb2wb_inst (
+    // Clock & Reset
+    .HCLK       (clk_core),
+    .HRESETn    (~rst_core),
+
+    // AHB interface
+    .HADDR      (haddr),
+    .HTRANS     (htrans),
+    .HWRITE     (hwrite),
+    .HSIZE      (hsize),
+    .HBURST     (hburst),
+    .HPROT      (hprot),
+    .HLOCK      (hmastlock),
+    .HWDATA     (hwdata),
+    .HREADY     (hready),
+    .HRDATA     (hrdata),
+    .HREADYOUT  (hready), // normalmente igual a HREADY em designs simples
+    .HRESP      (hresp),
+
+    // Wishbone interface
+    .wb_cyc     (core_cyc),
+    .wb_stb     (core_stb),
+    .wb_we      (core_we),
+    .wb_adr     (core_addr),
+    .wb_dat_w   (core_data_out),
+    .wb_dat_r   (core_data_in),
+    .wb_ack     (core_ack)
+);
+
 hazard3_cpu_1port #(
 	// These must have the values given here for you to end up with a useful SoC:
-	.RESET_VECTOR    (32'h0000_0040),
-	.MTVEC_INIT      (32'h0000_0000),
-	.CSR_M_MANDATORY (1),
-	.CSR_M_TRAP      (1),
-	.DEBUG_SUPPORT   (1),
-	.NUM_IRQS        (1),
-	.RESET_REGFILE   (0),
+	.RESET_VECTOR        (32'h0000_0000),
+	.MTVEC_INIT          (32'h0000_0000),
+	.CSR_M_MANDATORY     (1),
+	.CSR_M_TRAP          (1),
+	.DEBUG_SUPPORT       (1),
+	.NUM_IRQS            (1),
+	.RESET_REGFILE       (0),
 	// Can be overridden from the defaults in hazard3_config.vh during
 	// instantiation of example_soc():
-	.EXTENSION_A         (EXTENSION_A),
-	.EXTENSION_C         (EXTENSION_C),
-	.EXTENSION_M         (EXTENSION_M),
-	.EXTENSION_ZBA       (EXTENSION_ZBA),
-	.EXTENSION_ZBB       (EXTENSION_ZBB),
-	.EXTENSION_ZBC       (EXTENSION_ZBC),
-	.EXTENSION_ZBS       (EXTENSION_ZBS),
-	.EXTENSION_ZBKB      (EXTENSION_ZBKB),
-	.EXTENSION_ZIFENCEI  (EXTENSION_ZIFENCEI),
-	.EXTENSION_XH3BEXTM  (EXTENSION_XH3BEXTM),
-	.EXTENSION_XH3IRQ    (EXTENSION_XH3IRQ),
-	.EXTENSION_XH3PMPM   (EXTENSION_XH3PMPM),
-	.EXTENSION_XH3POWER  (EXTENSION_XH3POWER),
-	.CSR_COUNTER         (CSR_COUNTER),
-	.U_MODE              (U_MODE),
-	.PMP_REGIONS         (PMP_REGIONS),
-	.PMP_GRAIN           (PMP_GRAIN),
-	.PMP_HARDWIRED       (PMP_HARDWIRED),
-	.PMP_HARDWIRED_ADDR  (PMP_HARDWIRED_ADDR),
-	.PMP_HARDWIRED_CFG   (PMP_HARDWIRED_CFG),
-	.MVENDORID_VAL       (MVENDORID_VAL),
-	.BREAKPOINT_TRIGGERS (BREAKPOINT_TRIGGERS),
-	.IRQ_PRIORITY_BITS   (IRQ_PRIORITY_BITS),
-	.MIMPID_VAL          (MIMPID_VAL),
-	.MHARTID_VAL         (MHARTID_VAL),
-	.REDUCED_BYPASS      (REDUCED_BYPASS),
-	.MULDIV_UNROLL       (MULDIV_UNROLL),
-	.MUL_FAST            (MUL_FAST),
-	.MUL_FASTER          (MUL_FASTER),
-	.MULH_FAST           (MULH_FAST),
-	.FAST_BRANCHCMP      (FAST_BRANCHCMP),
-	.BRANCH_PREDICTOR    (BRANCH_PREDICTOR),
-	.MTVEC_WMASK         (MTVEC_WMASK)
+	.EXTENSION_A         (1),
+	.EXTENSION_C         (1),
+	.EXTENSION_M         (1),
+	.EXTENSION_ZBA       (1),
+	.EXTENSION_ZBB       (1),
+	.EXTENSION_ZBC       (1),
+	.EXTENSION_ZBS       (1),
+	.EXTENSION_ZBKB      (1),
+	.EXTENSION_ZIFENCEI  (1),
+	.EXTENSION_XH3BEXTM  (1),
+	.EXTENSION_XH3IRQ    (1),
+	.EXTENSION_XH3PMPM   (1),
+	.EXTENSION_XH3POWER  (1),
+	.CSR_COUNTER         (0),
+	.U_MODE              (0),
+	.PMP_REGIONS         (0),
+	.PMP_GRAIN           (0),
+	.PMP_HARDWIRED       (0),
+	.PMP_HARDWIRED_ADDR  (0),
+	.PMP_HARDWIRED_CFG   (0),
+	.MVENDORID_VAL       (0),
+	.BREAKPOINT_TRIGGERS (0),
+	.IRQ_PRIORITY_BITS   (0),
+	.MIMPID_VAL          (0),
+	.MHARTID_VAL         (0),
+	.REDUCED_BYPASS      (0),
+	.MULDIV_UNROLL       (1),
+	.MUL_FAST            (0),
+	.MUL_FASTER          (1),
+	.MULH_FAST           (1),
+	.FAST_BRANCHCMP      (1),
+	.BRANCH_PREDICTOR    (1)
 ) cpu (
-	.clk                        (clk),
-	.clk_always_on              (clk),
-	.rst_n                      (rst_n_cpu),
+	.clk                        (clk_core),
+	.clk_always_on              (clk_core),
+	.rst_n                      (~rst_core),
 
-	.pwrup_req                  (pwrup_req),
-	.pwrup_ack                  (pwrup_req),   // Tied back
-	.clk_en                     (/* unused */),
-	.unblock_out                (unblock_out),
-	.unblock_in                 (unblock_out), // Tied back
+	.pwrup_req                  (),
+	.pwrup_ack                  (1),   // Tied back
+	.clk_en                     (),
+	.unblock_out                (),
+	.unblock_in                 (1), // Tied back
 
 	.haddr                      (proc_haddr),
 	.hwrite                     (proc_hwrite),
@@ -206,35 +250,35 @@ hazard3_cpu_1port #(
 	.hwdata                     (proc_hwdata),
 	.hrdata                     (proc_hrdata),
 
-	.dbg_req_halt               (hart_req_halt),
-	.dbg_req_halt_on_reset      (hart_req_halt_on_reset),
-	.dbg_req_resume             (hart_req_resume),
-	.dbg_halted                 (hart_halted),
-	.dbg_running                (hart_running),
+	.dbg_req_halt               (0),
+	.dbg_req_halt_on_reset      (0),
+	.dbg_req_resume             (0),
+	.dbg_halted                 (),
+	.dbg_running                (),
 
-	.dbg_data0_rdata            (hart_data0_rdata),
-	.dbg_data0_wdata            (hart_data0_wdata),
-	.dbg_data0_wen              (hart_data0_wen),
+	.dbg_data0_rdata            (0),
+	.dbg_data0_wdata            (),
+	.dbg_data0_wen              (),
 
-	.dbg_instr_data             (hart_instr_data),
-	.dbg_instr_data_vld         (hart_instr_data_vld),
-	.dbg_instr_data_rdy         (hart_instr_data_rdy),
-	.dbg_instr_caught_exception (hart_instr_caught_exception),
-	.dbg_instr_caught_ebreak    (hart_instr_caught_ebreak),
+	.dbg_instr_data             (0),
+	.dbg_instr_data_vld         (0),
+	.dbg_instr_data_rdy         (),
+	.dbg_instr_caught_exception (),
+	.dbg_instr_caught_ebreak    (),
 
-	.dbg_sbus_addr              (sbus_addr),
-	.dbg_sbus_write             (sbus_write),
-	.dbg_sbus_size              (sbus_size),
-	.dbg_sbus_vld               (sbus_vld),
-	.dbg_sbus_rdy               (sbus_rdy),
-	.dbg_sbus_err               (sbus_err),
-	.dbg_sbus_wdata             (sbus_wdata),
-	.dbg_sbus_rdata             (sbus_rdata),
+	.dbg_sbus_addr              (0),
+	.dbg_sbus_write             (0),
+	.dbg_sbus_size              (0),
+	.dbg_sbus_vld               (0),
+	.dbg_sbus_rdy               (),
+	.dbg_sbus_err               (),
+	.dbg_sbus_wdata             (0),
+	.dbg_sbus_rdata             (),
 
-	.irq                        (uart_irq),
+	.irq                        (0),
 
 	.soft_irq                   (1'b0),
-	.timer_irq                  (timer_irq)
+	.timer_irq                  (0)
 );
 
 endmodule
