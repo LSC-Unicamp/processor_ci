@@ -135,90 +135,226 @@ Controller #(
 
 // Core space
 
-riscv_top #(
-     .CORE_ID                (0),
-     .ICACHE_AXI_ID          (0),
-     .DCACHE_AXI_ID          (0),
-     .SUPPORT_BRANCH_PREDICTION (1),
-     .SUPPORT_MULDIV         (1),
-     .SUPPORT_SUPER          (0),
-     .SUPPORT_MMU            (0),
-     .SUPPORT_DUAL_ISSUE     (1),
-     .SUPPORT_LOAD_BYPASS    (1),
-     .SUPPORT_MUL_BYPASS     (1),
-     .SUPPORT_REGFILE_XILINX (0),
-     .EXTRA_DECODE_STAGE     (0),
-     .MEM_CACHE_ADDR_MIN     (32'h00000000),
-     .MEM_CACHE_ADDR_MAX     (32'h8fffffff),
-     .NUM_BTB_ENTRIES        (32),
-     .NUM_BTB_ENTRIES_W      (5),
-     .NUM_BHT_ENTRIES        (512),
-     .NUM_BHT_ENTRIES_W      (9),
-     .RAS_ENABLE             (1),
-     .GSHARE_ENABLE          (0),
-     .BHT_ENABLE             (1),
-     .NUM_RAS_ENTRIES        (8),
-     .NUM_RAS_ENTRIES_W      (3)
-) u_riscv_top (
-     .clk_i                  (clk_i),
-     .rst_i                  (rst_i),
-     .axi_i_awready_i        (axi_i_awready_i),
-     .axi_i_wready_i         (axi_i_wready_i),
-     .axi_i_bvalid_i         (axi_i_bvalid_i),
-     .axi_i_bresp_i          (axi_i_bresp_i),
-     .axi_i_bid_i            (axi_i_bid_i),
-     .axi_i_arready_i        (axi_i_arready_i),
-     .axi_i_rvalid_i         (axi_i_rvalid_i),
-     .axi_i_rdata_i          (axi_i_rdata_i),
-     .axi_i_rresp_i          (axi_i_rresp_i),
-     .axi_i_rid_i            (axi_i_rid_i),
-     .axi_i_rlast_i          (axi_i_rlast_i),
-     .axi_d_awready_i        (axi_d_awready_i),
-     .axi_d_wready_i         (axi_d_wready_i),
-     .axi_d_bvalid_i         (axi_d_bvalid_i),
-     .axi_d_bresp_i          (axi_d_bresp_i),
-     .axi_d_bid_i            (axi_d_bid_i),
-     .axi_d_arready_i        (axi_d_arready_i),
-     .axi_d_rvalid_i         (axi_d_rvalid_i),
-     .axi_d_rdata_i          (axi_d_rdata_i),
-     .axi_d_rresp_i          (axi_d_rresp_i),
-     .axi_d_rid_i            (axi_d_rid_i),
-     .axi_d_rlast_i          (axi_d_rlast_i),
-     .intr_i                 (intr_i),
-     .reset_vector_i         (reset_vector_i),
+// AXI interface: Instruction memory
+logic [3:0]  axi_i_awid, axi_i_arid;
+logic [31:0] axi_i_awaddr, axi_i_araddr, axi_i_wdata;
+logic [3:0]  axi_i_wstrb;
+logic        axi_i_awvalid, axi_i_wvalid, axi_i_bready;
+logic        axi_i_arvalid, axi_i_rready;
+logic        axi_i_awready, axi_i_wready, axi_i_bvalid;
+logic [1:0]  axi_i_bresp;
+logic [3:0]  axi_i_bid;
+logic        axi_i_arready, axi_i_rvalid;
+logic [31:0] axi_i_rdata;
+logic [1:0]  axi_i_rresp;
+logic [3:0]  axi_i_rid;
 
-     .axi_i_awvalid_o        (axi_i_awvalid_o),
-     .axi_i_awaddr_o         (axi_i_awaddr_o),
-     .axi_i_awid_o           (axi_i_awid_o),
-     .axi_i_awlen_o          (axi_i_awlen_o),
-     .axi_i_awburst_o        (axi_i_awburst_o),
-     .axi_i_wvalid_o         (axi_i_wvalid_o),
-     .axi_i_wdata_o          (axi_i_wdata_o),
-     .axi_i_wstrb_o          (axi_i_wstrb_o),
-     .axi_i_wlast_o          (axi_i_wlast_o),
-     .axi_i_bready_o         (axi_i_bready_o),
-     .axi_i_arvalid_o        (axi_i_arvalid_o),
-     .axi_i_araddr_o         (axi_i_araddr_o),
-     .axi_i_arid_o           (axi_i_arid_o),
-     .axi_i_arlen_o          (axi_i_arlen_o),
-     .axi_i_arburst_o        (axi_i_arburst_o),
-     .axi_i_rready_o         (axi_i_rready_o),
-     .axi_d_awvalid_o        (axi_d_awvalid_o),
-     .axi_d_awaddr_o         (axi_d_awaddr_o),
-     .axi_d_awid_o           (axi_d_awid_o),
-     .axi_d_awlen_o          (axi_d_awlen_o),
-     .axi_d_awburst_o        (axi_d_awburst_o),
-     .axi_d_wvalid_o         (axi_d_wvalid_o),
-     .axi_d_wdata_o          (axi_d_wdata_o),
-     .axi_d_wstrb_o          (axi_d_wstrb_o),
-     .axi_d_wlast_o          (axi_d_wlast_o),
-     .axi_d_bready_o         (axi_d_bready_o),
-     .axi_d_arvalid_o        (axi_d_arvalid_o),
-     .axi_d_araddr_o         (axi_d_araddr_o),
-     .axi_d_arid_o           (axi_d_arid_o),
-     .axi_d_arlen_o          (axi_d_arlen_o),
-     .axi_d_arburst_o        (axi_d_arburst_o),
-     .axi_d_rready_o         (axi_d_rready_o)
+// AXI interface: Data memory
+logic [3:0]  axi_d_awid, axi_d_arid;
+logic [31:0] axi_d_awaddr, axi_d_araddr, axi_d_wdata;
+logic [3:0]  axi_d_wstrb;
+logic        axi_d_awvalid, axi_d_wvalid, axi_d_bready;
+logic        axi_d_arvalid, axi_d_rready;
+logic        axi_d_awready, axi_d_wready, axi_d_bvalid;
+logic [1:0]  axi_d_bresp;
+logic [3:0]  axi_d_bid;
+logic        axi_d_arready, axi_d_rvalid;
+logic [31:0] axi_d_rdata;
+logic [1:0]  axi_d_rresp;
+logic [3:0]  axi_d_rid;
+
+
+axi4_to_wishbone_simple #(
+    .ADDR_WIDTH(32),
+    .DATA_WIDTH(32),
+    .ID_WIDTH(4)
+) Instr_mem (
+    .clk              (clk_core),
+    .rst_n            (~rst_core),
+
+    // AXI Write Address Channel
+    .S_AXI_AWID       (axi_i_awid),
+    .S_AXI_AWADDR     (axi_i_awaddr),
+    .S_AXI_AWVALID    (axi_i_awvalid),
+    .S_AXI_AWREADY    (axi_i_awready),
+
+    // AXI Write Data Channel
+    .S_AXI_WDATA      (axi_i_wdata),
+    .S_AXI_WSTRB      (axi_i_wstrb),
+    .S_AXI_WVALID     (axi_i_wvalid),
+    .S_AXI_WREADY     (axi_i_wready),
+
+    // AXI Write Response Channel
+    .S_AXI_BID        (axi_i_bid),
+    .S_AXI_BRESP      (axi_i_bresp),
+    .S_AXI_BVALID     (axi_i_bvalid),
+    .S_AXI_BREADY     (axi_i_bready),
+
+    // AXI Read Address Channel
+    .S_AXI_ARID       (axi_i_arid),
+    .S_AXI_ARADDR     (axi_i_araddr),
+    .S_AXI_ARVALID    (axi_i_arvalid),
+    .S_AXI_ARREADY    (axi_i_arready),
+
+    // AXI Read Data Channel
+    .S_AXI_RID        (axi_i_rid),
+    .S_AXI_RDATA      (axi_i_rdata),
+    .S_AXI_RRESP      (axi_i_rresp),
+    .S_AXI_RVALID     (axi_i_rvalid),
+    .S_AXI_RREADY     (axi_i_rready),
+
+    // Wishbone Interface
+    .WB_CYC           (core_cyc),
+    .WB_STB           (core_stb),
+    .WB_WE            (core_we),
+    .WB_ADDR          (core_addr),
+    .WB_WDATA         (core_data_out),
+    .WB_SEL           (4'b1111), // write strobe = all bytes enabled
+    .WB_RDATA         (core_data_in),
+    .WB_ACK           (core_ack)
+);
+
+axi4_to_wishbone_simple #(
+    .ADDR_WIDTH(32),
+    .DATA_WIDTH(32),
+    .ID_WIDTH(4)
+) Data_mem (
+    .clk              (clk_core),
+    .rst_n            (~rst_core),
+
+    // AXI Write Address Channel
+    .S_AXI_AWID       (axi_d_awid),
+    .S_AXI_AWADDR     (axi_d_awaddr),
+    .S_AXI_AWVALID    (axi_d_awvalid),
+    .S_AXI_AWREADY    (axi_d_awready),
+
+    // AXI Write Data Channel
+    .S_AXI_WDATA      (axi_d_wdata),
+    .S_AXI_WSTRB      (axi_d_wstrb),
+    .S_AXI_WVALID     (axi_d_wvalid),
+    .S_AXI_WREADY     (axi_d_wready),
+
+    // AXI Write Response Channel
+    .S_AXI_BID        (axi_d_bid),
+    .S_AXI_BRESP      (axi_d_bresp),
+    .S_AXI_BVALID     (axi_d_bvalid),
+    .S_AXI_BREADY     (axi_d_bready),
+
+    // AXI Read Address Channel
+    .S_AXI_ARID       (axi_d_arid),
+    .S_AXI_ARADDR     (axi_d_araddr),
+    .S_AXI_ARVALID    (axi_d_arvalid),
+    .S_AXI_ARREADY    (axi_d_arready),
+
+    // AXI Read Data Channel
+    .S_AXI_RID        (axi_d_rid),
+    .S_AXI_RDATA      (axi_d_rdata),
+    .S_AXI_RRESP      (axi_d_rresp),
+    .S_AXI_RVALID     (axi_d_rvalid),
+    .S_AXI_RREADY     (axi_d_rready),
+
+    // Wishbone Interface
+    .WB_CYC           (data_mem_cyc),
+    .WB_STB           (data_mem_stb),
+    .WB_WE            (data_mem_we),
+    .WB_ADDR          (data_mem_addr),
+    .WB_WDATA         (data_mem_data_out),
+    .WB_SEL           (4'b1111),
+    .WB_RDATA         (data_mem_data_in),
+    .WB_ACK           (data_mem_ack)
+);
+
+
+
+riscv_top #(
+    .CORE_ID                  (0),
+    .ICACHE_AXI_ID            (0),
+    .DCACHE_AXI_ID            (1),
+    .SUPPORT_BRANCH_PREDICTION(1),
+    .SUPPORT_MULDIV           (1),
+    .SUPPORT_SUPER            (0),
+    .SUPPORT_MMU              (0),
+    .SUPPORT_DUAL_ISSUE       (1),
+    .SUPPORT_LOAD_BYPASS      (1),
+    .SUPPORT_MUL_BYPASS       (1),
+    .SUPPORT_REGFILE_XILINX   (0),
+    .EXTRA_DECODE_STAGE       (0),
+    .MEM_CACHE_ADDR_MIN       (32'h00000000),
+    .MEM_CACHE_ADDR_MAX       (32'h8fffffff),
+    .NUM_BTB_ENTRIES          (32),
+    .NUM_BTB_ENTRIES_W        (5),
+    .NUM_BHT_ENTRIES          (512),
+    .NUM_BHT_ENTRIES_W        (9),
+    .RAS_ENABLE               (1),
+    .GSHARE_ENABLE            (0),
+    .BHT_ENABLE               (1),
+    .NUM_RAS_ENTRIES          (8),
+    .NUM_RAS_ENTRIES_W        (3)
+) u_riscv_top (
+    .clk_i              (clk_core),
+    .rst_i              (rst_core),
+    .intr_i             (intr),               // IRQ externa
+
+    // Reset vector
+    .reset_vector_i     (32'h00000000),
+
+    // AXI4 INSTRUCTION interface
+    .axi_i_awvalid_o    (axi_i_awvalid),
+    .axi_i_awaddr_o     (axi_i_awaddr),
+    .axi_i_awid_o       (axi_i_awid),
+    .axi_i_awlen_o      (), // opcional
+    .axi_i_awburst_o    (), // opcional
+    .axi_i_wvalid_o     (axi_i_wvalid),
+    .axi_i_wdata_o      (axi_i_wdata),
+    .axi_i_wstrb_o      (axi_i_wstrb),
+    .axi_i_wlast_o      (), // opcional
+    .axi_i_bready_o     (axi_i_bready),
+    .axi_i_arvalid_o    (axi_i_arvalid),
+    .axi_i_araddr_o     (axi_i_araddr),
+    .axi_i_arid_o       (axi_i_arid),
+    .axi_i_arlen_o      (), // opcional
+    .axi_i_arburst_o    (), // opcional
+    .axi_i_rready_o     (axi_i_rready),
+    .axi_i_awready_i    (axi_awready),
+    .axi_i_wready_i     (axi_wready),
+    .axi_i_bvalid_i     (axi_bvalid),
+    .axi_i_bresp_i      (axi_bresp),
+    .axi_i_bid_i        (axi_bid),
+    .axi_i_arready_i    (axi_arready),
+    .axi_i_rvalid_i     (axi_rvalid),
+    .axi_i_rdata_i      (axi_rdata),
+    .axi_i_rresp_i      (axi_rresp),
+    .axi_i_rid_i        (axi_rid),
+    .axi_i_rlast_i      (1'b1), // se não usa bursts, sempre 1
+
+    // AXI4 DATA interface
+    .axi_d_awvalid_o    (axi_d_awvalid),
+    .axi_d_awaddr_o     (axi_d_awaddr),
+    .axi_d_awid_o       (axi_d_awid),
+    .axi_d_awlen_o      (), // opcional
+    .axi_d_awburst_o    (), // opcional
+    .axi_d_wvalid_o     (axi_d_wvalid),
+    .axi_d_wdata_o      (axi_d_wdata),
+    .axi_d_wstrb_o      (axi_d_wstrb),
+    .axi_d_wlast_o      (), // opcional
+    .axi_d_bready_o     (axi_d_bready),
+    .axi_d_arvalid_o    (axi_d_arvalid),
+    .axi_d_araddr_o     (axi_d_araddr),
+    .axi_d_arid_o       (axi_d_arid),
+    .axi_d_arlen_o      (), // opcional
+    .axi_d_arburst_o    (), // opcional
+    .axi_d_rready_o     (axi_d_rready),
+    .axi_d_awready_i    (axi_awready),
+    .axi_d_wready_i     (axi_wready),
+    .axi_d_bvalid_i     (axi_bvalid),
+    .axi_d_bresp_i      (axi_bresp),
+    .axi_d_bid_i        (axi_bid),
+    .axi_d_arready_i    (axi_arready),
+    .axi_d_rvalid_i     (axi_rvalid),
+    .axi_d_rdata_i      (axi_rdata),
+    .axi_d_rresp_i      (axi_rresp),
+    .axi_d_rid_i        (axi_rid),
+    .axi_d_rlast_i      (1'b1) // se não usa bursts, sempre 1
 );
 
 

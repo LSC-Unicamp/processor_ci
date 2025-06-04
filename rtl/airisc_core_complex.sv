@@ -49,6 +49,7 @@ module processorci_top (
 
     `endif
 );
+
 logic clk_core, rst_core;
 `ifdef SIMULATION
 assign clk_core = sys_clk;
@@ -193,6 +194,18 @@ ahb_to_wishbone #( // Instruction bus adapter
     .wb_ack     (core_ack)
 );
 
+logic core_ack_sync;
+logic [31:0] core_data_sync;
+
+always_ff @( posedge clk_core ) begin
+    if(rst_core) begin
+        core_ack_sync <= 0;
+        core_data_sync <= 0;
+    end else begin
+        core_ack_sync <= core_ack;
+        core_data_sync <= core_data_in;
+    end
+end
 
 ahb_to_wishbone #( // Data bus adapter
     .ADDR_WIDTH(32),

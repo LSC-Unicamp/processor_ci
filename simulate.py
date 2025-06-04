@@ -92,7 +92,10 @@ def main():
     # Adiciona tops e arquivos fixos
     other_files.append(str(top_module_file))
     other_files.append(str(INTERNAL_DIR / "verification_top.sv"))
-    other_files.append(str(INTERNAL_DIR / "memory.sv"))  # memory.sv conforme pedido
+    other_files.append(str(INTERNAL_DIR / "memory.sv"))
+    other_files.append(str(INTERNAL_DIR / "axi4_to_wishbone.sv"))
+    other_files.append(str(INTERNAL_DIR / "axi4lite_to_wishbone.sv"))
+    other_files.append(str(INTERNAL_DIR / "ahblite_to_wishbone.sv"))
 
     # Prepara diretório de build
     BUILD_DIR.mkdir(exist_ok=True)
