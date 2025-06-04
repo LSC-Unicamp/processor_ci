@@ -6,6 +6,7 @@
 
 `define ENABLE_SECOND_MEMORY 1 // Habilita o segundo barramento de memória
 `undef TRACE_EXECUTION
+`define SYNTHESIS 1
 
 module processorci_top (
     input logic sys_clk, // Clock de sistema
@@ -144,7 +145,7 @@ logic instr_grant, data_grant;
 
 // Instância do zeroriscy_core
 zeroriscy_core #(
-  .N_EXT_PERF_COUNTERS (0), // Substitua por quantos contadores externos você precisa
+  .N_EXT_PERF_COUNTERS (1), // Substitua por quantos contadores externos você precisa
   .RV32E               (0),
   .RV32M               (1)
 ) zeroriscy_core_inst (

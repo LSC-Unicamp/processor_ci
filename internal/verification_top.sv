@@ -1,6 +1,7 @@
 `timescale 1ns / 1ps
 
 `undef TRACE_EXECUTION
+`define SYNTHESIS 1
 
 module verification_top (
     input logic clk,  // Clock de sistema

@@ -75,7 +75,7 @@ logic [31:0] data_mem_data_out;
 logic [31:0] data_mem_data_in;
 logic        data_mem_ack;
 `endif
-`endif
+`endif*other_files,
 
 `ifndef SIMULATION
 Controller #(

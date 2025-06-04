@@ -120,11 +120,11 @@ def main():
 
     verilator_cmd = [
         "verilator", "--cc", "--exe", "--build",
-        "--trace", "-Wno-fatal", "-DSIMULATION",
+        "--trace", "-Wno-fatal", "-DSIMULATION", "-DSYNTHESIS",
         "--top-module", "verification_top",
         str(INTERNAL_DIR / "soc_main.cpp"),
-        *include_flags,
         *other_files,
+        *include_flags,
         "-CFLAGS", "-std=c++17"
     ]
 

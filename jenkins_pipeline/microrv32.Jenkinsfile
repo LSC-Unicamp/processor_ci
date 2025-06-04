@@ -11,6 +11,14 @@ pipeline {
         }
 
         
+        stage('Verilog Convert') {
+            steps {
+                dir("microrv32") {
+                    sh 'cd microrv32 && sbt run'
+                }
+            }
+        }
+        
 
         stage('Simulation') {
             steps {

@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("riscado-v") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s RISCV  alu.v control_unit.v program_counter.v register_file.v riscv.v load_store.v "
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s RISCV -I ./ alu.v control_unit.v program_counter.v register_file.v riscv.v load_store.v "
                 }
             }
         }
