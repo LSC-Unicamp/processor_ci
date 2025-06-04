@@ -48,7 +48,7 @@ module ahb_to_wishbone #(
     assign wb_dat_w  = HWDATA;
 
     // Burst type check
-    logic is_burst
+    logic is_burst;
     assign is_burst = |HBURST; // Not SINGLE
 
     always_ff @(posedge HCLK or negedge HRESETn) begin
