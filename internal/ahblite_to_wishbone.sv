@@ -37,7 +37,8 @@ module ahb_to_wishbone #(
     logic [2:0] beat_size;
 
     // AHB access condition
-    logic ahb_access = (HTRANS[1] || HWRITE) && HREADY;
+    logic ahb_access;
+    assign ahb_access = (HTRANS[1] || HWRITE) && HREADY;
     logic ready;
 
     // Response and read data
@@ -47,7 +48,8 @@ module ahb_to_wishbone #(
     assign wb_dat_w  = HWDATA;
 
     // Burst type check
-    logic is_burst = |HBURST; // Not SINGLE
+    logic is_burst
+    assign is_burst = |HBURST; // Not SINGLE
 
     always_ff @(posedge HCLK or negedge HRESETn) begin
         if (!HRESETn) begin
