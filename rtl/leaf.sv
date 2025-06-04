@@ -4,7 +4,7 @@
 `include "processor_ci_defines.vh"
 `endif
 
-`define ENABLE_SECOND_MEMORY 1 // Habilita o segundo barramento de memória
+//`define ENABLE_SECOND_MEMORY 1 // Habilita o segundo barramento de memória
 
 module processorci_top (
     input logic sys_clk, // Clock de sistema
@@ -140,7 +140,7 @@ Controller #(
 // Core space
 
 logic read_en, write_en;
-
+/*
 core #(
     .RESET_ADDR(32'h0)
 ) u_dut (
@@ -155,13 +155,30 @@ core #(
     .dmrd_en    (read_en),
     .dmwr_en    (write_en),
     .dmrw_addr  (data_mem_addr),
-    .dm_byte_en (), // mask
+    .dm_byte_en (data_mem_wstrb), // mask
 
     .ex_irq     (0),
     .sw_irq     (0),
     .tm_irq     (0)
 );
+*/
 
+leaf u_leaf (
+  .clk_i  (clk_core),       // Clock de entrada
+  .rst_i  (rst_core),       // Reset de entrada
+  .ack_i  (core_ack),       // Acknowledgment de entrada
+  .dat_i  (core_data_in),    // Dados de entrada
+
+  .cyc_o  (core_cyc),       // Ciclo de saída
+  .stb_o  (core_stb),       // Strobe de saída
+  .we_o   (core_we),        // Write enable de saída
+  .sel_o  (core_wstrb),       // Seleção de byte de saída
+  .adr_o  (core_addr),       // Endereço de saída
+  .dat_o  (core_data_out)    // Dados de saída
+);
+
+
+/*
 assign core_cyc = 1'b1; // Always active for now
 assign core_stb = core_cyc;
 assign core_we  = 1'b0; // Always read for now
@@ -170,5 +187,5 @@ assign core_data_out = 32'h0; // No data to write
 assign data_mem_we = write_en;
 assign data_mem_cyc = read_en | write_en;
 assign data_mem_stb = data_mem_cyc;
-
+*/
 endmodule

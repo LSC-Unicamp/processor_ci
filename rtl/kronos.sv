@@ -165,7 +165,7 @@ kronos_core #(
     .data_addr      (data_mem_addr),
     .data_rd_data   (data_mem),
     .data_wr_data   (data_mem_data_out),
-    .data_mask      (),
+    .data_mask      (data_mem_wstrb),
     .data_wr_en     (data_mem_we),
     .data_req       (data_mem_stb),
     .data_ack       (data_ack),

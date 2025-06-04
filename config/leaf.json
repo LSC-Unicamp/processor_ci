@@ -50,7 +50,7 @@
     ],
     "include_dirs": [],
     "repository": "https://github.com/daniel-santos-7/leaf",
-    "top_module": "core",
+    "top_module": "leaf",
     "extra_flags": [],
     "language_version": "08",
     "march": "rv32i",
