@@ -138,9 +138,10 @@ Controller #(
 // Core space
 logic mem_valid, instr_ack;
 logic [31:0] read_data;
+logic [3:0] mem_wstrb;
 
 picorv32 #(
-    .STACKADDR        ('h1000),
+    .STACKADDR        (32'hffff_ffff),
     .PROGADDR_RESET   (32'h0000_0000),
     .PROGADDR_IRQ     (32'h0000_0000),
     .BARREL_SHIFTER   (1),
@@ -156,22 +157,19 @@ picorv32 #(
     .resetn      (~rst_core),
     .mem_valid   (mem_valid),
     .mem_instr   (),
-    .mem_ready   (instr_ack),
+    .mem_ready   (core_ack),
     .mem_addr    (core_addr),
     .mem_wdata   (core_data_out),
-    .mem_wstrb   (),
-    .mem_rdata   (read_data),
+    .mem_wstrb   (mem_wstrb),
+    .mem_rdata   (core_data_in),
     .irq         (0)
 ); // Olhar o pico soc e adaptar
 
 
-assign core_stb = 1'b1;
-assign core_cyc = 1'b1;
-assign core_we  = mem_valid;
+assign core_stb = mem_valid;
+assign core_cyc = mem_valid;
+assign core_we  = mem_wstrb != 4'b0000; // Se algum bit de escrita estiver ativo, é uma escrita
 
-always_ff @(posedge clk_core) begin
-    read_data <= core_data_in;
-    instr_ack <= core_ack;
-end
+assign core_wstrb = mem_wstrb;
 
 endmodule
