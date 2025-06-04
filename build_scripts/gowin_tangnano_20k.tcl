@@ -14,6 +14,9 @@ add_file /eda/processor-ci-controller/rtl/interpreter.sv
 add_file /eda/processor-ci-controller/rtl/controller.sv
 add_file /eda/processor-ci-controller/rtl/timer.sv
 add_file /eda/processor_ci/internal/fpga_top.sv
+add_file /eda/processor_ci/internal/ahblite_to_wishbone.sv
+add_file /eda/processor_ci/internal/axi4_to_wishbone.sv
+add_file /eda/processor_ci/internal/axi4lite_to_wishbone.sv
 
 set_option -top_module fpga_top 
 

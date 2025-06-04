@@ -42,7 +42,7 @@ module processorci_top (
     output logic        data_mem_cyc,
     output logic        data_mem_stb,
     output logic        data_mem_we,
-    output logic [3:0]  data_mem_wr_strb,
+    output logic [3:0]  data_mem_wstrb,
     output logic [31:0] data_mem_addr,
     output logic [31:0] data_mem_data_out,
     input  logic [31:0] data_mem_data_in,

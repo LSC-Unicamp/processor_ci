@@ -40,7 +40,7 @@ module processorci_top (
     output logic        data_mem_cyc,
     output logic        data_mem_stb,
     output logic        data_mem_we,
-    output logic [3:0]  data_mem_wr_strb,
+    output logic [3:0]  data_mem_wstrb,
     output logic [31:0] data_mem_addr,
     output logic [31:0] data_mem_data_out,
     input  logic [31:0] data_mem_data_in,
@@ -136,7 +136,43 @@ Controller #(
 `endif
 
 // Core space
+logic write;
 
-// Core instantiation
+core #(
+    .reset_vector (0) //Program counter will be set to reset_vector when a reset occurs. By default, it is 0.
+) core0(
+    //Clock and reset signals.
+    .clk_i        (clk_core),
+    .reset_i      (~rst_core), //active-low, asynchronous reset
+
+    //Data memory interface
+    .data_addr_o  (data_mem_addr),
+    .data_i       (data_mem_data_in),
+    .data_o       (data_mem_data_out),
+    .data_wmask_o (data_mem_wstrb),
+    .data_wen_o   (write), //active-low
+    .data_req_o   (data_mem_cyc),
+    .data_err_i   (0),
+
+    //Instruction memory interface
+    .instr_addr_o (core_addr),
+    .instr_i      (core_data_in),
+    .instr_access_fault_i (0),
+
+    //Interrupts
+    .meip_i       (0),
+    .mtip_i       (0),
+    .msip_i       (0),
+    .fast_irq_i   (0),
+    .irq_ack_o    ()
+);
+
+assign core_we = 0;
+assign core_cyc = 1;
+assign core_stb = 1;
+assign core_data_out = 0;
+
+assign data_mem_we = ~write;
+assign data_mem_stb = data_mem_cyc;
 
 endmodule

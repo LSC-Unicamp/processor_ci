@@ -77,13 +77,10 @@ module axi4_to_wishbone_simple #(
 
     always_comb begin
         // Defaults
-        S_AXI_AWREADY = 0;
-        S_AXI_WREADY  = 0;
         S_AXI_BVALID  = 0;
         S_AXI_BRESP   = 2'b00;
         S_AXI_BID     = id_reg;
 
-        S_AXI_ARREADY = 0;
         S_AXI_RVALID  = 0;
         S_AXI_RRESP   = 2'b00;
         S_AXI_RDATA   = WB_RDATA;
@@ -142,6 +139,10 @@ module axi4_to_wishbone_simple #(
 
     // Captura de endereço/dados
     always_ff @(posedge clk or negedge rst_n) begin
+        S_AXI_ARREADY <= 0;
+        S_AXI_AWREADY <= 0;
+        S_AXI_WREADY  <= 0;
+        
         if (!rst_n) begin
             addr_reg <= 0;
             wdata_reg <= 0;

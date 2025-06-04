@@ -42,7 +42,7 @@ module processorci_top (
     output logic        data_mem_cyc,
     output logic        data_mem_stb,
     output logic        data_mem_we,
-    output logic [3:0]  data_mem_wr_strb,
+    output logic [3:0]  data_mem_wstrb,
     output logic [31:0] data_mem_addr,
     output logic [31:0] data_mem_data_out,
     input  logic [31:0] data_mem_data_in,
@@ -213,7 +213,7 @@ axi4_to_wishbone_simple #(
     .WB_WE            (core_we),
     .WB_ADDR          (core_addr),
     .WB_WDATA         (core_data_out),
-    .WB_SEL           (4'b1111), // write strobe = all bytes enabled
+    .WB_SEL           (core_wstrb), // write strobe = all bytes enabled
     .WB_RDATA         (core_data_in),
     .WB_ACK           (core_ack)
 );
@@ -263,7 +263,7 @@ axi4_to_wishbone_simple #(
     .WB_WE            (data_mem_we),
     .WB_ADDR          (data_mem_addr),
     .WB_WDATA         (data_mem_data_out),
-    .WB_SEL           (4'b1111),
+    .WB_SEL           (data_mem_wstrb),
     .WB_RDATA         (data_mem_data_in),
     .WB_ACK           (data_mem_ack)
 );
@@ -297,7 +297,7 @@ riscv_top #(
 ) u_riscv_top (
     .clk_i              (clk_core),
     .rst_i              (rst_core),
-    .intr_i             (intr),               // IRQ externa
+    .intr_i             (0),               // IRQ externa
 
     // Reset vector
     .reset_vector_i     (32'h00000000),
