@@ -4,6 +4,8 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -137,17 +139,25 @@ Controller #(
 
 // Core space
 logic write;
+logic async_rst;
+logic [31:0] sync_instr, sync_data;
+
+always_ff @( posedge clk_core ) begin
+    async_rst  <= ~rst_core;
+    sync_data  <= data_mem_data_in;
+    sync_instr <= core_data_in;
+end
 
 core #(
     .reset_vector (0) //Program counter will be set to reset_vector when a reset occurs. By default, it is 0.
 ) core0(
     //Clock and reset signals.
     .clk_i        (clk_core),
-    .reset_i      (~rst_core), //active-low, asynchronous reset
+    .reset_i      (async_rst), //active-low, asynchronous reset
 
     //Data memory interface
     .data_addr_o  (data_mem_addr),
-    .data_i       (data_mem_data_in),
+    .data_i       (sync_data),
     .data_o       (data_mem_data_out),
     .data_wmask_o (data_mem_wstrb),
     .data_wen_o   (write), //active-low
@@ -156,7 +166,7 @@ core #(
 
     //Instruction memory interface
     .instr_addr_o (core_addr),
-    .instr_i      (core_data_in),
+    .instr_i      (sync_instr),
     .instr_access_fault_i (0),
 
     //Interrupts
