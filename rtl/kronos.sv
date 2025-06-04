@@ -139,7 +139,8 @@ Controller #(
 
 // Core space
 
-logic data_req;
+logic data_ack, instr_ack;
+logic [31:0] instr_data, data_mem;
 
 // Instância do processador kronos_core
 kronos_core #(
@@ -156,13 +157,13 @@ kronos_core #(
 
     // Interface de instruções
     .instr_addr     (core_addr),
-    .instr_data     (core_data_in),
+    .instr_data     (instr_data),
     .instr_req      (core_stb),
-    .instr_ack      (core_ack),
+    .instr_ack      (instr_ack),
 
     // Interface de dados
     .data_addr      (data_mem_addr),
-    .data_rd_data   (data_mem_data_in),
+    .data_rd_data   (data_mem),
     .data_wr_data   (data_mem_data_out),
     .data_mask      (),
     .data_wr_en     (data_mem_we),
@@ -175,10 +176,11 @@ kronos_core #(
     .external_interrupt (1'b0)
 );
 
-logic data_ack;
-
 always_ff @( posedge sys_clk ) begin
     data_ack <= data_mem_ack;
+    instr_ack <= core_ack;
+    instr_data <= core_data_in;
+    data_mem <= data_mem_data_in;
 end
 
 assign core_cyc = core_stb;
