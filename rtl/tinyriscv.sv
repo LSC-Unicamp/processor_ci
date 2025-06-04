@@ -30,9 +30,10 @@ module processorci_top (
     output logic        core_stb,      // Indica uma solicitação ativa
     output logic        core_we,       // 1 = Write, 0 = Read
 
+    output logic [3:0]  core_wstrb,
     output logic [31:0] core_addr,     // Endereço
-    output logic [31:0] core_data_out,     // Dados de entrada (para escrita)
-    input  logic [31:0] core_data_in,   // Dados de saída (para leitura)
+    output logic [31:0] core_data_out, // Dados de entrada (para escrita)
+    input  logic [31:0] core_data_in,  // Dados de saída (para leitura)
 
     input  logic        core_ack       // Confirmação da transação
 
@@ -41,6 +42,7 @@ module processorci_top (
     output logic        data_mem_cyc,
     output logic        data_mem_stb,
     output logic        data_mem_we,
+    output logic [3:0]  data_mem_wr_strb,
     output logic [31:0] data_mem_addr,
     output logic [31:0] data_mem_data_out,
     input  logic [31:0] data_mem_data_in,
@@ -59,6 +61,7 @@ assign rst_core = ~rst_n;
 logic        core_cyc;
 logic        core_stb;
 logic        core_we;
+logic [3:0]  core_wstrb;
 logic [31:0] core_addr;
 logic [31:0] core_data_out;
 logic [31:0] core_data_in;
@@ -68,6 +71,7 @@ logic        core_ack;
 logic        data_mem_cyc;
 logic        data_mem_stb;
 logic        data_mem_we;
+logic [3:0]  data_mem_wstrb;
 logic [31:0] data_mem_addr;
 logic [31:0] data_mem_data_out;
 logic [31:0] data_mem_data_in;
