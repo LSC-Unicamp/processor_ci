@@ -137,6 +137,76 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+riftCore i_riftCore(
+	
+	.isExternInterrupt(1'b0),
+	.isRTimerInterrupt(1'b0),
+	.isSoftwvInterrupt(1'b0),
+
+	.MEM_AWID         (),
+	.MEM_AWADDR       (CACHE_AWADDR),
+	.MEM_AWLEN        (CACHE_AWLEN),
+	.MEM_AWSIZE       (CACHE_AWSIZE),
+	.MEM_AWBURST      (CACHE_AWBURST),
+	.MEM_AWLOCK       (),
+	.MEM_AWCACHE      (),
+	.MEM_AWPROT       (),
+	.MEM_AWQOS        (),
+	.MEM_AWUSER       (),
+	.MEM_AWVALID      (CACHE_AWVALID),
+	.MEM_AWREADY      (CACHE_AWREADY),
+	.MEM_WDATA        (CACHE_WDATA),
+	.MEM_WSTRB        (CACHE_WSTRB),
+	.MEM_WLAST        (CACHE_WLAST),
+	.MEM_WUSER        (),
+	.MEM_WVALID       (CACHE_WVALID),
+	.MEM_WREADY       (CACHE_WREADY),
+	.MEM_BID          (1'b0),
+	.MEM_BRESP        (CACHE_BRESP),
+	.MEM_BUSER        (1'b0),
+	.MEM_BVALID       (CACHE_BVALID),
+	.MEM_BREADY       (CACHE_BREADY),
+	.MEM_ARID         (),
+	.MEM_ARADDR       (CACHE_ARADDR),
+	.MEM_ARLEN        (CACHE_ARLEN),
+	.MEM_ARSIZE       (CACHE_ARSIZE),
+	.MEM_ARBURST      (CACHE_ARBURST),
+	.MEM_ARLOCK       (),
+	.MEM_ARCACHE      (),
+	.MEM_ARPROT       (),
+	.MEM_ARQOS        (),
+	.MEM_ARUSER       (),
+	.MEM_ARVALID      (CACHE_ARVALID),
+	.MEM_ARREADY      (CACHE_ARREADY),
+	.MEM_RID          (1'b0),
+	.MEM_RDATA        (CACHE_RDATA),
+	.MEM_RRESP        (CACHE_RRESP),
+	.MEM_RLAST        (CACHE_RLAST),
+	.MEM_RUSER        (CACHE_RUSER),
+	.MEM_RVALID       (CACHE_RVALID),
+	.MEM_RREADY       (CACHE_RREADY),
+
+	.SYS_AWADDR      (SYS_AWADDR),
+	.SYS_AWVALID     (SYS_AWVALID),
+	.SYS_AWREADY     (SYS_AWREADY),
+	.SYS_WDATA       (SYS_WDATA),
+	.SYS_WSTRB       (SYS_WSTRB),
+	.SYS_WVALID      (SYS_WVALID),
+	.SYS_WREADY      (SYS_WREADY),
+	.SYS_BRESP       (SYS_BRESP),
+	.SYS_BVALID      (SYS_BVALID),
+	.SYS_BREADY      (SYS_BREADY),
+	.SYS_ARADDR      (SYS_ARADDR),
+	.SYS_ARVALID     (SYS_ARVALID),
+	.SYS_ARREADY     (SYS_ARREADY),
+	.SYS_RDATA       (SYS_RDATA),
+	.SYS_RRESP       (SYS_RRESP),
+	.SYS_RVALID      (SYS_RVALID),
+	.SYS_RREADY      (SYS_RREADY),
+
+	.CLK(CLK),
+	.RSTn(RSTn)
+	
+);
 
 endmodule

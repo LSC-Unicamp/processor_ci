@@ -26,9 +26,9 @@
         "core/riscv/"
     ],
     "repository": "https://github.com/ultraembedded/riscv",
-    "top_module": "riscv_core",
+    "top_module": "riscv_top",
     "extra_flags": [],
     "language_version": "2005",
     "march": "rv32i",
-    "two_memory": false
+    "two_memory": true
 }

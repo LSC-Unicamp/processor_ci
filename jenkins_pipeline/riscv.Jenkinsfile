@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("riscv") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s riscv_core -I core/riscv/ core/riscv/riscv_alu.v core/riscv/riscv_core.v core/riscv/riscv_csr.v core/riscv/riscv_csr_regfile.v core/riscv/riscv_decode.v core/riscv/riscv_decoder.v core/riscv/riscv_defs.v core/riscv/riscv_divider.v core/riscv/riscv_exec.v core/riscv/riscv_fetch.v core/riscv/riscv_issue.v core/riscv/riscv_lsu.v core/riscv/riscv_mmu.v core/riscv/riscv_multiplier.v core/riscv/riscv_pipe_ctrl.v core/riscv/riscv_regfile.v core/riscv/riscv_trace_sim.v core/riscv/riscv_xilinx_2r1w.v "
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s riscv_top -I core/riscv/ core/riscv/riscv_alu.v core/riscv/riscv_core.v core/riscv/riscv_csr.v core/riscv/riscv_csr_regfile.v core/riscv/riscv_decode.v core/riscv/riscv_decoder.v core/riscv/riscv_defs.v core/riscv/riscv_divider.v core/riscv/riscv_exec.v core/riscv/riscv_fetch.v core/riscv/riscv_issue.v core/riscv/riscv_lsu.v core/riscv/riscv_mmu.v core/riscv/riscv_multiplier.v core/riscv/riscv_pipe_ctrl.v core/riscv/riscv_regfile.v core/riscv/riscv_trace_sim.v core/riscv/riscv_xilinx_2r1w.v "
                 }
             }
         }
@@ -58,7 +58,7 @@ pipeline {
                             steps {
                                 echo 'Testing FPGA digilent_arty_a7_100t.'
                                 sh 'echo "Test for FPGA in /dev/ttyUSB1"'
-                                sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c                                /eda/processor_ci_tests/config.json --p /dev/ttyUSB1 -m rv32i -k 0x41525459 '
+                                sh 'python3 /eda/processor_ci_tests/main.py -b 115200 -s 2 -c                                /eda/processor_ci_tests/config.json --p /dev/ttyUSB1 -m rv32i -k 0x41525459 -ctm'
                             }
                         }
                     }

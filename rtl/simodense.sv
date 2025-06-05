@@ -4,6 +4,10 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define IADDR_bits 32
+`define DADDR_bits 32
+
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -137,6 +141,30 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+System u_System (
+    .clk             (clk_core),             // 1 bit
+    .reset           (rst_core),           // 1 bit
+
+    .StartAddress    (0),    // [`IADDR_bits-1:0] → ex: 32 bits (endereço de instrução inicial)
+    .StackPointer    (0),    // [`DADDR_bits-1:0] → ex: 32 bits (ponteiro de pilha)
+
+    .addrD           (addrD),           // [`DADDR_bits-1:0] → ex: 32 bits (endereço de dados)
+    .doutDstrobe     (doutDstrobe),     // [`DL2subblocks_Log2-1:0] → ex: 2-4 bits (qual subbloco do bloco está sendo escrito)
+    .doutD           (doutD),           // [`DL2block/`DL2subblocks-1:0] → ex: 64-128 bits (dado a ser escrito)
+    .dinDstrobe      (dinDstrobe),      // [`DL2subblocks_Log2-1:0] → ex: 2-4 bits (qual subbloco foi lido)
+    .dinD            (dinD),            // [`DL2block/`DL2subblocks-1:0] → ex: 64-128 bits (dado lido)
+
+    .enD             (enD),             // 1 bit (enable para acesso ao barramento de dados)
+    .weD             (weD),             // 1 bit (write enable)
+
+    .readyD          (readyD),          // 1 bit (confirmação de que a memória está pronta)
+    .accR            (accR),            // 1 bit (indica operação de leitura)
+    .accW            (accW),            // 1 bit (indica operação de escrita)
+
+    .debug           (),           // [31:0] → 32 bits (sinal de depuração ou monitoramento)
+    .flush           (0),           // 1 bit (sinal para esvaziar o pipeline ou cache)
+    .flushed         ()          // 1 bit (confirmação de que flush foi concluído)
+);
+
 
 endmodule

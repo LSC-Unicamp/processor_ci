@@ -4,6 +4,9 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1
+`define  REBOOT_ADDR  32'h0
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -137,6 +140,34 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+core_top u_core_top (
+    .clk_i              (clk_core),              // Clock
+    .n_rst_i            (~rst_core),            // Active-low reset
+
+    // ROM interface
+    .rom_ce_o           (core_cyc),           // ROM chip enable
+    .rom_addr_o         (core_addr),         // ROM address
+    .rom_data_i         (core_data_in),         // ROM instruction data
+
+    // RAM interface
+    .ram_ce_o           (data_mem_cyc),        // RAM chip enable
+    .ram_sel_o          (data_mem_wstrb),          // RAM byte select
+    .ram_addr_o         (data_mem_addr),         // RAM address
+    .ram_we_o           (data_mem_we),           // RAM write enable
+    .ram_data_o         (data_mem_data_out),         // Data to RAM
+    .ram_data_rvalid    (data_mem_ack),    // RAM read data valid
+    .ram_data_i         (data_mem_data_in),         // Data from RAM
+
+    // Interrupts
+    .irq_software_i     (0),     // Software interrupt
+    .irq_timer_i        (0),        // Timer interrupt
+    .irq_external_i     (0)      // External interrupt
+);
+
+assign data_mem_stb = data_mem_cyc;
+assign core_stb = core_cyc;
+assign core_we = 0;
+assign core_wstrb = 4'hF;
+assign core_data_out = 0;
 
 endmodule

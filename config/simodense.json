@@ -3,11 +3,14 @@
     "folder": "simodense",
     "sim_files": [],
     "files": [
-        "RTL_and_simulation/cpu.v"
+        "RTL_and_simulation/cpu.v",
+        "RTL_and_simulation/custom.v",
+        "RTL_and_simulation/cache.v",
+        "RTL_and_simulation/system.v"
     ],
-    "include_dirs": [],
+    "include_dirs": ["RTL_and_simulation/"],
     "repository": "https://github.com/pphilippos/simodense",
-    "top_module": "Core",
+    "top_module": "System",
     "extra_flags": [],
     "language_version": "2005",
     "march": "rv32i",
