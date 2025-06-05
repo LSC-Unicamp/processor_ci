@@ -13,12 +13,12 @@
         "rtl/core/RegisterFile.v"
     ],
     "include_dirs": [
-        "rtl/core/"
+        "rtl/core/", "rtl/common/"
     ],
     "repository": "https://github.com/saursin/riscv-atom",
-    "top_module": "AtomRV",
+    "top_module": "AtomRV_wb",
     "extra_flags": [],
     "language_version": "2005",
     "march": "rv32i",
-    "two_memory": false
+    "two_memory": true
 }

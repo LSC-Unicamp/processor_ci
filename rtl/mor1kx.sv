@@ -139,6 +139,7 @@ Controller #(
 
 // Core space
 
+logic [2:0] iwb_cti, dwb_cti;
 logic sync_ack, sync_data_ack;
 logic [31:0] sync_data, sync_data_mem;
 
@@ -149,10 +150,11 @@ always_ff @( posedge clk_core ) begin
     sync_data_mem <= data_mem_data_in;
 end
 
+
 mor1kx #(
     .OPTION_OPERAND_WIDTH         (32),
     .OPTION_CPU0                  ("CAPPUCCINO"),
-    .FEATURE_DATACACHE            ("NONE"),
+    .FEATURE_DATACACHE            ("ENABLED"), // NONE
     .OPTION_DCACHE_BLOCK_WIDTH    (5),
     .OPTION_DCACHE_SET_WIDTH      (9),
     .OPTION_DCACHE_WAYS           (2),
@@ -162,7 +164,7 @@ mor1kx #(
     .FEATURE_DMMU_HW_TLB_RELOAD   ("NONE"),
     .OPTION_DMMU_SET_WIDTH        (6),
     .OPTION_DMMU_WAYS             (1),
-    .FEATURE_INSTRUCTIONCACHE     ("NONE"),
+    .FEATURE_INSTRUCTIONCACHE     ("ENABLED"), // NONE
     .OPTION_ICACHE_BLOCK_WIDTH    (5),
     .OPTION_ICACHE_SET_WIDTH      (9),
     .OPTION_ICACHE_WAYS           (2),
@@ -179,7 +181,7 @@ mor1kx #(
     .FEATURE_SYSCALL              ("ENABLED"),
     .FEATURE_TRAP                 ("ENABLED"),
     .FEATURE_RANGE                ("ENABLED"),
-    .FEATURE_PIC                  ("ENABLED"),
+    .FEATURE_PIC                  ("NONE"), //ENABLED
     .OPTION_PIC_TRIGGER           ("LEVEL"),
     .OPTION_PIC_NMI_WIDTH         (0),
     .FEATURE_DSX                  ("ENABLED"),
@@ -208,7 +210,7 @@ mor1kx #(
     .FEATURE_CUST6                ("NONE"),
     .FEATURE_CUST7                ("NONE"),
     .FEATURE_CUST8                ("NONE"),
-    .FEATURE_FPU                  ("NONE"),
+    .FEATURE_FPU                  ("ENABLED"), // NONE
     .OPTION_SHIFTER               ("BARREL"),
     .FEATURE_STORE_BUFFER         ("ENABLED"),
     .OPTION_STORE_BUFFER_DEPTH_WIDTH (8),
@@ -216,7 +218,7 @@ mor1kx #(
     .FEATURE_TRACEPORT_EXEC       ("NONE"),
     .FEATURE_BRANCH_PREDICTOR     ("SIMPLE"),
     .BUS_IF_TYPE                  ("WISHBONE32"),
-    .IBUS_WB_TYPE                 ("B3_READ_BURSTING"),
+    .IBUS_WB_TYPE                 ("B3_READ_BURSTING"), //("B3_READ_BURSTING"),
     .DBUS_WB_TYPE                 ("CLASSIC")
 ) u_mor1kx (
     .clk                           (clk_core),                  // 1 bit
@@ -228,12 +230,12 @@ mor1kx #(
     .iwbm_cyc_o                    (core_cyc),           // 1 bit
     .iwbm_sel_o                    (core_wstrb),           // 4 bits
     .iwbm_we_o                     (core_we),            // 1 bit
-    .iwbm_cti_o                    (),           // 3 bits
+    .iwbm_cti_o                    (iwb_cti),           // 3 bits
     .iwbm_bte_o                    (),           // 2 bits
     .iwbm_dat_o                    (core_data_out),           // 32 bits
     .iwbm_err_i                    (0),           // 1 bit
-    .iwbm_ack_i                    (sync_ack),           // 1 bit
-    .iwbm_dat_i                    (sync_data),           // 32 bits
+    .iwbm_ack_i                    (core_ack),           // 1 bit
+    .iwbm_dat_i                    (core_data_in),           // 32 bits
     .iwbm_rty_i                    (0),           // 1 bit
 
     // Data Wishbone interface
@@ -242,12 +244,12 @@ mor1kx #(
     .dwbm_cyc_o                    (data_mem_cyc),           // 1 bit
     .dwbm_sel_o                    (data_mem_wstrb),           // 4 bits
     .dwbm_we_o                     (data_mem_we),            // 1 bit
-    .dwbm_cti_o                    (),           // 3 bits
+    .dwbm_cti_o                    (dwb_cti),           // 3 bits
     .dwbm_bte_o                    (),           // 2 bits
     .dwbm_dat_o                    (data_mem_data_out),           // 32 bits
     .dwbm_err_i                    (0),           // 1 bit
-    .dwbm_ack_i                    (sync_data_ack),           // 1 bit
-    .dwbm_dat_i                    (sync_data_mem),           // 32 bits
+    .dwbm_ack_i                    (data_mem_ack),           // 1 bit
+    .dwbm_dat_i                    (data_mem_data_in),           // 32 bits
     .dwbm_rty_i                    (0),           // 1 bit
 
     .irq_i                         (0),                // 32 bits

@@ -137,6 +137,33 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+pp_potato 
+`ifndef SIMULATION
+#(
+    .PROCESSOR_ID      (32'h00000000),  // Customize se necessário
+    .RESET_ADDRESS     (32'h00000000),
+    .MTIME_DIVIDER     (5),
+    .ICACHE_ENABLE     (1),             // 1 = true
+    .ICACHE_LINE_SIZE  (4),
+    .ICACHE_NUM_LINES  (128)
+) 
+`endif
+u_pp_potato (
+    .clk               (clk_core),
+    .reset             (rst_core),
+
+    // Interrupts
+    .irq               (0),
+
+    // Wishbone interface
+    .wb_adr_out        (core_addr),
+    .wb_sel_out        (core_wstrb),
+    .wb_cyc_out        (core_cyc),
+    .wb_stb_out        (core_stb),
+    .wb_we_out         (core_we),
+    .wb_dat_out        (core_data_out),
+    .wb_dat_in         (core_data_in),
+    .wb_ack_in         (core_ack)
+);
 
 endmodule

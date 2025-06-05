@@ -4,6 +4,10 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1
+`define EN_EXCEPT
+`define EN_RVZICSR
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -137,6 +141,38 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+AtomRV_wb u_atomrv (
+    .wb_clk_i           (clk_core),
+    .wb_rst_i           (rst_core),
+    .reset_vector_i     (0),
+
+    // === IBUS Wishbone Master Interface ===
+    .iport_wb_adr_o     (core_addr),
+    .iport_wb_dat_i     (core_data_in),
+    .iport_wb_cyc_o     (core_cyc),
+    .iport_wb_stb_o     (core_stb),
+    .iport_wb_ack_i     (core_ack),
+
+    // === DBUS Wishbone Master Interface === 
+    .dport_wb_adr_o     (data_mem_addr),
+    .dport_wb_dat_o     (data_mem_data_out),
+    .dport_wb_dat_i     (data_mem_data_in),
+    .dport_wb_cyc_o     (data_mem_cyc),
+    .dport_wb_stb_o     (data_mem_stb),
+    .dport_wb_we_o      (data_mem_we),
+    .dport_wb_sel_o     (data_mem_wstrb),
+    .dport_wb_ack_i     (data_mem_ack)
+
+    `ifdef EN_EXCEPT
+    ,
+    .irq_i              (0),
+    .timer_int_i        (0)
+    `endif
+);
+
+assign core_we = 0;
+assign core_data_out = 0;
+assign core_wstrb = 0;
+
 
 endmodule
