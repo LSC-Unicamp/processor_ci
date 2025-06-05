@@ -137,6 +137,42 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+cpu u_cpu (
+    .clk             (clk),              // 1 bit
+    .clk_x2          (clk_x2),           // 1 bit
+    .rst             (rst),              // 1 bit
+
+    .led             (led),              // 64 bits
+
+    .wb_ack_i        (wb_ack_i),         // 2 bits
+    .wb_err_i        (wb_err_i),         // 2 bits
+    .wb_rty_i        (wb_rty_i),         // 2 bits
+    .wb_dat_i        (wb_dat_i),         // 64 bits
+    .wb_cyc_o        (wb_cyc_o),         // 2 bits
+    .wb_adr_o        (wb_adr_o),         // 64 bits
+    .wb_stb_o        (wb_stb_o),         // 2 bits
+    .wb_we_o         (wb_we_o),          // 2 bits
+    .wb_sel_o        (wb_sel_o),         // 8 bits
+    .wb_dat_o        (wb_dat_o),         // 64 bits
+    .wb_cti_o        (wb_cti_o),         // 6 bits
+    .wb_bte_o        (wb_bte_o),         // 4 bits
+    .ALU_monitor     (),      // 1 bit
+
+`ifdef TEST
+    .block_instr_int (block_instr_int),  // tamanho não especificado — verifique na definição do sinal
+`endif
+
+`ifdef itlb_def
+    .vpn_to_ppn_req  (vpn_to_ppn_req),   // tamanho não especificado — verifique na definição do sinal
+`endif
+
+    .cache_flush     (cache_flush),      // 1 bit
+    .cache_en        (cache_en),         // 1 bit
+    .tick_en         (tick_en),          // 1 bit
+    .addr_exception  (addr_exception),   // 1 bit (provável, mas confirmar no contexto)
+    .interrupt       (interrupt)         // 1 bit (assumido, confirmar se for vetor)
+    // .out_t0(out_t0), .out_t1(out_t1), .out_t2(out_t2), .sp(sp) -- Comentado no módulo original
+);
+
 
 endmodule

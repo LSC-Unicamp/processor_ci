@@ -1,7 +1,5 @@
 `timescale 1ns / 1ps
 
-`define SIMULATION 1
-
 `ifndef SIMULATION
 `include "processor_ci_defines.vh"
 `endif
@@ -165,6 +163,7 @@ Grande_Risco5 #(
     .interruption (1'b0)
 );
 
-
+assign data_mem_wstrb = 4'b1111;
+assign core_wstrb     = 4'b1111;
     
 endmodule

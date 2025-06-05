@@ -135,13 +135,13 @@ module ahb_to_wishbone #(
     end
 
     // Function to compute number of beats from HBURST
-    function [2:0] get_burst_len(input [2:0] burst);
+    function [4:0] get_burst_len(input [2:0] burst);
         case (burst)
-            3'b000: get_burst_len = 3'd1;  // SINGLE
-            3'b001: get_burst_len = 3'd4;  // INCR4
-            3'b010: get_burst_len = 3'd8;  // INCR8
-            3'b011: get_burst_len = 3'd16; // INCR16
-            default: get_burst_len = 3'd1; // INCR (undefined length)
+            3'b000: get_burst_len = 5'd1;  // SINGLE
+            3'b001: get_burst_len = 5'd4;  // INCR4
+            3'b010: get_burst_len = 5'd8;  // INCR8
+            3'b011: get_burst_len = 5'd16; // INCR16
+            default: get_burst_len = 5'd1; // INCR (undefined length)
         endcase
     endfunction
 

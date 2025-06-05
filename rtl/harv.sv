@@ -155,7 +155,7 @@ harv harv_inst (
     .imem_instr_i   (core_data_in),
     .imem_pc_o      (core_addr),
     .imem_req_o     (core_cyc),
-    .imem_gnt_i     (1'b1),
+    .imem_gnt_i     (core_ack),
     .imem_err_i     (1'b0),
     
     .hard_dmem_o    (),
@@ -166,12 +166,13 @@ harv harv_inst (
     .dmem_usgn_o    (),
     .dmem_addr_o    (data_mem_addr),
     .dmem_wdata_o   (data_mem_data_out),
-    .dmem_gnt_i     (1'b1),
+    .dmem_gnt_i     (data_mem_ack),
     .dmem_err_i     (1'b0),
-    .dmem_sbu_i     (),
-    .dmem_dbu_i     (),
+    .dmem_sbu_i     (0),
+    .dmem_dbu_i     (0),
     .dmem_rdata_i   (data_mem_data_in)
 );
 
+assign core_wstrb = 4'b1111;
 
 endmodule

@@ -4,6 +4,8 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -49,6 +51,7 @@ module processorci_top (
 
     `endif
 );
+
 logic clk_core, rst_core;
 `ifdef SIMULATION
 assign clk_core = sys_clk;
@@ -137,6 +140,24 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+logic [31:0] dump;
+
+CPU uut (
+    .CLK              (clk_core),
+    .RAM_READ_DATA    ({32'h0, data_mem_data_in}),
+    .INSTRUCTION      (core_data_in),
+    .RAM_ADDR         (data_mem_addr),
+    .RAM_WRITE_DATA   ({dump, data_mem_data_out}),
+    .RAM_WRITE_ENABLE (data_mem_we),
+    .INSTRUCTION_ADDR (core_addr)
+);
+
+assign core_cyc = 1;
+assign core_stb = 1;
+assign core_we  = 0;
+assign data_mem_cyc = 1;
+assign data_mem_stb = 1;
+assign data_mem_wstrb = 4'b1111;
+assign core_wstrb     = 4'b1111;
 
 endmodule

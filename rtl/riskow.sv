@@ -167,4 +167,7 @@ end
 assign core_cyc = bus_valid;
 assign core_stb = bus_valid;
 
+assign data_mem_wstrb = 4'b1111;
+assign core_wstrb     = 4'b1111;
+
 endmodule

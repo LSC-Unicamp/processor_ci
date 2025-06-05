@@ -7,8 +7,6 @@
         "src/CPU.v",
         "src/Encoders.v",
         "src/ImmediateExtractor.v",
-        "src/RAM.v",
-        "src/ROM.v",
         "src/RegFile.v"
     ],
     "include_dirs": [
@@ -19,5 +17,5 @@
     "extra_flags": [],
     "language_version": "2005",
     "march": "rv32i",
-    "two_memory": false
+    "two_memory": true
 }

@@ -54,7 +54,7 @@
     ],
     "include_dirs": [],
     "repository": "https://github.com/stnolting/neorv32.git",
-    "top_module": "",
+    "top_module": "neorv32_cpu",
     "extra_flags": [],
     "language_version": "08",
     "march": "rv32i",

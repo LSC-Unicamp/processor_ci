@@ -137,6 +137,34 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+core u_core (
+    .I_clk           (clk_core),
+    .I_reset         (rst_core),
+    .I_halt          (0),
+
+    // External Interrupt interface
+    .I_int_data      (0),
+    .I_int           (0),
+    .O_int_ack       (),
+
+    // Memory interface
+    .MEM_I_ready     (1'b1),
+    .MEM_O_cmd       (core_cyc),
+    .MEM_O_we        (core_we),
+    .MEM_O_byteEnable(), // 2 bits
+    .MEM_O_addr      (core_addr),
+    .MEM_O_data      (core_data_out),
+    .MEM_I_data      (core_data_in),
+    .MEM_I_dataReady (core_ack),
+
+    // Debug/Status outputs
+    .O_halted        (),
+    .O_DBG           ()
+);
+
+assign core_stb = core_cyc;
+
+assign data_mem_wstrb = 4'b1111;
+assign core_wstrb     = 4'b1111;
 
 endmodule

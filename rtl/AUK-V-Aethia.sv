@@ -153,7 +153,7 @@ aukv aukv_inst(
     .o_data_mem_we      (data_mem_we),
     .o_data_mem_addr    (data_mem_addr),
     .o_data_mem_data    (data_mem_data_out),
-    .o_data_mem_strobe  (),              // Sem strobe
+    .o_data_mem_strobe  (data_mem_wstrb),              // Sem strobe
     .i_data_mem_valid   (data_mem_ack),
     .i_data_mem_data    (data_mem_data_in),
 

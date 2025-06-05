@@ -157,7 +157,7 @@ nerv cpu (
  
     .dmem_valid (data_mem_we),
     .dmem_addr  (data_mem_addr),
-    .dmem_wstrb (),
+    .dmem_wstrb (data_mem_wstrb),
     .dmem_wdata (data_mem_data_out),
     .dmem_rdata (data_in)
 );

@@ -193,11 +193,11 @@ neorv32_cpu #(
   .rstn_i               (rst_core),
 
   // Interrupts
-  .msi_i                (),
-  .mei_i                (),
-  .mti_i                (),
-  .firq_i               (),
-  .dbi_i                (),
+  .msi_i                (0),
+  .mei_i                (0),
+  .mti_i                (0),
+  .firq_i               (0),
+  .dbi_i                (0),
 
   // Inter-core communication links
   .icc_tx_o             (),

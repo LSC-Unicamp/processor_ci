@@ -149,4 +149,7 @@ RISCV Riscado_V (
 assign core_cyc = 1'b1;
 assign core_stb = 1'b1;
 
+assign data_mem_wstrb = 4'b1111;
+assign core_wstrb     = 4'b1111;
+
 endmodule
