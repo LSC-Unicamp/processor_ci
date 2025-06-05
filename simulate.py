@@ -121,6 +121,8 @@ def main():
     verilator_cmd = [
         "verilator", "--cc", "--exe", "--build",
         "--trace", "-Wno-fatal", "-DSIMULATION", "-DSYNTHESIS",
+        "-Wall", "-Wno-UNOPTFLAT", "-Wno-IMPLICIT",
+        "-Wno-TIMESCALEMOD", "-Wno-UNUSED",
         "--top-module", "verification_top",
         str(INTERNAL_DIR / "soc_main.cpp"),
         *other_files,

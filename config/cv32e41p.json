@@ -14,7 +14,9 @@
         "example_tb/core/include/perturbation_pkg.sv"
     ],
     "files": [
-
+        "bhv/cv32e41p_sim_clock_gate.sv",
+        "bhv/cv32e41p_sim_sffr.sv",
+        "bhv/cv32e41p_sim_sffs.sv",
         "rtl/include/cv32e41p_apu_core_pkg.sv",
         "rtl/include/cv32e41p_fpu_pkg.sv",
         "rtl/include/cv32e41p_pkg.sv",

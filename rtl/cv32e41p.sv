@@ -4,6 +4,7 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`undef CV32E41P_ASSERT_ON
 `define ENABLE_SECOND_MEMORY 1 // Habilita o segundo barramento de memória
 
 module processorci_top (
@@ -157,11 +158,11 @@ cv32e41p_core #(
     .pulp_clock_en_i    (1'b1),       // if not using PULP_CLUSTER, tie high or low
     .scan_cg_en_i       (1'b0),
 
-    .boot_addr_i        (32'h0000_1000),
-    .mtvec_addr_i       (32'h0000_2000),
-    .dm_halt_addr_i     (32'h0000_3000),
+    .boot_addr_i        (32'h0000_0000),
+    .mtvec_addr_i       (32'h0000_0000),
+    .dm_halt_addr_i     (32'h0000_0000),
     .hart_id_i          (32'd0),
-    .dm_exception_addr_i(32'h0000_4000),
+    .dm_exception_addr_i(32'h0000_0000),
 
     // Instruction memory interface
     .instr_req_o        (core_cyc),

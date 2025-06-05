@@ -4,6 +4,9 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`undef CV32E40P_ASSERT_ON
+`define ENABLE_SECOND_MEMORY 1
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -138,12 +141,12 @@ Controller #(
 // Core space
 
 cv32e40p_core #(
-    .PULP_XPULP       (0),
-    .PULP_CLUSTER     (0),
     .FPU              (0),
-    .PULP_ZFINX       (0),
-    .NUM_MHPMCOUNTERS (0)
-) cv32e40p_core_i
+    .NUM_MHPMCOUNTERS (1),
+    .ZFINX            (0),
+    .COREV_PULP       (0),
+    .COREV_CLUSTER    (0)
+) cv32e40p_core_i (
     // Clock and Reset
     .clk_i              (clk),
     .rst_ni             (rst_n),
@@ -151,11 +154,9 @@ cv32e40p_core #(
     .pulp_clock_en_i    (1'b1),       // if not using PULP_CLUSTER, tie high or low
     .scan_cg_en_i       (1'b0),
 
-    .boot_addr_i        (32'h0000_1000),
-    //.mtvec_addr_i       (32'h0000_2000),
-    .dm_halt_addr_i     (32'h0000_3000),
+    .boot_addr_i        (32'h0000_0000),
+    .dm_halt_addr_i     (32'h0000_0000),
     .hart_id_i          (32'd0),
-    //.dm_exception_addr_i(32'h0000_4000),
 
     // Instruction memory interface
     .instr_req_o        (core_cyc),

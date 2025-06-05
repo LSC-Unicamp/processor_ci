@@ -176,6 +176,7 @@ ahb_to_wishbone #( // bus adapter
     .wb_cyc     (core_cyc),
     .wb_stb     (core_stb),
     .wb_we      (core_we),
+    .wb_wstrb   (core_wstrb),
     .wb_adr     (core_addr),
     .wb_dat_w   (core_data_out),
     .wb_dat_r   (core_data_in),

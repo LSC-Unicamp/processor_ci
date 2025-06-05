@@ -192,24 +192,13 @@ ahb_to_wishbone #( // Instruction bus adapter
     .wb_cyc     (core_cyc),
     .wb_stb     (core_stb),
     .wb_we      (core_we),
+    .wb_wstrb   (core_wstrb),
     .wb_adr     (core_addr),
     .wb_dat_w   (core_data_out),
     .wb_dat_r   (core_data_in),
     .wb_ack     (core_ack)
 );
 
-logic core_ack_sync;
-logic [31:0] core_data_sync;
-
-always_ff @( posedge clk_core ) begin
-    if(rst_core) begin
-        core_ack_sync <= 0;
-        core_data_sync <= 0;
-    end else begin
-        core_ack_sync <= core_ack;
-        core_data_sync <= core_data_in;
-    end
-end
 
 ahb_to_wishbone #( // Data bus adapter
     .ADDR_WIDTH(32),
@@ -237,6 +226,7 @@ ahb_to_wishbone #( // Data bus adapter
     .wb_cyc     (data_mem_cyc),
     .wb_stb     (data_mem_stb),
     .wb_we      (data_mem_we),
+    .wb_wstrb   (data_mem_wstrb),
     .wb_adr     (data_mem_addr),
     .wb_dat_w   (data_mem_data_out),
     .wb_dat_r   (data_mem_data_in),

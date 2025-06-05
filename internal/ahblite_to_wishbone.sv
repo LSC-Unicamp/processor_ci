@@ -23,6 +23,7 @@ module ahb_to_wishbone #(
     output logic                  wb_cyc,
     output logic                  wb_stb,
     output logic                  wb_we,
+    output logic [3:0]            wb_wstrb,
     output logic [ADDR_WIDTH-1:0] wb_adr,
     output logic [DATA_WIDTH-1:0] wb_dat_w,
     input  logic [DATA_WIDTH-1:0] wb_dat_r,
@@ -72,9 +73,10 @@ module ahb_to_wishbone #(
 
             if (ahb_access && !ahb_active) begin
                 // Start transaction
-                wb_adr     <= HADDR;
+                wb_adr     <= HADDR  & ~32'd3; // Align address to 4 bytes
                 wb_we      <= HWRITE;
                 //wb_dat_w   <= HWDATA;
+                wb_wstrb   <= wstrb;
                 wb_cyc     <= 1;
                 wb_stb     <= 1;
                 ahb_active <= 1;
@@ -102,6 +104,34 @@ module ahb_to_wishbone #(
                 end
             end
         end
+    end
+
+    // Write Strobe Translation
+    logic [3:0] wstrb;
+
+    always_comb begin
+        wstrb = 4'b0000;
+        case (HSIZE)
+            3'b000: begin // 1 byte
+                case (HADDR[1:0])
+                    2'b00: wstrb = 4'b0001;
+                    2'b01: wstrb = 4'b0010;
+                    2'b10: wstrb = 4'b0100;
+                    2'b11: wstrb = 4'b1000;
+                endcase
+            end
+            3'b001: begin // 2 bytes (halfword)
+                case (HADDR[1:0])
+                    2'b00: wstrb = 4'b0011;
+                    2'b10: wstrb = 4'b1100;
+                    default: wstrb = 4'b0000; // invalid address for halfword
+                endcase
+            end
+            3'b010: begin // 4 bytes (word)
+                wstrb = 4'b1111;
+            end
+            default: wstrb = 4'b0000; // other sizes not supported
+        endcase
     end
 
     // Function to compute number of beats from HBURST

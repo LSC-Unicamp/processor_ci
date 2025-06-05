@@ -3,6 +3,8 @@
 `ifndef SIMULATION
 `include "processor_ci_defines.vh"
 `endif
+`undef CV32E40S_ASSERT_ON
+`define ENABLE_SECOND_MEMORY 1
 
 module processorci_top (
     input logic sys_clk, // Clock de sistema
@@ -138,52 +140,35 @@ Controller #(
 // Core space
 
 cv32e40s_core #(
-    .NUM_MHPMCOUNTERS (1)
+    .LIB                (0),
+    .DEBUG              (0)
 ) cv32e40s_core_i (
     // Clock and Reset
-    .clk_i              (clk),
-    .rst_ni             (rst_n),
+    .clk_i              (clk_core),
+    .rst_ni             (rst_core),
 
-    .pulp_clock_en_i    (1'b1),       // if not using PULP_CLUSTER, tie high or low
-    .scan_cg_en_i       (1'b0),
-
-    .boot_addr_i        (32'h0000_1000),
-    //.mtvec_addr_i       (32'h0000_2000),
-    .dm_halt_addr_i     (32'h0000_3000),
-    .hart_id_i          (32'd0),
-    //.dm_exception_addr_i(32'h0000_4000),
+    .boot_addr_i        (32'h0000_0000),
+    .dm_halt_addr_i     (32'h0000_0000),
 
     // Instruction memory interface
     .instr_req_o        (core_cyc),
     .instr_gnt_i        (core_ack),
-    .instr_rvalid_i     (1'b1), // Assuming instruction read is always valid
+    .instr_rvalid_i     (1'b1),
     .instr_addr_o       (core_addr),
     .instr_rdata_i      (core_data_in),
 
     // Data memory interface
     .data_req_o         (data_mem_cyc),
     .data_gnt_i         (data_mem_ack),
-    .data_rvalid_i      (1'b1), // Assuming data read is always valid
+    .data_rvalid_i      (1'b1),
     .data_we_o          (data_mem_we),
     .data_be_o          (),
     .data_addr_o        (data_mem_addr),
     .data_wdata_o       (data_mem_data_out),
     .data_rdata_i       (data_mem_data_in),
 
-    // APU interface
-    .apu_req_o          (),
-    .apu_gnt_i          (1'b0),
-    .apu_operands_o     (),
-    .apu_op_o           (),
-    .apu_flags_o        (),
-    .apu_rvalid_i       (1'b0),
-    .apu_result_i       (),
-    .apu_flags_i        (),
-
     // Interrupts
     .irq_i              (0),
-    .irq_ack_o          (),
-    .irq_id_o           (),
 
     // Debug interface
     .debug_req_i        (1'b0),

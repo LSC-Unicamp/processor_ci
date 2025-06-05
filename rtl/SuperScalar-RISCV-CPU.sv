@@ -144,24 +144,27 @@ assign core_data_out = 32'b0; // No data to write
 
 assign data_mem_stb = data_mem_cyc;
 
-logic imem_resp, dmem_resp;
-logic [31:0] imem_data, dmem_data;
+logic instr_resp, instr_req, dmem_resp, rst;
+logic [31:0] dmem_data;
+
+logic [31:0] instr_addr;
+logic [127:0] instr_data;
 
 always_ff @(posedge clk_core) begin
-    imem_resp <= core_ack;
+    rst <= rst_core;
     dmem_resp <= data_mem_ack;
-    imem_data <= core_data_in;
     dmem_data <= data_mem_data_in;
 end
 
+
 ssrv_top u_ssrv_top (
     .clk            (clk_core),
-    .rst            (rst_core),
+    .rst            (rst),
 
-    .imem_req       (core_cyc),
-    .imem_addr      (core_addr),
-    .imem_rdata     (imem_data),
-    .imem_resp      (imem_resp),
+    .imem_req       (instr_req),
+    .imem_addr      (instr_addr),
+    .imem_rdata     (instr_data),
+    .imem_resp      (instr_resp),
     .imem_err       (1'b0),
 
     .dmem_req       (data_mem_cyc),
@@ -173,6 +176,95 @@ ssrv_top u_ssrv_top (
     .dmem_resp      (dmem_resp),
     .dmem_err       (1'b0)
 );
+
+typedef enum logic [3:0] {
+    IDLE              = 4'd0,
+    READ_WB_1         = 4'd1,
+    READ_NEXT_INSTR   = 4'd2,
+    READ_WB_2         = 4'd3,
+    READ_NEXT_INSTR_2 = 4'd4,
+    READ_WB_3         = 4'd5,
+    READ_NEXT_INSTR_3 = 4'd6,
+    READ_WB_4         = 4'd7,
+    WB                = 4'd8
+} fsm_state_t;
+
+fsm_state_t state;
+
+always_ff @(posedge clk_core) begin
+    if(rst_core) begin
+        instr_resp <=0;
+        instr_data <= 0;
+    end else begin
+        case (state)
+            IDLE: begin
+                instr_resp <= 0;
+                if(instr_req) begin
+                    core_addr <= instr_addr;
+                    core_cyc  <= 1;
+                    state     <= READ_WB_1;
+                end
+            end
+
+            READ_WB_1: begin
+                if(core_ack) begin
+                    core_cyc         <= 0;
+                    instr_data[31:0] <= core_data_in;
+                    core_addr        <= core_addr + 4;
+                    state            <= READ_NEXT_INSTR; 
+                end
+            end
+
+            READ_NEXT_INSTR: begin
+                core_cyc <= 1;
+                state    <= READ_WB_2;
+            end
+
+            READ_WB_2: begin
+                if(core_ack) begin
+                    core_cyc          <= 0;
+                    instr_data[63:32] <= core_data_in;
+                    core_addr         <= core_addr + 4;
+                    state             <= READ_NEXT_INSTR_2; 
+                end
+            end
+
+            READ_NEXT_INSTR_2: begin
+                core_cyc <= 1;
+                state    <= READ_WB_3;
+            end
+
+            READ_WB_3: begin
+                if(core_ack) begin
+                    core_cyc          <= 0;
+                    instr_data[95:64] <= core_data_in;
+                    core_addr         <= core_addr + 4;
+                    state             <= READ_NEXT_INSTR_3; 
+                end
+            end
+
+            READ_NEXT_INSTR_3: begin
+                core_cyc <= 1;
+                state    <= READ_WB_4;
+            end
+
+            READ_WB_4: begin
+                if(core_ack) begin
+                    core_cyc           <= 0;
+                    instr_data[127:96] <= core_data_in;
+                    state              <= WB; 
+                end
+            end
+
+            WB: begin
+                instr_resp <= 1;
+                state      <= IDLE;
+            end
+
+            default: state <= IDLE;
+        endcase
+    end
+end
 
 
 endmodule
