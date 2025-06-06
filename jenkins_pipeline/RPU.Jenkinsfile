@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("RPU") {
-                    echo "simulation not supported"
+                    echo 'FPGA > Simulation'
                 }
-            }https://processorci.lsc.ic.unicamp.br/
+            }
         }
 
          stage('Utilities')  {

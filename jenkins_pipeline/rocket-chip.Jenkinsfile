@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("rocket-chip") {
-                    echo "simulation not supported"
+                    echo 'FPGA > Simulation'
                 }
-            }https://processorci.lsc.ic.unicamp.br/
+            }
         }
 
          stage('Utilities')  {

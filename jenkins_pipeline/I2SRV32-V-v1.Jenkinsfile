@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("I2SRV32-V-v1") {
-                    echo "simulation not supported"
+                    echo 'FPGA > Simulation'
                 }
-            }https://processorci.lsc.ic.unicamp.br/
+            }
         }
 
          stage('Utilities')  {

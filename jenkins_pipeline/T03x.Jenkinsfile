@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("T03x") {
-                    echo "simulation not supported"
+                    echo 'FPGA > Simulation'
                 }
-            }https://processorci.lsc.ic.unicamp.br/
+            }
         }
 
          stage('Utilities')  {

@@ -23,9 +23,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("microrv32") {
-                    echo "simulation not supported"
+                    echo 'FPGA > Simulation'
                 }
-            }https://processorci.lsc.ic.unicamp.br/
+            }
         }
 
          stage('Utilities')  {
