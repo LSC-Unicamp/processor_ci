@@ -23,9 +23,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("Cores-SweRV-EH2") {
-                    echo "simulation not supported for System Verilog files"
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

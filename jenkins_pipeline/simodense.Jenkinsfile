@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("simodense") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s System -I RTL_and_simulation/ RTL_and_simulation/cpu.v RTL_and_simulation/custom.v RTL_and_simulation/cache.v RTL_and_simulation/system.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

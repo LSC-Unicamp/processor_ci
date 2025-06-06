@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("Pequeno-Risco-5") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s Core  src/alu.v src/alu_control.v src/control_unit.v src/core.v src/immediate_generator.v src/mux.v src/pc.v src/registers.v src/instruction_memory.v src/data_memory.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

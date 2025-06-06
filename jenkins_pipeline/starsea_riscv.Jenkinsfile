@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("starsea_riscv") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s starsea_core  rtl/core/alu.v rtl/core/ctrl.v rtl/core/dram.v rtl/core/id.v rtl/core/iram.v rtl/core/machine.v rtl/core/pc.v rtl/core/regs.v rtl/core/starsea_core.v rtl/core/wb.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

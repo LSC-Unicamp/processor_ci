@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("rocket-chip") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   src/main/resources/vsrc/AsyncResetReg.v src/main/resources/vsrc/ClockDivider2.v src/main/resources/vsrc/ClockDivider3.v src/main/resources/vsrc/EICG_wrapper.v src/main/resources/vsrc/RoccBlackBox.v src/main/resources/vsrc/SimDTM.v src/main/resources/vsrc/SimJTAG.v src/main/resources/vsrc/debug_rob.v src/main/resources/vsrc/plusarg_reader.v dependencies/chisel/src/test/resources/chisel3/AnalogBlackBox.v dependencies/chisel/src/test/resources/chisel3/BlackBoxTest.v dependencies/chisel/src/test/resources/chisel3/VerilogVendingMachine.v dependencies/hardfloat/hardfloat/tests/resources/vsrc/emulator.v src/main/resources/vsrc/TestDriver.v dependencies/chisel/svsim/src/test/resources/GCD.sv"
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

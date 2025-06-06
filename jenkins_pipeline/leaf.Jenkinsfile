@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("leaf") {
-                    sh "/eda/oss-cad-suite/bin/ghdl -a --std=08               cpu/rtl/core_pkg.vhdl cpu/rtl/alu.vhdl cpu/rtl/alu_ctrl.vhdl cpu/rtl/br_detector.vhdl cpu/rtl/csrs.vhdl cpu/rtl/ex_block.vhdl cpu/rtl/id_block.vhdl cpu/rtl/id_ex_stage.vhdl cpu/rtl/if_stage.vhdl cpu/rtl/imm_gen.vhdl cpu/rtl/int_strg.vhdl cpu/rtl/leaf.vhdl cpu/rtl/lsu.vhdl cpu/rtl/main_ctrl.vhdl cpu/rtl/reg_file.vhdl cpu/rtl/wb_ctrl.vhdl cpu/rtl/core.vhdl cpu/tbs/alu_ctrl_tb.vhdl cpu/tbs/alu_tb.vhdl cpu/tbs/br_detector_tb.vhdl cpu/tbs/core_tb.vhdl cpu/tbs/csrs_tb.vhdl cpu/tbs/ex_block_tb.vhdl cpu/tbs/id_block_tb.vhdl cpu/tbs/id_ex_stage_tb.vhdl cpu/tbs/if_stage_tb.vhdl cpu/tbs/imm_gen_tb.vhdl cpu/tbs/int_strg_tb.vhdl cpu/tbs/lsu_tb.vhdl cpu/tbs/main_ctrl_tb.vhdl cpu/tbs/reg_file_tb.vhdl cpu/tbs/tbs_pkg.vhdl sim/rtl/leaf_sim.vhdl sim/rtl/leaf_sim_pkg.vhdl sim/rtl/sim_halt.vhdl sim/rtl/sim_io.vhdl sim/rtl/sim_mem.vhdl sim/rtl/sim_syscon.vhdl sim/tbs/sim_mem_tb.vhdl soc/tbs/leaf_soc_tb.vhdl soc/tbs/ram_tb.vhdl soc/tbs/soc_syscon_tb.vhdl uart/tbs/uart_tb.vhdl"
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

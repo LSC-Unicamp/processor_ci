@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("lizard") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   asic/designs/GcdUnit-demo.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

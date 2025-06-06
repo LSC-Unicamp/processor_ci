@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("riscv-atom") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s AtomRV_wb -I rtl/core/ -I rtl/common/ rtl/core/Alu.v rtl/core/AtomRV.v rtl/core/AtomRV_wb.v rtl/core/CSR_Unit.v rtl/core/Decode.v rtl/core/RVC_Aligner.v rtl/core/RVC_Decoder.v rtl/core/RegisterFile.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

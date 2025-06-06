@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("kant-v") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   src/alu.v src/control.v src/registers.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

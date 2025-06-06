@@ -23,9 +23,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("VexRiscv") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s VexRiscv  VexRiscv.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

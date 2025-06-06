@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("Rift2Core") {
-                    echo "simulation not supported for mixed VHDL and Verilog files"
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

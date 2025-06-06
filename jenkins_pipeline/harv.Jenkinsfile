@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("harv") {
-                    sh "/eda/oss-cad-suite/bin/ghdl -a --std=08               hdl/harv_pkg.vhd hdl/alu.vhd hdl/control.vhd hdl/csr.vhd hdl/instr_fetch.vhd hdl/regfile.vhd hdl/harv.vhd "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

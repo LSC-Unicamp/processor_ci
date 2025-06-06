@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("SprintRV") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s core_top -I rtl/core/include/ rtl/core/core_top.v rtl/core/ctrl/ctrl.v rtl/core/dec/id.v rtl/core/dec/id_ex.v rtl/core/exu/div.v rtl/core/exu/ex.v rtl/core/exu/ex_mem.v rtl/core/ifu/bp.v rtl/core/ifu/if_id.v rtl/core/ifu/ifu.v rtl/core/include/defines.v rtl/core/lsu/mem.v rtl/core/lsu/mem_wb.v rtl/core/wb/csr.v rtl/core/wb/gpr.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

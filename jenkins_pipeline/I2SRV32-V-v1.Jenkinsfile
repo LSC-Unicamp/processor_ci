@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("I2SRV32-V-v1") {
-                    echo "simulation not supported for mixed VHDL and Verilog files"
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("darkriscv") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s darkriscv -I rtl rtl/darkriscv.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

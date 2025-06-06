@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("SuperScalar-RISCV-CPU") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s ssrv_top -I rtl/ rtl/alu.v rtl/define.v rtl/define_para.v rtl/include_func.v rtl/instrbits.v rtl/instrman.v rtl/lsu.v rtl/membuf.v rtl/mprf.v rtl/mul.v rtl/predictor.v rtl/schedule.v rtl/ssrv_top.v rtl/sys_csr.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {

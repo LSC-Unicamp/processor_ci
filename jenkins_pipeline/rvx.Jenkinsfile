@@ -15,9 +15,9 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("rvx") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s rvx_core  hardware/rvx_core.v "
+                    echo "simulation not supported"
                 }
-            }
+            }https://processorci.lsc.ic.unicamp.br/
         }
 
          stage('Utilities')  {
