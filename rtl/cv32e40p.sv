@@ -140,9 +140,20 @@ Controller #(
 
 // Core space
 
+logic instr_ack, data_ack;
+logic [31:0] instr_data, data;
+
+always_ff @( posedge clk_core ) begin
+    instr_ack <= core_ack;
+    data_ack <= data_mem_ack;
+    instr_data <= core_data_in;
+    data <= data_mem_data_in;
+end
+
+
 cv32e40p_core #(
     .FPU              (0),
-    .NUM_MHPMCOUNTERS (1),
+    .NUM_MHPMCOUNTERS (0),
     .ZFINX            (0),
     .COREV_PULP       (0),
     .COREV_CLUSTER    (0)
@@ -160,20 +171,20 @@ cv32e40p_core #(
 
     // Instruction memory interface
     .instr_req_o        (core_cyc),
-    .instr_gnt_i        (core_ack),
+    .instr_gnt_i        (instr_ack),
     .instr_rvalid_i     (1'b1), // Assuming instruction read is always valid
     .instr_addr_o       (core_addr),
-    .instr_rdata_i      (core_data_in),
+    .instr_rdata_i      (instr_data),
 
     // Data memory interface
     .data_req_o         (data_mem_cyc),
-    .data_gnt_i         (data_mem_ack),
+    .data_gnt_i         (data_ack),
     .data_rvalid_i      (1'b1), // Assuming data read is always valid
     .data_we_o          (data_mem_we),
     .data_be_o          (),
     .data_addr_o        (data_mem_addr),
     .data_wdata_o       (data_mem_data_out),
-    .data_rdata_i       (data_mem_data_in),
+    .data_rdata_i       (data),
 
     // APU interface
     .apu_req_o          (),
@@ -200,5 +211,12 @@ cv32e40p_core #(
     .fetch_enable_i     (1'b1),
     .core_sleep_o       ()
 );
+
+assign core_stb = core_cyc;
+assign core_we = 0;
+assign core_wstrb = 4'hF;
+assign core_data_out = 0;
+assign data_mem_stb = data_mem_cyc;
+assign data_mem_wstrb = 4'hF;
 
 endmodule

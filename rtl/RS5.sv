@@ -4,6 +4,8 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -137,6 +139,53 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+logic [63:0] timer;
+
+always_ff @( posedge clk_core ) begin
+    if(rst_core) begin
+        timer <= 0;
+    end else begin
+        timer <= timer + 1;
+    end
+end
+
+logic instr_ack, data_ack;
+logic [31:0] instr_data, data;
+
+always_ff @( posedge clk_core ) begin
+    instr_ack <= core_ack;
+    data_ack <= data_mem_ack;
+    instr_data <= core_data_in;
+    data <= data_mem_data_in;
+end
+
+RS5 rs5_inst (
+    .clk                     (clk_core),
+    .reset_n                 (~rst_core),
+    .sys_reset_i             (rst_core),
+    .stall                   (0),
+
+    .instruction_i           (instr_data),
+    .mem_data_i              (data),
+    .mtime_i                 (timer),
+
+    .instruction_address_o   (core_addr),
+
+    .mem_operation_enable_o  (data_mem_cyc),
+    .mem_write_enable_o      (data_mem_we),
+    .mem_address_o           (data_mem_addr),
+    .mem_data_o              (data_mem_data_out),
+
+    .interrupt_ack_o         ()
+);
+
+assign core_cyc = 1;
+assign core_stb = core_cyc;
+assign core_we = 0;
+assign core_wstrb = 4'hF;
+assign core_data_out = 0;
+
+assign data_mem_stb = data_mem_cyc;
+assign data_mem_wstrb = 4'hF;
 
 endmodule

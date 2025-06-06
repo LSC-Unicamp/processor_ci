@@ -139,6 +139,7 @@ def main():
         '-Wno-fatal',
         '-DSIMULATION',
         '-DSYNTHESIS',
+        '-DSYNTH',
         '-DEN_EXCEPT',
         '-DEN_RVZICSR',
         '-Wall',

@@ -4,8 +4,6 @@
     "sim_files": [],
     "files": [
         "bhv/cv32e40p_sim_clock_gate.sv",
-        "bhv/cv32e40p_sim_sffr.sv",
-        "bhv/cv32e40p_sim_sffs.sv",
         "rtl/include/cv32e40p_apu_core_pkg.sv",
         "rtl/include/cv32e40p_fpu_pkg.sv",
         "rtl/include/cv32e40p_pkg.sv",
@@ -36,12 +34,12 @@
         "rtl/cv32e40p_top.sv"
     ],
     "include_dirs": [
-        "rtl/include/"
+        "rtl/include/", "rtl/", "bhv/"
     ],
     "repository": "https://github.com/openhwgroup/cv32e40p",
     "top_module": "cv32e40p_core",
     "extra_flags": [],
     "language_version": "2012",
     "march": "rv32i",
-    "two_memory": false
+    "two_memory": true
 }

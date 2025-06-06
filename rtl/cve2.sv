@@ -4,6 +4,8 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -137,6 +139,90 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+logic instr_ack, data_ack;
+logic [31:0] instr_data, data;
+
+always_ff @( posedge clk_core ) begin
+    instr_ack <= core_ack;
+    data_ack <= data_mem_ack;
+    instr_data <= core_data_in;
+    data <= data_mem_data_in;
+end
+
+cve2_core #(
+    .MHPMCounterNum   (10),
+    .MHPMCounterWidth (40),
+    .RV32E            (1'b0),
+    //.RV32M            (RV32MFast),
+    .XInterface       (1'b0),
+    .DbgHwBreakNum    (0)
+) cve2_top_inst (
+    .clk_i              (clk_core),
+    .rst_ni             (~rst_core),
+
+    .test_en_i          (0),
+
+    .hart_id_i          (0),
+    .boot_addr_i        (0),
+
+    // Instruction memory interface
+    .instr_req_o        (core_cyc),
+    .instr_gnt_i        (instr_ack),
+    .instr_rvalid_i     (1'b1), // Assuming instruction read is always valid
+    .instr_addr_o       (core_addr),
+    .instr_rdata_i      (instr_data),
+    .instr_err_i        (0),
+
+    // Data memory interface
+    .data_req_o         (data_mem_cyc),
+    .data_gnt_i         (data_ack),
+    .data_rvalid_i      (1'b1), // Assuming data read is always valid
+    .data_we_o          (data_mem_we),
+    .data_be_o          (),
+    .data_addr_o        (data_mem_addr),
+    .data_wdata_o       (data_mem_data_out),
+    .data_rdata_i       (data),
+    .data_err_i         (0),
+
+    // Core-V Extension Interface
+    .x_issue_valid_o    (),
+    .x_issue_ready_i    (),
+    .x_issue_req_o      (),
+    .x_issue_resp_i     (),
+
+    .x_register_o       (),
+
+    .x_commit_valid_o   (),
+    .x_commit_o         (),
+
+    .x_result_valid_i   (0),
+    .x_result_ready_o   (),
+    .x_result_i         (0),
+
+    // Interrupts
+    .irq_software_i     (0),
+    .irq_timer_i        (0),
+    .irq_external_i     (0),
+    .irq_fast_i         (0),
+    .irq_nm_i           (0),
+
+    // Debug Interface
+    .debug_req_i        (0),
+    .debug_halted_o     (),
+    .dm_halt_addr_i     (0),
+    .dm_exception_addr_i(0),
+    .crash_dump_o       (),
+
+    // Control
+    .fetch_enable_i     (1)
+);
+
+
+assign core_stb = core_cyc;
+assign core_we = 0;
+assign core_wstrb = 4'hF;
+assign core_data_out = 0;
+assign data_mem_stb = data_mem_cyc;
+assign data_mem_wstrb = 4'hF;
 
 endmodule

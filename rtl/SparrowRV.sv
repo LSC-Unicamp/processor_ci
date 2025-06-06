@@ -137,6 +137,55 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+core inst_core
+(
+    .clk              (clk),
+    .rst_n            (rst_n),
+    .halt_req_i       (halt_req),
+    .hx_valid         (hx_valid),
+    .soft_rst         (soft_rst_en),
+    .core_ex_trap_valid  (core_ex_trap_valid),
+    .core_ex_trap_ready  (core_ex_trap_ready),
+//m1 内核
+    .core_axi_awaddr  (core_axi_awaddr ),
+    .core_axi_awprot  (core_axi_awprot ),
+    .core_axi_awvalid (core_axi_awvalid),
+    .core_axi_awready (core_axi_awready),
+    .core_axi_wdata   (core_axi_wdata  ),
+    .core_axi_wstrb   (core_axi_wstrb  ),
+    .core_axi_wvalid  (core_axi_wvalid ),
+    .core_axi_wready  (core_axi_wready ),
+    .core_axi_bresp   (core_axi_bresp  ),
+    .core_axi_bvalid  (core_axi_bvalid ),
+    .core_axi_bready  (core_axi_bready ),
+    .core_axi_araddr  (core_axi_araddr ),
+    .core_axi_arprot  (core_axi_arprot ),
+    .core_axi_arvalid (core_axi_arvalid),
+    .core_axi_arready (core_axi_arready),
+    .core_axi_rdata   (core_axi_rdata  ),
+    .core_axi_rresp   (core_axi_rresp  ),
+    .core_axi_rvalid  (core_axi_rvalid ),
+    .core_axi_rready  (core_axi_rready ),
+//s0 iram指令存储器
+    .iram_axi_awaddr  (iram_axi_awaddr ),
+    .iram_axi_awprot  (3'h0),
+    .iram_axi_awvalid (iram_axi_awvalid),
+    .iram_axi_awready (iram_axi_awready),
+    .iram_axi_wdata   (iram_axi_wdata  ),
+    .iram_axi_wstrb   (iram_axi_wstrb  ),
+    .iram_axi_wvalid  (iram_axi_wvalid ),
+    .iram_axi_wready  (iram_axi_wready ),
+    .iram_axi_bresp   (),
+    .iram_axi_bvalid  (),
+    .iram_axi_bready  (1'b0),
+    .iram_axi_araddr  (iram_axi_araddr ),
+    .iram_axi_arprot  (3'h0),
+    .iram_axi_arvalid (iram_axi_arvalid),
+    .iram_axi_arready (iram_axi_arready),
+    .iram_axi_rdata   (iram_axi_rdata  ),
+    .iram_axi_rresp   (),
+    .iram_axi_rvalid  (iram_axi_rvalid ),
+    .iram_axi_rready  (iram_axi_rready )
+);
 
 endmodule

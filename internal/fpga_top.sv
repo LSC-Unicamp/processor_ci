@@ -2,6 +2,9 @@
 
 `include "processor_ci_defines.vh"
 
+`define SYNTH
+`define SYNTHESIS
+
 module fpga_top(
     `ifdef DIFERENCIAL_CLK
     input  logic clk_ref_p,

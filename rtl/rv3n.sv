@@ -4,6 +4,8 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -136,7 +138,67 @@ Controller #(
 `endif
 
 // Core space
+/*
+module rv3n_top
+(   
+    input                                   clk,
+	input                                   rst,
 
-// Core instantiation
+    output                                  imem_req,
+	output `N(`XLEN)                        imem_addr,
+	input                                   imem_resp,
+	input  `N(`INUM*`XLEN)                  imem_rdata,
+	input                                   imem_err,
+
+	output                                  dmem_req,
+	output                                  dmem_cmd,
+	output `N(2)                            dmem_width,
+	output `N(`XLEN)                        dmem_addr,
+	output `N(`XLEN)                        dmem_wdata,
+	input  `N(`XLEN)                        dmem_rdata,
+	input                                   dmem_resp,
+    input                                   dmem_err	
+
+);
+*/
+
+logic [31:0] addr;
+assign core_addr = addr - 'h200;
+
+logic instr_ack, data_ack;
+logic [31:0] instr_data, data;
+
+always_ff @( posedge clk_core ) begin
+    instr_ack <= core_ack;
+    data_ack  <= data_mem_ack;
+    instr_data <= core_data_in;
+    data <= data_mem_data_in;
+end
+
+rv3n_top rv3n_top_inst (
+    .clk         (clk_core),
+    .rst         (rst_core),
+
+    .imem_req    (core_cyc),
+    .imem_addr   (addr),
+    .imem_resp   (instr_ack),
+    .imem_rdata  (instr_data),
+    .imem_err    (0),
+
+    .dmem_req    (data_mem_cyc),
+    .dmem_cmd    (data_mem_we),
+    .dmem_width  (),
+    .dmem_addr   (data_mem_addr),
+    .dmem_wdata  (data_mem_data_out),
+    .dmem_rdata  (data),
+    .dmem_resp   (data_ack),
+    .dmem_err    (0)
+);
+
+assign core_stb       = core_cyc;
+assign core_we        = 0;
+assign core_wstrb     = 4'hF;
+assign data_mem_stb   = data_mem_cyc;
+assign data_mem_wstrb = 4'hF;
 
 endmodule

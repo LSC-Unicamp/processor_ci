@@ -56,5 +56,6 @@
     "extra_flags": [],
     "language_version": "2005",
     "march": "rv32i",
-    "two_memory": false
+    "pre_script": "sed -i 's#`include \"./vsrc/defines.v\"#`include \"defines.v\"#' $(find . -name \"*.sv\")",
+    "two_memory": true
 }

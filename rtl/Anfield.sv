@@ -4,6 +4,8 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -140,26 +142,37 @@ Controller #(
 logic [31:0] read_addr, write_addr;
 logic [3:0] write_mask;
 
+logic instr_ack, data_ack;
+logic [31:0] instr_data, data, addr;
+
+always_ff @( posedge clk_core ) begin
+    instr_ack <= core_ack && ~rst_core;
+    data_ack <= data_mem_ack;
+    instr_data <= core_data_in;
+    data <= data_mem_data_in;
+    addr <= core_addr;
+end
+
 Balotelli Anfield_Balotelli (
     .Clk            (clk_core),
     .Rst            (rst_core),
 
-    .InstIn         (core_data_in),
+    .InstIn         (instr_data),
     .InstAddrToBus  (core_addr),
-    .InstReadReady  (core_ack),
-    .InstAddrIn     (core_addr),
+    .InstReadReady  (instr_ack),
+    .InstAddrIn     (addr),
 
     .RaddrOut       (read_addr),
     .WaddrOut       (write_addr),
     .MemDataOut     (data_mem_data_out),
     .Wmask          (write_mask),
-    .MemDataIn      (data_mem_data_in),
+    .MemDataIn      (data),
     .BusRequest     (data_mem_cyc),
 
-    .DataReadReady  (data_mem_ack),
-    .DataWriteOver  (data_mem_ack),
-    .ReadShakeHands (data_mem_ack),
-    .Timer0IntIn    (1'b0) // Timer 0 interrupt input (not used)
+    .DataReadReady  (data_ack),
+    .DataWriteOver  (data_ack),
+    .ReadShakeHands (data_ack),
+    .Timer0IntIn    (0) // Timer 0 interrupt input (not used)
 );
 
 assign core_cyc = 1'b1; // Always active for simulation

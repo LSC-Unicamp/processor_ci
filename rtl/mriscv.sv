@@ -137,34 +137,96 @@ Controller #(
 
 // Core space
 
+logic [31:0] awaddr;
+logic [2:0]  awprot;
+logic        awvalid;
+logic        awready;
+
+logic [31:0] wdata;
+logic [3:0]  wstrb;
+logic        wvalid;
+logic        wready;
+
+logic [1:0]  bresp;
+logic        bvalid;
+logic        bready;
+
+logic [31:0] araddr;
+logic [2:0]  arprot;
+logic        arvalid;
+logic        arready;
+
+logic [31:0] rdata;
+logic [1:0]  rresp;
+logic        rvalid;
+logic        rready;
+
+AXI4Lite_to_Wishbone #(
+    .ADDR_WIDTH(32),
+    .DATA_WIDTH(32)
+) bridge_inst (
+    .ACLK      (clk_core),
+    .ARESETN   (~rst_core),
+
+    .AWADDR    (awaddr),
+    .AWPROT    (awprot),
+    .AWVALID   (awvalid),
+    .AWREADY   (awready),
+    .WDATA     (wdata),
+    .WSTRB     (wstrb),
+    .WVALID    (wvalid),
+    .WREADY    (wready),
+    .BRESP     (bresp),
+    .BVALID    (bvalid),
+    .BREADY    (bready),
+    .ARADDR    (araddr),
+    .ARPROT    (arprot),
+    .ARVALID   (arvalid),
+    .ARREADY   (arready),
+    .RDATA     (rdata),
+    .RRESP     (rresp),
+    .RVALID    (rvalid),
+    .RREADY    (rready),
+
+    .wb_adr_o  (core_addr),
+    .wb_dat_o  (core_data_out),
+    .wb_we_o   (core_we),
+    .wb_stb_o  (core_stb),
+    .wb_cyc_o  (core_cyc),
+    .wb_sel_o  (core_wstrb),
+    .wb_dat_i  (core_data_in),
+    .wb_ack_i  (core_ack),
+    .wb_err_i  (1'b0)
+);
+
 mriscvcore mriscvcore_inst (
     .clk     (clk_core),
     .rstn    (~rst_core),
     .trap    (),
 
-    .AWvalid (),
-    .AWready (),
-     
-    .AWdata  (),
-     
-    .AWprot  (),
-    .Wvalid  (),
-    .Wready  (),
-    .Wdata   (),
-    .Wstrb   (),
-    .Bvalid  (),
-    .Bready  (),
-    .ARvalid (),
-    .ARready (),
-     
-    .ARdata  (),
-     
-    .ARprot  (),
-    .Rvalid  (),
-    .RReady  (),
-    .Rdata   (),
-    //.outirr (irq),
-    .inirr   ()
+    .AWvalid (awvalid),
+    .AWready (awready),
+    .AWdata  (awaddr),
+    .AWprot  (awprot),
+
+    .Wvalid  (wvalid),
+    .Wready  (wready),
+    .Wdata   (wdata),
+    .Wstrb   (wstrb),
+
+    .Bvalid  (bvalid),
+    .Bready  (bready),
+
+    .ARvalid (arvalid),
+    .ARready (arready),
+    .ARdata  (araddr),
+    .ARprot  (arprot),
+
+    .Rvalid  (rvalid),
+    .RReady  (rready),
+    .Rdata   (rdata),
+
+    .inirr   (0)
 );
 
 endmodule
