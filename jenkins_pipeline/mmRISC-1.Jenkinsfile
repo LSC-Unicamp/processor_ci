@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("mmRISC-1") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s CPU_TOP -I verilog/common/ verilog/cpu/cpu_csr.v verilog/cpu/cpu_csr_dbg.v verilog/cpu/cpu_csr_int.v verilog/cpu/cpu_datapath.v verilog/cpu/cpu_debug.v verilog/cpu/cpu_fetch.v verilog/cpu/cpu_fpu32.v verilog/cpu/cpu_pipeline.v verilog/cpu/cpu_top.v "
                 }
             }
         }

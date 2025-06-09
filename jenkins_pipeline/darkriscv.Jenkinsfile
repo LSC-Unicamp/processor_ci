@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("darkriscv") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s darkriscv -I rtl rtl/darkriscv.v "
                 }
             }
         }

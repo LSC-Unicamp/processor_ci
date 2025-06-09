@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("Baby-Risco-5") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s Core  src/core/alu.v src/core/alu_control.v src/core/control_unit.v src/core/core.v src/core/immediate_generator.v src/core/registers.v "
                 }
             }
         }

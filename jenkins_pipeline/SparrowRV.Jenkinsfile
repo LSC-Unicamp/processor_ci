@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("SparrowRV") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s core -I rtl/ rtl/config.v rtl/defines.v rtl/core/core.v rtl/core/csr.v rtl/core/div.v rtl/core/dpram.v rtl/core/idex.v rtl/core/iram.v rtl/core/regs.v rtl/core/rstc.v rtl/core/sctr.v rtl/core/trap.v "
                 }
             }
         }

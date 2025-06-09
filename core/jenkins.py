@@ -128,12 +128,12 @@ pipeline {{
         )
     elif is_vhdl and not is_verilog:
         # VHDL simulation command
-        simulation_command = f'sh "/eda/oss-cad-suite/bin/ghdl -a --std={lang_version} \
+        simulation_command = f'sh "ghdl -a --std={lang_version} \
             {extra_flags_str} {include_dirs} {files} {sim_files}"'
     elif is_verilog and not is_vhdl:
         # Verilog simulation command
         simulation_command = (
-            f'sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g{lang_version} \
+            f'sh "iverilog -o simulation.out -g{lang_version} \
                 {extra_flags_str}'
             + f' -s {config["top_module"]} {include_dirs} {files} {sim_files}"'
         )

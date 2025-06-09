@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("picorv32") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s picorv32  picorv32.v "
                 }
             }
         }

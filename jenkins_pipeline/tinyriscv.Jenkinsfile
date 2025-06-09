@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("tinyriscv") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s tinyriscv -I rtl/core/ rtl/core/clint.v rtl/core/csr_reg.v rtl/core/ctrl.v rtl/core/div.v rtl/core/ex.v rtl/core/id.v rtl/core/id_ex.v rtl/core/if_id.v rtl/core/pc_reg.v rtl/core/regs.v rtl/core/rib.v rtl/core/tinyriscv.v rtl/utils/gen_dff.v "
                 }
             }
         }

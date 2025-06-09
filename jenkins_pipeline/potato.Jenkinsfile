@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("potato") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/ghdl -a --std=08               src/pp_alu.vhd src/pp_alu_control_unit.vhd src/pp_alu_mux.vhd src/pp_comparator.vhd src/pp_constants.vhd src/pp_control_unit.vhd src/pp_core.vhd src/pp_counter.vhd src/pp_csr.vhd src/pp_csr_alu.vhd src/pp_csr_unit.vhd src/pp_decode.vhd src/pp_execute.vhd src/pp_fetch.vhd src/pp_icache.vhd src/pp_imm_decoder.vhd src/pp_memory.vhd src/pp_register_file.vhd src/pp_types.vhd src/pp_utilities.vhd src/pp_wb_adapter.vhd src/pp_wb_arbiter.vhd src/pp_writeback.vhd src/pp_potato.vhd example/tb_toplevel.vhd testbenches/tb_processor.vhd testbenches/tb_soc.vhd testbenches/tb_soc_gpio.vhd testbenches/tb_soc_intercon.vhd testbenches/tb_soc_memory.vhd testbenches/tb_soc_timer.vhd testbenches/tb_soc_uart.vhd"
                 }
             }
         }

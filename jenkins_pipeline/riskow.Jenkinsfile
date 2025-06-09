@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("riskow") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s CPU  cpu/alu.v cpu/comp.v cpu/cpu.v cpu/instruction_decoder.v cpu/program_counter.v cpu/register_bank.v "
                 }
             }
         }

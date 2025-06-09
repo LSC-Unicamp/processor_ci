@@ -23,7 +23,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("VexRiscv") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s VexRiscv  VexRiscv.v "
                 }
             }
         }

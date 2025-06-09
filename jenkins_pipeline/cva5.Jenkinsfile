@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("cva5") {
-                    echo 'FPGA > Simulation'
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }

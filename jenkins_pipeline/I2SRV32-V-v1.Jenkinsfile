@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("I2SRV32-V-v1") {
-                    echo 'FPGA > Simulation'
+                    echo "simulation not supported for mixed VHDL and Verilog files"
                 }
             }
         }

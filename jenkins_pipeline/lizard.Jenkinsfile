@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("lizard") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   asic/designs/GcdUnit-demo.v "
                 }
             }
         }

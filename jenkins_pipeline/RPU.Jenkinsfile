@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("RPU") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/ghdl -a --std=08               vhdl/constants.vhd vhdl/alu_int32_div.vhd vhdl/control_unit.vhd vhdl/core.vhd vhdl/csr_unit.vhd vhdl/lint_unit.vhd vhdl/mem_controller.vhd vhdl/pc_unit.vhd vhdl/register_set.vhd vhdl/unit_alu_RV32_I.vhd vhdl/unit_decoder_RV32I.vhd "
                 }
             }
         }

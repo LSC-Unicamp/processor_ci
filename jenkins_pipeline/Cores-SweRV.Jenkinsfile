@@ -23,7 +23,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("Cores-SweRV") {
-                    echo 'FPGA > Simulation'
+                    echo "simulation not supported for System Verilog files"
                 }
             }
         }

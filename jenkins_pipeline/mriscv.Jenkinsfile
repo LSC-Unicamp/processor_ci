@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("mriscv") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s mriscvcore  mriscvcore/mriscvcore.v mriscvcore/ALU/ALU.v mriscvcore/DECO_INSTR/DECO_INSTR.v mriscvcore/FSM/FSM.v mriscvcore/IRQ/IRQ.v mriscvcore/MEMORY_INTERFACE/MEMORY_INTERFACE.v mriscvcore/MULT/MULT.v mriscvcore/REG_FILE/REG_FILE.v mriscvcore/UTILITIES/UTILITY.v "
                 }
             }
         }

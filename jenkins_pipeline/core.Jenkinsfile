@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("core") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   lib/LibFPGA/AutoReset.v lib/LibFPGA/BinaryCounter.v lib/LibFPGA/LCDControler.v lib/LibFPGA/LFSR.v lib/LibFPGA/MyPLL.v lib/LibFPGA/VGAGenerator.v "
                 }
             }
         }

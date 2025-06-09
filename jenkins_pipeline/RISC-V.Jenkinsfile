@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("RISC-V") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s core  core/ALU.v core/control_unit.v core/core.v core/core_wb.v core/csr_unit.v core/forwarding_unit.v core/hazard_detection_unit.v core/imm_decoder.v core/load_store_unit.v core/muldiv/MULDIV_ctrl.v core/muldiv/MULDIV_in.v core/muldiv/MULDIV_top.v core/muldiv/MUL_DIV_out.v core/muldiv/divider_32.v core/muldiv/multiplier_32.v "
                 }
             }
         }

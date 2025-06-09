@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("kant-v") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   src/alu.v src/control.v src/registers.v "
                 }
             }
         }

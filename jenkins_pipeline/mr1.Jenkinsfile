@@ -23,7 +23,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("mr1") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s MR1  MR1.v "
                 }
             }
         }

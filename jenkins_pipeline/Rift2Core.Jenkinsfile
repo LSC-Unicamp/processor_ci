@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("Rift2Core") {
-                    echo 'FPGA > Simulation'
+                    echo "simulation not supported for mixed VHDL and Verilog files"
                 }
             }
         }

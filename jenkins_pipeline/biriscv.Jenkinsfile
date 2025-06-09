@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("biriscv") {
-                    echo 'FPGA > Simulation'
+                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s riscv_top -I src/core -I src/dcache -I src/icache src/core/biriscv_alu.v src/core/biriscv_csr.v src/core/biriscv_csr_regfile.v src/core/biriscv_decode.v src/core/biriscv_decoder.v src/core/biriscv_defs.v src/core/biriscv_divider.v src/core/biriscv_exec.v src/core/biriscv_fetch.v src/core/biriscv_frontend.v src/core/biriscv_issue.v src/core/biriscv_lsu.v src/core/biriscv_mmu.v src/core/biriscv_multiplier.v src/core/biriscv_npc.v src/core/biriscv_pipe_ctrl.v src/core/biriscv_regfile.v src/core/biriscv_trace_sim.v src/core/biriscv_xilinx_2r1w.v src/core/riscv_core.v src/dcache/dcache.v src/dcache/dcache_axi.v src/dcache/dcache_axi_axi.v src/dcache/dcache_core.v src/dcache/dcache_core_data_ram.v src/dcache/dcache_core_tag_ram.v src/dcache/dcache_if_pmem.v src/dcache/dcache_mux.v src/dcache/dcache_pmem_mux.v src/icache/icache.v src/icache/icache_data_ram.v src/icache/icache_tag_ram.v src/top/riscv_top.v "
                 }
             }
         }
