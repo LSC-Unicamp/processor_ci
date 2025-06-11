@@ -53,6 +53,7 @@ logic clk_core, rst_core;
 `ifdef SIMULATION
 assign clk_core = sys_clk;
 assign rst_core = ~rst_n;
+`define CLOCK_FREQ 100000000 // 100 MHz
 `else
 
 // Fios do barramento entre Controller e Processor
@@ -143,24 +144,33 @@ Grande_Risco5 #(
     .D_CACHE_SIZE           (256),
     .DATA_WIDTH             (32),
     .ADDR_WIDTH             (32),
-    .BRANCH_PREDICTION_SIZE (128)
+    .BRANCH_PREDICTION_SIZE (128),
+    .CLK_FREQ               (`CLOCK_FREQ)
 ) Processor (
-    .clk    (clk_core),
-    .rst_n  (~rst_core),
+    .clk               (clk),
+    .rst_n             (rst_n),
+    .halt              (halt),
 
-    .halt   (1'b0),
+    .cyc_o             (master_cyc),
+    .stb_o             (master_stb),
+    .we_o              (master_we),
 
-    .cyc_o  (core_cyc),
-    .stb_o  (core_stb),
-    .we_o   (core_we),
+    .addr_o            (master_addr_o),
+    .data_o            (master_data_o),
 
-    .addr_o (core_addr),
-    .data_o (core_data_out),
+    .ack_i             (master_ack),
+    .data_i            (master_data),
 
-    .ack_i  (core_ack),
-    .data_i (core_data_in),
+    .interruption      (1'b0),
 
-    .interruption (1'b0)
+    // JTAG interface
+    .jtag_we_en_i      (1'b0),  // JTAG write enable
+    .jtag_addr_i       (5'b0),  // JTAG address
+    .jtag_data_i       (32'b0), // JTAG data input
+    .jtag_data_o       (),      // JTAG data output
+
+    .jtag_halt_flag_i  (1'b0),  // JTAG halt flag
+    .jtag_reset_flag_i (1'b0)   // JTAG reset flag
 );
 
 assign data_mem_wstrb = 4'b1111;
