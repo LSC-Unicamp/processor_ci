@@ -147,19 +147,19 @@ Grande_Risco5 #(
     .BRANCH_PREDICTION_SIZE (128),
     .CLK_FREQ               (`CLOCK_FREQ)
 ) Processor (
-    .clk               (clk),
-    .rst_n             (rst_n),
-    .halt              (halt),
+    .clk               (clk_core),
+    .rst_n             (~rst_core),
+    .halt              (1'b0), // Halt signal, not used in this design
 
-    .cyc_o             (master_cyc),
-    .stb_o             (master_stb),
-    .we_o              (master_we),
+    .cyc_o             (core_cyc),
+    .stb_o             (core_stb),
+    .we_o              (core_we),
 
-    .addr_o            (master_addr_o),
-    .data_o            (master_data_o),
+    .addr_o            (core_addr),
+    .data_o            (core_data_out),
 
-    .ack_i             (master_ack),
-    .data_i            (master_data),
+    .ack_i             (core_ack),
+    .data_i            (core_data_in),
 
     .interruption      (1'b0),
 
@@ -173,7 +173,6 @@ Grande_Risco5 #(
     .jtag_reset_flag_i (1'b0)   // JTAG reset flag
 );
 
-assign data_mem_wstrb = 4'b1111;
 assign core_wstrb     = 4'b1111;
     
 endmodule
