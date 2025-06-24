@@ -138,7 +138,66 @@ Controller #(
 `endif
 
 // Core space
+logic [31:0] instr_data, data_mem_r;
+logic instr_grant, data_grant;
 
+ibex_core u_of (
+    .clk_i                (clk_core),
+    .rst_ni               (~rst_core),
+
+    .hart_id_i            (0),
+    .boot_addr_i          (0),
+
+    // Instruction memory interface
+    .instr_req_o          (core_cyc),
+    .instr_gnt_i          (instr_grant),
+    .instr_rvalid_i       (instr_grant),
+    .instr_addr_o         (core_addr),
+    .instr_rdata_i        (instr_data),
+
+    // Data memory interface
+    .data_req_o           (data_mem_cyc),
+    .data_gnt_i           (data_grant),
+    .data_rvalid_i        (data_grant & !data_mem_we),
+    .data_we_o            (data_mem_we),
+    .data_be_o            (data_mem_wstrb),
+    .data_addr_o          (data_mem_addr),
+    .data_wdata_o         (data_mem_data_out),
+    .data_rdata_i         (data_mem_r),
+    .data_err_i           (0),
+
+    .rf_rdata_a_ecc_i     (0),
+    .rf_rdata_b_ecc_i     (0),
+
+    .ic_scr_key_valid_i   (0),
+
+    .irq_software_i       (0),
+    .irq_timer_i          (0),
+    .irq_external_i       (0),
+    .irq_fast_i           (0),
+    .irq_nm_i             (0),
+
+    .debug_req_i          (0)
+);
+
+assign core_data_out = 0;
+assign core_we = 0;
+assign core_stb = core_cyc;
+assign data_mem_stb = data_mem_cyc;
+
+always_ff @( posedge clk_core ) begin
+    instr_grant <= core_ack;
+    instr_data  <= core_data_in;
+    data_grant  <= data_mem_ack;
+    data_mem_r  <= data_mem_data_in;
+end
+
+
+
+
+
+
+/*
 assign core_stb = core_cyc;
 assign data_mem_stb = data_mem_cyc;
 assign core_we = 1'b0;
@@ -165,7 +224,7 @@ ibex_top ibex_core_inst (
   .data_gnt_i           (1'b1),
   .data_rvalid_i        (data_mem_ack),
   .data_we_o            (data_mem_we),
-  .data_be_o            (/* open */),
+  .data_be_o            (),
   .data_addr_o          (data_mem_addr),
   .data_wdata_o         (data_mem_data_out),
   .data_wdata_intg_o    (),
@@ -184,23 +243,23 @@ ibex_top ibex_core_inst (
   .scramble_key_valid_i (1'b0),
   .scramble_key_i       ('0),
   .scramble_nonce_i     ('0),
-  .scramble_req_o       (/* open */),
+  .scramble_req_o       (),
 
   // Debug Interface - zerado
   .debug_req_i          (1'b0),
-  .crash_dump_o         (/* open */),
-  .double_fault_seen_o  (/* open */),
+  .crash_dump_o         (),
+  .double_fault_seen_o  (),
 
   // CPU Control Signals
   .fetch_enable_i       (1'b1),
-  .alert_minor_o        (/* open */),
-  .alert_major_internal_o (/* open */),
-  .alert_major_bus_o    (/* open */),
-  .core_sleep_o         (/* open */),
+  .alert_minor_o        (),
+  .alert_major_internal_o (),
+  .alert_major_bus_o    (),
+  .core_sleep_o         (),
 
   // DFT bypass controls
   .scan_rst_ni          (1'b1)
 );
-
+*/
 
 endmodule

@@ -173,7 +173,7 @@ zeroriscy_core #(
   .data_gnt_i         (data_grant),
   .data_rvalid_i      (data_grant & !data_mem_we),
   .data_we_o          (data_mem_we),
-  .data_be_o          (),
+  .data_be_o          (data_mem_wstrb),
   .data_addr_o        (data_mem_addr),
   .data_wdata_o       (data_mem_data_out),
   .data_rdata_i       (data_mem_r),
