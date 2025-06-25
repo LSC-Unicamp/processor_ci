@@ -23,7 +23,7 @@
     ],
     "include_dirs": [],
     "repository": "https://github.com/olofk/serv",
-    "top_module": "serv_top",
+    "top_module": "serv_rf_top",
     "extra_flags": [],
     "language_version": "2005",
     "march": "rv32i",

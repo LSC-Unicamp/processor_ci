@@ -4,6 +4,9 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1
+//sbt "runMain vexriscv.demo.VexRiscvAhbLite3"
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -137,6 +140,36 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+VexRiscv VexRiscv(
+	// Inputs.
+	.clk                    (clk_core),
+	.dBusWishbone_ACK       (data_mem_ack),
+	.dBusWishbone_DAT_MISO  (data_mem_data_in),
+	.dBusWishbone_ERR       (0),
+	.iBusWishbone_ACK       (core_ack),
+	.iBusWishbone_DAT_MISO  (core_data_in),
+	.iBusWishbone_ERR       (0),
+	.reset                  (rst_core),
+	.softwareInterrupt      (1'd0),
+	.timerInterrupt         (1'd0),
+
+	// Outputs.
+	.dBusWishbone_ADR       (data_mem_addr),
+	.dBusWishbone_BTE       (data_mem_wstrb),
+	.dBusWishbone_CTI       (),
+	.dBusWishbone_CYC       (data_mem_cyc),
+	.dBusWishbone_DAT_MOSI  (data_mem_data_out),
+	.dBusWishbone_SEL       (),
+	.dBusWishbone_STB       (data_mem_stb),
+	.dBusWishbone_WE        (data_mem_we),
+	.iBusWishbone_ADR       (core_addr),
+	.iBusWishbone_BTE       (core_wstrb),
+	.iBusWishbone_CTI       (),
+	.iBusWishbone_CYC       (core_cyc),
+	.iBusWishbone_DAT_MOSI  (core_data_out),
+	.iBusWishbone_SEL       (),
+	.iBusWishbone_STB       (core_stb),
+	.iBusWishbone_WE        (core_we)
+);
 
 endmodule

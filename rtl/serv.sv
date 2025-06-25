@@ -4,6 +4,8 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -137,56 +139,33 @@ Controller #(
 
 // Core space
 
-serv_top #(
-    .RESET_PC       (0),
-    .PRE_REGISTER   (1),
-    .RESET_STRATEGY ("MINI"),
-    .WITH_CSR       (1),
-    .DEBUG          (0),
-    .MDU            (0),
-    .COMPRESSED     (0),
-    .ALIGN          (0),
-    .W              (1)
-) cpu (
-    .clk          (clk_core),
-    .i_rst        (rst_core),
-    .i_timer_irq  (0),
+serv_rf_top #(
+	// Parameters.
+	.RESET_PC (1'd0)
+) serv_rf_top (
+	// Inputs.
+	.clk         (clk_core),
+	.i_dbus_ack  (data_mem_ack),
+	.i_dbus_rdt  (data_mem_data_in),
+	.i_ibus_ack  (core_ack),
+	.i_ibus_rdt  (core_data_in),
+	.i_rst       (rst_core),
+	.i_timer_irq (1'd0),
 
-    .o_rf_rreq    (),
-    .o_rf_wreq    (),
-    .i_rf_ready   (),
-    .o_wreg0      (),
-    .o_wreg1      (),
-    .o_wen0       (),
-    .o_wen1       (),
-    .o_wdata0     (),
-    .o_wdata1     (),
-    .o_rreg0      (),
-    .o_rreg1      (),
-    .i_rdata0     (),
-    .i_rdata1     (),
-
-    .o_ibus_adr   (),
-    .o_ibus_cyc   (),
-    .i_ibus_rdt   (),
-    .i_ibus_ack   (),
-
-    .o_dbus_adr   (),
-    .o_dbus_dat   (),
-    .o_dbus_sel   (),
-    .o_dbus_we    (),
-    .o_dbus_cyc   (),
-    .i_dbus_rdt   (),
-    .i_dbus_ack   (),
-
-    //Extension
-    .o_ext_funct3 (),
-    .i_ext_ready  (),
-    .i_ext_rd     (),
-    .o_ext_rs1    (),
-    .o_ext_rs2    (),
-    //MDU
-    .o_mdu_valid  ()
+	// Outputs.
+	.o_dbus_adr  (data_mem_addr),
+	.o_dbus_cyc  (data_mem_cyc),
+	.o_dbus_dat  (data_mem_data_out),
+	.o_dbus_sel  (data_mem_wstrb),
+	.o_dbus_we   (data_mem_we),
+	.o_ibus_adr  (core_addr),
+	.o_ibus_cyc  (core_cyc)
 );
+
+assign core_stb = 1;
+assign core_we = 1'b0; // Read operation
+assign core_wstrb = 4'b1111; // All bytes are valid for read
+assign core_data_out = 32'b0; // No data to write
+assign data_mem_stb = 1;
 
 endmodule
