@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("NutShell") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   fpga/board/PXIe/rtl/addr_mapper.v fpga/board/PXIe/rtl/system_top.v fpga/board/axu3cg/rtl/addr_mapper.v fpga/board/axu3cg/rtl/system_top.v fpga/board/axu3cg/rtl/hdmi/i2c_config.v fpga/board/axu3cg/rtl/hdmi/i2c_master_bit_ctrl.v fpga/board/axu3cg/rtl/hdmi/i2c_master_byte_ctrl.v fpga/board/axu3cg/rtl/hdmi/i2c_master_defines.v fpga/board/axu3cg/rtl/hdmi/i2c_master_top.v fpga/board/axu3cg/rtl/hdmi/timescale.v "
+                    sh "iverilog -o simulation.out -g2005                  -s   fpga/board/PXIe/rtl/addr_mapper.v fpga/board/PXIe/rtl/system_top.v fpga/board/axu3cg/rtl/addr_mapper.v fpga/board/axu3cg/rtl/system_top.v fpga/board/axu3cg/rtl/hdmi/i2c_config.v fpga/board/axu3cg/rtl/hdmi/i2c_master_bit_ctrl.v fpga/board/axu3cg/rtl/hdmi/i2c_master_byte_ctrl.v fpga/board/axu3cg/rtl/hdmi/i2c_master_defines.v fpga/board/axu3cg/rtl/hdmi/i2c_master_top.v fpga/board/axu3cg/rtl/hdmi/timescale.v "
                 }
             }
         }

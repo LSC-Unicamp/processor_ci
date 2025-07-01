@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("fedar-f1-rv64im") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s CPU -I src/ src/ALU.v src/CPU.v src/Encoders.v src/ImmediateExtractor.v src/RegFile.v "
+                    sh "iverilog -o simulation.out -g2005                  -s CPU -I src/ src/ALU.v src/CPU.v src/Encoders.v src/ImmediateExtractor.v src/RegFile.v "
                 }
             }
         }

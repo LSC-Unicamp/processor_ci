@@ -23,7 +23,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("mr1") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s MR1  MR1.v "
+                    sh "iverilog -o simulation.out -g2005                  -s MR1  MR1.v "
                 }
             }
         }

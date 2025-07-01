@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("riscv-boom") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s   src/main/resources/vsrc/predictor_harness.v src/main/resources/vsrc/btb_harness.v"
+                    sh "iverilog -o simulation.out -g2005                  -s   src/main/resources/vsrc/predictor_harness.v src/main/resources/vsrc/btb_harness.v"
                 }
             }
         }

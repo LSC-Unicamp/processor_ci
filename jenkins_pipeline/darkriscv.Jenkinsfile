@@ -15,7 +15,7 @@ pipeline {
         stage('Simulation') {
             steps {
                 dir("darkriscv") {
-                    sh "/eda/oss-cad-suite/bin/iverilog -o simulation.out -g2005                  -s darkriscv -I rtl rtl/darkriscv.v "
+                    sh "iverilog -o simulation.out -g2005                  -s darkriscv -I rtl rtl/darkriscv.v "
                 }
             }
         }
