@@ -5,9 +5,9 @@ else
 endif
 
 
-all: opensdrlab_kintex7.bit
+all: zedboard.bit
 
-opensdrlab_kintex7.bit:
+zedboard.bit:
 	@echo "Building the Design..."
 	$(VIVADO) -mode batch -nolog -nojournal -source $(BUILD_SCRIPT)
 clean:
@@ -17,7 +17,7 @@ clean:
 # openFPGALoader funciona apenas na versão nightly, a versão estavel atual não suporta a vc709 ainda
 load:
 	@echo "Flashing the FPGA..."
-	/eda/oss-cad-suite/bin/openFPGALoader -b opensourceSDRLabKintex7 opensdrlab_kintex7.bit
+	/eda/oss-cad-suite/bin/openFPGALoader -b zedboard zedboard.bit
 #$(VIVADO_PATH)/vivado  -mode batch -nolog -nojournal -source flash.tcl
 
-run_all: opensdrlab_kintex7.bit load
+run_all: zedboard.bit load
