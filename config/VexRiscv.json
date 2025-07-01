@@ -12,5 +12,5 @@
     "language_version": "2005",
     "pre_script": "sbt \"runMain vexriscv.demo.VexRiscvCachedWishboneForSim\"",
     "march": "rv32i",
-    "two_memory": false
+    "two_memory": true
 }
