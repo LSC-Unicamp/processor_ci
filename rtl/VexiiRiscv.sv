@@ -178,7 +178,7 @@ VexiiRiscv u_VexiiRiscv (
     .LsuCachelessWishbonePlugin_logic_bridge_down_CTI      (), // 3 bits
     .LsuCachelessWishbonePlugin_logic_bridge_down_BTE      (), // 2 bits
     .clk                                                   (clk_core),  // 1 bit
-    .reset                                                 (rst_core),  // 1 bit
+    .reset                                                 (rst_core)  // 1 bit
 );
 
 endmodule
