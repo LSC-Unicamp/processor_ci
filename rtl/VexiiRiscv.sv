@@ -4,6 +4,8 @@
 `include "processor_ci_defines.vh"
 `endif
 
+`define ENABLE_SECOND_MEMORY 1
+
 module processorci_top (
     input logic sys_clk, // Clock de sistema
     input logic rst_n,   // Reset do sistema
@@ -137,6 +139,46 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+VexiiRiscv u_VexiiRiscv (
+    .PrivilegedPlugin_logic_rdtime                         (0), // 64 bits
+    .PrivilegedPlugin_logic_harts_0_int_m_timer            (0), // 1 bit
+    .PrivilegedPlugin_logic_harts_0_int_m_software         (0), // 1 bit
+    .PrivilegedPlugin_logic_harts_0_int_m_external         (0), // 1 bit
+    .LsuL1WishbonePlugin_logic_bus_CYC                     (), // 1 bit
+    .LsuL1WishbonePlugin_logic_bus_STB                     (), // 1 bit
+    .LsuL1WishbonePlugin_logic_bus_ACK                     (), // 1 bit
+    .LsuL1WishbonePlugin_logic_bus_WE                      (), // 1 bit
+    .LsuL1WishbonePlugin_logic_bus_ADR                     (), // 27 bits
+    .LsuL1WishbonePlugin_logic_bus_DAT_MISO                (), // 64 bits
+    .LsuL1WishbonePlugin_logic_bus_DAT_MOSI                (), // 64 bits
+    .LsuL1WishbonePlugin_logic_bus_SEL                     (), // 32 bits
+    .LsuL1WishbonePlugin_logic_bus_ERR                     (0), // 1 bit
+    .LsuL1WishbonePlugin_logic_bus_CTI                     (), // 3 bits
+    .LsuL1WishbonePlugin_logic_bus_BTE                     (), // 2 bits
+    .FetchL1WishbonePlugin_logic_bus_CYC                   (), // 1 bit
+    .FetchL1WishbonePlugin_logic_bus_STB                   (), // 1 bit
+    .FetchL1WishbonePlugin_logic_bus_ACK                   (), // 1 bit
+    .FetchL1WishbonePlugin_logic_bus_WE                    (), // 1 bit
+    .FetchL1WishbonePlugin_logic_bus_ADR                   (), // 27 bits
+    .FetchL1WishbonePlugin_logic_bus_DAT_MISO              (), // 64 bits
+    .FetchL1WishbonePlugin_logic_bus_DAT_MOSI              (), // 64 bits
+    .FetchL1WishbonePlugin_logic_bus_SEL                   (), // 32 bits
+    .FetchL1WishbonePlugin_logic_bus_ERR                   (0), // 1 bit
+    .FetchL1WishbonePlugin_logic_bus_CTI                   (), // 3 bits
+    .FetchL1WishbonePlugin_logic_bus_BTE                   (), // 2 bits
+    .LsuCachelessWishbonePlugin_logic_bridge_down_CYC      (), // 1 bit
+    .LsuCachelessWishbonePlugin_logic_bridge_down_STB      (), // 1 bit
+    .LsuCachelessWishbonePlugin_logic_bridge_down_ACK      (0), // 1 bit
+    .LsuCachelessWishbonePlugin_logic_bridge_down_WE       (), // 1 bit
+    .LsuCachelessWishbonePlugin_logic_bridge_down_ADR      (), // 29 bits
+    .LsuCachelessWishbonePlugin_logic_bridge_down_DAT_MISO (0), // 64 bits
+    .LsuCachelessWishbonePlugin_logic_bridge_down_DAT_MOSI (), // 64 bits
+    .LsuCachelessWishbonePlugin_logic_bridge_down_SEL      (), // 8 bits
+    .LsuCachelessWishbonePlugin_logic_bridge_down_ERR      (0), // 1 bit
+    .LsuCachelessWishbonePlugin_logic_bridge_down_CTI      (), // 3 bits
+    .LsuCachelessWishbonePlugin_logic_bridge_down_BTE      (), // 2 bits
+    .clk                                                   (clk_core),  // 1 bit
+    .reset                                                 (rst_core),  // 1 bit
+);
 
 endmodule
