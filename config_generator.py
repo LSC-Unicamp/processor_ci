@@ -71,6 +71,10 @@ import time
 import json
 import shutil
 import argparse
+import shlex
+import subprocess
+import re
+import tempfile
 from core.config import load_config, save_config
 from core.file_manager import (
     clone_repo,
@@ -101,6 +105,414 @@ FPGAs = [
 ]
 DESTINATION_DIR = './temp'
 MAIN_SCRIPT_PATH = '/eda/processor_ci/main.py'
+
+def run_simulation_with_config(
+    repo_root: str,
+    repo_name: str,
+    url: str,
+    tb_files: list,
+    files: list,
+    include_dirs: set,
+    top_module: str,
+    language_version: str,
+    timeout: int = 300,
+    verilator_extra_flags: list | None = None,
+    ghdl_extra_flags: list | None = None,
+) -> tuple:
+    """
+    Write a temporary JSON config (via create_output_json) and invoke the right simulator directly:
+      - Verilator for Verilog/SystemVerilog (language_version 'verilog' or 'systemverilog')
+      - GHDL for VHDL (language_version 'vhdl' or 'vhd')
+    Returns (returncode, stdout_and_stderr_str, config_path_used).
+
+    Parameters:
+      - verilator_extra_flags: list of extra flags to pass to verilator (e.g. ['-Wno-UNSIGNED'])
+      - ghdl_extra_flags: list of extra flags to pass to ghdl (e.g. ['--std=08'])
+    """
+    # write config JSON for debugging / reproducibility
+    config = create_output_json(repo_name, url, tb_files, files, include_dirs, top_module, language_version)
+    tmpdir = tempfile.mkdtemp(prefix="simcfg_")
+    try:
+        config_path = os.path.join(tmpdir, f"{repo_name}_sim_config.json")
+        with open(config_path, "w", encoding="utf-8") as f:
+            json.dump(config, f, indent=2)
+
+        # Normalize & sort include dirs
+        include_dirs_sorted = sorted(include_dirs)
+
+        # --- Build robust Verilator include flags ---
+        # +incdir+dir (preferred by many Verilog tools). Quote if path contains spaces.
+        incdir_flags_list = []
+        for d in include_dirs_sorted:
+            if " " in d:
+                # +incdir+"dir with space"
+                incdir_flags_list.append(f'+incdir+"{d}"')
+            else:
+                incdir_flags_list.append(f"+incdir+{d}")
+        incdir_flags = " ".join(incdir_flags_list)
+
+        # Also add -I form as fallback (properly shell-quoted)
+        i_flags = " ".join(f"-I{shlex.quote(d)}" for d in include_dirs_sorted) if include_dirs_sorted else ""
+
+        # Combined Verilator include flags, placed *before* file list when invoking verilator
+        include_flags_verilator = " ".join(filter(None, [incdir_flags, i_flags]))
+
+        # GHDL include flags: -Pdir (shell-quoted)
+        include_flags_ghdl = " ".join(f"-P{shlex.quote(d)}" for d in include_dirs_sorted) if include_dirs_sorted else ""
+
+        verilator_extra_flags = verilator_extra_flags or []
+        ghdl_extra_flags = ghdl_extra_flags or []
+
+        # build quoted file list (relative paths expected)
+        file_list = " ".join(shlex.quote(f) for f in files)
+
+        if language_version and language_version.lower() in ("vhd", "vhdl"):
+            # GHDL flow
+            ghdl_flags = " ".join(shlex.quote(f) for f in ghdl_extra_flags)
+            # include flags put before file list
+            cmd = f"ghdl -a {include_flags_ghdl} {ghdl_flags} {file_list} && ghdl -e {shlex.quote(top_module)} && ghdl -r {shlex.quote(top_module)}"
+            print_green(f"[SIM] Running GHDL: {cmd}")
+            return _run_shell_cmd(cmd, repo_root, timeout, config_path)
+        else:
+            # Verilator flow (verilog/systemverilog)
+            obj_dir = os.path.join(tmpdir, "obj_dir")
+            os.makedirs(obj_dir, exist_ok=True)
+            extra_flags = " ".join(shlex.quote(f) for f in verilator_extra_flags)
+            top_opt = f"--top-module {shlex.quote(top_module)}" if top_module else ""
+
+            # Place include flags BEFORE the file list to ensure Verilator picks them up.
+            # We include both +incdir+ and -I forms for compatibility.
+            verilator_cmd = f"verilator --cc --exe --build {top_opt} -Mdir {shlex.quote(obj_dir)} {include_flags_verilator} {extra_flags} {file_list}"
+            # Print the actual command so you can debug include paths easily
+            print_green(f"[SIM] Verilator cmd: {verilator_cmd}")
+
+            exe_name = "V" + top_module if top_module else "simv"
+            exe_path = os.path.join(obj_dir, exe_name)
+            cmd = f"{verilator_cmd} && {shlex.quote(exe_path)}"
+            print_green(f"[SIM] Running Verilator and executing: {cmd}")
+            return _run_shell_cmd(cmd, repo_root, timeout, config_path)
+    finally:
+        # Keep tmpdir for debugging. If you prefer cleanup, uncomment:
+        # shutil.rmtree(tmpdir, ignore_errors=True)
+        pass
+
+
+
+def _run_shell_cmd(cmd: str, cwd: str, timeout: int, config_path: str) -> tuple:
+    """
+    Run a shell command streaming stdout/stderr to console and capturing it.
+    Returns (rc, output_text, config_path).
+    """
+    # Use bash to support complex commands with &&, etc.
+    proc = subprocess.Popen(
+        cmd,
+        shell=True,
+        cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+        universal_newlines=True,
+        executable="/bin/bash",
+    )
+    out_lines = []
+    start_t = time.time()
+    try:
+        while True:
+            line = proc.stdout.readline()
+            if line:
+                out_lines.append(line)
+                print(line, end="")  # echo to console for visibility
+            if proc.poll() is not None:
+                remaining = proc.stdout.read()
+                if remaining:
+                    out_lines.append(remaining)
+                    print(remaining, end="")
+                break
+            if (time.time() - start_t) > timeout:
+                proc.kill()
+                return 1, f"[SIM-TIMEOUT] Simulator timed out after {timeout}s\n{''.join(out_lines)}", config_path
+        return proc.returncode, "".join(out_lines), config_path
+    except Exception as e:
+        try:
+            proc.kill()
+        except Exception:
+            pass
+        return 1, f"[SIM-ERROR] {e}\n{''.join(out_lines)}", config_path
+
+def _search_repo_for_basename(repo_root: str, basename: str) -> list:
+    """Search repo for files ending with basename (fast heuristic). Returns full paths."""
+    matches = []
+    for root, _, files in os.walk(repo_root):
+        for f in files:
+            if f == basename:
+                matches.append(os.path.relpath(os.path.join(root, f), repo_root))
+    return matches
+
+def parse_missing_includes_from_log(log_text: str) -> list:
+    """
+    Parse simulator output looking for missing include/file-not-found messages.
+    Returns list of basenames that appear missing.
+    This uses several common patterns (verilator, iverilog, ghdl, etc.).
+    """
+    missing = set()
+    # common patterns (case-insensitive)
+    patterns = [
+        r"can't find file \"([^\"]+)\"",
+        r"Can't find file \"([^\"]+)\"",
+        r"unable to find include file \"([^\"]+)\"",
+        r"unable to find include file '([^']+)'",
+        r"no such file or directory: '([^']+)'",
+        r"no such file or directory: \"([^\"]+)\"",
+        r"fatal: can't open file '([^']+)'",
+        r"fatal: can't open file \"([^\"]+)\"",
+        r"can't open file \"([^\"]+)\"",
+        r"can't open file '([^']+)'",
+        r"error: file not found: \"([^\"]+)\"",
+        r"error: file not found: '([^']+)'",
+        # Verilator-specific include-not-found patterns:
+        r"Cannot find include file: ['\"]([^'\"]+)['\"]",
+        r"%Error: .*Cannot find include file: ['\"]([^'\"]+)['\"]",
+    ]
+
+    for pat in patterns:
+        for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
+            group = m.group(1).strip()
+            # if it's a path, take its basename
+            missing.add(os.path.basename(group))
+    # also catch lines that mention an include directive missing (heuristic)
+    # e.g. `Include file "foo.svh" not found`
+    for m in re.finditer(r'["\']([^"\']+\.(svh|vh|vhdr|v|sv|svh|vhd|vhdl))["\'] not found', log_text, flags=re.IGNORECASE):
+        missing.add(os.path.basename(m.group(1)))
+    return list(missing)
+
+def _add_include_dirs_from_missing_files(repo_root: str, include_dirs: set, missing_basenames: list) -> list:
+    """
+    For each basename in missing_basenames, search the repo for matching files.
+    Add their directories to include_dirs and return list of newly added dirs (rel paths).
+    """
+    newly_added = []
+    for b in missing_basenames:
+        if not b:
+            continue
+        matches = _search_repo_for_basename(repo_root, b)
+        for m in matches:
+            dirpath = os.path.dirname(m) or "."
+            if dirpath not in include_dirs:
+                include_dirs.add(dirpath)
+                newly_added.append(dirpath)
+    return newly_added
+
+def interactive_simulate_and_minimize(
+    repo_root: str,
+    repo_name: str,
+    url: str,
+    tb_files: list,
+    candidate_files: list,
+    include_dirs: set,
+    top_module: str,
+    modules: list,
+    language_version: str,
+    maximize_attempts: int = 6,
+    verilator_extra_flags: list | None = None,
+    ghdl_extra_flags: list | None = None,
+) -> tuple:
+    """
+    Phase 1: try simulation and add include dirs found in simulator logs.
+    Phase 2: greedy minimization over module files while keeping/updating top_module.
+
+    Returns (final_files, final_include_dirs, last_log, final_top_module)
+    """
+    files = list(candidate_files)
+    inclu = set(include_dirs)
+
+    def build_module_maps():
+        """Return (module_to_file, module_files_ordered) based on current 'modules' and 'files'."""
+        m2f = {}
+        ordered = []
+        if modules and isinstance(modules[0], dict):
+            for m in modules:
+                fname = m['file']
+                rel = os.path.relpath(fname, repo_root) if os.path.isabs(fname) else fname
+                m2f[m['module']] = rel
+                if rel in files:
+                    ordered.append(rel)
+        else:
+            for name, path in modules:
+                rel = os.path.relpath(path, repo_root) if os.path.isabs(path) else path
+                m2f[name] = rel
+                if rel in files:
+                    ordered.append(rel)
+        return m2f, ordered
+
+    module_to_file, module_files_ordered = build_module_maps()
+
+    # ensure top_module exists in mapping; otherwise pick first available
+    if not top_module or module_to_file.get(top_module, "") not in files:
+        # pick first module whose file is present
+        chosen = None
+        for mname, mfile in module_to_file.items():
+            if mfile in files:
+                chosen = mname
+                break
+        if chosen:
+            print_yellow(f"[TOP] Current top module missing; switching to detected module '{chosen}'")
+            top_module = chosen
+        else:
+            print_yellow("[TOP] No module file detected among candidate files; leaving top_module empty.")
+            top_module = ""
+
+    last_log = ""
+    success = False
+
+    # Phase 1: include-fixing loop (unchanged)
+    for attempt in range(maximize_attempts):
+        rc, out, cfg = run_simulation_with_config(
+            repo_root,
+            repo_name,
+            url,
+            tb_files,
+            files,
+            inclu,
+            top_module,
+            language_version,
+            timeout=300,
+            verilator_extra_flags=verilator_extra_flags,
+            ghdl_extra_flags=ghdl_extra_flags,
+        )
+        last_log = out
+        if rc == 0:
+            print_green(f"[SIM] Simulation succeeded on attempt {attempt+1}")
+            success = True
+            break
+
+        missing = parse_missing_includes_from_log(out)
+        if not missing:
+            print_yellow("[SIM] No missing includes detected in log; cannot auto-add more include dirs.")
+            break
+
+        print_yellow(f"[SIM] Attempt {attempt+1}: Found missing basenames in log: {missing}")
+        newly_added = _add_include_dirs_from_missing_files(repo_root, inclu, missing)
+        if newly_added:
+            print_green(f"[SIM] Added include dirs: {newly_added} — retrying simulation.")
+            # rebuild module maps after potential include changes (files unchanged)
+            module_to_file, module_files_ordered = build_module_maps()
+            continue
+        else:
+            print_yellow("[SIM] Could not find any files corresponding to missing basenames in repo.")
+            break
+
+    # Phase 2: minimization (greedy), with top_module maintenance
+    if not success:
+        print_yellow("[SIM] Simulation did not succeed in phase 1. Minimization will still try, but results may be invalid.")
+    print_green("[MIN] Starting greedy minimization over module-files")
+
+    # Always rebuild the maps at start of minimization
+    module_to_file, module_files_ordered = build_module_maps()
+    top_module_file = module_to_file.get(top_module, "")
+
+    # Iterate over an ordered copy of detected module files (we will mutate 'files' in the loop)
+    for f in list(module_files_ordered):
+        # Recompute maps at each iteration to keep in sync with removals
+        module_to_file, module_files_ordered = build_module_maps()
+        top_module_file = module_to_file.get(top_module, "")
+
+        # skip if file already removed
+        if f not in files:
+            continue
+
+        print_green(f"[MIN] Trying to remove file: {f}")
+
+        # if f is not the current top module file, try simple removal
+        if f != top_module_file:
+            files.remove(f)
+            rc, out, cfg = run_simulation_with_config(
+                repo_root,
+                repo_name,
+                url,
+                tb_files,
+                files,
+                inclu,
+                top_module,
+                language_version,
+                timeout=240,
+                verilator_extra_flags=verilator_extra_flags,
+                ghdl_extra_flags=ghdl_extra_flags,
+            )
+            last_log = out
+            if rc == 0:
+                print_green(f"[MIN] OK to remove {f} (simulation still succeeds). File permanently excluded.")
+                # removal kept; continue
+                continue
+            else:
+                print_yellow(f"[MIN] Removing {f} broke simulation (rc={rc}). Restoring.")
+                files.append(f)
+                continue
+
+        # If f is the file for the current top module, try to find an alternative top module
+        print_yellow(f"[MIN] {f} is current top-module file. Attempting top-module swap to allow removal.")
+        # candidates: other modules whose files are present and not equal to f
+        alt_candidates = []
+        for mname, mfile in module_to_file.items():
+            if mfile != f and mfile in files:
+                alt_candidates.append((mname, mfile))
+
+        swapped = False
+        for alt_name, alt_file in alt_candidates:
+            print_green(f"[MIN] Trying alt top_module '{alt_name}' (file {alt_file}) and removing {f}")
+            # try removing f and setting top_module to alt_name
+            files.remove(f)
+            prev_top = top_module
+            top_module = alt_name
+            rc, out, cfg = run_simulation_with_config(
+                repo_root,
+                repo_name,
+                url,
+                tb_files,
+                files,
+                inclu,
+                top_module,
+                language_version,
+                timeout=240,
+                verilator_extra_flags=verilator_extra_flags,
+                ghdl_extra_flags=ghdl_extra_flags,
+            )
+            last_log = out
+            if rc == 0:
+                print_green(f"[MIN] Removed {f} and switched top module to {alt_name} successfully.")
+                swapped = True
+                break  # keep this change permanently
+            else:
+                print_yellow(f"[MIN] Swap to {alt_name} failed (rc={rc}). Restoring {f} and trying next candidate.")
+                # restore file and top_module, try next candidate
+                files.append(f)
+                top_module = prev_top
+
+        if not swapped:
+            # no candidate worked — restore and keep original top
+            if f not in files:
+                files.append(f)
+            print_yellow(f"[MIN] Could not remove top-module file {f}. It remains required.")
+
+    # Final rebuild to ensure module mappings consistent and top_module points to a present file if possible
+    module_to_file, module_files_ordered = build_module_maps()
+    if module_to_file.get(top_module, "") not in files:
+        # pick another
+        new_top = None
+        for mname, mfile in module_to_file.items():
+            if mfile in files:
+                new_top = mname
+                break
+        if new_top:
+            print_yellow(f"[TOP] Final top module switched to '{new_top}' because previous top is missing.")
+            top_module = new_top
+        else:
+            print_yellow("[TOP] No module file left to select as top; leaving top_module empty.")
+            top_module = ""
+
+    print_green("[MIN] Minimization finished.")
+    return files, inclu, last_log, top_module
+
 
 
 def get_top_module_file(modules: list[dict[str, str]], top_module: str) -> str:
@@ -180,6 +592,7 @@ def generate_processor_config(
     )
     include_dirs = find_and_log_include_dirs(destination_path)
     module_graph, module_graph_inverse = build_and_log_graphs(files, modules)
+    print(module_graph)
 
     filtered_files, top_module = process_files_with_llama(
         no_llama,
@@ -192,12 +605,25 @@ def generate_processor_config(
     )
     language_version = determine_language_version(extension)
 
-    output_json = create_output_json(
+    final_files, final_include_dirs, last_log, top_module = interactive_simulate_and_minimize(
+        destination_path,
         repo_name,
         url,
         tb_files,
         filtered_files,
         include_dirs,
+        top_module,
+        modules,
+        language_version,
+        verilator_extra_flags=['-Wno-lint', '-Wno-fatal']
+    )
+
+    output_json = create_output_json(
+        repo_name,
+        url,
+        tb_files,
+        final_files,
+        final_include_dirs,
         top_module,
         language_version,
     )
