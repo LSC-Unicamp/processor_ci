@@ -1,0 +1,20 @@
+{
+    "name": "tinyriscv",
+    "folder": "tinyriscv",
+    "sim_files": [
+        "tb/tinyriscv_soc_tb.v",
+        "tb/compliance_test/tinyriscv_soc_tb.v"
+    ],
+    "files": [
+        "rtl/perips/uart.v"
+    ],
+    "include_dirs": [
+        "rtl/core"
+    ],
+    "repository": "https://github.com/liangkangnan/tinyriscv.git",
+    "top_module": "uart",
+    "extra_flags": [],
+    "language_version": "2005",
+    "march": "rv32i",
+    "two_memory": false
+}

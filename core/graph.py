@@ -51,6 +51,8 @@ description language (HDL) code such as Verilog, SystemVerilog, and VHDL.
 
 import re
 import networkx as nx
+import matplotlib
+matplotlib.use('TkAgg')  
 import matplotlib.pyplot as plt
 
 

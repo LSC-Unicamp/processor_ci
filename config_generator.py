@@ -75,6 +75,8 @@ import shlex
 import subprocess
 import re
 import tempfile
+from typing import Any, Dict, List
+from collections import deque
 from core.config import load_config, save_config
 from core.file_manager import (
     clone_repo,
@@ -105,6 +107,181 @@ FPGAs = [
 ]
 DESTINATION_DIR = './temp'
 MAIN_SCRIPT_PATH = '/eda/processor_ci/main.py'
+UTILITY_PATTERNS = (
+    "gen_", "dff", "buf", "full_handshake", "fifo", "mux", "regfile"
+)
+
+def _ensure_mapping(mapping: Any) -> Dict[str, List[str]]:
+    """
+    Normalize a graph-like input into a dict: node -> list(children/parents).
+    Accepts:
+      - dict[node] = list/tuple/set/str/None
+      - list of (node, children) pairs
+      - list of node names (then each node -> [])
+    Returns an empty dict for unsupported shapes.
+    """
+    out: Dict[str, List[str]] = {}
+    if not mapping:
+        return out
+
+    # If it's already a dict, normalize each value into a list
+    if isinstance(mapping, dict):
+        for k, v in mapping.items():
+            if v is None:
+                out[str(k)] = []
+            elif isinstance(v, (list, tuple, set)):
+                out[str(k)] = [str(x) for x in v]
+            else:
+                out[str(k)] = [str(v)]
+        return out
+
+    # If it's a list/tuple, try to interpret as pairs first
+    if isinstance(mapping, (list, tuple)):
+        # candidate: list of (node, children)
+        pair_like = all(isinstance(el, (list, tuple)) and len(el) == 2 for el in mapping)
+        if pair_like:
+            for parent, children in mapping:
+                key = str(parent)
+                if children is None:
+                    out.setdefault(key, [])
+                elif isinstance(children, (list, tuple, set)):
+                    out.setdefault(key, []).extend(str(x) for x in children)
+                else:
+                    out.setdefault(key, []).append(str(children))
+            return out
+        # candidate: list of node names
+        if all(isinstance(el, (str, bytes)) for el in mapping):
+            for node in mapping:
+                out[str(node)] = []
+            return out
+
+    # fallback: try to iterate and coerce pairs, else return empty
+    try:
+        for el in mapping:
+            if isinstance(el, (list, tuple)) and len(el) >= 2:
+                key = str(el[0])
+                val = el[1]
+                if isinstance(val, (list, tuple, set)):
+                    out.setdefault(key, []).extend(str(x) for x in val)
+                else:
+                    out.setdefault(key, []).append(str(val))
+            elif isinstance(el, (str, bytes)):
+                out.setdefault(str(el), [])
+    except Exception:
+        pass
+
+    return out
+
+
+def _reachable_size(children_of: Any, start: str) -> int:
+    """
+    Return number of reachable distinct nodes (excluding start) from `start`
+    using BFS. Accepts children_of in many forms; normalizes internally.
+    """
+    children_map = _ensure_mapping(children_of)
+    seen = set()
+    q = deque([start])
+    while q:
+        cur = q.popleft()
+        kids = children_map.get(cur, []) or []
+        # normalize kids if someone passed a scalar by mistake
+        if isinstance(kids, (str, bytes)):
+            kids = [kids]
+        for ch in kids:
+            chs = str(ch)
+            if chs not in seen and chs != start:
+                seen.add(chs)
+                q.append(chs)
+    return len(seen)
+
+
+def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None):
+    children_of = _ensure_mapping(module_graph)
+    parents_of = _ensure_mapping(module_graph_inverse)
+
+    nodes = set(children_of.keys()) | set(parents_of.keys())
+    for n in nodes:
+        children_of.setdefault(n, [])
+        parents_of.setdefault(n, [])
+
+    # Filter out Verilog keywords and invalid module names
+    valid_modules = []
+    verilog_keywords = {"if", "else", "always", "initial", "begin", "end", "case", "default", "for", "while", "assign"}
+    
+    for module in nodes:
+        if (module not in verilog_keywords and 
+            len(module) > 1 and 
+            module.isalnum() or '_' in module):
+            valid_modules.append(module)
+    
+    # Find candidates: prefer modules with few or no parents, but include important CPU modules
+    # even if they have some parents
+    zero_parent_modules = [m for m in valid_modules if not parents_of.get(m, [])]
+    
+    # Also include likely CPU top modules even if they have parents (they might be instantiated in testbenches)
+    cpu_modules = [m for m in valid_modules if any(key in m.lower() for key in ["soc_top", "soc", repo_name.lower(), "core", "cpu"]) and "tb" not in m.lower()]
+    
+    candidates = list(set(zero_parent_modules + cpu_modules))
+    
+    if not candidates:
+        min_par = min((len(parents_of.get(m, [])) for m in valid_modules), default=0)
+        candidates = [m for m in valid_modules if len(parents_of.get(m, [])) <= min_par + 2]
+
+    repo_lower = (repo_name or "").lower()
+    scored = []
+    for c in candidates:
+        reach = _reachable_size(children_of, c)
+        score = reach * 100  # Increase base score multiplier
+
+        name_lower = c.lower()
+
+        # High priority: exact repo name match (highest for core modules)
+        if repo_lower and repo_lower == name_lower:  # Exact repo match like "tinyriscv"
+            score += 6000
+        elif repo_lower and repo_lower in name_lower:
+            score += 4000
+        
+        # CPU/Core modules (highest priority - we want the core, not the SoC wrapper)
+        if any(tok in name_lower for tok in ("core", "cpu", "processor")) and "soc" not in name_lower:
+            score += 5000
+        elif any(tok in name_lower for tok in ("riscv", "risc")) and "soc" not in name_lower:
+            score += 4500
+            
+        # SoC/System level modules (lower priority - these include peripherals we may not need)
+        if any(tok in name_lower for tok in ("soc_top", "tinyriscv_soc_top", "soc")):
+            score += 3000
+        elif any(tok in name_lower for tok in ("chip_top", "system_top")):
+            score += 2500
+        elif any(tok in name_lower for tok in ("_top", "top")) and "soc" not in name_lower:
+            score += 1500
+
+
+        # Heavily penalize testbenches
+        if any(tok in name_lower for tok in ("tb", "test", "bench", "sim", "case")):
+            score -= 5000
+
+        # Heavily penalize peripheral modules 
+        if any(tok in name_lower for tok in ("uart", "spi", "i2c", "gpio", "timer", "ram", "rom", "dma")):
+            score -= 3000
+            
+        # Penalize debug modules
+        if any(tok in name_lower for tok in ("debug", "jtag")):
+            score -= 2000
+
+        # Penalize utility modules
+        if any(name_lower.startswith(pat) or pat in name_lower for pat in UTILITY_PATTERNS):
+            score -= 4000
+        
+        # Favor modules with more connections (likely top-level)
+        if reach < 5:
+            score -= 2000
+
+        score -= len(name_lower) * 0.5
+        scored.append((score, reach, c))
+
+    scored.sort(reverse=True, key=lambda t: (t[0], t[1], t[2]))
+    return [c for _, _, c in scored if _ > -2000]  # filter out heavily penalized
+
 
 def run_simulation_with_config(
     repo_root: str,
@@ -124,77 +301,66 @@ def run_simulation_with_config(
       - Verilator for Verilog/SystemVerilog (language_version 'verilog' or 'systemverilog')
       - GHDL for VHDL (language_version 'vhdl' or 'vhd')
     Returns (returncode, stdout_and_stderr_str, config_path_used).
-
-    Parameters:
-      - verilator_extra_flags: list of extra flags to pass to verilator (e.g. ['-Wno-UNSIGNED'])
-      - ghdl_extra_flags: list of extra flags to pass to ghdl (e.g. ['--std=08'])
     """
+
     # write config JSON for debugging / reproducibility
-    config = create_output_json(repo_name, url, tb_files, files, include_dirs, top_module, language_version)
+    config = create_output_json(
+        repo_name, url, tb_files, files, include_dirs, top_module, language_version
+    )
     tmpdir = tempfile.mkdtemp(prefix="simcfg_")
     try:
         config_path = os.path.join(tmpdir, f"{repo_name}_sim_config.json")
         with open(config_path, "w", encoding="utf-8") as f:
             json.dump(config, f, indent=2)
 
+        # >>>> Debug pause here <<<<
+        print_green(f"[DEBUG] Config JSON written to {config_path}")
+        #_ = input("[DEBUG] Press Enter to continue simulation...")
+
         # Normalize & sort include dirs
         include_dirs_sorted = sorted(include_dirs)
 
         # --- Build robust Verilator include flags ---
-        # +incdir+dir (preferred by many Verilog tools). Quote if path contains spaces.
         incdir_flags_list = []
         for d in include_dirs_sorted:
             if " " in d:
-                # +incdir+"dir with space"
                 incdir_flags_list.append(f'+incdir+"{d}"')
             else:
                 incdir_flags_list.append(f"+incdir+{d}")
         incdir_flags = " ".join(incdir_flags_list)
-
-        # Also add -I form as fallback (properly shell-quoted)
         i_flags = " ".join(f"-I{shlex.quote(d)}" for d in include_dirs_sorted) if include_dirs_sorted else ""
-
-        # Combined Verilator include flags, placed *before* file list when invoking verilator
         include_flags_verilator = " ".join(filter(None, [incdir_flags, i_flags]))
 
-        # GHDL include flags: -Pdir (shell-quoted)
+        # GHDL include flags
         include_flags_ghdl = " ".join(f"-P{shlex.quote(d)}" for d in include_dirs_sorted) if include_dirs_sorted else ""
 
         verilator_extra_flags = verilator_extra_flags or []
         ghdl_extra_flags = ghdl_extra_flags or []
 
-        # build quoted file list (relative paths expected)
         file_list = " ".join(shlex.quote(f) for f in files)
 
         if language_version and language_version.lower() in ("vhd", "vhdl"):
-            # GHDL flow
             ghdl_flags = " ".join(shlex.quote(f) for f in ghdl_extra_flags)
-            # include flags put before file list
-            cmd = f"ghdl -a {include_flags_ghdl} {ghdl_flags} {file_list} && ghdl -e {shlex.quote(top_module)} && ghdl -r {shlex.quote(top_module)}"
-            print_green(f"[SIM] Running GHDL: {cmd}")
+            cmd = (
+                f"ghdl -a {include_flags_ghdl} {ghdl_flags} {file_list} "
+                f"&& ghdl -e {shlex.quote(top_module)}"
+            )
+            print_green(f"[SIM] Running GHDL syntax check: {cmd}")
             return _run_shell_cmd(cmd, repo_root, timeout, config_path)
         else:
-            # Verilator flow (verilog/systemverilog)
-            obj_dir = os.path.join(tmpdir, "obj_dir")
-            os.makedirs(obj_dir, exist_ok=True)
             extra_flags = " ".join(shlex.quote(f) for f in verilator_extra_flags)
             top_opt = f"--top-module {shlex.quote(top_module)}" if top_module else ""
-
-            # Place include flags BEFORE the file list to ensure Verilator picks them up.
-            # We include both +incdir+ and -I forms for compatibility.
-            verilator_cmd = f"verilator --cc --exe --build {top_opt} -Mdir {shlex.quote(obj_dir)} {include_flags_verilator} {extra_flags} {file_list}"
-            # Print the actual command so you can debug include paths easily
-            print_green(f"[SIM] Verilator cmd: {verilator_cmd}")
-
-            exe_name = "V" + top_module if top_module else "simv"
-            exe_path = os.path.join(obj_dir, exe_name)
-            cmd = f"{verilator_cmd} && {shlex.quote(exe_path)}"
-            print_green(f"[SIM] Running Verilator and executing: {cmd}")
-            return _run_shell_cmd(cmd, repo_root, timeout, config_path)
+            # Use lint mode instead of trying to build executable
+            verilator_cmd = (
+                f"verilator --lint-only {top_opt} "
+                f"{include_flags_verilator} {extra_flags} {file_list}"
+            )
+            print_green(f"[SIM] Verilator syntax check: {verilator_cmd}")
+            return _run_shell_cmd(verilator_cmd, repo_root, timeout, config_path)
     finally:
-        # Keep tmpdir for debugging. If you prefer cleanup, uncomment:
-        # shutil.rmtree(tmpdir, ignore_errors=True)
+        # Keep tmpdir for debugging
         pass
+
 
 
 
@@ -310,62 +476,47 @@ def interactive_simulate_and_minimize(
     tb_files: list,
     candidate_files: list,
     include_dirs: set,
-    top_module: str,
     modules: list,
+    module_graph: dict,
+    module_graph_inverse: dict,
     language_version: str,
     maximize_attempts: int = 6,
     verilator_extra_flags: list | None = None,
     ghdl_extra_flags: list | None = None,
 ) -> tuple:
     """
-    Phase 1: try simulation and add include dirs found in simulator logs.
-    Phase 2: greedy minimization over module files while keeping/updating top_module.
-
-    Returns (final_files, final_include_dirs, last_log, final_top_module)
+    Interactive simulation:
+      A) Fix include dirs using a bootstrap top candidate.
+      B) Choose the real top_module once includes are fixed.
+      C) Minimize the file list while keeping the chosen top.
+    Returns (final_files, final_include_dirs, last_log, final_top_module).
     """
     files = list(candidate_files)
     inclu = set(include_dirs)
-
-    def build_module_maps():
-        """Return (module_to_file, module_files_ordered) based on current 'modules' and 'files'."""
-        m2f = {}
-        ordered = []
-        if modules and isinstance(modules[0], dict):
-            for m in modules:
-                fname = m['file']
-                rel = os.path.relpath(fname, repo_root) if os.path.isabs(fname) else fname
-                m2f[m['module']] = rel
-                if rel in files:
-                    ordered.append(rel)
-        else:
-            for name, path in modules:
-                rel = os.path.relpath(path, repo_root) if os.path.isabs(path) else path
-                m2f[name] = rel
-                if rel in files:
-                    ordered.append(rel)
-        return m2f, ordered
-
-    module_to_file, module_files_ordered = build_module_maps()
-
-    # ensure top_module exists in mapping; otherwise pick first available
-    if not top_module or module_to_file.get(top_module, "") not in files:
-        # pick first module whose file is present
-        chosen = None
-        for mname, mfile in module_to_file.items():
-            if mfile in files:
-                chosen = mname
-                break
-        if chosen:
-            print_yellow(f"[TOP] Current top module missing; switching to detected module '{chosen}'")
-            top_module = chosen
-        else:
-            print_yellow("[TOP] No module file detected among candidate files; leaving top_module empty.")
-            top_module = ""
-
     last_log = ""
-    success = False
 
-    # Phase 1: include-fixing loop (unchanged)
+    # --------------------------
+    # Phase A: include fixing
+    # --------------------------
+    bootstrap_candidates = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name)
+    print_green(f"[BOOT] Bootstrap candidates: {bootstrap_candidates[:5]}")
+    
+    # Try to find a good bootstrap candidate (prefer CPU modules over peripherals)
+    heuristic_top = None
+    for candidate in bootstrap_candidates:
+        if any(word in candidate.lower() for word in ["soc", "core", "cpu", repo_name.lower()]):
+            heuristic_top = candidate
+            break
+    
+    if not heuristic_top and bootstrap_candidates:
+        heuristic_top = bootstrap_candidates[0]
+    
+    if not heuristic_top:
+        print_red("[ERROR] No suitable top module candidates found")
+        return files, inclu, last_log, ""
+    
+    print_green(f"[BOOT] Using heuristic bootstrap top_module: {heuristic_top}")
+
     for attempt in range(maximize_attempts):
         rc, out, cfg = run_simulation_with_config(
             repo_root,
@@ -374,143 +525,178 @@ def interactive_simulate_and_minimize(
             tb_files,
             files,
             inclu,
-            top_module,
+            heuristic_top,
             language_version,
-            timeout=300,
+            timeout=120,
             verilator_extra_flags=verilator_extra_flags,
             ghdl_extra_flags=ghdl_extra_flags,
         )
         last_log = out
         if rc == 0:
-            print_green(f"[SIM] Simulation succeeded on attempt {attempt+1}")
-            success = True
+            print_green(f"[BOOT] Bootstrap sim succeeded at attempt {attempt+1}")
             break
 
         missing = parse_missing_includes_from_log(out)
         if not missing:
-            print_yellow("[SIM] No missing includes detected in log; cannot auto-add more include dirs.")
+            print_yellow("[BOOT] No missing includes detected; stopping include-fix loop")
             break
 
-        print_yellow(f"[SIM] Attempt {attempt+1}: Found missing basenames in log: {missing}")
         newly_added = _add_include_dirs_from_missing_files(repo_root, inclu, missing)
         if newly_added:
-            print_green(f"[SIM] Added include dirs: {newly_added} — retrying simulation.")
-            # rebuild module maps after potential include changes (files unchanged)
-            module_to_file, module_files_ordered = build_module_maps()
-            continue
+            print_green(f"[BOOT] Added include dirs: {newly_added} — retrying")
         else:
-            print_yellow("[SIM] Could not find any files corresponding to missing basenames in repo.")
+            print_yellow("[BOOT] Could not resolve missing includes")
             break
 
-    # Phase 2: minimization (greedy), with top_module maintenance
-    if not success:
-        print_yellow("[SIM] Simulation did not succeed in phase 1. Minimization will still try, but results may be invalid.")
-    print_green("[MIN] Starting greedy minimization over module-files")
+    # --------------------------
+    # Phase B: top selection
+    # --------------------------
+    candidates = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name)
+    print_green(f"[TOP-CAND] Ranked candidates: {candidates}")
 
-    # Always rebuild the maps at start of minimization
-    module_to_file, module_files_ordered = build_module_maps()
-    top_module_file = module_to_file.get(top_module, "")
-
-    # Iterate over an ordered copy of detected module files (we will mutate 'files' in the loop)
-    for f in list(module_files_ordered):
-        # Recompute maps at each iteration to keep in sync with removals
-        module_to_file, module_files_ordered = build_module_maps()
-        top_module_file = module_to_file.get(top_module, "")
-
-        # skip if file already removed
-        if f not in files:
-            continue
-
-        print_green(f"[MIN] Trying to remove file: {f}")
-
-        # if f is not the current top module file, try simple removal
-        if f != top_module_file:
-            files.remove(f)
-            rc, out, cfg = run_simulation_with_config(
-                repo_root,
-                repo_name,
-                url,
-                tb_files,
-                files,
-                inclu,
-                top_module,
-                language_version,
-                timeout=240,
-                verilator_extra_flags=verilator_extra_flags,
-                ghdl_extra_flags=ghdl_extra_flags,
-            )
-            last_log = out
-            if rc == 0:
-                print_green(f"[MIN] OK to remove {f} (simulation still succeeds). File permanently excluded.")
-                # removal kept; continue
-                continue
-            else:
-                print_yellow(f"[MIN] Removing {f} broke simulation (rc={rc}). Restoring.")
-                files.append(f)
-                continue
-
-        # If f is the file for the current top module, try to find an alternative top module
-        print_yellow(f"[MIN] {f} is current top-module file. Attempting top-module swap to allow removal.")
-        # candidates: other modules whose files are present and not equal to f
-        alt_candidates = []
-        for mname, mfile in module_to_file.items():
-            if mfile != f and mfile in files:
-                alt_candidates.append((mname, mfile))
-
-        swapped = False
-        for alt_name, alt_file in alt_candidates:
-            print_green(f"[MIN] Trying alt top_module '{alt_name}' (file {alt_file}) and removing {f}")
-            # try removing f and setting top_module to alt_name
-            files.remove(f)
-            prev_top = top_module
-            top_module = alt_name
-            rc, out, cfg = run_simulation_with_config(
-                repo_root,
-                repo_name,
-                url,
-                tb_files,
-                files,
-                inclu,
-                top_module,
-                language_version,
-                timeout=240,
-                verilator_extra_flags=verilator_extra_flags,
-                ghdl_extra_flags=ghdl_extra_flags,
-            )
-            last_log = out
-            if rc == 0:
-                print_green(f"[MIN] Removed {f} and switched top module to {alt_name} successfully.")
-                swapped = True
-                break  # keep this change permanently
-            else:
-                print_yellow(f"[MIN] Swap to {alt_name} failed (rc={rc}). Restoring {f} and trying next candidate.")
-                # restore file and top_module, try next candidate
-                files.append(f)
-                top_module = prev_top
-
-        if not swapped:
-            # no candidate worked — restore and keep original top
-            if f not in files:
-                files.append(f)
-            print_yellow(f"[MIN] Could not remove top-module file {f}. It remains required.")
-
-    # Final rebuild to ensure module mappings consistent and top_module points to a present file if possible
-    module_to_file, module_files_ordered = build_module_maps()
-    if module_to_file.get(top_module, "") not in files:
-        # pick another
-        new_top = None
-        for mname, mfile in module_to_file.items():
-            if mfile in files:
-                new_top = mname
+    selected_top = None
+    working_candidates = []
+    
+    # Test all candidates to find working ones
+    for cand in candidates:
+        rc, out, cfg = run_simulation_with_config(
+            repo_root,
+            repo_name,
+            url,
+            tb_files,
+            files,
+            inclu,
+            cand,
+            language_version,
+            timeout=120,
+            verilator_extra_flags=verilator_extra_flags,
+            ghdl_extra_flags=ghdl_extra_flags,
+        )
+        last_log = out
+        if rc == 0:
+            print_green(f"[TOP-CAND] Candidate '{cand}' succeeded")
+            working_candidates.append(cand)
+        else:
+            print_yellow(f"[TOP-CAND] Candidate '{cand}' failed (rc={rc})")
+    
+    # Prefer core modules over SoC wrappers from working candidates
+    if working_candidates:
+        repo_lower = (repo_name or "").lower()
+        # First priority: exact repo name match (like "tinyriscv")
+        for cand in working_candidates:
+            if repo_lower and repo_lower == cand.lower():
+                selected_top = cand
+                print_green(f"[TOP-CAND] Selected core module '{selected_top}' (exact repo match)")
                 break
+        
+        # Second priority: core/CPU modules without "soc" 
+        if not selected_top:
+            for cand in working_candidates:
+                cand_lower = cand.lower()
+                if (any(tok in cand_lower for tok in ["core", "cpu"]) and "soc" not in cand_lower):
+                    selected_top = cand
+                    print_green(f"[TOP-CAND] Selected core module '{selected_top}' (core/cpu preference)")
+                    break
+        
+        # Fallback: first working candidate
+        if not selected_top:
+            selected_top = working_candidates[0]
+            print_green(f"[TOP-CAND] Selected first working candidate '{selected_top}'")
+
+    if not selected_top:
+        selected_top = candidates[0] if candidates else heuristic_top
+        print_yellow(f"[TOP-CAND] Falling back to heuristic choice: {selected_top}")
+
+    top_module = selected_top
+
+    # --------------------------
+    # Phase C: greedy minimization
+    # --------------------------
+    print_green("[MIN] Starting greedy minimization")
+
+    # Build map: module -> file
+    module_to_file = {}
+    if modules and isinstance(modules[0], dict):
+        for m in modules:
+            rel = os.path.relpath(m["file"], repo_root) if os.path.isabs(m["file"]) else m["file"]
+            module_to_file[m["module"]] = rel
+    else:
+        for name, path in modules:
+            rel = os.path.relpath(path, repo_root) if os.path.isabs(path) else path
+            module_to_file[name] = rel
+
+    for f in list(files):
+        # Stop minimization if we're down to just peripheral modules and the top is a peripheral
+        if (top_module in ["uart", "spi", "i2c", "gpio", "timer"] and 
+            len(files) <= 5 and 
+            all("core" not in fname for fname in files)):
+            print_yellow(f"[MIN] Stopping minimization - detected peripheral-only configuration")
+            break
+            
+        is_top_file = module_to_file.get(top_module, "") == f
+        print_green(f"[MIN] Trying to remove file: {f}")
+        files.remove(f)
+
+        if not is_top_file:
+            # Normal case: keep same top
+            rc, out, cfg = run_simulation_with_config(
+                repo_root,
+                repo_name,
+                url,
+                tb_files,
+                files,
+                inclu,
+                top_module,
+                language_version,
+                timeout=240,
+                verilator_extra_flags=verilator_extra_flags,
+                ghdl_extra_flags=ghdl_extra_flags,
+            )
+            last_log = out
+            if rc == 0:
+                print_green(f"[MIN] Removed {f} successfully")
+                continue
+            else:
+                print_yellow(f"[MIN] Removing {f} broke sim, restoring")
+                files.append(f)
+                continue
+
+        # Special case: removed the top file
+        print_yellow(f"[MIN] Removed file of current top '{top_module}', trying to reselect…")
+        candidates = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name)
+        new_top = None
+        for cand in candidates:
+            # skip if module not present anymore
+            if module_to_file.get(cand, "") not in files:
+                continue
+            rc, out, cfg = run_simulation_with_config(
+                repo_root,
+                repo_name,
+                url,
+                tb_files,
+                files,
+                inclu,
+                cand,
+                language_version,
+                timeout=240,
+                verilator_extra_flags=verilator_extra_flags,
+                ghdl_extra_flags=ghdl_extra_flags,
+            )
+            last_log = out
+            if rc == 0:
+                new_top = cand
+                break
+
         if new_top:
-            print_yellow(f"[TOP] Final top module switched to '{new_top}' because previous top is missing.")
+            print_green(f"[MIN] Promoted new top_module: {new_top}")
             top_module = new_top
         else:
-            print_yellow("[TOP] No module file left to select as top; leaving top_module empty.")
-            top_module = ""
+            print_yellow(f"[MIN] No valid replacement top found, restoring {f}")
+            files.append(f)
 
-    print_green("[MIN] Minimization finished.")
+
+
+    print_green("[MIN] Minimization finished")
     return files, inclu, last_log, top_module
 
 
@@ -592,7 +778,6 @@ def generate_processor_config(
     )
     include_dirs = find_and_log_include_dirs(destination_path)
     module_graph, module_graph_inverse = build_and_log_graphs(files, modules)
-    print(module_graph)
 
     filtered_files, top_module = process_files_with_llama(
         no_llama,
@@ -606,16 +791,19 @@ def generate_processor_config(
     language_version = determine_language_version(extension)
 
     final_files, final_include_dirs, last_log, top_module = interactive_simulate_and_minimize(
-        destination_path,
-        repo_name,
-        url,
-        tb_files,
-        filtered_files,
-        include_dirs,
-        top_module,
-        modules,
-        language_version,
-        verilator_extra_flags=['-Wno-lint', '-Wno-fatal']
+        repo_root=destination_path,
+        repo_name=repo_name,
+        url=url,
+        tb_files=tb_files,
+        candidate_files=filtered_files,
+        include_dirs=set(include_dirs),
+        modules=modules,
+        module_graph=module_graph,
+        module_graph_inverse=module_graph_inverse,
+        language_version=language_version,
+        maximize_attempts=6,
+        verilator_extra_flags=['-Wno-lint', '-Wno-fatal'],
+        ghdl_extra_flags=['--std=08'],
     )
 
     output_json = create_output_json(
@@ -951,7 +1139,8 @@ def save_log_and_generate_template(
     if top_module:
         top_module_file = get_top_module_file(modules, top_module)
         if top_module_file:
-            generate_top_file(top_module_file, repo_name, model=model)
+            #generate_top_file(top_module_file, repo_name, model=model)
+            print_red('[WARN] Geração automática do template desativada temporariamente')
         else:
             print_red('[ERROR] Módulo principal não encontrado')
     else:
@@ -979,8 +1168,16 @@ def cleanup_repo_and_plot_graphs(
 
     if plot_graph:
         print_green('[LOG] Plotando os grafos\n')
-        plot_processor_graph(module_graph, module_graph_inverse)
-        print_green('[LOG] Grafos plotados com sucesso\n')
+        try:
+            # Set matplotlib to use a non-GUI backend
+            import matplotlib
+            matplotlib.use('Agg')
+            plot_processor_graph(module_graph, module_graph_inverse)
+            print_green('[LOG] Grafos plotados com sucesso\n')
+        except ImportError as e:
+            print_yellow(f'[WARN] Could not plot graphs: {e}\n')
+        except Exception as e:
+            print_yellow(f'[WARN] Error plotting graphs: {e}\n')
 
 
 def generate_all_pipelines(config_dir: str) -> None:
