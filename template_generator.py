@@ -45,8 +45,8 @@ def get_top_module_file(modules: List[Dict[str, str]], top_module: str) -> str:
         str: The file path of the top module if found, or an empty string otherwise.
     """
     for module in modules:
-        if module.get('module') == top_module:
-            return module.get('file', '')
+        if module['module'] == top_module:
+            return module['file']
     return ''
 
 
@@ -85,146 +85,6 @@ def copy_hardware_template(repo_name: str, template_path: str = 'rtl/template.sv
     return dest
 
 
-def create_basic_template(dest_path: str, module_name: str) -> None:
-    """
-    Creates a basic SystemVerilog template when no base template is available.
-    
-    Args:
-        dest_path (str): Destination path for the template.
-        module_name (str): Name of the module.
-    """
-    basic_template = f'''/*
- * {module_name.upper()} Processor Core Template
- * 
- * This is a basic template for the {module_name} processor core.
- * Customize this template according to your processor's specifications.
- */
-
-module {module_name} #(
-    parameter DATA_WIDTH = 32,
-    parameter ADDR_WIDTH = 32
-) (
-    input  wire                    clk,
-    input  wire                    rst_n,
-    
-    // Instruction Memory Interface
-    output wire [ADDR_WIDTH-1:0]   imem_addr,
-    input  wire [DATA_WIDTH-1:0]   imem_rdata,
-    output wire                    imem_req,
-    input  wire                    imem_gnt,
-    input  wire                    imem_rvalid,
-    
-    // Data Memory Interface
-    output wire [ADDR_WIDTH-1:0]   dmem_addr,
-    output wire [DATA_WIDTH-1:0]   dmem_wdata,
-    input  wire [DATA_WIDTH-1:0]   dmem_rdata,
-    output wire                    dmem_we,
-    output wire [3:0]              dmem_be,
-    output wire                    dmem_req,
-    input  wire                    dmem_gnt,
-    input  wire                    dmem_rvalid,
-    
-    // Interrupt Interface
-    input  wire                    irq,
-    output wire                    irq_ack,
-    
-    // Debug Interface (optional)
-    input  wire                    debug_req,
-    output wire                    debug_ack
-);
-
-    // Internal signals
-    reg [DATA_WIDTH-1:0] pc;
-    reg [DATA_WIDTH-1:0] instruction;
-    reg [DATA_WIDTH-1:0] registers [0:31];
-    
-    // State machine states
-    typedef enum logic [2:0] {{
-        FETCH,
-        DECODE,
-        EXECUTE,
-        MEMORY,
-        WRITEBACK
-    }} state_t;
-    
-    state_t current_state, next_state;
-    
-    // Reset logic
-    always_ff @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            current_state <= FETCH;
-            pc <= '0;
-            // Initialize registers
-            for (int i = 0; i < 32; i++) begin
-                registers[i] <= '0;
-            end
-        end else begin
-            current_state <= next_state;
-        end
-    end
-    
-    // State machine logic
-    always_comb begin
-        next_state = current_state;
-        
-        case (current_state)
-            FETCH: begin
-                // Implement instruction fetch logic
-                next_state = DECODE;
-            end
-            
-            DECODE: begin
-                // Implement instruction decode logic
-                next_state = EXECUTE;
-            end
-            
-            EXECUTE: begin
-                // Implement instruction execution logic
-                next_state = MEMORY;
-            end
-            
-            MEMORY: begin
-                // Implement memory access logic
-                next_state = WRITEBACK;
-            end
-            
-            WRITEBACK: begin
-                // Implement register writeback logic
-                next_state = FETCH;
-            end
-            
-            default: begin
-                next_state = FETCH;
-            end
-        endcase
-    end
-    
-    // Instruction memory interface
-    assign imem_addr = pc;
-    assign imem_req = (current_state == FETCH);
-    
-    // Data memory interface (placeholder)
-    assign dmem_addr = '0;
-    assign dmem_wdata = '0;
-    assign dmem_we = '0;
-    assign dmem_be = 4'b1111;
-    assign dmem_req = '0;
-    
-    // Interrupt handling (placeholder)
-    assign irq_ack = '0;
-    
-    // Debug interface (placeholder)
-    assign debug_ack = debug_req;
-
-endmodule
-'''
-    
-    with open(dest_path, 'w', encoding='utf-8') as f:
-        f.write(basic_template)
-    
-    print_green(f'[LOG] Basic template created at {dest_path}')
-
-
 def load_processor_config(config_path: str) -> Dict[str, Any]:
     """
     Load processor configuration from JSON file.
@@ -261,12 +121,12 @@ def generate_enhanced_template(config: Dict[str, Any], output_path: str, use_oll
     Returns:
         str: Path to the generated template.
     """
-    processor_name = config.get('name', 'processor')
-    top_module = config.get('top_module', processor_name)
+    processor_name = config['name']
+    top_module = config['top_module']
     
     if use_ollama and top_module:
         # Try to get the top module file from the configuration
-        modules = config.get('modules', [])
+        modules = config['files']
         if modules:
             top_module_file = get_top_module_file(modules, top_module)
             if top_module_file:
@@ -278,7 +138,7 @@ def generate_enhanced_template(config: Dict[str, Any], output_path: str, use_oll
                     print_yellow(f'[WARN] OLLAMA template generation failed: {e}')
     
     # Fallback to basic template creation
-    create_basic_template(output_path, processor_name)
+    copy_hardware_template(processor_name)
     return output_path
 
 
@@ -316,11 +176,7 @@ def generate_template(
             return generate_enhanced_template(config, output_path, use_ollama, model)
     
     # Fallback to basic template copy/creation
-    if os.path.exists(template_path):
-        return copy_hardware_template(name, template_path, output_dir)
-    else:
-        create_basic_template(output_path, name)
-        return output_path
+    return copy_hardware_template(name, template_path, output_dir)
 
 
 def generate_template_from_config_dir(config_dir: str, output_dir: str = 'rtl/') -> List[str]:
@@ -364,31 +220,48 @@ def main() -> None:
     parser = argparse.ArgumentParser(description='Generate SystemVerilog templates for processors')
 
     parser.add_argument(
-        '-n', '--name', type=str,
+        '-n', 
+        '--name', 
+        type=str,
         help='Name of the processor'
     )
     parser.add_argument(
-        '-c', '--config', type=str,
+        '-c', 
+        '--config', 
+        type=str,
         help='Path to the processor configuration file'
     )
     parser.add_argument(
-        '-d', '--config-dir', type=str,
+        '-d', 
+        '--config-dir', 
+        type=str,
         help='Directory containing processor configuration files (generates templates for all)'
     )
     parser.add_argument(
-        '-o', '--output', type=str, default='rtl/',
+        '-o', 
+        '--output', 
+        type=str, 
+        default='rtl/',
         help='Output directory for the template'
     )
     parser.add_argument(
-        '-t', '--template', type=str, default='rtl/template.sv',
+        '-t', 
+        '--template', 
+        type=str, 
+        default='rtl/template.sv',
         help='Base template file to use'
     )
     parser.add_argument(
-        '--use-ollama', action='store_true',
+        '-u',
+        '--use-ollama', 
+        action='store_true',
         help='Use OLLAMA for enhanced template generation'
     )
     parser.add_argument(
-        '-m', '--model', type=str, default='qwen2.5:32b',
+        '-m', 
+        '--model', 
+        type=str, 
+        default='qwen2.5:32b',
         help='OLLAMA model to use'
     )
 

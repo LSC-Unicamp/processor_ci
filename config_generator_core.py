@@ -31,6 +31,7 @@ python config_generator_core.py -u <processor_url> -p config/
 
 import os
 import time
+import glob
 import json
 import shutil
 import argparse
@@ -119,7 +120,7 @@ def _ensure_mapping(mapping: Any) -> Dict[str, List[str]]:
 
 def _reachable_size(children_of: Any, start: str) -> int:
     """
-    Return number of reachable distinct nodes (excluding start) from `start` using BFS.
+    Return number reachable distinct nodes (excluding start) from `start` using BFS.
     """
     children_map = _ensure_mapping(children_of)
     seen = set()
@@ -137,9 +138,187 @@ def _reachable_size(children_of: Any, start: str) -> int:
     return len(seen)
 
 
-def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None):
+def _analyze_instantiation_patterns(module_name: str, file_path: str) -> dict:
+    """
+    Analyze what types of components a module instantiates to classify it as CPU core vs SoC top.
+    Returns a dict with counts of different component types found.
+    """
+    if not file_path or not os.path.exists(file_path):
+        return {}
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+    except Exception:
+        return {}
+    
+    # CPU core component patterns (things a CPU would instantiate)
+    cpu_patterns = [
+        r'\b(alu|arithmetic|logic)\b',
+        r'\b(mul|mult|multiplier)\b', 
+        r'\b(div|divider|division)\b',
+        r'\b(fpu|float|floating)\b',
+        r'\b(cache|icache|dcache)\b',
+        r'\b(mmu|tlb)\b',
+        r'\b(branch|pred|predictor)\b',
+        r'\b(decode|decoder)\b',
+        r'\b(execute|exec|execution)\b',
+        r'\b(fetch|instruction)\b',
+        r'\b(register|regfile|rf)\b',
+        r'\b(pipeline|pipe)\b',
+        r'\b(hazard|forward|forwarding)\b',
+        r'\b(csr|control|status)\b'
+    ]
+    
+    # SoC/System component patterns (things an SoC top would instantiate)
+    soc_patterns = [
+        r'\b(ram|memory|mem)\b',
+        r'\b(rom|flash)\b',
+        r'\b(gpio|pin|port)\b',
+        r'\b(uart|serial)\b',
+        r'\b(spi|i2c|bus)\b',
+        r'\b(timer|counter)\b',
+        r'\b(interrupt|plic|clint)\b',
+        r'\b(dma|direct|memory|access)\b',
+        r'\b(clock|clk|reset|rst)\b',
+        r'\b(peripheral|periph)\b',
+        r'\b(bridge|interconnect)\b',
+        r'\b(debug|jtag)\b'
+    ]
+    
+    # Look for instantiation patterns in Verilog/SystemVerilog
+    # Pattern: module_name instance_name ( or module_name #( ... ) instance_name (
+    instantiation_regex = r'^\s*(\w+)\s*(?:#\s*\([^)]*\))?\s*(\w+)\s*\('
+    
+    cpu_score = 0
+    soc_score = 0
+    total_instances = 0
+    instantiated_modules = []
+    
+    # Find all instantiations
+    for match in re.finditer(instantiation_regex, content, re.MULTILINE | re.IGNORECASE):
+        module_type = match.group(1).lower()
+        instance_name = match.group(2).lower()
+        total_instances += 1
+        instantiated_modules.append(module_type)
+        
+        # Check if instantiated module or instance name matches CPU patterns
+        combined_text = f"{module_type} {instance_name}"
+        
+        for pattern in cpu_patterns:
+            if re.search(pattern, combined_text, re.IGNORECASE):
+                cpu_score += 1
+                break  # Only count once per instantiation
+        
+        for pattern in soc_patterns:
+            if re.search(pattern, combined_text, re.IGNORECASE):
+                soc_score += 1
+                break  # Only count once per instantiation
+    
+    return {
+        'cpu_score': cpu_score,
+        'soc_score': soc_score,
+        'total_instances': total_instances,
+        'cpu_ratio': cpu_score / max(total_instances, 1),
+        'soc_ratio': soc_score / max(total_instances, 1),
+        'instantiated_modules': instantiated_modules
+    }
+
+
+def _find_cpu_core_in_soc(top_module: str, module_graph: dict, modules: list) -> str:
+    """
+    If the top module is a SoC, try to find the actual CPU core it instantiates.
+    Returns the CPU core module name, or the original top_module if not found.
+    """
+    if not top_module or not modules:
+        return top_module
+    
+    # Create module name to file path mapping
+    module_to_file = {}
+    for module_name, file_path in modules:
+        module_to_file[module_name] = file_path
+    
+    # Get the file path for the top module
+    top_file_path = module_to_file.get(top_module)
+    if not top_file_path:
+        return top_module
+    
+    # Analyze what the top module instantiates
+    patterns = _analyze_instantiation_patterns(top_module, top_file_path)
+    if not patterns:
+        return top_module
+    
+    # Check if this looks like a SoC (has peripherals)
+    soc_ratio = patterns.get('soc_ratio', 0)
+    instantiated_modules = patterns.get('instantiated_modules', [])
+    
+    # If SoC ratio is significant, look for CPU core candidates among instantiated modules
+    if soc_ratio > 0.2:  # Has significant peripheral instantiations
+        print_green(f"[CORE_SEARCH] {top_module} appears to be a SoC (soc_ratio={soc_ratio:.2f}), searching for CPU core...")
+        
+        # Look for CPU core candidates among instantiated modules
+        cpu_core_candidates = []
+        
+        for inst_module in instantiated_modules:
+            # Skip obvious non-CPU modules
+            if any(skip in inst_module.lower() for skip in ['ram', 'rom', 'timer', 'uart', 'gpio', 'spi', 'i2c', 'vga', 'dma', 'bus', 'matrix', 'interface']):
+                continue
+                
+            # Analyze this potential CPU core - do case-insensitive module lookup
+            inst_file_path = None
+            proper_module_name = None
+            for module_name, file_path in module_to_file.items():
+                if module_name.lower() == inst_module.lower():
+                    inst_file_path = file_path
+                    proper_module_name = module_name  # Use the proper-cased module name
+                    break
+            
+            if inst_file_path:
+                inst_patterns = _analyze_instantiation_patterns(proper_module_name, inst_file_path)
+                if inst_patterns:
+                    inst_cpu_ratio = inst_patterns.get('cpu_ratio', 0)
+                    inst_soc_ratio = inst_patterns.get('soc_ratio', 0)
+                    inst_total = inst_patterns.get('total_instances', 0)
+                    
+                    # Score this module as a CPU core candidate
+                    cpu_score = 0
+                    
+                    # Prefer modules with CPU-like keywords in name
+                    if any(cpu_term in proper_module_name.lower() for cpu_term in ['cpu', 'core', 'risc', 'processor']):
+                        cpu_score += 10
+                    
+                    # Prefer modules with CPU-like internal structure
+                    if inst_cpu_ratio > inst_soc_ratio:
+                        cpu_score += 5
+                    if inst_cpu_ratio > 0.3:
+                        cpu_score += 3
+                    
+                    # Prefer modules with reasonable complexity (not too simple, not too complex)
+                    if 5 <= inst_total <= 50:
+                        cpu_score += 2
+                    
+                    # Only consider if it has some positive indicators
+                    if cpu_score > 0:
+                        cpu_core_candidates.append((proper_module_name, cpu_score, inst_cpu_ratio, inst_total))
+                        print_green(f"[CORE_SEARCH] Found CPU core candidate: {proper_module_name} (score={cpu_score}, cpu_ratio={inst_cpu_ratio:.2f}, instances={inst_total})")
+        
+        # Select the best CPU core candidate
+        if cpu_core_candidates:
+            # Sort by score descending, then by CPU ratio descending
+            cpu_core_candidates.sort(key=lambda x: (x[1], x[2]), reverse=True)
+            selected_core = cpu_core_candidates[0][0]
+            print_green(f"[CORE_SEARCH] Selected CPU core: {selected_core}")
+            return selected_core
+        else:
+            print_yellow(f"[CORE_SEARCH] No suitable CPU core found in {top_module}, keeping original top module")
+    
+    return top_module
+
+
+def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modules=None):
     """
     Rank module candidates to identify the best top module.
+    Analyzes both module connectivity and instantiation patterns to distinguish CPU cores from SoC tops.
     """
     children_of = _ensure_mapping(module_graph)
     parents_of = _ensure_mapping(module_graph_inverse)
@@ -166,6 +345,13 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None):
     # Include repo name matches even if they have many parents
     repo_name_matches = []
     cpu_core_matches = []
+    
+    # Create module name to file path mapping for instantiation analysis
+    module_to_file = {}
+    if modules:
+        for module_name, file_path in modules:
+            module_to_file[module_name] = file_path
+    
     if repo_name and len(repo_name) > 2:
         repo_lower = repo_name.lower()
         for module in valid_modules:
@@ -175,13 +361,35 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None):
                 module_lower in repo_lower):
                 repo_name_matches.append(module)
             
-            # Check for likely CPU core modules
-            if ((module_lower == 'balotelli' or 
-                 any(pattern in module_lower for pattern in [repo_lower, 'cpu', 'core', 'risc', 'processor'])) and 
+            # Enhanced CPU core detection using instantiation patterns
+            if (any(pattern in module_lower for pattern in [repo_lower, 'cpu', 'core', 'risc', 'processor']) and 
                 module not in zero_parent_modules and module not in low_parent_modules and
                 not any(bad_pattern in module_lower for bad_pattern in 
                        ['div', 'mul', 'alu', 'fpu', 'cache', 'mem', 'bus', 'ctrl', 'reg', 'decode', 'fetch', 'exec', 'forward', 'hazard', 'pred'])):
-                if module not in repo_name_matches:
+                
+                # Check instantiation patterns if file path is available
+                is_cpu_core = False
+                file_path = module_to_file.get(module)
+                if file_path:
+                    patterns = _analyze_instantiation_patterns(module, file_path)
+                    if patterns:
+                        cpu_ratio = patterns.get('cpu_ratio', 0)
+                        soc_ratio = patterns.get('soc_ratio', 0)
+                        total_instances = patterns.get('total_instances', 0)
+                        
+                        # Consider it a CPU core if:
+                        # 1. It has more CPU-like instantiations than SoC-like ones
+                        # 2. It has at least some instantiations (not empty)
+                        # 3. CPU ratio is significantly higher than SoC ratio
+                        if total_instances > 0 and (cpu_ratio > soc_ratio * 1.5 or cpu_ratio > 0.3):
+                            is_cpu_core = True
+                            print_green(f"[INSTANTIATION] {module}: CPU core (cpu_ratio={cpu_ratio:.2f}, soc_ratio={soc_ratio:.2f}, instances={total_instances})")
+                        elif total_instances == 0:
+                            # Fallback to name-based heuristics if no instantiations found
+                            is_cpu_core = True
+                            print_green(f"[INSTANTIATION] {module}: CPU core (fallback - no instantiations found)")
+                
+                if is_cpu_core and module not in repo_name_matches:
                     cpu_core_matches.append(module)
                     print_green(f"[DEBUG] Added likely CPU core: {module}")
     
@@ -288,12 +496,6 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None):
 
     # Sort by score (descending), then by reach (descending), then by name
     scored.sort(reverse=True, key=lambda t: (t[0], t[1], t[2]))
-    
-    # Debug output
-    print_green(f"[DEBUG] All scored candidates for repo '{repo_name}' (repo_lower='{repo_lower}'):")
-    for i, (score, reach, name) in enumerate(scored):
-        if "balotelli" in name.lower() or "divcore" in name.lower() or i < 15:
-            print_green(f"  {i+1}. {name}: score={score}, reach={reach}")
     
     return [c for score, _, c in scored if score > -5000], cpu_core_matches
 
@@ -517,7 +719,7 @@ def interactive_simulate_and_minimize(
 
     # Phase A: include fixing
     print_green(f"[DEBUG] Bootstrapping with repo_name='{repo_name}'")
-    bootstrap_candidates, _ = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name)
+    bootstrap_candidates, _ = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
     print_green(f"[BOOT] Bootstrap candidates: {bootstrap_candidates[:5]}")
     
     heuristic_top = None
@@ -573,7 +775,7 @@ def interactive_simulate_and_minimize(
 
     # Phase B: top selection
     print_green(f"[DEBUG] About to rank candidates with repo_name='{repo_name}'")
-    candidates, cpu_core_matches = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name)
+    candidates, cpu_core_matches = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
     print_green(f"[TOP-CAND] Ranked candidates: {candidates}")
     print_green(f"[DEBUG] CPU core matches: {cpu_core_matches}")
 
@@ -640,6 +842,34 @@ def interactive_simulate_and_minimize(
 
     top_module = selected_top
 
+    # Phase B.5: Check if we found a SoC and try to find the actual CPU core
+    original_top = top_module
+    cpu_core = _find_cpu_core_in_soc(top_module, module_graph, modules)
+    
+    if cpu_core != top_module:
+        print_green(f"[CORE_SEARCH] Switching from SoC top '{top_module}' to CPU core '{cpu_core}'")
+        # Verify the CPU core can compile
+        rc, out, cfg = run_simulation_with_config(
+            repo_root,
+            repo_name,
+            url,
+            tb_files,
+            files,
+            inclu,
+            cpu_core,
+            language_version,
+            timeout=240,
+            verilator_extra_flags=verilator_extra_flags,
+            ghdl_extra_flags=ghdl_extra_flags,
+        )
+        if rc == 0:
+            top_module = cpu_core
+            last_log = out
+            print_green(f"[CORE_SEARCH] Successfully switched to CPU core: {cpu_core}")
+        else:
+            print_yellow(f"[CORE_SEARCH] CPU core '{cpu_core}' failed compilation, keeping SoC top '{original_top}'")
+            top_module = original_top
+
     # Phase C: greedy minimization
     print_green("[MIN] Starting greedy minimization")
 
@@ -692,7 +922,7 @@ def interactive_simulate_and_minimize(
 
         # Special case: removed the top file
         print_yellow(f"[MIN] Removed file of current top '{top_module}', trying to reselect…")
-        candidates, _ = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name)
+        candidates, _ = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
         new_top = None
         for cand in candidates:
             if module_to_file.get(cand, "") not in files:
@@ -742,8 +972,36 @@ def detect_systemverilog_features(files: list) -> bool:
     sv_regex = re.compile(combined_pattern, re.IGNORECASE)
     
     for file_path in files[:10]:  # Check first 10 files
+        if not file_path:
+            continue
+        
+        # Handle both absolute and relative paths
+        full_path = file_path
+        if not os.path.isabs(file_path):
+            # Try to construct full path if it's relative
+            if os.path.exists(file_path):
+                full_path = file_path
+            else:
+                # Look for the file in common locations
+                possible_paths = [
+                    os.path.join('temp', file_path),
+                    os.path.join('temp', '*', file_path),  # Will need glob for this
+                ]
+                for possible_path in possible_paths:
+                    if '*' in possible_path:
+                        matches = glob.glob(possible_path)
+                        if matches:
+                            full_path = matches[0]
+                            break
+                    elif os.path.exists(possible_path):
+                        full_path = possible_path
+                        break
+        
+        if not os.path.exists(full_path):
+            continue
+            
         try:
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read(4096)  # Read first 4KB
                 if sv_regex.search(content):
                     return True
@@ -753,23 +1011,160 @@ def detect_systemverilog_features(files: list) -> bool:
     return False
 
 
-def determine_language_version(extension: str, files: list = None) -> str:
+def determine_language_version(extension: str, files: list = None, base_path: str = None) -> str:
     """
-    Determines the language version based on the file extension and content analysis.
+    Determines the language version based on file extension and incompatible syntax detection.
+    Starts with newest version and only regresses when unsupported syntax is found.
     """
+    # Start optimistic with modern versions
     base_version = {
         '.vhdl': '08',
         '.vhd': '08', 
-        '.sv': '2012',
-        '.svh': '2012',
-    }.get(extension, '2005')
+        '.sv': '2017',    # SystemVerilog files - start with newest
+        '.svh': '2017',   # SystemVerilog headers - start with newest
+    }.get(extension, '2017')  # Default to newest SystemVerilog for .v files
     
-    # If we have .v files but detect SystemVerilog features, upgrade to 2012
-    if base_version == '2005' and files and detect_systemverilog_features(files):
-        print_green("[LANG] Detected SystemVerilog features in .v files, upgrading to 2012")
-        return '2012'
+    # If no files to analyze, return base version
+    if not files:
+        return base_version
     
-    return base_version
+    # For VHDL files, return base version (could be enhanced later)
+    if extension in ['.vhdl', '.vhd']:
+        return base_version
+    
+    # Analyze for incompatible syntax that forces regression
+    detected_version = analyze_verilog_language_features(files, base_path)
+    
+    # For .sv/.svh files, enforce minimum SystemVerilog-2005 (never pure Verilog)
+    if extension in ['.sv', '.svh']:
+        if detected_version in ['1995', '2001']:
+            print_green(f"[LANG] .sv/.svh extension requires SystemVerilog - upgrading from {detected_version} to 2005")
+            return '2005'
+        return detected_version
+    
+    # For .v files, the detected version is what we use
+    if detected_version != base_version:
+        if detected_version in ['1995', '2001', '2005']:
+            print_green(f"[LANG] Regressed from {base_version} to {detected_version} due to incompatible syntax")
+        else:
+            print_green(f"[LANG] Using {detected_version} (no incompatible syntax found)")
+    
+    return detected_version
+
+
+def analyze_verilog_language_features(files: list, base_path: str = None) -> str:
+    """
+    Analyzes Verilog files to detect incompatible syntax that requires regression.
+    Starts with newest version and only regresses when unsupported syntax is found.
+    """
+    # Start with the newest widely supported version
+    detected_version = '2017'
+    
+    # Syntax that's NOT SUPPORTED in newer standards (forces regression)
+    incompatible_with_systemverilog = [
+        # These constructs cause issues with SystemVerilog parsers
+        r'defparam\s+\w+\.\w+\s*=',  # defparam not recommended in SV, use parameter ports
+        r'^\s*UDP\s+\w+\s*\(',  # User Defined Primitives rarely supported in SV tools
+        r'\$time\b(?!\s*\()',  # $time without parentheses (old Verilog-95 style)
+        r'^\s*specify\s*$',  # specify blocks often unsupported in SV synthesis
+        r'\bwand\b|\bwor\b|\btri0\b|\btri1\b|\btriand\b|\btrior\b',  # Complex wire types problematic in SV
+    ]
+    
+    # Syntax that requires regression to Verilog-2005 or earlier
+    incompatible_with_modern_sv = [
+        r'`timescale\s+\d+\s*\w+\s*/\s*\d+\s*\w+(?!\s*//)',  # Old timescale format without units
+        r'\bforce\b|\brelease\b',  # Force/release statements problematic in modern SV
+        r'`include\s+"[^"]*\.vh"',  # .vh includes instead of .svh
+    ]
+    
+    # Syntax that forces regression to basic Verilog (pre-2001)
+    requires_old_verilog = [
+        r'`expand_vectornets',  # Very old Verilog directive
+        r'\bscalared\b|\bvectored\b',  # Old net declarations
+        r'^\s*primitive\s+\w+\s*\(',  # Primitive definitions (Verilog-95 style)
+    ]
+    
+    # Check what unsupported syntax we find
+    files_to_check = files[:20] if len(files) > 20 else files
+    
+    found_incompatible = {
+        'needs_old_verilog': False,
+        'needs_verilog_2005': False, 
+        'needs_basic_systemverilog': False,
+    }
+    
+    for file_path in files_to_check:
+        try:
+            # Handle relative paths by combining with base_path
+            full_path = file_path
+            if base_path and not os.path.isabs(file_path):
+                full_path = os.path.join(base_path, file_path)
+            
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read(8192)
+                
+                # Check for syntax that forces old Verilog
+                for pattern in requires_old_verilog:
+                    if re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
+                        found_incompatible['needs_old_verilog'] = True
+                        print_yellow(f"[LANG] Found old Verilog syntax in {file_path}: {pattern}")
+                        break
+                
+                # Check for syntax incompatible with modern SystemVerilog
+                for pattern in incompatible_with_modern_sv:
+                    if re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
+                        found_incompatible['needs_verilog_2005'] = True
+                        print_yellow(f"[LANG] Found legacy syntax in {file_path}")
+                        break
+                
+                # Check for syntax incompatible with SystemVerilog
+                for pattern in incompatible_with_systemverilog:
+                    if re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
+                        found_incompatible['needs_basic_systemverilog'] = True
+                        print_yellow(f"[LANG] Found SystemVerilog-incompatible syntax in {file_path}")
+                        break
+                        
+        except Exception as e:
+            print_yellow(f"[LANG] Warning: Could not analyze file {file_path}: {e}")
+            continue
+    
+    # Regress only if we found incompatible syntax
+    if found_incompatible['needs_old_verilog']:
+        detected_version = '1995'
+        print_green("[LANG] Found Verilog-95 only syntax, regressing to 1995")
+    elif found_incompatible['needs_verilog_2005']:
+        detected_version = '2005'
+        print_green("[LANG] Found legacy constructs, regressing to Verilog-2005")
+    elif found_incompatible['needs_basic_systemverilog']:
+        detected_version = '2005'  # Basic SystemVerilog
+        print_green("[LANG] Found SystemVerilog-incompatible syntax, using SystemVerilog-2005")
+    else:
+        # No incompatible syntax found - check if we have modern features that benefit from newer versions
+        has_modern_features = False
+        for file_path in files_to_check[:5]:
+            try:
+                # Handle relative paths by combining with base_path
+                full_path = file_path
+                if base_path and not os.path.isabs(file_path):
+                    full_path = os.path.join(base_path, file_path)
+                
+                with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read(4096)
+                    # Look for modern SystemVerilog constructs
+                    if re.search(r'\balways_ff\b|\balways_comb\b|\binterface\b|\blogic\b|\bclass\b|\bpackage\b', content, re.IGNORECASE):
+                        has_modern_features = True
+                        break
+            except Exception:
+                continue
+        
+        if has_modern_features:
+            detected_version = '2017'
+            print_green("[LANG] Found modern SystemVerilog features, using 2017 standard")
+        else:
+            detected_version = '2012'
+            print_green("[LANG] No incompatible syntax found, using SystemVerilog-2012 default")
+    
+    return detected_version
 
 
 def create_output_json(
@@ -859,10 +1254,17 @@ def find_and_log_include_dirs(destination_path: str) -> list:
     return include_dirs
 
 
-def build_and_log_graphs(files: list, modules: list) -> tuple:
+def build_and_log_graphs(files: list, modules: list, destination_path: str = None) -> tuple:
     """Builds the direct and inverse module dependency graphs and logs the result."""
     print_green('[LOG] Construindo os grafos direto e inverso\n')
-    module_graph, module_graph_inverse = build_module_graph(files, modules)
+    
+    # Convert relative paths back to absolute paths for build_module_graph
+    if destination_path:
+        absolute_files = [os.path.join(destination_path, f) if not os.path.isabs(f) else f for f in files]
+    else:
+        absolute_files = files
+    
+    module_graph, module_graph_inverse = build_module_graph(absolute_files, modules)
     print_green('[LOG] Grafos construídos com sucesso\n')
     return module_graph, module_graph_inverse
 
@@ -912,15 +1314,15 @@ def generate_processor_config(
 
     tb_files, non_tb_files = categorize_files(files, repo_name, destination_path)
     include_dirs = find_and_log_include_dirs(destination_path)
-    module_graph, module_graph_inverse = build_and_log_graphs(files, modules)
+    module_graph, module_graph_inverse = build_and_log_graphs(non_tb_files, modules, destination_path)
 
     filtered_files, top_module = process_files_with_llama(
         no_llama, non_tb_files, tb_files, modules, module_graph, repo_name, model,
     )
-    language_version = determine_language_version(extension, filtered_files)
+    language_version = determine_language_version(extension, filtered_files, destination_path)
     
     # Get cpu_core_matches for selection logic
-    _, cpu_core_matches = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name)
+    _, cpu_core_matches = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
 
     final_files, final_include_dirs, last_log, top_module = interactive_simulate_and_minimize(
         repo_root=destination_path,
@@ -989,27 +1391,42 @@ def main() -> None:
     parser = argparse.ArgumentParser(description='Generate processor configurations')
 
     parser.add_argument(
-        '-u', '--processor-url', type=str, required=True,
+        '-u', 
+        '--processor-url', 
+        type=str, 
+        required=True,
         help='URL of the processor repository'
     )
     parser.add_argument(
-        '-p', '--config-path', type=str, default='config/',
+        '-p', 
+        '--config-path', 
+        type=str, 
+        default='config/',
         help='Path to save the configuration file'
     )
     parser.add_argument(
-        '-g', '--plot-graph', action='store_true',
+        '-g', 
+        '--plot-graph', 
+        action='store_true',
         help='Plot the module dependency graph'
     )
     parser.add_argument(
-        '-a', '--add-to-config', action='store_true',
+        '-a', 
+        '--add-to-config', 
+        action='store_true',
         help='Add the generated configuration to a central config file'
     )
     parser.add_argument(
-        '-n', '--no-llama', action='store_true',
+        '-n', 
+        '--no-llama', 
+        action='store_true',
         help='Skip OLLAMA processing for top module identification'
     )
     parser.add_argument(
-        '-m', '--model', type=str, default='qwen2.5:32b',
+        '-m', 
+        '--model', 
+        type=str, 
+        default='qwen2.5:32b',
         help='OLLAMA model to use'
     )
 

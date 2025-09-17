@@ -1,0 +1,32 @@
+{
+    "name": "Anfield",
+    "folder": "Anfield",
+    "sim_files": [
+        "vsrc/Anfield/BusMatrix/InstBusMatrix/InstBusMatrix.v"
+    ],
+    "files": [
+        "vsrc/Anfield/Balotelli/Balotelli.v",
+        "vsrc/Anfield/Balotelli/ALU/Adder/CLA.v",
+        "vsrc/Anfield/Balotelli/ALU/Adder/CasAdder3_2.v",
+        "vsrc/Anfield/Balotelli/ALU/Adder/CasAdder4_2.v",
+        "vsrc/Anfield/Balotelli/ALU/Div/DivCore.v",
+        "vsrc/Anfield/Balotelli/ALU/Mul/Mul.v",
+        "vsrc/Anfield/Balotelli/Pipeline/RegFile.v",
+        "vsrc/Anfield/Balotelli/Privileged/Clint.v",
+        "vsrc/Anfield/Balotelli/Privileged/CrsRegFile.v",
+        "vsrc/Anfield/Balotelli/Privileged/Plic.v",
+        "vsrc/Anfield/Balotelli/ShareCell/DualPortRam.v",
+        "vsrc/Anfield/Balotelli/ShareCell/OneDeepthFIFO.v",
+        "vsrc/Anfield/Balotelli/ShareCell/SycnFIFO.v",
+        "vsrc/Anfield/Balotelli/Template/MuxKeyInternal.v",
+        "vsrc/Anfield/Balotelli/Template/MuxKeyWithDefault.v",
+        "vsrc/Anfield/Balotelli/Template/Reg.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/Kaigard/Anfield.git",
+    "top_module": "DivCore",
+    "extra_flags": [],
+    "language_version": "2012",
+    "march": "rv32i",
+    "two_memory": false
+}

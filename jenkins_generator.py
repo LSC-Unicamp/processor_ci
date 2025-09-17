@@ -106,7 +106,7 @@ def generate_single_jenkinsfile(
 ) -> str:
     """
     Generate a Jenkinsfile for a single processor configuration.
-    
+    generated_files
     Args:
         config_path (str): Path to the processor configuration file.
         fpgas (List[str]): List of target FPGAs.
@@ -120,14 +120,14 @@ def generate_single_jenkinsfile(
     if not config:
         raise ValueError(f"Could not load configuration from {config_path}")
     
-    processor_name = config.get('name', 'processor')
-    language_version = config.get('language_version', '2005')
-    extra_flags = config.get('extra_flags', [])
+    processor_name = config['name']
+    language_version = config['language_version']
+    extra_flags = config['extra_flags']
     
     print_green(f'[LOG] Generating Jenkinsfile for {processor_name}')
     
     # Generate the Jenkinsfile
-    jenkinsfile_content = generate_jenkinsfile(
+    generate_jenkinsfile(
         config,
         fpgas,
         script_path,
@@ -135,16 +135,9 @@ def generate_single_jenkinsfile(
         extra_flags
     )
     
-    # Ensure output directory exists
-    os.makedirs(output_dir, exist_ok=True)
-    
-    # Write Jenkinsfile
-    output_path = os.path.join(output_dir, f'{processor_name}.Jenkinsfile')
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(jenkinsfile_content)
-    
-    print_green(f'[LOG] Jenkinsfile generated: {output_path}')
-    return output_path
+    os.rename('Jenkinsfile', f'{DEFAULT_BASE_DIR}{config["name"]}.Jenkinsfile')
+
+    return f'{DEFAULT_BASE_DIR}{config["name"]}.Jenkinsfile'
 
 
 def generate_all_pipelines(
@@ -262,33 +255,46 @@ def main() -> int:
 
     # Input options
     parser.add_argument(
-        '-c', '--config', type=str,
+        '-c', 
+        '--config', 
+        type=str,
         help='Path to a specific processor configuration file'
     )
     parser.add_argument(
-        '-d', '--config-dir', type=str,
+        '-d', 
+        '--config-dir', 
+        type=str,
         help='Directory containing processor configuration files'
     )
     
     # Output options
     parser.add_argument(
-        '-o', '--output', type=str, default=DEFAULT_BASE_DIR,
+        '-o', 
+        '--output', 
+        type=str, 
+        default=DEFAULT_BASE_DIR,
         help=f'Output directory for Jenkinsfiles (default: {DEFAULT_BASE_DIR})'
     )
     
     # Pipeline configuration
     parser.add_argument(
-        '-f', '--fpgas', type=str,
+        '-f', 
+        '--fpgas', 
+        type=str,
         help='Comma-separated list of target FPGAs (e.g., "digilent_arty_a7_100t,xilinx_vc709")'
     )
     parser.add_argument(
-        '-s', '--script-path', type=str, default=DEFAULT_MAIN_SCRIPT_PATH,
+        '-s', 
+        '--script-path', 
+        type=str, 
+        default=DEFAULT_MAIN_SCRIPT_PATH,
         help=f'Path to the main synthesis script (default: {DEFAULT_MAIN_SCRIPT_PATH})'
     )
     
     # Additional options
     parser.add_argument(
-        '--summary', action='store_true',
+        '--summary', 
+        action='store_true',
         help='Create a summary file listing all generated pipelines'
     )
 

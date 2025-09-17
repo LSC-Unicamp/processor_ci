@@ -1,0 +1,1460 @@
+{
+  "summary": {
+    "total_processors": 3,
+    "successful_validations": 3,
+    "failed_validations": 0,
+    "average_score": 0.4404390243902439,
+    "high_scores": 0,
+    "medium_scores": 0,
+    "low_scores": 3
+  },
+  "detailed_results": [
+    {
+      "processor_name": "AUK-V-Aethia",
+      "overall_score": 0.43999999999999995,
+      "field_scores": {
+        "top_module": 0.2,
+        "files": 0.0,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 0.0
+      },
+      "matches": {
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "baud",
+          "reference": "aukv",
+          "score": 0.2
+        },
+        "files": {
+          "generated": [
+            "rtl/peripherals/uart/baud.v"
+          ],
+          "reference": [
+            "rtl/core/aukv.v",
+            "rtl/core/aukv_alu.v",
+            "rtl/core/aukv_csr_regfile.v",
+            "rtl/core/aukv_decode.v",
+            "rtl/core/aukv_execute.v",
+            "rtl/core/aukv_fetch.v",
+            "rtl/core/aukv_gpr_regfilie.v",
+            "rtl/core/aukv_mem.v"
+          ],
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "tb/peripherals/spi/spi_tb.v",
+            "tb/soc/aukv_eggs_soc_tb.v"
+          ],
+          "reference": [],
+          "score": 0.5
+        },
+        "two_memory": {
+          "generated": false,
+          "reference": true,
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "rtl/peripherals/uart/baud.v"
+          ],
+          "only_in_reference": [
+            "rtl/core/aukv_gpr_regfilie.v",
+            "rtl/core/aukv_decode.v",
+            "rtl/core/aukv.v",
+            "rtl/core/aukv_mem.v",
+            "rtl/core/aukv_alu.v",
+            "rtl/core/aukv_csr_regfile.v",
+            "rtl/core/aukv_fetch.v",
+            "rtl/core/aukv_execute.v"
+          ],
+          "common_files": [],
+          "total_generated": 1,
+          "total_reference": 8
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'baud' vs reference 'aukv'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
+      "validation_time": 1758070146.3872373
+    },
+    {
+      "processor_name": "Baby-Risco-5",
+      "overall_score": 0.4,
+      "field_scores": {
+        "top_module": 0.0,
+        "files": 0.0,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "ResetBootSystem",
+          "reference": "Core",
+          "score": 0.0
+        },
+        "files": {
+          "generated": [
+            "debug/reset.v"
+          ],
+          "reference": [
+            "src/core/alu.v",
+            "src/core/alu_control.v",
+            "src/core/control_unit.v",
+            "src/core/core.v",
+            "src/core/immediate_generator.v",
+            "src/core/registers.v"
+          ],
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "tests/alu_test.v",
+            "tests/clk_divider.v",
+            "tests/core_test.v",
+            "tests/fifo_test.v",
+            "tests/gpio_test.v",
+            "tests/immediate_generator_test.v",
+            "tests/mux_test.v",
+            "tests/pc_test.v",
+            "tests/registers_test.v",
+            "tests/reset_test.v",
+            "tests/soc_test.v"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "debug/reset.v"
+          ],
+          "only_in_reference": [
+            "src/core/registers.v",
+            "src/core/alu_control.v",
+            "src/core/control_unit.v",
+            "src/core/alu.v",
+            "src/core/immediate_generator.v",
+            "src/core/core.v"
+          ],
+          "common_files": [],
+          "total_generated": 1,
+          "total_reference": 6
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'ResetBootSystem' vs reference 'Core'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Baby-Risco-5",
+      "validation_time": 1758070149.905282
+    },
+    {
+      "processor_name": "Grande-Risco-5",
+      "overall_score": 0.4813170731707317,
+      "field_scores": {
+        "top_module": 0.7,
+        "files": 0.3052682926829268,
+        "include_dirs": 0.5,
+        "language_version": 0.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 0.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "extra_flags": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "is",
+          "reference": "Grande_Risco5",
+          "score": 0.7
+        },
+        "files": {
+          "generated": [
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/opensourceSDRLabKintex7/litedram_core.v",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
+            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
+            "fpga/artyA7_100t/main.sv",
+            "fpga/colorlight_i9/main.sv",
+            "fpga/cyclone10gx/main.sv",
+            "fpga/nexys4_ddr/main.sv",
+            "fpga/nexys4_ddr_mixed/main.sv",
+            "fpga/nexys4_ddr_yosys/main.sv",
+            "fpga/opensourceSDRLabKintex7/main.sv",
+            "fpga/tangnano20k/main.sv",
+            "fpga/vc709/main.sv",
+            "fpga/zcu102/main.sv",
+            "fpga/zedboard/main.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/Grande_Risco5.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/alu.sv",
+            "rtl/core/alu_control.sv",
+            "rtl/core/bmu.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/core.sv",
+            "rtl/core/csr_unit.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/fpu.sv",
+            "rtl/core/grande_risco5_types.sv",
+            "rtl/core/i_cache.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/ir_decomp.sv",
+            "rtl/core/mdu.sv",
+            "rtl/core/mux.sv",
+            "rtl/core/registers.sv",
+            "rtl/debug/jtag.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/async_fifo.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/digilent_arty_a7/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
+            "rtl/peripheral/async_fifo.sv",
+            "rtl/peripheral/fifo.sv",
+            "rtl/peripheral/gpio.sv",
+            "rtl/peripheral/gpios.sv",
+            "rtl/peripheral/hdmi.sv",
+            "rtl/peripheral/leds.sv",
+            "rtl/peripheral/memory.sv",
+            "rtl/peripheral/peripheral_bus.sv",
+            "rtl/peripheral/pwm.sv",
+            "rtl/peripheral/soc.sv",
+            "rtl/peripheral/timer.sv",
+            "rtl/peripheral/uart.sv",
+            "rtl/peripheral/uart_rx.sv",
+            "rtl/peripheral/uart_tx.sv",
+            "rtl/peripheral/vga.sv"
+          ],
+          "reference": [
+            "rtl/core/grande_risco5_types.sv",
+            "rtl/core/alu.sv",
+            "rtl/core/alu_control.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/csr_unit.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/Grande_Risco5.sv",
+            "rtl/core/i_cache.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/ir_decomp.sv",
+            "rtl/core/mdu.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/mux.sv",
+            "rtl/core/registers.sv",
+            "rtl/core/core.sv"
+          ],
+          "score": 0.3052682926829268
+        },
+        "include_dirs": {
+          "generated": [
+            "rtl/peripheral",
+            "rtl/core"
+          ],
+          "reference": [
+            "rtl/core"
+          ],
+          "score": 0.5
+        },
+        "language_version": {
+          "generated": "2005",
+          "reference": "2012",
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "rtl/external_peripheral/SPI-Master/tb/tb_spi_master.v",
+            "rtl/external_peripheral/DRAM_Controller/tb/async_fifo_tb.sv",
+            "rtl/external_peripheral/DRAM_Controller/tb/dram_controller_tb.sv",
+            "rtl/external_peripheral/DRAM_Controller/tb/fifo_tb.sv",
+            "rtl/external_peripheral/I2C-Master/tb/spi_slave_tb.sv",
+            "rtl/external_peripheral/SPI-Slave/tb/spi_slave_tb.sv",
+            "testbenchs/alu_tb.sv",
+            "testbenchs/async_fifo_tb.sv",
+            "testbenchs/bmu_tb.sv",
+            "testbenchs/core_tb.sv",
+            "testbenchs/d_cache_tb.sv",
+            "testbenchs/fifo_tb.sv",
+            "testbenchs/gpio_tb.sv",
+            "testbenchs/i_cache_tb.sv",
+            "testbenchs/immediate_generator_tb.sv",
+            "testbenchs/mdu_tb.sv",
+            "testbenchs/memory.sv",
+            "testbenchs/mux_tb.sv",
+            "testbenchs/registers_tb.sv",
+            "testbenchs/soc_test.sv",
+            "testbenchs/uart_rx_tb.sv",
+            "testbenchs/uart_tb.sv",
+            "testbenchs/uart_tx_tb.sv"
+          ],
+          "reference": [],
+          "score": 0.5
+        },
+        "march": {
+          "generated": "rv32i",
+          "reference": "rv32imc",
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "rtl/external_peripheral/DRAM_Controller/rtl/async_fifo.sv",
+            "fpga/tangnano20k/main.sv",
+            "fpga/zedboard/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/peripheral/pwm.sv",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/peripheral/hdmi.sv",
+            "rtl/peripheral/uart_rx.sv",
+            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
+            "fpga/nexys4_ddr/main.sv",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
+            "fpga/cyclone10gx/main.sv",
+            "rtl/peripheral/memory.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/peripheral/leds.sv",
+            "fpga/artyA7_100t/main.sv",
+            "rtl/peripheral/peripheral_bus.sv",
+            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
+            "fpga/opensourceSDRLabKintex7/litedram_core.v",
+            "fpga/opensourceSDRLabKintex7/main.sv",
+            "fpga/nexys4_ddr_mixed/main.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
+            "rtl/peripheral/uart.sv",
+            "fpga/vc709/main.sv",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/debug/jtag.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/peripheral/uart_tx.sv",
+            "rtl/core/bmu.sv",
+            "rtl/peripheral/async_fifo.sv",
+            "fpga/nexys4_ddr_yosys/main.sv",
+            "fpga/zcu102/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
+            "fpga/colorlight_i9/main.sv",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/peripheral/fifo.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
+            "rtl/peripheral/timer.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
+            "rtl/peripheral/gpios.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/peripheral/gpio.sv",
+            "rtl/peripheral/vga.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
+            "rtl/peripheral/soc.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/digilent_arty_a7/main.sv",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/core/fpu.sv",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv"
+          ],
+          "only_in_reference": [],
+          "common_files": [
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/ir_decomp.sv",
+            "rtl/core/registers.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/alu_control.sv",
+            "rtl/core/mux.sv",
+            "rtl/core/grande_risco5_types.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/alu.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/Grande_Risco5.sv",
+            "rtl/core/i_cache.sv",
+            "rtl/core/csr_unit.sv",
+            "rtl/core/core.sv",
+            "rtl/core/mdu.sv"
+          ],
+          "total_generated": 82,
+          "total_reference": 21
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'is' vs reference 'Grande_Risco5'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Grande-Risco-5",
+      "validation_time": 1758070171.3786812
+    }
+  ],
+  "top_performers": [
+    {
+      "processor_name": "Grande-Risco-5",
+      "overall_score": 0.4813170731707317,
+      "field_scores": {
+        "top_module": 0.7,
+        "files": 0.3052682926829268,
+        "include_dirs": 0.5,
+        "language_version": 0.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 0.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "extra_flags": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "is",
+          "reference": "Grande_Risco5",
+          "score": 0.7
+        },
+        "files": {
+          "generated": [
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/opensourceSDRLabKintex7/litedram_core.v",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
+            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
+            "fpga/artyA7_100t/main.sv",
+            "fpga/colorlight_i9/main.sv",
+            "fpga/cyclone10gx/main.sv",
+            "fpga/nexys4_ddr/main.sv",
+            "fpga/nexys4_ddr_mixed/main.sv",
+            "fpga/nexys4_ddr_yosys/main.sv",
+            "fpga/opensourceSDRLabKintex7/main.sv",
+            "fpga/tangnano20k/main.sv",
+            "fpga/vc709/main.sv",
+            "fpga/zcu102/main.sv",
+            "fpga/zedboard/main.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/Grande_Risco5.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/alu.sv",
+            "rtl/core/alu_control.sv",
+            "rtl/core/bmu.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/core.sv",
+            "rtl/core/csr_unit.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/fpu.sv",
+            "rtl/core/grande_risco5_types.sv",
+            "rtl/core/i_cache.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/ir_decomp.sv",
+            "rtl/core/mdu.sv",
+            "rtl/core/mux.sv",
+            "rtl/core/registers.sv",
+            "rtl/debug/jtag.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/async_fifo.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/digilent_arty_a7/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
+            "rtl/peripheral/async_fifo.sv",
+            "rtl/peripheral/fifo.sv",
+            "rtl/peripheral/gpio.sv",
+            "rtl/peripheral/gpios.sv",
+            "rtl/peripheral/hdmi.sv",
+            "rtl/peripheral/leds.sv",
+            "rtl/peripheral/memory.sv",
+            "rtl/peripheral/peripheral_bus.sv",
+            "rtl/peripheral/pwm.sv",
+            "rtl/peripheral/soc.sv",
+            "rtl/peripheral/timer.sv",
+            "rtl/peripheral/uart.sv",
+            "rtl/peripheral/uart_rx.sv",
+            "rtl/peripheral/uart_tx.sv",
+            "rtl/peripheral/vga.sv"
+          ],
+          "reference": [
+            "rtl/core/grande_risco5_types.sv",
+            "rtl/core/alu.sv",
+            "rtl/core/alu_control.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/csr_unit.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/Grande_Risco5.sv",
+            "rtl/core/i_cache.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/ir_decomp.sv",
+            "rtl/core/mdu.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/mux.sv",
+            "rtl/core/registers.sv",
+            "rtl/core/core.sv"
+          ],
+          "score": 0.3052682926829268
+        },
+        "include_dirs": {
+          "generated": [
+            "rtl/peripheral",
+            "rtl/core"
+          ],
+          "reference": [
+            "rtl/core"
+          ],
+          "score": 0.5
+        },
+        "language_version": {
+          "generated": "2005",
+          "reference": "2012",
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "rtl/external_peripheral/SPI-Master/tb/tb_spi_master.v",
+            "rtl/external_peripheral/DRAM_Controller/tb/async_fifo_tb.sv",
+            "rtl/external_peripheral/DRAM_Controller/tb/dram_controller_tb.sv",
+            "rtl/external_peripheral/DRAM_Controller/tb/fifo_tb.sv",
+            "rtl/external_peripheral/I2C-Master/tb/spi_slave_tb.sv",
+            "rtl/external_peripheral/SPI-Slave/tb/spi_slave_tb.sv",
+            "testbenchs/alu_tb.sv",
+            "testbenchs/async_fifo_tb.sv",
+            "testbenchs/bmu_tb.sv",
+            "testbenchs/core_tb.sv",
+            "testbenchs/d_cache_tb.sv",
+            "testbenchs/fifo_tb.sv",
+            "testbenchs/gpio_tb.sv",
+            "testbenchs/i_cache_tb.sv",
+            "testbenchs/immediate_generator_tb.sv",
+            "testbenchs/mdu_tb.sv",
+            "testbenchs/memory.sv",
+            "testbenchs/mux_tb.sv",
+            "testbenchs/registers_tb.sv",
+            "testbenchs/soc_test.sv",
+            "testbenchs/uart_rx_tb.sv",
+            "testbenchs/uart_tb.sv",
+            "testbenchs/uart_tx_tb.sv"
+          ],
+          "reference": [],
+          "score": 0.5
+        },
+        "march": {
+          "generated": "rv32i",
+          "reference": "rv32imc",
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "rtl/external_peripheral/DRAM_Controller/rtl/async_fifo.sv",
+            "fpga/tangnano20k/main.sv",
+            "fpga/zedboard/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/peripheral/pwm.sv",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/peripheral/hdmi.sv",
+            "rtl/peripheral/uart_rx.sv",
+            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
+            "fpga/nexys4_ddr/main.sv",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
+            "fpga/cyclone10gx/main.sv",
+            "rtl/peripheral/memory.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/peripheral/leds.sv",
+            "fpga/artyA7_100t/main.sv",
+            "rtl/peripheral/peripheral_bus.sv",
+            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
+            "fpga/opensourceSDRLabKintex7/litedram_core.v",
+            "fpga/opensourceSDRLabKintex7/main.sv",
+            "fpga/nexys4_ddr_mixed/main.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
+            "rtl/peripheral/uart.sv",
+            "fpga/vc709/main.sv",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/debug/jtag.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/peripheral/uart_tx.sv",
+            "rtl/core/bmu.sv",
+            "rtl/peripheral/async_fifo.sv",
+            "fpga/nexys4_ddr_yosys/main.sv",
+            "fpga/zcu102/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
+            "fpga/colorlight_i9/main.sv",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/peripheral/fifo.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
+            "rtl/peripheral/timer.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
+            "rtl/peripheral/gpios.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/peripheral/gpio.sv",
+            "rtl/peripheral/vga.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
+            "rtl/peripheral/soc.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/digilent_arty_a7/main.sv",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/core/fpu.sv",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv"
+          ],
+          "only_in_reference": [],
+          "common_files": [
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/ir_decomp.sv",
+            "rtl/core/registers.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/alu_control.sv",
+            "rtl/core/mux.sv",
+            "rtl/core/grande_risco5_types.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/alu.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/Grande_Risco5.sv",
+            "rtl/core/i_cache.sv",
+            "rtl/core/csr_unit.sv",
+            "rtl/core/core.sv",
+            "rtl/core/mdu.sv"
+          ],
+          "total_generated": 82,
+          "total_reference": 21
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'is' vs reference 'Grande_Risco5'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Grande-Risco-5",
+      "validation_time": 1758070171.3786812
+    },
+    {
+      "processor_name": "AUK-V-Aethia",
+      "overall_score": 0.43999999999999995,
+      "field_scores": {
+        "top_module": 0.2,
+        "files": 0.0,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 0.0
+      },
+      "matches": {
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "baud",
+          "reference": "aukv",
+          "score": 0.2
+        },
+        "files": {
+          "generated": [
+            "rtl/peripherals/uart/baud.v"
+          ],
+          "reference": [
+            "rtl/core/aukv.v",
+            "rtl/core/aukv_alu.v",
+            "rtl/core/aukv_csr_regfile.v",
+            "rtl/core/aukv_decode.v",
+            "rtl/core/aukv_execute.v",
+            "rtl/core/aukv_fetch.v",
+            "rtl/core/aukv_gpr_regfilie.v",
+            "rtl/core/aukv_mem.v"
+          ],
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "tb/peripherals/spi/spi_tb.v",
+            "tb/soc/aukv_eggs_soc_tb.v"
+          ],
+          "reference": [],
+          "score": 0.5
+        },
+        "two_memory": {
+          "generated": false,
+          "reference": true,
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "rtl/peripherals/uart/baud.v"
+          ],
+          "only_in_reference": [
+            "rtl/core/aukv_gpr_regfilie.v",
+            "rtl/core/aukv_decode.v",
+            "rtl/core/aukv.v",
+            "rtl/core/aukv_mem.v",
+            "rtl/core/aukv_alu.v",
+            "rtl/core/aukv_csr_regfile.v",
+            "rtl/core/aukv_fetch.v",
+            "rtl/core/aukv_execute.v"
+          ],
+          "common_files": [],
+          "total_generated": 1,
+          "total_reference": 8
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'baud' vs reference 'aukv'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
+      "validation_time": 1758070146.3872373
+    },
+    {
+      "processor_name": "Baby-Risco-5",
+      "overall_score": 0.4,
+      "field_scores": {
+        "top_module": 0.0,
+        "files": 0.0,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "ResetBootSystem",
+          "reference": "Core",
+          "score": 0.0
+        },
+        "files": {
+          "generated": [
+            "debug/reset.v"
+          ],
+          "reference": [
+            "src/core/alu.v",
+            "src/core/alu_control.v",
+            "src/core/control_unit.v",
+            "src/core/core.v",
+            "src/core/immediate_generator.v",
+            "src/core/registers.v"
+          ],
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "tests/alu_test.v",
+            "tests/clk_divider.v",
+            "tests/core_test.v",
+            "tests/fifo_test.v",
+            "tests/gpio_test.v",
+            "tests/immediate_generator_test.v",
+            "tests/mux_test.v",
+            "tests/pc_test.v",
+            "tests/registers_test.v",
+            "tests/reset_test.v",
+            "tests/soc_test.v"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "debug/reset.v"
+          ],
+          "only_in_reference": [
+            "src/core/registers.v",
+            "src/core/alu_control.v",
+            "src/core/control_unit.v",
+            "src/core/alu.v",
+            "src/core/immediate_generator.v",
+            "src/core/core.v"
+          ],
+          "common_files": [],
+          "total_generated": 1,
+          "total_reference": 6
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'ResetBootSystem' vs reference 'Core'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Baby-Risco-5",
+      "validation_time": 1758070149.905282
+    }
+  ],
+  "problem_cases": [
+    {
+      "processor_name": "Baby-Risco-5",
+      "overall_score": 0.4,
+      "field_scores": {
+        "top_module": 0.0,
+        "files": 0.0,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "ResetBootSystem",
+          "reference": "Core",
+          "score": 0.0
+        },
+        "files": {
+          "generated": [
+            "debug/reset.v"
+          ],
+          "reference": [
+            "src/core/alu.v",
+            "src/core/alu_control.v",
+            "src/core/control_unit.v",
+            "src/core/core.v",
+            "src/core/immediate_generator.v",
+            "src/core/registers.v"
+          ],
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "tests/alu_test.v",
+            "tests/clk_divider.v",
+            "tests/core_test.v",
+            "tests/fifo_test.v",
+            "tests/gpio_test.v",
+            "tests/immediate_generator_test.v",
+            "tests/mux_test.v",
+            "tests/pc_test.v",
+            "tests/registers_test.v",
+            "tests/reset_test.v",
+            "tests/soc_test.v"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "debug/reset.v"
+          ],
+          "only_in_reference": [
+            "src/core/registers.v",
+            "src/core/alu_control.v",
+            "src/core/control_unit.v",
+            "src/core/alu.v",
+            "src/core/immediate_generator.v",
+            "src/core/core.v"
+          ],
+          "common_files": [],
+          "total_generated": 1,
+          "total_reference": 6
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'ResetBootSystem' vs reference 'Core'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Baby-Risco-5",
+      "validation_time": 1758070149.905282
+    },
+    {
+      "processor_name": "AUK-V-Aethia",
+      "overall_score": 0.43999999999999995,
+      "field_scores": {
+        "top_module": 0.2,
+        "files": 0.0,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 0.0
+      },
+      "matches": {
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "baud",
+          "reference": "aukv",
+          "score": 0.2
+        },
+        "files": {
+          "generated": [
+            "rtl/peripherals/uart/baud.v"
+          ],
+          "reference": [
+            "rtl/core/aukv.v",
+            "rtl/core/aukv_alu.v",
+            "rtl/core/aukv_csr_regfile.v",
+            "rtl/core/aukv_decode.v",
+            "rtl/core/aukv_execute.v",
+            "rtl/core/aukv_fetch.v",
+            "rtl/core/aukv_gpr_regfilie.v",
+            "rtl/core/aukv_mem.v"
+          ],
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "tb/peripherals/spi/spi_tb.v",
+            "tb/soc/aukv_eggs_soc_tb.v"
+          ],
+          "reference": [],
+          "score": 0.5
+        },
+        "two_memory": {
+          "generated": false,
+          "reference": true,
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "rtl/peripherals/uart/baud.v"
+          ],
+          "only_in_reference": [
+            "rtl/core/aukv_gpr_regfilie.v",
+            "rtl/core/aukv_decode.v",
+            "rtl/core/aukv.v",
+            "rtl/core/aukv_mem.v",
+            "rtl/core/aukv_alu.v",
+            "rtl/core/aukv_csr_regfile.v",
+            "rtl/core/aukv_fetch.v",
+            "rtl/core/aukv_execute.v"
+          ],
+          "common_files": [],
+          "total_generated": 1,
+          "total_reference": 8
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'baud' vs reference 'aukv'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
+      "validation_time": 1758070146.3872373
+    },
+    {
+      "processor_name": "Grande-Risco-5",
+      "overall_score": 0.4813170731707317,
+      "field_scores": {
+        "top_module": 0.7,
+        "files": 0.3052682926829268,
+        "include_dirs": 0.5,
+        "language_version": 0.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 0.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "extra_flags": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "is",
+          "reference": "Grande_Risco5",
+          "score": 0.7
+        },
+        "files": {
+          "generated": [
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/opensourceSDRLabKintex7/litedram_core.v",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
+            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
+            "fpga/artyA7_100t/main.sv",
+            "fpga/colorlight_i9/main.sv",
+            "fpga/cyclone10gx/main.sv",
+            "fpga/nexys4_ddr/main.sv",
+            "fpga/nexys4_ddr_mixed/main.sv",
+            "fpga/nexys4_ddr_yosys/main.sv",
+            "fpga/opensourceSDRLabKintex7/main.sv",
+            "fpga/tangnano20k/main.sv",
+            "fpga/vc709/main.sv",
+            "fpga/zcu102/main.sv",
+            "fpga/zedboard/main.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/Grande_Risco5.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/alu.sv",
+            "rtl/core/alu_control.sv",
+            "rtl/core/bmu.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/core.sv",
+            "rtl/core/csr_unit.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/fpu.sv",
+            "rtl/core/grande_risco5_types.sv",
+            "rtl/core/i_cache.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/ir_decomp.sv",
+            "rtl/core/mdu.sv",
+            "rtl/core/mux.sv",
+            "rtl/core/registers.sv",
+            "rtl/debug/jtag.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/async_fifo.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/digilent_arty_a7/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
+            "rtl/peripheral/async_fifo.sv",
+            "rtl/peripheral/fifo.sv",
+            "rtl/peripheral/gpio.sv",
+            "rtl/peripheral/gpios.sv",
+            "rtl/peripheral/hdmi.sv",
+            "rtl/peripheral/leds.sv",
+            "rtl/peripheral/memory.sv",
+            "rtl/peripheral/peripheral_bus.sv",
+            "rtl/peripheral/pwm.sv",
+            "rtl/peripheral/soc.sv",
+            "rtl/peripheral/timer.sv",
+            "rtl/peripheral/uart.sv",
+            "rtl/peripheral/uart_rx.sv",
+            "rtl/peripheral/uart_tx.sv",
+            "rtl/peripheral/vga.sv"
+          ],
+          "reference": [
+            "rtl/core/grande_risco5_types.sv",
+            "rtl/core/alu.sv",
+            "rtl/core/alu_control.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/csr_unit.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/Grande_Risco5.sv",
+            "rtl/core/i_cache.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/ir_decomp.sv",
+            "rtl/core/mdu.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/mux.sv",
+            "rtl/core/registers.sv",
+            "rtl/core/core.sv"
+          ],
+          "score": 0.3052682926829268
+        },
+        "include_dirs": {
+          "generated": [
+            "rtl/peripheral",
+            "rtl/core"
+          ],
+          "reference": [
+            "rtl/core"
+          ],
+          "score": 0.5
+        },
+        "language_version": {
+          "generated": "2005",
+          "reference": "2012",
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "rtl/external_peripheral/SPI-Master/tb/tb_spi_master.v",
+            "rtl/external_peripheral/DRAM_Controller/tb/async_fifo_tb.sv",
+            "rtl/external_peripheral/DRAM_Controller/tb/dram_controller_tb.sv",
+            "rtl/external_peripheral/DRAM_Controller/tb/fifo_tb.sv",
+            "rtl/external_peripheral/I2C-Master/tb/spi_slave_tb.sv",
+            "rtl/external_peripheral/SPI-Slave/tb/spi_slave_tb.sv",
+            "testbenchs/alu_tb.sv",
+            "testbenchs/async_fifo_tb.sv",
+            "testbenchs/bmu_tb.sv",
+            "testbenchs/core_tb.sv",
+            "testbenchs/d_cache_tb.sv",
+            "testbenchs/fifo_tb.sv",
+            "testbenchs/gpio_tb.sv",
+            "testbenchs/i_cache_tb.sv",
+            "testbenchs/immediate_generator_tb.sv",
+            "testbenchs/mdu_tb.sv",
+            "testbenchs/memory.sv",
+            "testbenchs/mux_tb.sv",
+            "testbenchs/registers_tb.sv",
+            "testbenchs/soc_test.sv",
+            "testbenchs/uart_rx_tb.sv",
+            "testbenchs/uart_tb.sv",
+            "testbenchs/uart_tx_tb.sv"
+          ],
+          "reference": [],
+          "score": 0.5
+        },
+        "march": {
+          "generated": "rv32i",
+          "reference": "rv32imc",
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "rtl/external_peripheral/DRAM_Controller/rtl/async_fifo.sv",
+            "fpga/tangnano20k/main.sv",
+            "fpga/zedboard/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/peripheral/pwm.sv",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/peripheral/hdmi.sv",
+            "rtl/peripheral/uart_rx.sv",
+            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
+            "fpga/nexys4_ddr/main.sv",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
+            "fpga/cyclone10gx/main.sv",
+            "rtl/peripheral/memory.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/peripheral/leds.sv",
+            "fpga/artyA7_100t/main.sv",
+            "rtl/peripheral/peripheral_bus.sv",
+            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
+            "fpga/opensourceSDRLabKintex7/litedram_core.v",
+            "fpga/opensourceSDRLabKintex7/main.sv",
+            "fpga/nexys4_ddr_mixed/main.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
+            "rtl/peripheral/uart.sv",
+            "fpga/vc709/main.sv",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/debug/jtag.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/peripheral/uart_tx.sv",
+            "rtl/core/bmu.sv",
+            "rtl/peripheral/async_fifo.sv",
+            "fpga/nexys4_ddr_yosys/main.sv",
+            "fpga/zcu102/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
+            "fpga/colorlight_i9/main.sv",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/peripheral/fifo.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
+            "rtl/peripheral/timer.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
+            "rtl/peripheral/gpios.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/peripheral/gpio.sv",
+            "rtl/peripheral/vga.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
+            "rtl/peripheral/soc.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/digilent_arty_a7/main.sv",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/core/fpu.sv",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv"
+          ],
+          "only_in_reference": [],
+          "common_files": [
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/ir_decomp.sv",
+            "rtl/core/registers.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/alu_control.sv",
+            "rtl/core/mux.sv",
+            "rtl/core/grande_risco5_types.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/alu.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/Grande_Risco5.sv",
+            "rtl/core/i_cache.sv",
+            "rtl/core/csr_unit.sv",
+            "rtl/core/core.sv",
+            "rtl/core/mdu.sv"
+          ],
+          "total_generated": 82,
+          "total_reference": 21
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'is' vs reference 'Grande_Risco5'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Grande-Risco-5",
+      "validation_time": 1758070171.3786812
+    }
+  ],
+  "common_issues": {
+    "top_module_mismatches": 3,
+    "file_list_issues": 3,
+    "include_dir_issues": 1,
+    "language_version_issues": 1,
+    "missing_fields": {},
+    "low_scores_by_field": {
+      "top_module": 2,
+      "files": 3,
+      "two_memory": 1,
+      "language_version": 1,
+      "march": 1
+    }
+  },
+  "field_performance": {
+    "top_module": {
+      "average_score": 0.3,
+      "min_score": 0.0,
+      "max_score": 0.7,
+      "perfect_matches": 0,
+      "total_cases": 3
+    },
+    "files": {
+      "average_score": 0.1017560975609756,
+      "min_score": 0.0,
+      "max_score": 0.3052682926829268,
+      "perfect_matches": 0,
+      "total_cases": 3
+    },
+    "include_dirs": {
+      "average_score": 0.8333333333333334,
+      "min_score": 0.5,
+      "max_score": 1.0,
+      "perfect_matches": 2,
+      "total_cases": 3
+    },
+    "language_version": {
+      "average_score": 0.6666666666666666,
+      "min_score": 0.0,
+      "max_score": 1.0,
+      "perfect_matches": 2,
+      "total_cases": 3
+    },
+    "sim_files": {
+      "average_score": 0.5,
+      "min_score": 0.5,
+      "max_score": 0.5,
+      "perfect_matches": 0,
+      "total_cases": 3
+    },
+    "extra_flags": {
+      "average_score": 1.0,
+      "min_score": 1.0,
+      "max_score": 1.0,
+      "perfect_matches": 3,
+      "total_cases": 3
+    },
+    "march": {
+      "average_score": 0.6666666666666666,
+      "min_score": 0.0,
+      "max_score": 1.0,
+      "perfect_matches": 2,
+      "total_cases": 3
+    },
+    "two_memory": {
+      "average_score": 0.6666666666666666,
+      "min_score": 0.0,
+      "max_score": 1.0,
+      "perfect_matches": 2,
+      "total_cases": 3
+    }
+  }
+}

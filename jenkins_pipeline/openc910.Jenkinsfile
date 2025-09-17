@@ -6,7 +6,7 @@ pipeline {
             steps {
                 sh 'rm -rf *.xml'
                 sh 'rm -rf openc910'
-                sh 'git clone --recursive --depth=1 https://github.com/XUANTIE-RV/openc910/ openc910'
+                sh 'git clone --recursive --depth=1 https://github.com/XUANTIE-RV/openc910 openc910'
             }
         }
 

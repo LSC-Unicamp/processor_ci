@@ -111,14 +111,14 @@ def is_testbench_file(file_path: str, repo_name: str) -> bool:
     file_name = os.path.basename(relative_path)
     directory_parts = os.path.dirname(relative_path).split(os.sep)
 
-    # Checking if the file name contains keywords
-    if re.search(r'(tb|testbench|test|verif)', file_name, re.IGNORECASE):
+    # Checking if the file name contains keywords (use word boundaries to avoid false positives)
+    if re.search(r'\b(tb|testbench|test|verif)\b', file_name, re.IGNORECASE):
         return True
 
-    # Checking if any part of the path contains keywords
+    # Checking if any part of the path contains keywords (use word boundaries)
     for part in directory_parts:
         if re.search(
-            r'(tests?|testbenches?|testbenchs?|simulations?|tb|sim|verif)',
+            r'\b(tests?|testbenches?|testbenchs?|simulations?|tb|sim|verif)\b',
             part,
             re.IGNORECASE,
         ):

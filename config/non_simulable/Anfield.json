@@ -3,6 +3,7 @@
     "folder": "Anfield",
     "sim_files": [],
     "files": [
+        "vsrc/defines.v",
         "vsrc/Anfield/Balotelli/Balotelli.v",
         "vsrc/Anfield/Balotelli/ALU/Adder/CLA.v",
         "vsrc/Anfield/Balotelli/ALU/Adder/CasAdder3_2.v",
@@ -18,9 +19,11 @@
         "vsrc/Anfield/Balotelli/ALU/Mul/GenPP.v",
         "vsrc/Anfield/Balotelli/ALU/Mul/Mul.v",
         "vsrc/Anfield/Balotelli/ALU/Mul/MulPreProcessing.v",
+        "vsrc/Anfield/Balotelli/Cache/DCache.v",
         "vsrc/Anfield/Balotelli/Cache/ICache.v",
         "vsrc/Anfield/Balotelli/Controler/Ctrl.v",
         "vsrc/Anfield/Balotelli/Controler/Fwu.v",
+        "vsrc/Anfield/Balotelli/Interface/AxiLiteMasterInterface.v",
         "vsrc/Anfield/Balotelli/Pipeline/Ex.v",
         "vsrc/Anfield/Balotelli/Pipeline/Ex2Mem.v",
         "vsrc/Anfield/Balotelli/Pipeline/Id.v",
@@ -45,11 +48,14 @@
         "vsrc/Anfield/Balotelli/Template/RegWithEnClearData.v",
         "vsrc/Anfield/Balotelli/Template/RegWithEnHoldData.v"
     ],
-    "include_dirs": [],
-    "repository": "https://github.com/Kaigard/Anfield.git",
+    "include_dirs": [
+        "vsrc/"
+    ],
+    "repository": "https://github.com/Kaigard/Anfield",
     "top_module": "Balotelli",
     "extra_flags": [],
-    "language_version": "2012",
+    "language_version": "2005",
     "march": "rv32i",
-    "two_memory": false
+    "pre_script": "sed -i 's#`include \"./vsrc/defines.v\"#`include \"defines.v\"#' $(find . -name \"*.sv\")",
+    "two_memory": true
 }

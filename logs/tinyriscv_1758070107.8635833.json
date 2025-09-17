@@ -15,7 +15,7 @@
     "repository": "https://github.com/liangkangnan/tinyriscv.git",
     "top_module": "tinyriscv",
     "extra_flags": [],
-    "language_version": "2012",
+    "language_version": "2005",
     "march": "rv32i",
     "two_memory": false
 }
