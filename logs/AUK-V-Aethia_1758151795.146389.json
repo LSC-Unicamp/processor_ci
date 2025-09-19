@@ -1,0 +1,38 @@
+{
+    "name": "AUK-V-Aethia",
+    "folder": "AUK-V-Aethia",
+    "sim_files": [
+        "tb/peripherals/spi/spi_tb.v",
+        "tb/soc/aukv_eggs_soc_tb.v"
+    ],
+    "files": [
+        "rtl/core/aukv.v",
+        "rtl/core/aukv_alu.v",
+        "rtl/core/aukv_csr_regfile.v",
+        "rtl/core/aukv_decode.v",
+        "rtl/core/aukv_execute.v",
+        "rtl/core/aukv_fetch.v",
+        "rtl/core/aukv_gpr_regfilie.v",
+        "rtl/core/aukv_mem.v",
+        "rtl/memory/cache.v",
+        "rtl/memory/oc_ram.v",
+        "rtl/memory/oc_rom.v",
+        "rtl/peripherals/fifo/fifo.v",
+        "rtl/peripherals/gpio/gpio.v",
+        "rtl/peripherals/uart/baud.v",
+        "rtl/peripherals/uart/uart.v",
+        "rtl/peripherals/uart/uart_rx.v",
+        "rtl/peripherals/uart/uart_tx.v",
+        "rtl/soc/aukv_eggs_soc.v",
+        "rtl/system/reset_sync.v"
+    ],
+    "include_dirs": [
+        "rtl/wishbone"
+    ],
+    "repository": "file:///home/gabcro/Code/Processor_CI/cores/AUK-V-Aethia",
+    "top_module": "aukv_eggs_soc",
+    "extra_flags": [],
+    "language_version": "2005",
+    "march": "rv32i",
+    "two_memory": false
+}

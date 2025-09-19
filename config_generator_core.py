@@ -225,12 +225,89 @@ def _analyze_instantiation_patterns(module_name: str, file_path: str) -> dict:
     }
 
 
+def _analyze_cpu_signals(module_name: str, file_path: str, instantiated_in_file: str) -> dict:
+    """
+    Analyze the signals/ports used when instantiating a module to determine if it's a CPU core.
+    Look for CPU-characteristic signals like address buses, data buses, memory interfaces, etc.
+    """
+    if not file_path or not os.path.exists(file_path) or not os.path.exists(instantiated_in_file):
+        return {'cpu_signal_score': 0, 'signals_found': []}
+    
+    try:
+        with open(instantiated_in_file, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+    except Exception:
+        return {'cpu_signal_score': 0, 'signals_found': []}
+    
+    # CPU core signal patterns (things connected to CPU cores)
+    cpu_signal_patterns = [
+        # Address/Memory bus signals
+        r'\b(addr|address|mem_addr|i_addr|d_addr)\b',
+        r'\b(data|mem_data|i_data|d_data|mem_rdata|mem_wdata|rdata|wdata)\b',
+        r'\b(mem_req|mem_gnt|mem_rvalid|mem_we|mem_be|we|be)\b',
+        r'\b(instr|instruction|i_req|i_gnt|i_rvalid)\b',
+        
+        # Cache signals
+        r'\b(icache|dcache|cache_req|cache_resp)\b',
+        
+        # Control signals
+        r'\b(clk|clock|rst|reset|rstn)\b',
+        r'\b(irq|interrupt|exception)\b',
+        r'\b(halt|stall|flush|valid|ready)\b',
+        
+        # RISC-V specific
+        r'\b(hart|hartid|mhartid)\b',
+        r'\b(retire|commit|trap)\b',
+        
+        # Bus interfaces
+        r'\b(axi|ahb|apb|wb|wishbone)\b',
+        r'\b(avalon|tilelink)\b'
+    ]
+    
+    # Look for instantiation of the specific module and analyze its connections
+    # Pattern: module_name instance_name ( .port(signal), ... );
+    module_instantiation_pattern = rf'\b{re.escape(module_name)}\s+(?:#\s*\([^)]*\))?\s*(\w+)\s*\((.*?)\);'
+    
+    cpu_signal_score = 0
+    signals_found = []
+    
+    for match in re.finditer(module_instantiation_pattern, content, re.DOTALL | re.IGNORECASE):
+        instance_name = match.group(1)
+        port_connections = match.group(2)
+        
+        # Analyze the port connections
+        for pattern in cpu_signal_patterns:
+            signal_matches = re.findall(pattern, port_connections, re.IGNORECASE)
+            if signal_matches:
+                cpu_signal_score += len(signal_matches)
+                signals_found.extend(signal_matches)
+    
+    # Bonus points for instance names that suggest CPU core
+    instance_pattern = rf'\b{re.escape(module_name)}\s+(?:#\s*\([^)]*\))?\s*(\w+)\s*\('
+    for match in re.finditer(instance_pattern, content, re.IGNORECASE):
+        instance_name = match.group(1).lower()
+        if any(term in instance_name for term in ['cpu', 'core', 'proc', 'hart', 'riscv']):
+            cpu_signal_score += 20  # Higher bonus for CPU-like instance names
+            signals_found.append(f"instance_name:{instance_name}")
+        elif instance_name.startswith('core'):  # core0, core1, etc.
+            cpu_signal_score += 25  # Even higher for numbered cores
+            signals_found.append(f"instance_name:{instance_name}")
+    
+    return {
+        'cpu_signal_score': cpu_signal_score,
+        'signals_found': list(set(signals_found))  # Remove duplicates
+    }
+
+
 def _find_cpu_core_in_soc(top_module: str, module_graph: dict, modules: list) -> str:
     """
     If the top module is a SoC, try to find the actual CPU core it instantiates.
     Returns the CPU core module name, or the original top_module if not found.
     """
+    print_green(f"[CORE_SEARCH] Starting SoC analysis for top_module: {top_module}")
+    
     if not top_module or not modules:
+        print_yellow(f"[CORE_SEARCH] Early return: top_module={top_module}, modules_count={len(modules) if modules else 0}")
         return top_module
     
     # Create module name to file path mapping
@@ -238,30 +315,39 @@ def _find_cpu_core_in_soc(top_module: str, module_graph: dict, modules: list) ->
     for module_name, file_path in modules:
         module_to_file[module_name] = file_path
     
+    print_green(f"[CORE_SEARCH] Created module mapping with {len(module_to_file)} entries")
+    
     # Get the file path for the top module
     top_file_path = module_to_file.get(top_module)
     if not top_file_path:
+        print_yellow(f"[CORE_SEARCH] No file found for top_module: {top_module}")
         return top_module
+    
+    print_green(f"[CORE_SEARCH] Found file for {top_module}: {top_file_path}")
     
     # Analyze what the top module instantiates
     patterns = _analyze_instantiation_patterns(top_module, top_file_path)
     if not patterns:
+        print_yellow(f"[CORE_SEARCH] No instantiation patterns found for {top_module}")
         return top_module
+    
+    print_green(f"[CORE_SEARCH] Instantiation patterns: {patterns}")
     
     # Check if this looks like a SoC (has peripherals)
     soc_ratio = patterns.get('soc_ratio', 0)
+    total_instances = patterns.get('total_instances', 0)
     instantiated_modules = patterns.get('instantiated_modules', [])
     
-    # If SoC ratio is significant, look for CPU core candidates among instantiated modules
-    if soc_ratio > 0.2:  # Has significant peripheral instantiations
-        print_green(f"[CORE_SEARCH] {top_module} appears to be a SoC (soc_ratio={soc_ratio:.2f}), searching for CPU core...")
+    # If SoC ratio is significant OR has many instances, look for CPU core candidates among instantiated modules
+    if soc_ratio > 0.1 or total_instances > 8:  # Has significant peripheral instantiations OR is complex enough to be an SoC
+        print_green(f"[CORE_SEARCH] {top_module} appears to be a SoC (soc_ratio={soc_ratio:.2f}, total_instances={total_instances}), searching for CPU core...")
         
         # Look for CPU core candidates among instantiated modules
         cpu_core_candidates = []
         
         for inst_module in instantiated_modules:
             # Skip obvious non-CPU modules
-            if any(skip in inst_module.lower() for skip in ['ram', 'rom', 'timer', 'uart', 'gpio', 'spi', 'i2c', 'vga', 'dma', 'bus', 'matrix', 'interface']):
+            if any(skip in inst_module.lower() for skip in ['ram', 'rom', 'timer', 'uart', 'gpio', 'spi', 'i2c', 'vga', 'dma', 'bus', 'matrix', 'interface', 'sync', 'interconnect']):
                 continue
                 
             # Analyze this potential CPU core - do case-insensitive module lookup
@@ -274,6 +360,9 @@ def _find_cpu_core_in_soc(top_module: str, module_graph: dict, modules: list) ->
                     break
             
             if inst_file_path:
+                # Analyze the signals used when instantiating this module
+                signal_analysis = _analyze_cpu_signals(proper_module_name, inst_file_path, top_file_path)
+                
                 inst_patterns = _analyze_instantiation_patterns(proper_module_name, inst_file_path)
                 if inst_patterns:
                     inst_cpu_ratio = inst_patterns.get('cpu_ratio', 0)
@@ -284,8 +373,20 @@ def _find_cpu_core_in_soc(top_module: str, module_graph: dict, modules: list) ->
                     cpu_score = 0
                     
                     # Prefer modules with CPU-like keywords in name
-                    if any(cpu_term in proper_module_name.lower() for cpu_term in ['cpu', 'core', 'risc', 'processor']):
+                    name_lower = proper_module_name.lower()
+                    if any(cpu_term in name_lower for cpu_term in ['cpu', 'core', 'risc', 'processor', 'hart']):
                         cpu_score += 10
+                    
+                    # Special bonus for repo-specific core names (like 'aukv' for AUK-V)
+                    if top_module:
+                        top_parts = [part.lower() for part in top_module.replace('_', ' ').split() if len(part) > 2]
+                        for part in top_parts:
+                            if part in name_lower and part not in ['soc', 'system', 'top', 'eggs']:
+                                cpu_score += 15  # Higher bonus for repo-specific names
+                    
+                    # Signal analysis score - this is the key addition!
+                    signal_score = signal_analysis['cpu_signal_score']
+                    cpu_score += signal_score
                     
                     # Prefer modules with CPU-like internal structure
                     if inst_cpu_ratio > inst_soc_ratio:
@@ -299,8 +400,10 @@ def _find_cpu_core_in_soc(top_module: str, module_graph: dict, modules: list) ->
                     
                     # Only consider if it has some positive indicators
                     if cpu_score > 0:
-                        cpu_core_candidates.append((proper_module_name, cpu_score, inst_cpu_ratio, inst_total))
-                        print_green(f"[CORE_SEARCH] Found CPU core candidate: {proper_module_name} (score={cpu_score}, cpu_ratio={inst_cpu_ratio:.2f}, instances={inst_total})")
+                        cpu_core_candidates.append((proper_module_name, cpu_score, inst_cpu_ratio, inst_total, signal_analysis))
+                        print_green(f"[CORE_SEARCH] Found CPU core candidate: {proper_module_name}")
+                        print_green(f"[CORE_SEARCH]   Total score={cpu_score} (signal_score={signal_score}, cpu_ratio={inst_cpu_ratio:.2f}, instances={inst_total})")
+                        print_green(f"[CORE_SEARCH]   CPU signals found: {signal_analysis['signals_found']}")
         
         # Select the best CPU core candidate
         if cpu_core_candidates:
@@ -320,8 +423,8 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
     Rank module candidates to identify the best top module.
     Analyzes both module connectivity and instantiation patterns to distinguish CPU cores from SoC tops.
     """
-    children_of = _ensure_mapping(module_graph)
-    parents_of = _ensure_mapping(module_graph_inverse)
+    children_of = _ensure_mapping(module_graph_inverse)
+    parents_of = _ensure_mapping(module_graph)
 
     nodes = set(children_of.keys()) | set(parents_of.keys())
     for n in nodes:
@@ -332,15 +435,30 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
     valid_modules = []
     verilog_keywords = {"if", "else", "always", "initial", "begin", "end", "case", "default", "for", "while", "assign"}
     
+    print_green(f"[DEBUG] All found modules: {sorted(nodes)}")
+    
     for module in nodes:
         if (module not in verilog_keywords and 
             len(module) > 1 and 
             (module.replace('_', '').isalnum())):
             valid_modules.append(module)
     
+    print_green(f"[DEBUG] Valid modules after filtering: {sorted(valid_modules)}")
+    
     # Find candidates: modules with few parents are preferred
     zero_parent_modules = [m for m in valid_modules if not parents_of.get(m, [])]
     low_parent_modules = [m for m in valid_modules if len(parents_of.get(m, [])) <= 2]
+    
+    print_green(f"[DEBUG] Zero parent modules: {sorted(zero_parent_modules)}")
+    print_green(f"[DEBUG] Low parent modules: {sorted(low_parent_modules)}")
+    
+    # Debug: check specific modules
+    for mod in ['aukv', 'aukv_eggs_soc']:
+        if mod in valid_modules:
+            parents = parents_of.get(mod, [])
+            print_green(f"[DEBUG] Module '{mod}' has parents: {parents}")
+        else:
+            print_yellow(f"[DEBUG] Module '{mod}' not in valid_modules")
     
     # Include repo name matches even if they have many parents
     repo_name_matches = []
@@ -474,7 +592,7 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
         if any(pattern in name_lower for pattern in ["_tb", "tb_", "test", "bench"]):
             score -= 10000
         
-        peripheral_terms = ["uart", "spi", "i2c", "gpio", "timer", "dma", "plic", "clint"]
+        peripheral_terms = ["uart", "spi", "i2c", "gpio", "timer", "dma", "plic", "clint", "baud", "fifo", "ram", "rom", "cache"]
         if any(term in name_lower for term in peripheral_terms):
             score -= 3000
         
@@ -775,9 +893,11 @@ def interactive_simulate_and_minimize(
 
     # Phase B: top selection
     print_green(f"[DEBUG] About to rank candidates with repo_name='{repo_name}'")
+    print_green(f"[DEBUG] Available modules in graph: {[module_name for module_name, _ in modules]}")
     candidates, cpu_core_matches = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
     print_green(f"[TOP-CAND] Ranked candidates: {candidates}")
     print_green(f"[DEBUG] CPU core matches: {cpu_core_matches}")
+    
 
     selected_top = None
     working_candidates = []
@@ -1337,7 +1457,7 @@ def generate_processor_config(
         language_version=language_version,
         cpu_core_matches=cpu_core_matches,
         maximize_attempts=6,
-        verilator_extra_flags=['-Wno-lint', '-Wno-fatal'],
+        verilator_extra_flags=['-Wno-lint', '-Wno-fatal', '-Wno-style'],
         ghdl_extra_flags=['--std=08'],
     )
 

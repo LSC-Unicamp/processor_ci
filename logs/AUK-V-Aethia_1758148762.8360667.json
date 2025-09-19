@@ -1,0 +1,20 @@
+{
+    "name": "AUK-V-Aethia",
+    "folder": "AUK-V-Aethia",
+    "sim_files": [
+        "tb/peripherals/spi/spi_tb.v",
+        "tb/soc/aukv_eggs_soc_tb.v"
+    ],
+    "files": [
+        "rtl/peripherals/uart/baud.v"
+    ],
+    "include_dirs": [
+        "rtl/wishbone"
+    ],
+    "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
+    "top_module": "baud",
+    "extra_flags": [],
+    "language_version": "2005",
+    "march": "rv32i",
+    "two_memory": false
+}

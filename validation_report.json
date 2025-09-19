@@ -1,11 +1,11 @@
 {
   "summary": {
-    "total_processors": 3,
-    "successful_validations": 3,
+    "total_processors": 10,
+    "successful_validations": 10,
     "failed_validations": 0,
-    "average_score": 0.4404390243902439,
-    "high_scores": 0,
-    "medium_scores": 0,
+    "average_score": 0.6764459988813647,
+    "high_scores": 4,
+    "medium_scores": 3,
     "low_scores": 3
   },
   "detailed_results": [
@@ -72,14 +72,14 @@
             "rtl/peripherals/uart/baud.v"
           ],
           "only_in_reference": [
-            "rtl/core/aukv_gpr_regfilie.v",
-            "rtl/core/aukv_decode.v",
-            "rtl/core/aukv.v",
-            "rtl/core/aukv_mem.v",
+            "rtl/core/aukv_execute.v",
             "rtl/core/aukv_alu.v",
-            "rtl/core/aukv_csr_regfile.v",
+            "rtl/core/aukv_decode.v",
             "rtl/core/aukv_fetch.v",
-            "rtl/core/aukv_execute.v"
+            "rtl/core/aukv_mem.v",
+            "rtl/core/aukv_gpr_regfilie.v",
+            "rtl/core/aukv.v",
+            "rtl/core/aukv_csr_regfile.v"
           ],
           "common_files": [],
           "total_generated": 1,
@@ -92,7 +92,7 @@
       },
       "is_simulable": true,
       "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
-      "validation_time": 1758070146.3872373
+      "validation_time": 1758148762.8373907
     },
     {
       "processor_name": "Baby-Risco-5",
@@ -161,10 +161,10 @@
           ],
           "only_in_reference": [
             "src/core/registers.v",
-            "src/core/alu_control.v",
-            "src/core/control_unit.v",
-            "src/core/alu.v",
             "src/core/immediate_generator.v",
+            "src/core/control_unit.v",
+            "src/core/alu_control.v",
+            "src/core/alu.v",
             "src/core/core.v"
           ],
           "common_files": [],
@@ -178,7 +178,7 @@
       },
       "is_simulable": true,
       "repository": "https://github.com/JN513/Baby-Risco-5",
-      "validation_time": 1758070149.905282
+      "validation_time": 1758148766.5586493
     },
     {
       "processor_name": "Grande-Risco-5",
@@ -315,8 +315,8 @@
         },
         "include_dirs": {
           "generated": [
-            "rtl/peripheral",
-            "rtl/core"
+            "rtl/core",
+            "rtl/peripheral"
           ],
           "reference": [
             "rtl/core"
@@ -368,91 +368,91 @@
       "detailed_analysis": {
         "file_analysis": {
           "only_in_generated": [
+            "fpga/opensourceSDRLabKintex7/litedram_core.v",
             "rtl/external_peripheral/DRAM_Controller/rtl/async_fifo.sv",
-            "fpga/tangnano20k/main.sv",
-            "fpga/zedboard/main.sv",
-            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
-            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
-            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
-            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/peripheral/memory.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
             "rtl/peripheral/pwm.sv",
             "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/peripheral/hdmi.sv",
-            "rtl/peripheral/uart_rx.sv",
-            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
-            "fpga/nexys4_ddr/main.sv",
-            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
-            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
-            "fpga/cyclone10gx/main.sv",
-            "rtl/peripheral/memory.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
-            "rtl/peripheral/leds.sv",
-            "fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv",
             "rtl/peripheral/peripheral_bus.sv",
-            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
-            "fpga/opensourceSDRLabKintex7/litedram_core.v",
-            "fpga/opensourceSDRLabKintex7/main.sv",
-            "fpga/nexys4_ddr_mixed/main.sv",
-            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
-            "rtl/peripheral/uart.sv",
-            "fpga/vc709/main.sv",
             "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/debug/jtag.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
             "rtl/peripheral/uart_tx.sv",
-            "rtl/core/bmu.sv",
-            "rtl/peripheral/async_fifo.sv",
-            "fpga/nexys4_ddr_yosys/main.sv",
-            "fpga/zcu102/main.sv",
-            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
-            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
-            "fpga/colorlight_i9/main.sv",
-            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
-            "rtl/peripheral/fifo.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
-            "rtl/peripheral/timer.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
-            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
-            "rtl/peripheral/gpios.sv",
-            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
-            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/peripheral/leds.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
+            "rtl/debug/jtag.sv",
+            "rtl/peripheral/uart.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
             "rtl/peripheral/gpio.sv",
-            "rtl/peripheral/vga.sv",
-            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
-            "rtl/peripheral/soc.sv",
+            "rtl/peripheral/gpios.sv",
+            "fpga/opensourceSDRLabKintex7/main.sv",
             "rtl/external_peripheral/SPI-Slave/fpga/digilent_arty_a7/main.sv",
-            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/zcu102/main.sv",
+            "rtl/core/bmu.sv",
+            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
+            "fpga/nexys4_ddr_mixed/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/cyclone10gx/main.sv",
+            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
             "rtl/core/fpu.sv",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
+            "fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
+            "rtl/peripheral/vga.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
             "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv"
+            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
+            "rtl/peripheral/soc.sv",
+            "fpga/tangnano20k/main.sv",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/peripheral/async_fifo.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
+            "rtl/peripheral/hdmi.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
+            "rtl/peripheral/fifo.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
+            "rtl/peripheral/uart_rx.sv",
+            "fpga/vc709/main.sv",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/nexys4_ddr/main.sv",
+            "rtl/peripheral/timer.sv",
+            "fpga/zedboard/main.sv",
+            "fpga/nexys4_ddr_yosys/main.sv"
           ],
           "only_in_reference": [],
           "common_files": [
-            "rtl/core/forwarding_unit.sv",
-            "rtl/core/d_cache.sv",
-            "rtl/core/ir_decomp.sv",
-            "rtl/core/registers.sv",
-            "rtl/core/EXMEM.sv",
-            "rtl/core/alu_control.sv",
+            "rtl/core/mdu.sv",
+            "rtl/core/i_cache.sv",
             "rtl/core/mux.sv",
             "rtl/core/grande_risco5_types.sv",
-            "rtl/core/IFID.sv",
-            "rtl/core/invalid_ir_check.sv",
-            "rtl/core/alu.sv",
-            "rtl/core/IDEX.sv",
-            "rtl/core/immediate_generator.sv",
-            "rtl/core/cache_request_multiplexer.sv",
-            "rtl/core/MEMWB.sv",
-            "rtl/core/branch_prediction.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/ir_decomp.sv",
             "rtl/core/Grande_Risco5.sv",
-            "rtl/core/i_cache.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/registers.sv",
+            "rtl/core/alu_control.sv",
             "rtl/core/csr_unit.sv",
             "rtl/core/core.sv",
-            "rtl/core/mdu.sv"
+            "rtl/core/alu.sv"
           ],
           "total_generated": 82,
           "total_reference": 21
@@ -464,10 +464,1572 @@
       },
       "is_simulable": true,
       "repository": "https://github.com/JN513/Grande-Risco-5",
-      "validation_time": 1758070171.3786812
+      "validation_time": 1758148788.6821938
+    },
+    {
+      "processor_name": "NutShell",
+      "overall_score": 0.785,
+      "field_scores": {
+        "top_module": 0.7,
+        "files": 1.0,
+        "include_dirs": 0.5,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "files": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "body",
+          "reference": "",
+          "score": 0.7
+        },
+        "include_dirs": {
+          "generated": [
+            "fpga/lib/include",
+            "fpga/board/axu3cg/rtl/hdmi"
+          ],
+          "reference": [],
+          "score": 0.5
+        },
+        "sim_files": {
+          "generated": [
+            "difftest/src/test/vsrc/common/SimJTAG.v",
+            "difftest/src/test/vsrc/common/assert.v",
+            "difftest/src/test/vsrc/common/ref.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_axi.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_clock.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_ctrl.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_wrapper.v",
+            "difftest/src/test/vsrc/vcs/DeferredControl.v",
+            "difftest/src/test/vsrc/vcs/top.v",
+            "difftest/src/test/vsrc/vcs/DifftestEndpoint.sv"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [],
+          "common_files": [
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_byte_ctrl.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_config.v",
+            "fpga/board/axu3cg/rtl/system_top.v",
+            "fpga/board/PXIe/rtl/addr_mapper.v",
+            "fpga/board/axu3cg/rtl/hdmi/timescale.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_defines.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_bit_ctrl.v",
+            "fpga/board/PXIe/rtl/system_top.v",
+            "fpga/board/axu3cg/rtl/addr_mapper.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_top.v"
+          ],
+          "total_generated": 10,
+          "total_reference": 10
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'body' vs reference ''"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/OSCPU/NutShell",
+      "validation_time": 1758148794.8425481
+    },
+    {
+      "processor_name": "Pequeno-Risco-5",
+      "overall_score": 0.8272727272727274,
+      "field_scores": {
+        "top_module": 1.0,
+        "files": 0.9090909090909091,
+        "include_dirs": 1.0,
+        "language_version": 0.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "top_module": true,
+        "include_dirs": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "files": {
+          "generated": [
+            "fpga/ecp5/main.v",
+            "src/alu.v",
+            "src/alu_control.v",
+            "src/control_unit.v",
+            "src/core.v",
+            "src/data_memory.v",
+            "src/immediate_generator.v",
+            "src/instruction_memory.v",
+            "src/mux.v",
+            "src/pc.v",
+            "src/registers.v"
+          ],
+          "reference": [
+            "src/alu.v",
+            "src/alu_control.v",
+            "src/control_unit.v",
+            "src/core.v",
+            "src/immediate_generator.v",
+            "src/mux.v",
+            "src/pc.v",
+            "src/registers.v",
+            "src/instruction_memory.v",
+            "src/data_memory.v"
+          ],
+          "score": 0.9090909090909091
+        },
+        "language_version": {
+          "generated": "2012",
+          "reference": "2005",
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "tests/alu_test.v",
+            "tests/core_test.v",
+            "tests/mux_test.v",
+            "tests/pc_test.v",
+            "tests/registers_test.v"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "fpga/ecp5/main.v"
+          ],
+          "only_in_reference": [],
+          "common_files": [
+            "src/core.v",
+            "src/alu.v",
+            "src/control_unit.v",
+            "src/immediate_generator.v",
+            "src/alu_control.v",
+            "src/mux.v",
+            "src/pc.v",
+            "src/data_memory.v",
+            "src/instruction_memory.v",
+            "src/registers.v"
+          ],
+          "total_generated": 11,
+          "total_reference": 10
+        },
+        "recommendations": [],
+        "critical_issues": []
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Pequeno-Risco-5",
+      "validation_time": 1758148796.6632276
+    },
+    {
+      "processor_name": "RISC-V",
+      "overall_score": 0.9633333333333334,
+      "field_scores": {
+        "top_module": 1.0,
+        "files": 0.9333333333333333,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 1.0,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 0.0
+      },
+      "matches": {
+        "top_module": true,
+        "include_dirs": true,
+        "language_version": true,
+        "sim_files": true,
+        "extra_flags": true,
+        "march": true
+      },
+      "differences": {
+        "files": {
+          "generated": [
+            "core/ALU.v",
+            "core/control_unit.v",
+            "core/core.v",
+            "core/csr_unit.v",
+            "core/forwarding_unit.v",
+            "core/hazard_detection_unit.v",
+            "core/imm_decoder.v",
+            "core/load_store_unit.v",
+            "core/muldiv/MULDIV_ctrl.v",
+            "core/muldiv/MULDIV_in.v",
+            "core/muldiv/MULDIV_top.v",
+            "core/muldiv/MUL_DIV_out.v",
+            "core/muldiv/divider_32.v",
+            "core/muldiv/multiplier_32.v"
+          ],
+          "reference": [
+            "core/ALU.v",
+            "core/control_unit.v",
+            "core/core.v",
+            "core/core_wb.v",
+            "core/csr_unit.v",
+            "core/forwarding_unit.v",
+            "core/hazard_detection_unit.v",
+            "core/imm_decoder.v",
+            "core/load_store_unit.v",
+            "core/muldiv/MULDIV_ctrl.v",
+            "core/muldiv/MULDIV_in.v",
+            "core/muldiv/MULDIV_top.v",
+            "core/muldiv/MUL_DIV_out.v",
+            "core/muldiv/divider_32.v",
+            "core/muldiv/multiplier_32.v"
+          ],
+          "score": 0.9333333333333333
+        },
+        "two_memory": {
+          "generated": false,
+          "reference": true,
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [
+            "core/core_wb.v"
+          ],
+          "common_files": [
+            "core/csr_unit.v",
+            "core/muldiv/MULDIV_top.v",
+            "core/load_store_unit.v",
+            "core/hazard_detection_unit.v",
+            "core/control_unit.v",
+            "core/core.v",
+            "core/muldiv/divider_32.v",
+            "core/ALU.v",
+            "core/muldiv/MULDIV_in.v",
+            "core/forwarding_unit.v",
+            "core/muldiv/MULDIV_ctrl.v",
+            "core/muldiv/multiplier_32.v",
+            "core/imm_decoder.v",
+            "core/muldiv/MUL_DIV_out.v"
+          ],
+          "total_generated": 14,
+          "total_reference": 15
+        },
+        "recommendations": [],
+        "critical_issues": []
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/yavuz650/RISC-V",
+      "validation_time": 1758148802.43032
+    },
+    {
+      "processor_name": "RPU",
+      "overall_score": 0.8600000000000001,
+      "field_scores": {
+        "top_module": 0.7,
+        "files": 1.0,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "files": true,
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "rpu_core_tb",
+          "reference": "core",
+          "score": 0.7
+        },
+        "sim_files": {
+          "generated": [
+            "tests/rpu_core_tb.vhd",
+            "tests/tb_alu_int32_div.vhd",
+            "tests/tb_unit_alu_RV32I_01.vhd",
+            "tests/tb_unit_decoder_RV32_01.vhd"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [],
+          "common_files": [
+            "vhdl/csr_unit.vhd",
+            "vhdl/control_unit.vhd",
+            "vhdl/pc_unit.vhd",
+            "vhdl/register_set.vhd",
+            "vhdl/core.vhd",
+            "vhdl/lint_unit.vhd",
+            "vhdl/constants.vhd",
+            "vhdl/unit_decoder_RV32I.vhd",
+            "vhdl/mem_controller.vhd",
+            "vhdl/unit_alu_RV32_I.vhd",
+            "vhdl/alu_int32_div.vhd"
+          ],
+          "total_generated": 11,
+          "total_reference": 11
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'rpu_core_tb' vs reference 'core'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/Domipheus/RPU",
+      "validation_time": 1758148805.1227098
+    },
+    {
+      "processor_name": "RV12",
+      "overall_score": 0.5904914004914006,
+      "field_scores": {
+        "top_module": 0.18648648648648652,
+        "files": 0.8181818181818182,
+        "include_dirs": 1.0,
+        "language_version": 0.0,
+        "sim_files": 1.0,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 0.0
+      },
+      "matches": {
+        "include_dirs": true,
+        "sim_files": true,
+        "extra_flags": true,
+        "march": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "riscv_noicache_core",
+          "reference": "riscv_top_ahb3lite",
+          "score": 0.18648648648648652
+        },
+        "files": {
+          "generated": [
+            "bench/verilog/ahb3lite/dbg_bfm.sv",
+            "bench/verilog/ahb3lite/memory_model_ahb3lite.sv",
+            "bench/verilog/ahb3lite/testbench_top.sv",
+            "rtl/verilog/ahb3lite/biu_ahb3lite.sv",
+            "rtl/verilog/ahb3lite/riscv_top_ahb3lite.sv",
+            "rtl/verilog/core/riscv_bp.sv",
+            "rtl/verilog/core/riscv_core.sv",
+            "rtl/verilog/core/riscv_du.sv",
+            "rtl/verilog/core/riscv_dwb.sv",
+            "rtl/verilog/core/riscv_ex.sv",
+            "rtl/verilog/core/riscv_id.sv",
+            "rtl/verilog/core/riscv_if.sv",
+            "rtl/verilog/core/riscv_mem.sv",
+            "rtl/verilog/core/riscv_parcel_queue.sv",
+            "rtl/verilog/core/riscv_pd.sv",
+            "rtl/verilog/core/riscv_rf.sv",
+            "rtl/verilog/core/riscv_rsb.sv",
+            "rtl/verilog/core/riscv_state1.10.sv",
+            "rtl/verilog/core/riscv_state1.7.sv",
+            "rtl/verilog/core/riscv_state1.9.sv",
+            "rtl/verilog/core/riscv_state_20240411.sv",
+            "rtl/verilog/core/riscv_wb.sv",
+            "rtl/verilog/core/cache/riscv_cache_biu_ctrl.sv",
+            "rtl/verilog/core/cache/riscv_cache_memory.sv",
+            "rtl/verilog/core/cache/riscv_cache_setup.sv",
+            "rtl/verilog/core/cache/riscv_cache_tag.sv",
+            "rtl/verilog/core/cache/riscv_dcache_core.sv",
+            "rtl/verilog/core/cache/riscv_dcache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_icache_core.sv",
+            "rtl/verilog/core/cache/riscv_icache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_nodcache_core.sv",
+            "rtl/verilog/core/cache/riscv_noicache_core.sv",
+            "rtl/verilog/core/ex/riscv_alu.sv",
+            "rtl/verilog/core/ex/riscv_bu.sv",
+            "rtl/verilog/core/ex/riscv_div.sv",
+            "rtl/verilog/core/ex/riscv_lsu.sv",
+            "rtl/verilog/core/ex/riscv_mul.sv",
+            "rtl/verilog/core/memory/riscv_dmem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_imem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_membuf.sv",
+            "rtl/verilog/core/memory/riscv_memmisaligned.sv",
+            "rtl/verilog/core/memory/riscv_mmu.sv",
+            "rtl/verilog/core/memory/riscv_pmachk.sv",
+            "rtl/verilog/core/memory/riscv_pmpchk.sv",
+            "rtl/verilog/core/memory/riscv_wbuf.sv",
+            "rtl/verilog/core/mmu/riscv_nommu.sv",
+            "rtl/verilog/pkg/biu_constants_pkg.sv",
+            "rtl/verilog/pkg/riscv_cache_pkg.sv",
+            "rtl/verilog/pkg/riscv_du_pkg.sv",
+            "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
+            "rtl/verilog/pkg/riscv_pma_pkg.sv",
+            "rtl/verilog/pkg/riscv_rv12_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.10_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.7_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.9_pkg.sv",
+            "rtl/verilog/pkg/riscv_state_20240411_pkg.sv",
+            "submodules/ahb3lite_pkg/rtl/verilog/ahb3lite_pkg.sv",
+            "submodules/memory/rtl/verilog/rl_queue.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3xs.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_generic.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_lattice.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_generic.sv"
+          ],
+          "reference": [
+            "submodules/ahb3lite_pkg/rtl/verilog/ahb3lite_pkg.sv",
+            "rtl/verilog/pkg/riscv_cache_pkg.sv",
+            "rtl/verilog/pkg/riscv_du_pkg.sv",
+            "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
+            "rtl/verilog/pkg/riscv_rv12_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.10_pkg.sv",
+            "rtl/verilog/pkg/riscv_state_20240411_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.7_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.9_pkg.sv",
+            "rtl/verilog/pkg/riscv_pma_pkg.sv",
+            "rtl/verilog/pkg/biu_constants_pkg.sv",
+            "rtl/verilog/ahb3lite/biu_ahb3lite.sv",
+            "rtl/verilog/ahb3lite/riscv_top_ahb3lite.sv",
+            "rtl/verilog/core/riscv_bp.sv",
+            "rtl/verilog/core/riscv_core.sv",
+            "rtl/verilog/core/riscv_du.sv",
+            "rtl/verilog/core/riscv_dwb.sv",
+            "rtl/verilog/core/riscv_ex.sv",
+            "rtl/verilog/core/riscv_id.sv",
+            "rtl/verilog/core/riscv_if.sv",
+            "rtl/verilog/core/riscv_mem.sv",
+            "rtl/verilog/core/riscv_parcel_queue.sv",
+            "rtl/verilog/core/riscv_pd.sv",
+            "rtl/verilog/core/riscv_rf.sv",
+            "rtl/verilog/core/riscv_rsb.sv",
+            "rtl/verilog/core/riscv_state1.10.sv",
+            "rtl/verilog/core/riscv_state1.7.sv",
+            "rtl/verilog/core/riscv_state1.9.sv",
+            "rtl/verilog/core/riscv_state_20240411.sv",
+            "rtl/verilog/core/riscv_wb.sv",
+            "rtl/verilog/core/cache/riscv_cache_biu_ctrl.sv",
+            "rtl/verilog/core/cache/riscv_cache_memory.sv",
+            "rtl/verilog/core/cache/riscv_cache_setup.sv",
+            "rtl/verilog/core/cache/riscv_cache_tag.sv",
+            "rtl/verilog/core/cache/riscv_dcache_core.sv",
+            "rtl/verilog/core/cache/riscv_dcache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_icache_core.sv",
+            "rtl/verilog/core/cache/riscv_icache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_nodcache_core.sv",
+            "rtl/verilog/core/cache/riscv_noicache_core.sv",
+            "rtl/verilog/core/ex/riscv_alu.sv",
+            "rtl/verilog/core/ex/riscv_bu.sv",
+            "rtl/verilog/core/ex/riscv_div.sv",
+            "rtl/verilog/core/ex/riscv_lsu.sv",
+            "rtl/verilog/core/ex/riscv_mul.sv",
+            "rtl/verilog/core/memory/riscv_dmem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_imem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_membuf.sv",
+            "rtl/verilog/core/memory/riscv_memmisaligned.sv",
+            "rtl/verilog/core/memory/riscv_mmu.sv",
+            "rtl/verilog/core/memory/riscv_pmachk.sv",
+            "rtl/verilog/core/memory/riscv_pmpchk.sv",
+            "rtl/verilog/core/memory/riscv_wbuf.sv",
+            "rtl/verilog/core/mmu/riscv_nommu.sv"
+          ],
+          "score": 0.8181818181818182
+        },
+        "language_version": {
+          "generated": "2017",
+          "reference": "2012",
+          "score": 0.0
+        },
+        "two_memory": {
+          "generated": false,
+          "reference": true,
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_generic.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3xs.sv",
+            "bench/verilog/ahb3lite/dbg_bfm.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_generic.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_lattice.sv",
+            "submodules/memory/rtl/verilog/rl_queue.sv",
+            "bench/verilog/ahb3lite/memory_model_ahb3lite.sv",
+            "bench/verilog/ahb3lite/testbench_top.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw.sv"
+          ],
+          "only_in_reference": [],
+          "common_files": [
+            "rtl/verilog/pkg/riscv_state1.7_pkg.sv",
+            "rtl/verilog/core/mmu/riscv_nommu.sv",
+            "rtl/verilog/core/ex/riscv_alu.sv",
+            "rtl/verilog/pkg/riscv_rv12_pkg.sv",
+            "rtl/verilog/core/cache/riscv_cache_tag.sv",
+            "rtl/verilog/core/riscv_id.sv",
+            "rtl/verilog/core/cache/riscv_noicache_core.sv",
+            "rtl/verilog/core/memory/riscv_mmu.sv",
+            "rtl/verilog/core/memory/riscv_pmpchk.sv",
+            "rtl/verilog/core/riscv_core.sv",
+            "rtl/verilog/core/riscv_pd.sv",
+            "rtl/verilog/pkg/riscv_state_20240411_pkg.sv",
+            "rtl/verilog/core/memory/riscv_imem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_wbuf.sv",
+            "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
+            "rtl/verilog/core/riscv_rsb.sv",
+            "rtl/verilog/core/riscv_wb.sv",
+            "rtl/verilog/core/ex/riscv_div.sv",
+            "rtl/verilog/core/riscv_mem.sv",
+            "rtl/verilog/core/cache/riscv_cache_setup.sv",
+            "rtl/verilog/core/ex/riscv_mul.sv",
+            "rtl/verilog/core/memory/riscv_memmisaligned.sv",
+            "rtl/verilog/pkg/riscv_state1.9_pkg.sv",
+            "rtl/verilog/core/ex/riscv_lsu.sv",
+            "rtl/verilog/core/riscv_state1.9.sv",
+            "rtl/verilog/core/riscv_dwb.sv",
+            "submodules/ahb3lite_pkg/rtl/verilog/ahb3lite_pkg.sv",
+            "rtl/verilog/core/riscv_state_20240411.sv",
+            "rtl/verilog/core/cache/riscv_dcache_core.sv",
+            "rtl/verilog/core/cache/riscv_cache_biu_ctrl.sv",
+            "rtl/verilog/core/riscv_parcel_queue.sv",
+            "rtl/verilog/core/riscv_if.sv",
+            "rtl/verilog/core/cache/riscv_icache_core.sv",
+            "rtl/verilog/core/riscv_bp.sv",
+            "rtl/verilog/pkg/riscv_pma_pkg.sv",
+            "rtl/verilog/core/memory/riscv_dmem_ctrl.sv",
+            "rtl/verilog/core/riscv_rf.sv",
+            "rtl/verilog/core/riscv_state1.7.sv",
+            "rtl/verilog/core/cache/riscv_nodcache_core.sv",
+            "rtl/verilog/core/cache/riscv_dcache_fsm.sv",
+            "rtl/verilog/ahb3lite/riscv_top_ahb3lite.sv",
+            "rtl/verilog/core/riscv_ex.sv",
+            "rtl/verilog/pkg/biu_constants_pkg.sv",
+            "rtl/verilog/ahb3lite/biu_ahb3lite.sv",
+            "rtl/verilog/pkg/riscv_state1.10_pkg.sv",
+            "rtl/verilog/pkg/riscv_du_pkg.sv",
+            "rtl/verilog/core/riscv_du.sv",
+            "rtl/verilog/core/riscv_state1.10.sv",
+            "rtl/verilog/core/ex/riscv_bu.sv",
+            "rtl/verilog/pkg/riscv_cache_pkg.sv",
+            "rtl/verilog/core/memory/riscv_pmachk.sv",
+            "rtl/verilog/core/memory/riscv_membuf.sv",
+            "rtl/verilog/core/cache/riscv_cache_memory.sv",
+            "rtl/verilog/core/cache/riscv_icache_fsm.sv"
+          ],
+          "total_generated": 66,
+          "total_reference": 54
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'riscv_noicache_core' vs reference 'riscv_top_ahb3lite'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/roalogic/RV12",
+      "validation_time": 1758148814.238244
+    },
+    {
+      "processor_name": "Risco-5",
+      "overall_score": 0.5295454545454545,
+      "field_scores": {
+        "top_module": 0.0,
+        "files": 1.0,
+        "include_dirs": 0.5,
+        "language_version": 1.0,
+        "sim_files": 0.04545454545454545,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "files": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "Core",
+          "reference": "soc_tb",
+          "score": 0.0
+        },
+        "include_dirs": {
+          "generated": [
+            "src/peripheral",
+            "src/core"
+          ],
+          "reference": [
+            "src/core/"
+          ],
+          "score": 0.5
+        },
+        "sim_files": {
+          "generated": [
+            "tests/alu_test.v",
+            "tests/clk_divider.v",
+            "tests/core_test.v",
+            "tests/fifo_test.v",
+            "tests/gpio_test.v",
+            "tests/immediate_generator_test.v",
+            "tests/mux_test.v",
+            "tests/pc_test.v",
+            "tests/registers_test.v",
+            "tests/reset_test.v",
+            "tests/soc_test.v"
+          ],
+          "reference": [
+            "tests/soc_test.v",
+            "src/peripheral/bus.v",
+            "src/peripheral/fifo.v",
+            "src/peripheral/gpios.v",
+            "src/peripheral/gpio.v",
+            "src/peripheral/leds.v",
+            "src/peripheral/memory.v",
+            "src/peripheral/pwm.v",
+            "src/peripheral/soc.v",
+            "src/peripheral/uart_rx.v",
+            "src/peripheral/uart_tx.v",
+            "src/peripheral/uart.v"
+          ],
+          "score": 0.04545454545454545
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [],
+          "common_files": [
+            "src/core/mdu.v",
+            "src/core/csr_unit.v",
+            "src/core/registers.v",
+            "src/core/pc.v",
+            "src/core/immediate_generator.v",
+            "src/core/control_unit.v",
+            "src/core/mux.v",
+            "src/core/alu_control.v",
+            "src/core/alu.v",
+            "src/core/core.v"
+          ],
+          "total_generated": 10,
+          "total_reference": 10
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'Core' vs reference 'soc_tb'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Risco-5.git",
+      "validation_time": 1758148820.7537901
+    },
+    {
+      "processor_name": "SparrowRV",
+      "overall_score": 0.8875000000000001,
+      "field_scores": {
+        "top_module": 1.0,
+        "files": 0.7499999999999999,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "top_module": true,
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "files": {
+          "generated": [
+            "rtl/core/core.v",
+            "rtl/core/csr.v",
+            "rtl/core/div.v",
+            "rtl/core/dpram.v",
+            "rtl/core/idex.v",
+            "rtl/core/iram.v",
+            "rtl/core/regs.v",
+            "rtl/core/sctr.v",
+            "rtl/core/trap.v"
+          ],
+          "reference": [
+            "rtl/config.v",
+            "rtl/defines.v",
+            "rtl/core/core.v",
+            "rtl/core/csr.v",
+            "rtl/core/div.v",
+            "rtl/core/dpram.v",
+            "rtl/core/idex.v",
+            "rtl/core/iram.v",
+            "rtl/core/regs.v",
+            "rtl/core/rstc.v",
+            "rtl/core/sctr.v",
+            "rtl/core/trap.v"
+          ],
+          "score": 0.7499999999999999
+        },
+        "sim_files": {
+          "generated": [
+            "rtl/perips/sm3/tb/tb_sm3_core_top.sv",
+            "tb/tb_core.sv"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [
+            "rtl/core/rstc.v",
+            "rtl/config.v",
+            "rtl/defines.v"
+          ],
+          "common_files": [
+            "rtl/core/div.v",
+            "rtl/core/iram.v",
+            "rtl/core/core.v",
+            "rtl/core/regs.v",
+            "rtl/core/dpram.v",
+            "rtl/core/trap.v",
+            "rtl/core/idex.v",
+            "rtl/core/sctr.v",
+            "rtl/core/csr.v"
+          ],
+          "total_generated": 9,
+          "total_reference": 12
+        },
+        "recommendations": [],
+        "critical_issues": []
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/xiaowuzxc/SparrowRV",
+      "validation_time": 1758148828.735424
     }
   ],
   "top_performers": [
+    {
+      "processor_name": "RISC-V",
+      "overall_score": 0.9633333333333334,
+      "field_scores": {
+        "top_module": 1.0,
+        "files": 0.9333333333333333,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 1.0,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 0.0
+      },
+      "matches": {
+        "top_module": true,
+        "include_dirs": true,
+        "language_version": true,
+        "sim_files": true,
+        "extra_flags": true,
+        "march": true
+      },
+      "differences": {
+        "files": {
+          "generated": [
+            "core/ALU.v",
+            "core/control_unit.v",
+            "core/core.v",
+            "core/csr_unit.v",
+            "core/forwarding_unit.v",
+            "core/hazard_detection_unit.v",
+            "core/imm_decoder.v",
+            "core/load_store_unit.v",
+            "core/muldiv/MULDIV_ctrl.v",
+            "core/muldiv/MULDIV_in.v",
+            "core/muldiv/MULDIV_top.v",
+            "core/muldiv/MUL_DIV_out.v",
+            "core/muldiv/divider_32.v",
+            "core/muldiv/multiplier_32.v"
+          ],
+          "reference": [
+            "core/ALU.v",
+            "core/control_unit.v",
+            "core/core.v",
+            "core/core_wb.v",
+            "core/csr_unit.v",
+            "core/forwarding_unit.v",
+            "core/hazard_detection_unit.v",
+            "core/imm_decoder.v",
+            "core/load_store_unit.v",
+            "core/muldiv/MULDIV_ctrl.v",
+            "core/muldiv/MULDIV_in.v",
+            "core/muldiv/MULDIV_top.v",
+            "core/muldiv/MUL_DIV_out.v",
+            "core/muldiv/divider_32.v",
+            "core/muldiv/multiplier_32.v"
+          ],
+          "score": 0.9333333333333333
+        },
+        "two_memory": {
+          "generated": false,
+          "reference": true,
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [
+            "core/core_wb.v"
+          ],
+          "common_files": [
+            "core/csr_unit.v",
+            "core/muldiv/MULDIV_top.v",
+            "core/load_store_unit.v",
+            "core/hazard_detection_unit.v",
+            "core/control_unit.v",
+            "core/core.v",
+            "core/muldiv/divider_32.v",
+            "core/ALU.v",
+            "core/muldiv/MULDIV_in.v",
+            "core/forwarding_unit.v",
+            "core/muldiv/MULDIV_ctrl.v",
+            "core/muldiv/multiplier_32.v",
+            "core/imm_decoder.v",
+            "core/muldiv/MUL_DIV_out.v"
+          ],
+          "total_generated": 14,
+          "total_reference": 15
+        },
+        "recommendations": [],
+        "critical_issues": []
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/yavuz650/RISC-V",
+      "validation_time": 1758148802.43032
+    },
+    {
+      "processor_name": "SparrowRV",
+      "overall_score": 0.8875000000000001,
+      "field_scores": {
+        "top_module": 1.0,
+        "files": 0.7499999999999999,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "top_module": true,
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "files": {
+          "generated": [
+            "rtl/core/core.v",
+            "rtl/core/csr.v",
+            "rtl/core/div.v",
+            "rtl/core/dpram.v",
+            "rtl/core/idex.v",
+            "rtl/core/iram.v",
+            "rtl/core/regs.v",
+            "rtl/core/sctr.v",
+            "rtl/core/trap.v"
+          ],
+          "reference": [
+            "rtl/config.v",
+            "rtl/defines.v",
+            "rtl/core/core.v",
+            "rtl/core/csr.v",
+            "rtl/core/div.v",
+            "rtl/core/dpram.v",
+            "rtl/core/idex.v",
+            "rtl/core/iram.v",
+            "rtl/core/regs.v",
+            "rtl/core/rstc.v",
+            "rtl/core/sctr.v",
+            "rtl/core/trap.v"
+          ],
+          "score": 0.7499999999999999
+        },
+        "sim_files": {
+          "generated": [
+            "rtl/perips/sm3/tb/tb_sm3_core_top.sv",
+            "tb/tb_core.sv"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [
+            "rtl/core/rstc.v",
+            "rtl/config.v",
+            "rtl/defines.v"
+          ],
+          "common_files": [
+            "rtl/core/div.v",
+            "rtl/core/iram.v",
+            "rtl/core/core.v",
+            "rtl/core/regs.v",
+            "rtl/core/dpram.v",
+            "rtl/core/trap.v",
+            "rtl/core/idex.v",
+            "rtl/core/sctr.v",
+            "rtl/core/csr.v"
+          ],
+          "total_generated": 9,
+          "total_reference": 12
+        },
+        "recommendations": [],
+        "critical_issues": []
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/xiaowuzxc/SparrowRV",
+      "validation_time": 1758148828.735424
+    },
+    {
+      "processor_name": "RPU",
+      "overall_score": 0.8600000000000001,
+      "field_scores": {
+        "top_module": 0.7,
+        "files": 1.0,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "files": true,
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "rpu_core_tb",
+          "reference": "core",
+          "score": 0.7
+        },
+        "sim_files": {
+          "generated": [
+            "tests/rpu_core_tb.vhd",
+            "tests/tb_alu_int32_div.vhd",
+            "tests/tb_unit_alu_RV32I_01.vhd",
+            "tests/tb_unit_decoder_RV32_01.vhd"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [],
+          "common_files": [
+            "vhdl/csr_unit.vhd",
+            "vhdl/control_unit.vhd",
+            "vhdl/pc_unit.vhd",
+            "vhdl/register_set.vhd",
+            "vhdl/core.vhd",
+            "vhdl/lint_unit.vhd",
+            "vhdl/constants.vhd",
+            "vhdl/unit_decoder_RV32I.vhd",
+            "vhdl/mem_controller.vhd",
+            "vhdl/unit_alu_RV32_I.vhd",
+            "vhdl/alu_int32_div.vhd"
+          ],
+          "total_generated": 11,
+          "total_reference": 11
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'rpu_core_tb' vs reference 'core'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/Domipheus/RPU",
+      "validation_time": 1758148805.1227098
+    },
+    {
+      "processor_name": "Pequeno-Risco-5",
+      "overall_score": 0.8272727272727274,
+      "field_scores": {
+        "top_module": 1.0,
+        "files": 0.9090909090909091,
+        "include_dirs": 1.0,
+        "language_version": 0.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "top_module": true,
+        "include_dirs": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "files": {
+          "generated": [
+            "fpga/ecp5/main.v",
+            "src/alu.v",
+            "src/alu_control.v",
+            "src/control_unit.v",
+            "src/core.v",
+            "src/data_memory.v",
+            "src/immediate_generator.v",
+            "src/instruction_memory.v",
+            "src/mux.v",
+            "src/pc.v",
+            "src/registers.v"
+          ],
+          "reference": [
+            "src/alu.v",
+            "src/alu_control.v",
+            "src/control_unit.v",
+            "src/core.v",
+            "src/immediate_generator.v",
+            "src/mux.v",
+            "src/pc.v",
+            "src/registers.v",
+            "src/instruction_memory.v",
+            "src/data_memory.v"
+          ],
+          "score": 0.9090909090909091
+        },
+        "language_version": {
+          "generated": "2012",
+          "reference": "2005",
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "tests/alu_test.v",
+            "tests/core_test.v",
+            "tests/mux_test.v",
+            "tests/pc_test.v",
+            "tests/registers_test.v"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "fpga/ecp5/main.v"
+          ],
+          "only_in_reference": [],
+          "common_files": [
+            "src/core.v",
+            "src/alu.v",
+            "src/control_unit.v",
+            "src/immediate_generator.v",
+            "src/alu_control.v",
+            "src/mux.v",
+            "src/pc.v",
+            "src/data_memory.v",
+            "src/instruction_memory.v",
+            "src/registers.v"
+          ],
+          "total_generated": 11,
+          "total_reference": 10
+        },
+        "recommendations": [],
+        "critical_issues": []
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Pequeno-Risco-5",
+      "validation_time": 1758148796.6632276
+    },
+    {
+      "processor_name": "NutShell",
+      "overall_score": 0.785,
+      "field_scores": {
+        "top_module": 0.7,
+        "files": 1.0,
+        "include_dirs": 0.5,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "files": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "body",
+          "reference": "",
+          "score": 0.7
+        },
+        "include_dirs": {
+          "generated": [
+            "fpga/lib/include",
+            "fpga/board/axu3cg/rtl/hdmi"
+          ],
+          "reference": [],
+          "score": 0.5
+        },
+        "sim_files": {
+          "generated": [
+            "difftest/src/test/vsrc/common/SimJTAG.v",
+            "difftest/src/test/vsrc/common/assert.v",
+            "difftest/src/test/vsrc/common/ref.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_axi.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_clock.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_ctrl.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_wrapper.v",
+            "difftest/src/test/vsrc/vcs/DeferredControl.v",
+            "difftest/src/test/vsrc/vcs/top.v",
+            "difftest/src/test/vsrc/vcs/DifftestEndpoint.sv"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [],
+          "common_files": [
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_byte_ctrl.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_config.v",
+            "fpga/board/axu3cg/rtl/system_top.v",
+            "fpga/board/PXIe/rtl/addr_mapper.v",
+            "fpga/board/axu3cg/rtl/hdmi/timescale.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_defines.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_bit_ctrl.v",
+            "fpga/board/PXIe/rtl/system_top.v",
+            "fpga/board/axu3cg/rtl/addr_mapper.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_top.v"
+          ],
+          "total_generated": 10,
+          "total_reference": 10
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'body' vs reference ''"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/OSCPU/NutShell",
+      "validation_time": 1758148794.8425481
+    },
+    {
+      "processor_name": "RV12",
+      "overall_score": 0.5904914004914006,
+      "field_scores": {
+        "top_module": 0.18648648648648652,
+        "files": 0.8181818181818182,
+        "include_dirs": 1.0,
+        "language_version": 0.0,
+        "sim_files": 1.0,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 0.0
+      },
+      "matches": {
+        "include_dirs": true,
+        "sim_files": true,
+        "extra_flags": true,
+        "march": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "riscv_noicache_core",
+          "reference": "riscv_top_ahb3lite",
+          "score": 0.18648648648648652
+        },
+        "files": {
+          "generated": [
+            "bench/verilog/ahb3lite/dbg_bfm.sv",
+            "bench/verilog/ahb3lite/memory_model_ahb3lite.sv",
+            "bench/verilog/ahb3lite/testbench_top.sv",
+            "rtl/verilog/ahb3lite/biu_ahb3lite.sv",
+            "rtl/verilog/ahb3lite/riscv_top_ahb3lite.sv",
+            "rtl/verilog/core/riscv_bp.sv",
+            "rtl/verilog/core/riscv_core.sv",
+            "rtl/verilog/core/riscv_du.sv",
+            "rtl/verilog/core/riscv_dwb.sv",
+            "rtl/verilog/core/riscv_ex.sv",
+            "rtl/verilog/core/riscv_id.sv",
+            "rtl/verilog/core/riscv_if.sv",
+            "rtl/verilog/core/riscv_mem.sv",
+            "rtl/verilog/core/riscv_parcel_queue.sv",
+            "rtl/verilog/core/riscv_pd.sv",
+            "rtl/verilog/core/riscv_rf.sv",
+            "rtl/verilog/core/riscv_rsb.sv",
+            "rtl/verilog/core/riscv_state1.10.sv",
+            "rtl/verilog/core/riscv_state1.7.sv",
+            "rtl/verilog/core/riscv_state1.9.sv",
+            "rtl/verilog/core/riscv_state_20240411.sv",
+            "rtl/verilog/core/riscv_wb.sv",
+            "rtl/verilog/core/cache/riscv_cache_biu_ctrl.sv",
+            "rtl/verilog/core/cache/riscv_cache_memory.sv",
+            "rtl/verilog/core/cache/riscv_cache_setup.sv",
+            "rtl/verilog/core/cache/riscv_cache_tag.sv",
+            "rtl/verilog/core/cache/riscv_dcache_core.sv",
+            "rtl/verilog/core/cache/riscv_dcache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_icache_core.sv",
+            "rtl/verilog/core/cache/riscv_icache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_nodcache_core.sv",
+            "rtl/verilog/core/cache/riscv_noicache_core.sv",
+            "rtl/verilog/core/ex/riscv_alu.sv",
+            "rtl/verilog/core/ex/riscv_bu.sv",
+            "rtl/verilog/core/ex/riscv_div.sv",
+            "rtl/verilog/core/ex/riscv_lsu.sv",
+            "rtl/verilog/core/ex/riscv_mul.sv",
+            "rtl/verilog/core/memory/riscv_dmem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_imem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_membuf.sv",
+            "rtl/verilog/core/memory/riscv_memmisaligned.sv",
+            "rtl/verilog/core/memory/riscv_mmu.sv",
+            "rtl/verilog/core/memory/riscv_pmachk.sv",
+            "rtl/verilog/core/memory/riscv_pmpchk.sv",
+            "rtl/verilog/core/memory/riscv_wbuf.sv",
+            "rtl/verilog/core/mmu/riscv_nommu.sv",
+            "rtl/verilog/pkg/biu_constants_pkg.sv",
+            "rtl/verilog/pkg/riscv_cache_pkg.sv",
+            "rtl/verilog/pkg/riscv_du_pkg.sv",
+            "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
+            "rtl/verilog/pkg/riscv_pma_pkg.sv",
+            "rtl/verilog/pkg/riscv_rv12_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.10_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.7_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.9_pkg.sv",
+            "rtl/verilog/pkg/riscv_state_20240411_pkg.sv",
+            "submodules/ahb3lite_pkg/rtl/verilog/ahb3lite_pkg.sv",
+            "submodules/memory/rtl/verilog/rl_queue.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3xs.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_generic.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_lattice.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_generic.sv"
+          ],
+          "reference": [
+            "submodules/ahb3lite_pkg/rtl/verilog/ahb3lite_pkg.sv",
+            "rtl/verilog/pkg/riscv_cache_pkg.sv",
+            "rtl/verilog/pkg/riscv_du_pkg.sv",
+            "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
+            "rtl/verilog/pkg/riscv_rv12_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.10_pkg.sv",
+            "rtl/verilog/pkg/riscv_state_20240411_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.7_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.9_pkg.sv",
+            "rtl/verilog/pkg/riscv_pma_pkg.sv",
+            "rtl/verilog/pkg/biu_constants_pkg.sv",
+            "rtl/verilog/ahb3lite/biu_ahb3lite.sv",
+            "rtl/verilog/ahb3lite/riscv_top_ahb3lite.sv",
+            "rtl/verilog/core/riscv_bp.sv",
+            "rtl/verilog/core/riscv_core.sv",
+            "rtl/verilog/core/riscv_du.sv",
+            "rtl/verilog/core/riscv_dwb.sv",
+            "rtl/verilog/core/riscv_ex.sv",
+            "rtl/verilog/core/riscv_id.sv",
+            "rtl/verilog/core/riscv_if.sv",
+            "rtl/verilog/core/riscv_mem.sv",
+            "rtl/verilog/core/riscv_parcel_queue.sv",
+            "rtl/verilog/core/riscv_pd.sv",
+            "rtl/verilog/core/riscv_rf.sv",
+            "rtl/verilog/core/riscv_rsb.sv",
+            "rtl/verilog/core/riscv_state1.10.sv",
+            "rtl/verilog/core/riscv_state1.7.sv",
+            "rtl/verilog/core/riscv_state1.9.sv",
+            "rtl/verilog/core/riscv_state_20240411.sv",
+            "rtl/verilog/core/riscv_wb.sv",
+            "rtl/verilog/core/cache/riscv_cache_biu_ctrl.sv",
+            "rtl/verilog/core/cache/riscv_cache_memory.sv",
+            "rtl/verilog/core/cache/riscv_cache_setup.sv",
+            "rtl/verilog/core/cache/riscv_cache_tag.sv",
+            "rtl/verilog/core/cache/riscv_dcache_core.sv",
+            "rtl/verilog/core/cache/riscv_dcache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_icache_core.sv",
+            "rtl/verilog/core/cache/riscv_icache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_nodcache_core.sv",
+            "rtl/verilog/core/cache/riscv_noicache_core.sv",
+            "rtl/verilog/core/ex/riscv_alu.sv",
+            "rtl/verilog/core/ex/riscv_bu.sv",
+            "rtl/verilog/core/ex/riscv_div.sv",
+            "rtl/verilog/core/ex/riscv_lsu.sv",
+            "rtl/verilog/core/ex/riscv_mul.sv",
+            "rtl/verilog/core/memory/riscv_dmem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_imem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_membuf.sv",
+            "rtl/verilog/core/memory/riscv_memmisaligned.sv",
+            "rtl/verilog/core/memory/riscv_mmu.sv",
+            "rtl/verilog/core/memory/riscv_pmachk.sv",
+            "rtl/verilog/core/memory/riscv_pmpchk.sv",
+            "rtl/verilog/core/memory/riscv_wbuf.sv",
+            "rtl/verilog/core/mmu/riscv_nommu.sv"
+          ],
+          "score": 0.8181818181818182
+        },
+        "language_version": {
+          "generated": "2017",
+          "reference": "2012",
+          "score": 0.0
+        },
+        "two_memory": {
+          "generated": false,
+          "reference": true,
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_generic.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3xs.sv",
+            "bench/verilog/ahb3lite/dbg_bfm.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_generic.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_lattice.sv",
+            "submodules/memory/rtl/verilog/rl_queue.sv",
+            "bench/verilog/ahb3lite/memory_model_ahb3lite.sv",
+            "bench/verilog/ahb3lite/testbench_top.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw.sv"
+          ],
+          "only_in_reference": [],
+          "common_files": [
+            "rtl/verilog/pkg/riscv_state1.7_pkg.sv",
+            "rtl/verilog/core/mmu/riscv_nommu.sv",
+            "rtl/verilog/core/ex/riscv_alu.sv",
+            "rtl/verilog/pkg/riscv_rv12_pkg.sv",
+            "rtl/verilog/core/cache/riscv_cache_tag.sv",
+            "rtl/verilog/core/riscv_id.sv",
+            "rtl/verilog/core/cache/riscv_noicache_core.sv",
+            "rtl/verilog/core/memory/riscv_mmu.sv",
+            "rtl/verilog/core/memory/riscv_pmpchk.sv",
+            "rtl/verilog/core/riscv_core.sv",
+            "rtl/verilog/core/riscv_pd.sv",
+            "rtl/verilog/pkg/riscv_state_20240411_pkg.sv",
+            "rtl/verilog/core/memory/riscv_imem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_wbuf.sv",
+            "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
+            "rtl/verilog/core/riscv_rsb.sv",
+            "rtl/verilog/core/riscv_wb.sv",
+            "rtl/verilog/core/ex/riscv_div.sv",
+            "rtl/verilog/core/riscv_mem.sv",
+            "rtl/verilog/core/cache/riscv_cache_setup.sv",
+            "rtl/verilog/core/ex/riscv_mul.sv",
+            "rtl/verilog/core/memory/riscv_memmisaligned.sv",
+            "rtl/verilog/pkg/riscv_state1.9_pkg.sv",
+            "rtl/verilog/core/ex/riscv_lsu.sv",
+            "rtl/verilog/core/riscv_state1.9.sv",
+            "rtl/verilog/core/riscv_dwb.sv",
+            "submodules/ahb3lite_pkg/rtl/verilog/ahb3lite_pkg.sv",
+            "rtl/verilog/core/riscv_state_20240411.sv",
+            "rtl/verilog/core/cache/riscv_dcache_core.sv",
+            "rtl/verilog/core/cache/riscv_cache_biu_ctrl.sv",
+            "rtl/verilog/core/riscv_parcel_queue.sv",
+            "rtl/verilog/core/riscv_if.sv",
+            "rtl/verilog/core/cache/riscv_icache_core.sv",
+            "rtl/verilog/core/riscv_bp.sv",
+            "rtl/verilog/pkg/riscv_pma_pkg.sv",
+            "rtl/verilog/core/memory/riscv_dmem_ctrl.sv",
+            "rtl/verilog/core/riscv_rf.sv",
+            "rtl/verilog/core/riscv_state1.7.sv",
+            "rtl/verilog/core/cache/riscv_nodcache_core.sv",
+            "rtl/verilog/core/cache/riscv_dcache_fsm.sv",
+            "rtl/verilog/ahb3lite/riscv_top_ahb3lite.sv",
+            "rtl/verilog/core/riscv_ex.sv",
+            "rtl/verilog/pkg/biu_constants_pkg.sv",
+            "rtl/verilog/ahb3lite/biu_ahb3lite.sv",
+            "rtl/verilog/pkg/riscv_state1.10_pkg.sv",
+            "rtl/verilog/pkg/riscv_du_pkg.sv",
+            "rtl/verilog/core/riscv_du.sv",
+            "rtl/verilog/core/riscv_state1.10.sv",
+            "rtl/verilog/core/ex/riscv_bu.sv",
+            "rtl/verilog/pkg/riscv_cache_pkg.sv",
+            "rtl/verilog/core/memory/riscv_pmachk.sv",
+            "rtl/verilog/core/memory/riscv_membuf.sv",
+            "rtl/verilog/core/cache/riscv_cache_memory.sv",
+            "rtl/verilog/core/cache/riscv_icache_fsm.sv"
+          ],
+          "total_generated": 66,
+          "total_reference": 54
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'riscv_noicache_core' vs reference 'riscv_top_ahb3lite'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/roalogic/RV12",
+      "validation_time": 1758148814.238244
+    },
+    {
+      "processor_name": "Risco-5",
+      "overall_score": 0.5295454545454545,
+      "field_scores": {
+        "top_module": 0.0,
+        "files": 1.0,
+        "include_dirs": 0.5,
+        "language_version": 1.0,
+        "sim_files": 0.04545454545454545,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "files": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "Core",
+          "reference": "soc_tb",
+          "score": 0.0
+        },
+        "include_dirs": {
+          "generated": [
+            "src/peripheral",
+            "src/core"
+          ],
+          "reference": [
+            "src/core/"
+          ],
+          "score": 0.5
+        },
+        "sim_files": {
+          "generated": [
+            "tests/alu_test.v",
+            "tests/clk_divider.v",
+            "tests/core_test.v",
+            "tests/fifo_test.v",
+            "tests/gpio_test.v",
+            "tests/immediate_generator_test.v",
+            "tests/mux_test.v",
+            "tests/pc_test.v",
+            "tests/registers_test.v",
+            "tests/reset_test.v",
+            "tests/soc_test.v"
+          ],
+          "reference": [
+            "tests/soc_test.v",
+            "src/peripheral/bus.v",
+            "src/peripheral/fifo.v",
+            "src/peripheral/gpios.v",
+            "src/peripheral/gpio.v",
+            "src/peripheral/leds.v",
+            "src/peripheral/memory.v",
+            "src/peripheral/pwm.v",
+            "src/peripheral/soc.v",
+            "src/peripheral/uart_rx.v",
+            "src/peripheral/uart_tx.v",
+            "src/peripheral/uart.v"
+          ],
+          "score": 0.04545454545454545
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [],
+          "common_files": [
+            "src/core/mdu.v",
+            "src/core/csr_unit.v",
+            "src/core/registers.v",
+            "src/core/pc.v",
+            "src/core/immediate_generator.v",
+            "src/core/control_unit.v",
+            "src/core/mux.v",
+            "src/core/alu_control.v",
+            "src/core/alu.v",
+            "src/core/core.v"
+          ],
+          "total_generated": 10,
+          "total_reference": 10
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'Core' vs reference 'soc_tb'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Risco-5.git",
+      "validation_time": 1758148820.7537901
+    },
     {
       "processor_name": "Grande-Risco-5",
       "overall_score": 0.4813170731707317,
@@ -603,8 +2165,8 @@
         },
         "include_dirs": {
           "generated": [
-            "rtl/peripheral",
-            "rtl/core"
+            "rtl/core",
+            "rtl/peripheral"
           ],
           "reference": [
             "rtl/core"
@@ -656,91 +2218,91 @@
       "detailed_analysis": {
         "file_analysis": {
           "only_in_generated": [
+            "fpga/opensourceSDRLabKintex7/litedram_core.v",
             "rtl/external_peripheral/DRAM_Controller/rtl/async_fifo.sv",
-            "fpga/tangnano20k/main.sv",
-            "fpga/zedboard/main.sv",
-            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
-            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
-            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
-            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/peripheral/memory.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
             "rtl/peripheral/pwm.sv",
             "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/peripheral/hdmi.sv",
-            "rtl/peripheral/uart_rx.sv",
-            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
-            "fpga/nexys4_ddr/main.sv",
-            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
-            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
-            "fpga/cyclone10gx/main.sv",
-            "rtl/peripheral/memory.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
-            "rtl/peripheral/leds.sv",
-            "fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv",
             "rtl/peripheral/peripheral_bus.sv",
-            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
-            "fpga/opensourceSDRLabKintex7/litedram_core.v",
-            "fpga/opensourceSDRLabKintex7/main.sv",
-            "fpga/nexys4_ddr_mixed/main.sv",
-            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
-            "rtl/peripheral/uart.sv",
-            "fpga/vc709/main.sv",
             "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/debug/jtag.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
             "rtl/peripheral/uart_tx.sv",
-            "rtl/core/bmu.sv",
-            "rtl/peripheral/async_fifo.sv",
-            "fpga/nexys4_ddr_yosys/main.sv",
-            "fpga/zcu102/main.sv",
-            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
-            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
-            "fpga/colorlight_i9/main.sv",
-            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
-            "rtl/peripheral/fifo.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
-            "rtl/peripheral/timer.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
-            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
-            "rtl/peripheral/gpios.sv",
-            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
-            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/peripheral/leds.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
+            "rtl/debug/jtag.sv",
+            "rtl/peripheral/uart.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
             "rtl/peripheral/gpio.sv",
-            "rtl/peripheral/vga.sv",
-            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
-            "rtl/peripheral/soc.sv",
+            "rtl/peripheral/gpios.sv",
+            "fpga/opensourceSDRLabKintex7/main.sv",
             "rtl/external_peripheral/SPI-Slave/fpga/digilent_arty_a7/main.sv",
-            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/zcu102/main.sv",
+            "rtl/core/bmu.sv",
+            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
+            "fpga/nexys4_ddr_mixed/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/cyclone10gx/main.sv",
+            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
             "rtl/core/fpu.sv",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
+            "fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
+            "rtl/peripheral/vga.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
             "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv"
+            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
+            "rtl/peripheral/soc.sv",
+            "fpga/tangnano20k/main.sv",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/peripheral/async_fifo.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
+            "rtl/peripheral/hdmi.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
+            "rtl/peripheral/fifo.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
+            "rtl/peripheral/uart_rx.sv",
+            "fpga/vc709/main.sv",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/nexys4_ddr/main.sv",
+            "rtl/peripheral/timer.sv",
+            "fpga/zedboard/main.sv",
+            "fpga/nexys4_ddr_yosys/main.sv"
           ],
           "only_in_reference": [],
           "common_files": [
-            "rtl/core/forwarding_unit.sv",
-            "rtl/core/d_cache.sv",
-            "rtl/core/ir_decomp.sv",
-            "rtl/core/registers.sv",
-            "rtl/core/EXMEM.sv",
-            "rtl/core/alu_control.sv",
+            "rtl/core/mdu.sv",
+            "rtl/core/i_cache.sv",
             "rtl/core/mux.sv",
             "rtl/core/grande_risco5_types.sv",
-            "rtl/core/IFID.sv",
-            "rtl/core/invalid_ir_check.sv",
-            "rtl/core/alu.sv",
-            "rtl/core/IDEX.sv",
-            "rtl/core/immediate_generator.sv",
-            "rtl/core/cache_request_multiplexer.sv",
-            "rtl/core/MEMWB.sv",
-            "rtl/core/branch_prediction.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/ir_decomp.sv",
             "rtl/core/Grande_Risco5.sv",
-            "rtl/core/i_cache.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/registers.sv",
+            "rtl/core/alu_control.sv",
             "rtl/core/csr_unit.sv",
             "rtl/core/core.sv",
-            "rtl/core/mdu.sv"
+            "rtl/core/alu.sv"
           ],
           "total_generated": 82,
           "total_reference": 21
@@ -752,7 +2314,7 @@
       },
       "is_simulable": true,
       "repository": "https://github.com/JN513/Grande-Risco-5",
-      "validation_time": 1758070171.3786812
+      "validation_time": 1758148788.6821938
     },
     {
       "processor_name": "AUK-V-Aethia",
@@ -817,14 +2379,14 @@
             "rtl/peripherals/uart/baud.v"
           ],
           "only_in_reference": [
-            "rtl/core/aukv_gpr_regfilie.v",
-            "rtl/core/aukv_decode.v",
-            "rtl/core/aukv.v",
-            "rtl/core/aukv_mem.v",
+            "rtl/core/aukv_execute.v",
             "rtl/core/aukv_alu.v",
-            "rtl/core/aukv_csr_regfile.v",
+            "rtl/core/aukv_decode.v",
             "rtl/core/aukv_fetch.v",
-            "rtl/core/aukv_execute.v"
+            "rtl/core/aukv_mem.v",
+            "rtl/core/aukv_gpr_regfilie.v",
+            "rtl/core/aukv.v",
+            "rtl/core/aukv_csr_regfile.v"
           ],
           "common_files": [],
           "total_generated": 1,
@@ -837,7 +2399,7 @@
       },
       "is_simulable": true,
       "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
-      "validation_time": 1758070146.3872373
+      "validation_time": 1758148762.8373907
     },
     {
       "processor_name": "Baby-Risco-5",
@@ -906,10 +2468,10 @@
           ],
           "only_in_reference": [
             "src/core/registers.v",
-            "src/core/alu_control.v",
-            "src/core/control_unit.v",
-            "src/core/alu.v",
             "src/core/immediate_generator.v",
+            "src/core/control_unit.v",
+            "src/core/alu_control.v",
+            "src/core/alu.v",
             "src/core/core.v"
           ],
           "common_files": [],
@@ -923,7 +2485,7 @@
       },
       "is_simulable": true,
       "repository": "https://github.com/JN513/Baby-Risco-5",
-      "validation_time": 1758070149.905282
+      "validation_time": 1758148766.5586493
     }
   ],
   "problem_cases": [
@@ -994,10 +2556,10 @@
           ],
           "only_in_reference": [
             "src/core/registers.v",
-            "src/core/alu_control.v",
-            "src/core/control_unit.v",
-            "src/core/alu.v",
             "src/core/immediate_generator.v",
+            "src/core/control_unit.v",
+            "src/core/alu_control.v",
+            "src/core/alu.v",
             "src/core/core.v"
           ],
           "common_files": [],
@@ -1011,7 +2573,7 @@
       },
       "is_simulable": true,
       "repository": "https://github.com/JN513/Baby-Risco-5",
-      "validation_time": 1758070149.905282
+      "validation_time": 1758148766.5586493
     },
     {
       "processor_name": "AUK-V-Aethia",
@@ -1076,14 +2638,14 @@
             "rtl/peripherals/uart/baud.v"
           ],
           "only_in_reference": [
-            "rtl/core/aukv_gpr_regfilie.v",
-            "rtl/core/aukv_decode.v",
-            "rtl/core/aukv.v",
-            "rtl/core/aukv_mem.v",
+            "rtl/core/aukv_execute.v",
             "rtl/core/aukv_alu.v",
-            "rtl/core/aukv_csr_regfile.v",
+            "rtl/core/aukv_decode.v",
             "rtl/core/aukv_fetch.v",
-            "rtl/core/aukv_execute.v"
+            "rtl/core/aukv_mem.v",
+            "rtl/core/aukv_gpr_regfilie.v",
+            "rtl/core/aukv.v",
+            "rtl/core/aukv_csr_regfile.v"
           ],
           "common_files": [],
           "total_generated": 1,
@@ -1096,7 +2658,7 @@
       },
       "is_simulable": true,
       "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
-      "validation_time": 1758070146.3872373
+      "validation_time": 1758148762.8373907
     },
     {
       "processor_name": "Grande-Risco-5",
@@ -1233,8 +2795,8 @@
         },
         "include_dirs": {
           "generated": [
-            "rtl/peripheral",
-            "rtl/core"
+            "rtl/core",
+            "rtl/peripheral"
           ],
           "reference": [
             "rtl/core"
@@ -1286,91 +2848,91 @@
       "detailed_analysis": {
         "file_analysis": {
           "only_in_generated": [
+            "fpga/opensourceSDRLabKintex7/litedram_core.v",
             "rtl/external_peripheral/DRAM_Controller/rtl/async_fifo.sv",
-            "fpga/tangnano20k/main.sv",
-            "fpga/zedboard/main.sv",
-            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
-            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
-            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
-            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/peripheral/memory.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
             "rtl/peripheral/pwm.sv",
             "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/peripheral/hdmi.sv",
-            "rtl/peripheral/uart_rx.sv",
-            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
-            "fpga/nexys4_ddr/main.sv",
-            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
-            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
-            "fpga/cyclone10gx/main.sv",
-            "rtl/peripheral/memory.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
-            "rtl/peripheral/leds.sv",
-            "fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv",
             "rtl/peripheral/peripheral_bus.sv",
-            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
-            "fpga/opensourceSDRLabKintex7/litedram_core.v",
-            "fpga/opensourceSDRLabKintex7/main.sv",
-            "fpga/nexys4_ddr_mixed/main.sv",
-            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
-            "rtl/peripheral/uart.sv",
-            "fpga/vc709/main.sv",
             "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/debug/jtag.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
             "rtl/peripheral/uart_tx.sv",
-            "rtl/core/bmu.sv",
-            "rtl/peripheral/async_fifo.sv",
-            "fpga/nexys4_ddr_yosys/main.sv",
-            "fpga/zcu102/main.sv",
-            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
-            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
-            "fpga/colorlight_i9/main.sv",
-            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
-            "rtl/peripheral/fifo.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
-            "rtl/peripheral/timer.sv",
-            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
-            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
-            "rtl/peripheral/gpios.sv",
-            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
-            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/peripheral/leds.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/clk_divider.sv",
+            "rtl/debug/jtag.sv",
+            "rtl/peripheral/uart.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
             "rtl/peripheral/gpio.sv",
-            "rtl/peripheral/vga.sv",
-            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
-            "rtl/peripheral/soc.sv",
+            "rtl/peripheral/gpios.sv",
+            "fpga/opensourceSDRLabKintex7/main.sv",
             "rtl/external_peripheral/SPI-Slave/fpga/digilent_arty_a7/main.sv",
-            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/zcu102/main.sv",
+            "rtl/core/bmu.sv",
+            "rtl/external_peripheral/SPI-Master/rtl/spi_master.v",
+            "fpga/nexys4_ddr_mixed/main.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/digilent_arty_a7/main.sv",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
+            "fpga/artyA7_100t/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/cyclone10gx/main.sv",
+            "rtl/external_peripheral/SPI-Slave/rtl/spi_slave.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv",
             "rtl/core/fpu.sv",
+            "fpga/nexys4_ddr/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/artyA7_100t/main.sv",
+            "rtl/external_peripheral/DRAM_Controller/rtl/fifo.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/vc709/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/nexys4_ddr/main.sv",
+            "fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/SPI-Master/fpga/colorlight_i9/main.v",
+            "rtl/peripheral/vga.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/colorlight_i9/main.sv",
             "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v",
-            "rtl/external_peripheral/I2C-Master/fpga/nexys4_ddr/main.sv"
+            "rtl/external_peripheral/DRAM_Controller/rtl/dram_controller.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/nexys4_ddr/main.sv",
+            "rtl/peripheral/soc.sv",
+            "fpga/tangnano20k/main.sv",
+            "fpga/opensourceSDRLabKintex7/ip/clk_wiz_0/clk_wiz_0.v",
+            "rtl/peripheral/async_fifo.sv",
+            "rtl/external_peripheral/I2C-Master/fpga/opensourceSDRLabKintex7/main.sv",
+            "rtl/external_peripheral/I2C-Master/rtl/i2c_master.sv",
+            "rtl/peripheral/hdmi.sv",
+            "rtl/external_peripheral/DRAM_Controller/fpga/artyA7_100t/main.sv",
+            "rtl/peripheral/fifo.sv",
+            "rtl/external_peripheral/SPI-Slave/fpga/colorlight_i9/main.sv",
+            "rtl/external_peripheral/SPI-Slave/debug/reset.sv",
+            "rtl/peripheral/uart_rx.sv",
+            "fpga/vc709/main.sv",
+            "fpga/vc709/ip/clk_wiz_0/clk_wiz_0.v",
+            "fpga/nexys4_ddr/main.sv",
+            "rtl/peripheral/timer.sv",
+            "fpga/zedboard/main.sv",
+            "fpga/nexys4_ddr_yosys/main.sv"
           ],
           "only_in_reference": [],
           "common_files": [
-            "rtl/core/forwarding_unit.sv",
-            "rtl/core/d_cache.sv",
-            "rtl/core/ir_decomp.sv",
-            "rtl/core/registers.sv",
-            "rtl/core/EXMEM.sv",
-            "rtl/core/alu_control.sv",
+            "rtl/core/mdu.sv",
+            "rtl/core/i_cache.sv",
             "rtl/core/mux.sv",
             "rtl/core/grande_risco5_types.sv",
-            "rtl/core/IFID.sv",
-            "rtl/core/invalid_ir_check.sv",
-            "rtl/core/alu.sv",
-            "rtl/core/IDEX.sv",
-            "rtl/core/immediate_generator.sv",
-            "rtl/core/cache_request_multiplexer.sv",
-            "rtl/core/MEMWB.sv",
-            "rtl/core/branch_prediction.sv",
+            "rtl/core/EXMEM.sv",
+            "rtl/core/d_cache.sv",
+            "rtl/core/ir_decomp.sv",
             "rtl/core/Grande_Risco5.sv",
-            "rtl/core/i_cache.sv",
+            "rtl/core/cache_request_multiplexer.sv",
+            "rtl/core/IDEX.sv",
+            "rtl/core/invalid_ir_check.sv",
+            "rtl/core/immediate_generator.sv",
+            "rtl/core/IFID.sv",
+            "rtl/core/MEMWB.sv",
+            "rtl/core/forwarding_unit.sv",
+            "rtl/core/branch_prediction.sv",
+            "rtl/core/registers.sv",
+            "rtl/core/alu_control.sv",
             "rtl/core/csr_unit.sv",
             "rtl/core/core.sv",
-            "rtl/core/mdu.sv"
+            "rtl/core/alu.sv"
           ],
           "total_generated": 82,
           "total_reference": 21
@@ -1382,79 +2944,861 @@
       },
       "is_simulable": true,
       "repository": "https://github.com/JN513/Grande-Risco-5",
-      "validation_time": 1758070171.3786812
+      "validation_time": 1758148788.6821938
+    },
+    {
+      "processor_name": "Risco-5",
+      "overall_score": 0.5295454545454545,
+      "field_scores": {
+        "top_module": 0.0,
+        "files": 1.0,
+        "include_dirs": 0.5,
+        "language_version": 1.0,
+        "sim_files": 0.04545454545454545,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "files": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "Core",
+          "reference": "soc_tb",
+          "score": 0.0
+        },
+        "include_dirs": {
+          "generated": [
+            "src/peripheral",
+            "src/core"
+          ],
+          "reference": [
+            "src/core/"
+          ],
+          "score": 0.5
+        },
+        "sim_files": {
+          "generated": [
+            "tests/alu_test.v",
+            "tests/clk_divider.v",
+            "tests/core_test.v",
+            "tests/fifo_test.v",
+            "tests/gpio_test.v",
+            "tests/immediate_generator_test.v",
+            "tests/mux_test.v",
+            "tests/pc_test.v",
+            "tests/registers_test.v",
+            "tests/reset_test.v",
+            "tests/soc_test.v"
+          ],
+          "reference": [
+            "tests/soc_test.v",
+            "src/peripheral/bus.v",
+            "src/peripheral/fifo.v",
+            "src/peripheral/gpios.v",
+            "src/peripheral/gpio.v",
+            "src/peripheral/leds.v",
+            "src/peripheral/memory.v",
+            "src/peripheral/pwm.v",
+            "src/peripheral/soc.v",
+            "src/peripheral/uart_rx.v",
+            "src/peripheral/uart_tx.v",
+            "src/peripheral/uart.v"
+          ],
+          "score": 0.04545454545454545
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [],
+          "common_files": [
+            "src/core/mdu.v",
+            "src/core/csr_unit.v",
+            "src/core/registers.v",
+            "src/core/pc.v",
+            "src/core/immediate_generator.v",
+            "src/core/control_unit.v",
+            "src/core/mux.v",
+            "src/core/alu_control.v",
+            "src/core/alu.v",
+            "src/core/core.v"
+          ],
+          "total_generated": 10,
+          "total_reference": 10
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'Core' vs reference 'soc_tb'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Risco-5.git",
+      "validation_time": 1758148820.7537901
+    },
+    {
+      "processor_name": "RV12",
+      "overall_score": 0.5904914004914006,
+      "field_scores": {
+        "top_module": 0.18648648648648652,
+        "files": 0.8181818181818182,
+        "include_dirs": 1.0,
+        "language_version": 0.0,
+        "sim_files": 1.0,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 0.0
+      },
+      "matches": {
+        "include_dirs": true,
+        "sim_files": true,
+        "extra_flags": true,
+        "march": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "riscv_noicache_core",
+          "reference": "riscv_top_ahb3lite",
+          "score": 0.18648648648648652
+        },
+        "files": {
+          "generated": [
+            "bench/verilog/ahb3lite/dbg_bfm.sv",
+            "bench/verilog/ahb3lite/memory_model_ahb3lite.sv",
+            "bench/verilog/ahb3lite/testbench_top.sv",
+            "rtl/verilog/ahb3lite/biu_ahb3lite.sv",
+            "rtl/verilog/ahb3lite/riscv_top_ahb3lite.sv",
+            "rtl/verilog/core/riscv_bp.sv",
+            "rtl/verilog/core/riscv_core.sv",
+            "rtl/verilog/core/riscv_du.sv",
+            "rtl/verilog/core/riscv_dwb.sv",
+            "rtl/verilog/core/riscv_ex.sv",
+            "rtl/verilog/core/riscv_id.sv",
+            "rtl/verilog/core/riscv_if.sv",
+            "rtl/verilog/core/riscv_mem.sv",
+            "rtl/verilog/core/riscv_parcel_queue.sv",
+            "rtl/verilog/core/riscv_pd.sv",
+            "rtl/verilog/core/riscv_rf.sv",
+            "rtl/verilog/core/riscv_rsb.sv",
+            "rtl/verilog/core/riscv_state1.10.sv",
+            "rtl/verilog/core/riscv_state1.7.sv",
+            "rtl/verilog/core/riscv_state1.9.sv",
+            "rtl/verilog/core/riscv_state_20240411.sv",
+            "rtl/verilog/core/riscv_wb.sv",
+            "rtl/verilog/core/cache/riscv_cache_biu_ctrl.sv",
+            "rtl/verilog/core/cache/riscv_cache_memory.sv",
+            "rtl/verilog/core/cache/riscv_cache_setup.sv",
+            "rtl/verilog/core/cache/riscv_cache_tag.sv",
+            "rtl/verilog/core/cache/riscv_dcache_core.sv",
+            "rtl/verilog/core/cache/riscv_dcache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_icache_core.sv",
+            "rtl/verilog/core/cache/riscv_icache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_nodcache_core.sv",
+            "rtl/verilog/core/cache/riscv_noicache_core.sv",
+            "rtl/verilog/core/ex/riscv_alu.sv",
+            "rtl/verilog/core/ex/riscv_bu.sv",
+            "rtl/verilog/core/ex/riscv_div.sv",
+            "rtl/verilog/core/ex/riscv_lsu.sv",
+            "rtl/verilog/core/ex/riscv_mul.sv",
+            "rtl/verilog/core/memory/riscv_dmem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_imem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_membuf.sv",
+            "rtl/verilog/core/memory/riscv_memmisaligned.sv",
+            "rtl/verilog/core/memory/riscv_mmu.sv",
+            "rtl/verilog/core/memory/riscv_pmachk.sv",
+            "rtl/verilog/core/memory/riscv_pmpchk.sv",
+            "rtl/verilog/core/memory/riscv_wbuf.sv",
+            "rtl/verilog/core/mmu/riscv_nommu.sv",
+            "rtl/verilog/pkg/biu_constants_pkg.sv",
+            "rtl/verilog/pkg/riscv_cache_pkg.sv",
+            "rtl/verilog/pkg/riscv_du_pkg.sv",
+            "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
+            "rtl/verilog/pkg/riscv_pma_pkg.sv",
+            "rtl/verilog/pkg/riscv_rv12_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.10_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.7_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.9_pkg.sv",
+            "rtl/verilog/pkg/riscv_state_20240411_pkg.sv",
+            "submodules/ahb3lite_pkg/rtl/verilog/ahb3lite_pkg.sv",
+            "submodules/memory/rtl/verilog/rl_queue.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3xs.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_generic.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_lattice.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_generic.sv"
+          ],
+          "reference": [
+            "submodules/ahb3lite_pkg/rtl/verilog/ahb3lite_pkg.sv",
+            "rtl/verilog/pkg/riscv_cache_pkg.sv",
+            "rtl/verilog/pkg/riscv_du_pkg.sv",
+            "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
+            "rtl/verilog/pkg/riscv_rv12_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.10_pkg.sv",
+            "rtl/verilog/pkg/riscv_state_20240411_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.7_pkg.sv",
+            "rtl/verilog/pkg/riscv_state1.9_pkg.sv",
+            "rtl/verilog/pkg/riscv_pma_pkg.sv",
+            "rtl/verilog/pkg/biu_constants_pkg.sv",
+            "rtl/verilog/ahb3lite/biu_ahb3lite.sv",
+            "rtl/verilog/ahb3lite/riscv_top_ahb3lite.sv",
+            "rtl/verilog/core/riscv_bp.sv",
+            "rtl/verilog/core/riscv_core.sv",
+            "rtl/verilog/core/riscv_du.sv",
+            "rtl/verilog/core/riscv_dwb.sv",
+            "rtl/verilog/core/riscv_ex.sv",
+            "rtl/verilog/core/riscv_id.sv",
+            "rtl/verilog/core/riscv_if.sv",
+            "rtl/verilog/core/riscv_mem.sv",
+            "rtl/verilog/core/riscv_parcel_queue.sv",
+            "rtl/verilog/core/riscv_pd.sv",
+            "rtl/verilog/core/riscv_rf.sv",
+            "rtl/verilog/core/riscv_rsb.sv",
+            "rtl/verilog/core/riscv_state1.10.sv",
+            "rtl/verilog/core/riscv_state1.7.sv",
+            "rtl/verilog/core/riscv_state1.9.sv",
+            "rtl/verilog/core/riscv_state_20240411.sv",
+            "rtl/verilog/core/riscv_wb.sv",
+            "rtl/verilog/core/cache/riscv_cache_biu_ctrl.sv",
+            "rtl/verilog/core/cache/riscv_cache_memory.sv",
+            "rtl/verilog/core/cache/riscv_cache_setup.sv",
+            "rtl/verilog/core/cache/riscv_cache_tag.sv",
+            "rtl/verilog/core/cache/riscv_dcache_core.sv",
+            "rtl/verilog/core/cache/riscv_dcache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_icache_core.sv",
+            "rtl/verilog/core/cache/riscv_icache_fsm.sv",
+            "rtl/verilog/core/cache/riscv_nodcache_core.sv",
+            "rtl/verilog/core/cache/riscv_noicache_core.sv",
+            "rtl/verilog/core/ex/riscv_alu.sv",
+            "rtl/verilog/core/ex/riscv_bu.sv",
+            "rtl/verilog/core/ex/riscv_div.sv",
+            "rtl/verilog/core/ex/riscv_lsu.sv",
+            "rtl/verilog/core/ex/riscv_mul.sv",
+            "rtl/verilog/core/memory/riscv_dmem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_imem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_membuf.sv",
+            "rtl/verilog/core/memory/riscv_memmisaligned.sv",
+            "rtl/verilog/core/memory/riscv_mmu.sv",
+            "rtl/verilog/core/memory/riscv_pmachk.sv",
+            "rtl/verilog/core/memory/riscv_pmpchk.sv",
+            "rtl/verilog/core/memory/riscv_wbuf.sv",
+            "rtl/verilog/core/mmu/riscv_nommu.sv"
+          ],
+          "score": 0.8181818181818182
+        },
+        "language_version": {
+          "generated": "2017",
+          "reference": "2012",
+          "score": 0.0
+        },
+        "two_memory": {
+          "generated": false,
+          "reference": true,
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_generic.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_easic_n3xs.sv",
+            "bench/verilog/ahb3lite/dbg_bfm.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_easic_n3x.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw_generic.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w_lattice.sv",
+            "submodules/memory/rtl/verilog/rl_queue.sv",
+            "bench/verilog/ahb3lite/memory_model_ahb3lite.sv",
+            "bench/verilog/ahb3lite/testbench_top.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1r1w.sv",
+            "submodules/memory/rtl/verilog/rl_ram_1rw.sv"
+          ],
+          "only_in_reference": [],
+          "common_files": [
+            "rtl/verilog/pkg/riscv_state1.7_pkg.sv",
+            "rtl/verilog/core/mmu/riscv_nommu.sv",
+            "rtl/verilog/core/ex/riscv_alu.sv",
+            "rtl/verilog/pkg/riscv_rv12_pkg.sv",
+            "rtl/verilog/core/cache/riscv_cache_tag.sv",
+            "rtl/verilog/core/riscv_id.sv",
+            "rtl/verilog/core/cache/riscv_noicache_core.sv",
+            "rtl/verilog/core/memory/riscv_mmu.sv",
+            "rtl/verilog/core/memory/riscv_pmpchk.sv",
+            "rtl/verilog/core/riscv_core.sv",
+            "rtl/verilog/core/riscv_pd.sv",
+            "rtl/verilog/pkg/riscv_state_20240411_pkg.sv",
+            "rtl/verilog/core/memory/riscv_imem_ctrl.sv",
+            "rtl/verilog/core/memory/riscv_wbuf.sv",
+            "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
+            "rtl/verilog/core/riscv_rsb.sv",
+            "rtl/verilog/core/riscv_wb.sv",
+            "rtl/verilog/core/ex/riscv_div.sv",
+            "rtl/verilog/core/riscv_mem.sv",
+            "rtl/verilog/core/cache/riscv_cache_setup.sv",
+            "rtl/verilog/core/ex/riscv_mul.sv",
+            "rtl/verilog/core/memory/riscv_memmisaligned.sv",
+            "rtl/verilog/pkg/riscv_state1.9_pkg.sv",
+            "rtl/verilog/core/ex/riscv_lsu.sv",
+            "rtl/verilog/core/riscv_state1.9.sv",
+            "rtl/verilog/core/riscv_dwb.sv",
+            "submodules/ahb3lite_pkg/rtl/verilog/ahb3lite_pkg.sv",
+            "rtl/verilog/core/riscv_state_20240411.sv",
+            "rtl/verilog/core/cache/riscv_dcache_core.sv",
+            "rtl/verilog/core/cache/riscv_cache_biu_ctrl.sv",
+            "rtl/verilog/core/riscv_parcel_queue.sv",
+            "rtl/verilog/core/riscv_if.sv",
+            "rtl/verilog/core/cache/riscv_icache_core.sv",
+            "rtl/verilog/core/riscv_bp.sv",
+            "rtl/verilog/pkg/riscv_pma_pkg.sv",
+            "rtl/verilog/core/memory/riscv_dmem_ctrl.sv",
+            "rtl/verilog/core/riscv_rf.sv",
+            "rtl/verilog/core/riscv_state1.7.sv",
+            "rtl/verilog/core/cache/riscv_nodcache_core.sv",
+            "rtl/verilog/core/cache/riscv_dcache_fsm.sv",
+            "rtl/verilog/ahb3lite/riscv_top_ahb3lite.sv",
+            "rtl/verilog/core/riscv_ex.sv",
+            "rtl/verilog/pkg/biu_constants_pkg.sv",
+            "rtl/verilog/ahb3lite/biu_ahb3lite.sv",
+            "rtl/verilog/pkg/riscv_state1.10_pkg.sv",
+            "rtl/verilog/pkg/riscv_du_pkg.sv",
+            "rtl/verilog/core/riscv_du.sv",
+            "rtl/verilog/core/riscv_state1.10.sv",
+            "rtl/verilog/core/ex/riscv_bu.sv",
+            "rtl/verilog/pkg/riscv_cache_pkg.sv",
+            "rtl/verilog/core/memory/riscv_pmachk.sv",
+            "rtl/verilog/core/memory/riscv_membuf.sv",
+            "rtl/verilog/core/cache/riscv_cache_memory.sv",
+            "rtl/verilog/core/cache/riscv_icache_fsm.sv"
+          ],
+          "total_generated": 66,
+          "total_reference": 54
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'riscv_noicache_core' vs reference 'riscv_top_ahb3lite'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/roalogic/RV12",
+      "validation_time": 1758148814.238244
+    },
+    {
+      "processor_name": "NutShell",
+      "overall_score": 0.785,
+      "field_scores": {
+        "top_module": 0.7,
+        "files": 1.0,
+        "include_dirs": 0.5,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "files": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "body",
+          "reference": "",
+          "score": 0.7
+        },
+        "include_dirs": {
+          "generated": [
+            "fpga/lib/include",
+            "fpga/board/axu3cg/rtl/hdmi"
+          ],
+          "reference": [],
+          "score": 0.5
+        },
+        "sim_files": {
+          "generated": [
+            "difftest/src/test/vsrc/common/SimJTAG.v",
+            "difftest/src/test/vsrc/common/assert.v",
+            "difftest/src/test/vsrc/common/ref.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_axi.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_clock.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_ctrl.v",
+            "difftest/src/test/vsrc/fpga_sim/xdma_wrapper.v",
+            "difftest/src/test/vsrc/vcs/DeferredControl.v",
+            "difftest/src/test/vsrc/vcs/top.v",
+            "difftest/src/test/vsrc/vcs/DifftestEndpoint.sv"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [],
+          "common_files": [
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_byte_ctrl.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_config.v",
+            "fpga/board/axu3cg/rtl/system_top.v",
+            "fpga/board/PXIe/rtl/addr_mapper.v",
+            "fpga/board/axu3cg/rtl/hdmi/timescale.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_defines.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_bit_ctrl.v",
+            "fpga/board/PXIe/rtl/system_top.v",
+            "fpga/board/axu3cg/rtl/addr_mapper.v",
+            "fpga/board/axu3cg/rtl/hdmi/i2c_master_top.v"
+          ],
+          "total_generated": 10,
+          "total_reference": 10
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'body' vs reference ''"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/OSCPU/NutShell",
+      "validation_time": 1758148794.8425481
+    },
+    {
+      "processor_name": "Pequeno-Risco-5",
+      "overall_score": 0.8272727272727274,
+      "field_scores": {
+        "top_module": 1.0,
+        "files": 0.9090909090909091,
+        "include_dirs": 1.0,
+        "language_version": 0.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "top_module": true,
+        "include_dirs": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "files": {
+          "generated": [
+            "fpga/ecp5/main.v",
+            "src/alu.v",
+            "src/alu_control.v",
+            "src/control_unit.v",
+            "src/core.v",
+            "src/data_memory.v",
+            "src/immediate_generator.v",
+            "src/instruction_memory.v",
+            "src/mux.v",
+            "src/pc.v",
+            "src/registers.v"
+          ],
+          "reference": [
+            "src/alu.v",
+            "src/alu_control.v",
+            "src/control_unit.v",
+            "src/core.v",
+            "src/immediate_generator.v",
+            "src/mux.v",
+            "src/pc.v",
+            "src/registers.v",
+            "src/instruction_memory.v",
+            "src/data_memory.v"
+          ],
+          "score": 0.9090909090909091
+        },
+        "language_version": {
+          "generated": "2012",
+          "reference": "2005",
+          "score": 0.0
+        },
+        "sim_files": {
+          "generated": [
+            "tests/alu_test.v",
+            "tests/core_test.v",
+            "tests/mux_test.v",
+            "tests/pc_test.v",
+            "tests/registers_test.v"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [
+            "fpga/ecp5/main.v"
+          ],
+          "only_in_reference": [],
+          "common_files": [
+            "src/core.v",
+            "src/alu.v",
+            "src/control_unit.v",
+            "src/immediate_generator.v",
+            "src/alu_control.v",
+            "src/mux.v",
+            "src/pc.v",
+            "src/data_memory.v",
+            "src/instruction_memory.v",
+            "src/registers.v"
+          ],
+          "total_generated": 11,
+          "total_reference": 10
+        },
+        "recommendations": [],
+        "critical_issues": []
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/JN513/Pequeno-Risco-5",
+      "validation_time": 1758148796.6632276
+    },
+    {
+      "processor_name": "RPU",
+      "overall_score": 0.8600000000000001,
+      "field_scores": {
+        "top_module": 0.7,
+        "files": 1.0,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "files": true,
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "top_module": {
+          "generated": "rpu_core_tb",
+          "reference": "core",
+          "score": 0.7
+        },
+        "sim_files": {
+          "generated": [
+            "tests/rpu_core_tb.vhd",
+            "tests/tb_alu_int32_div.vhd",
+            "tests/tb_unit_alu_RV32I_01.vhd",
+            "tests/tb_unit_decoder_RV32_01.vhd"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [],
+          "common_files": [
+            "vhdl/csr_unit.vhd",
+            "vhdl/control_unit.vhd",
+            "vhdl/pc_unit.vhd",
+            "vhdl/register_set.vhd",
+            "vhdl/core.vhd",
+            "vhdl/lint_unit.vhd",
+            "vhdl/constants.vhd",
+            "vhdl/unit_decoder_RV32I.vhd",
+            "vhdl/mem_controller.vhd",
+            "vhdl/unit_alu_RV32_I.vhd",
+            "vhdl/alu_int32_div.vhd"
+          ],
+          "total_generated": 11,
+          "total_reference": 11
+        },
+        "recommendations": [],
+        "critical_issues": [
+          "Top module mismatch: generated 'rpu_core_tb' vs reference 'core'"
+        ]
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/Domipheus/RPU",
+      "validation_time": 1758148805.1227098
+    },
+    {
+      "processor_name": "SparrowRV",
+      "overall_score": 0.8875000000000001,
+      "field_scores": {
+        "top_module": 1.0,
+        "files": 0.7499999999999999,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 0.5,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 1.0
+      },
+      "matches": {
+        "top_module": true,
+        "include_dirs": true,
+        "language_version": true,
+        "extra_flags": true,
+        "march": true,
+        "two_memory": true
+      },
+      "differences": {
+        "files": {
+          "generated": [
+            "rtl/core/core.v",
+            "rtl/core/csr.v",
+            "rtl/core/div.v",
+            "rtl/core/dpram.v",
+            "rtl/core/idex.v",
+            "rtl/core/iram.v",
+            "rtl/core/regs.v",
+            "rtl/core/sctr.v",
+            "rtl/core/trap.v"
+          ],
+          "reference": [
+            "rtl/config.v",
+            "rtl/defines.v",
+            "rtl/core/core.v",
+            "rtl/core/csr.v",
+            "rtl/core/div.v",
+            "rtl/core/dpram.v",
+            "rtl/core/idex.v",
+            "rtl/core/iram.v",
+            "rtl/core/regs.v",
+            "rtl/core/rstc.v",
+            "rtl/core/sctr.v",
+            "rtl/core/trap.v"
+          ],
+          "score": 0.7499999999999999
+        },
+        "sim_files": {
+          "generated": [
+            "rtl/perips/sm3/tb/tb_sm3_core_top.sv",
+            "tb/tb_core.sv"
+          ],
+          "reference": [],
+          "score": 0.5
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [
+            "rtl/core/rstc.v",
+            "rtl/config.v",
+            "rtl/defines.v"
+          ],
+          "common_files": [
+            "rtl/core/div.v",
+            "rtl/core/iram.v",
+            "rtl/core/core.v",
+            "rtl/core/regs.v",
+            "rtl/core/dpram.v",
+            "rtl/core/trap.v",
+            "rtl/core/idex.v",
+            "rtl/core/sctr.v",
+            "rtl/core/csr.v"
+          ],
+          "total_generated": 9,
+          "total_reference": 12
+        },
+        "recommendations": [],
+        "critical_issues": []
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/xiaowuzxc/SparrowRV",
+      "validation_time": 1758148828.735424
+    },
+    {
+      "processor_name": "RISC-V",
+      "overall_score": 0.9633333333333334,
+      "field_scores": {
+        "top_module": 1.0,
+        "files": 0.9333333333333333,
+        "include_dirs": 1.0,
+        "language_version": 1.0,
+        "sim_files": 1.0,
+        "extra_flags": 1.0,
+        "march": 1.0,
+        "two_memory": 0.0
+      },
+      "matches": {
+        "top_module": true,
+        "include_dirs": true,
+        "language_version": true,
+        "sim_files": true,
+        "extra_flags": true,
+        "march": true
+      },
+      "differences": {
+        "files": {
+          "generated": [
+            "core/ALU.v",
+            "core/control_unit.v",
+            "core/core.v",
+            "core/csr_unit.v",
+            "core/forwarding_unit.v",
+            "core/hazard_detection_unit.v",
+            "core/imm_decoder.v",
+            "core/load_store_unit.v",
+            "core/muldiv/MULDIV_ctrl.v",
+            "core/muldiv/MULDIV_in.v",
+            "core/muldiv/MULDIV_top.v",
+            "core/muldiv/MUL_DIV_out.v",
+            "core/muldiv/divider_32.v",
+            "core/muldiv/multiplier_32.v"
+          ],
+          "reference": [
+            "core/ALU.v",
+            "core/control_unit.v",
+            "core/core.v",
+            "core/core_wb.v",
+            "core/csr_unit.v",
+            "core/forwarding_unit.v",
+            "core/hazard_detection_unit.v",
+            "core/imm_decoder.v",
+            "core/load_store_unit.v",
+            "core/muldiv/MULDIV_ctrl.v",
+            "core/muldiv/MULDIV_in.v",
+            "core/muldiv/MULDIV_top.v",
+            "core/muldiv/MUL_DIV_out.v",
+            "core/muldiv/divider_32.v",
+            "core/muldiv/multiplier_32.v"
+          ],
+          "score": 0.9333333333333333
+        },
+        "two_memory": {
+          "generated": false,
+          "reference": true,
+          "score": 0.0
+        }
+      },
+      "missing_fields": [],
+      "extra_fields": [],
+      "detailed_analysis": {
+        "file_analysis": {
+          "only_in_generated": [],
+          "only_in_reference": [
+            "core/core_wb.v"
+          ],
+          "common_files": [
+            "core/csr_unit.v",
+            "core/muldiv/MULDIV_top.v",
+            "core/load_store_unit.v",
+            "core/hazard_detection_unit.v",
+            "core/control_unit.v",
+            "core/core.v",
+            "core/muldiv/divider_32.v",
+            "core/ALU.v",
+            "core/muldiv/MULDIV_in.v",
+            "core/forwarding_unit.v",
+            "core/muldiv/MULDIV_ctrl.v",
+            "core/muldiv/multiplier_32.v",
+            "core/imm_decoder.v",
+            "core/muldiv/MUL_DIV_out.v"
+          ],
+          "total_generated": 14,
+          "total_reference": 15
+        },
+        "recommendations": [],
+        "critical_issues": []
+      },
+      "is_simulable": true,
+      "repository": "https://github.com/yavuz650/RISC-V",
+      "validation_time": 1758148802.43032
     }
   ],
   "common_issues": {
-    "top_module_mismatches": 3,
-    "file_list_issues": 3,
-    "include_dir_issues": 1,
-    "language_version_issues": 1,
+    "top_module_mismatches": 7,
+    "file_list_issues": 7,
+    "include_dir_issues": 3,
+    "language_version_issues": 3,
     "missing_fields": {},
     "low_scores_by_field": {
-      "top_module": 2,
+      "top_module": 4,
       "files": 3,
-      "two_memory": 1,
-      "language_version": 1,
-      "march": 1
+      "two_memory": 3,
+      "language_version": 3,
+      "march": 1,
+      "sim_files": 1
     }
   },
   "field_performance": {
     "top_module": {
-      "average_score": 0.3,
+      "average_score": 0.5486486486486486,
       "min_score": 0.0,
-      "max_score": 0.7,
-      "perfect_matches": 0,
-      "total_cases": 3
+      "max_score": 1.0,
+      "perfect_matches": 3,
+      "total_cases": 10
     },
     "files": {
-      "average_score": 0.1017560975609756,
+      "average_score": 0.6715874353288988,
       "min_score": 0.0,
-      "max_score": 0.3052682926829268,
-      "perfect_matches": 0,
-      "total_cases": 3
+      "max_score": 1.0,
+      "perfect_matches": 3,
+      "total_cases": 10
     },
     "include_dirs": {
-      "average_score": 0.8333333333333334,
+      "average_score": 0.85,
       "min_score": 0.5,
       "max_score": 1.0,
-      "perfect_matches": 2,
-      "total_cases": 3
+      "perfect_matches": 7,
+      "total_cases": 10
     },
     "language_version": {
-      "average_score": 0.6666666666666666,
+      "average_score": 0.7,
       "min_score": 0.0,
       "max_score": 1.0,
-      "perfect_matches": 2,
-      "total_cases": 3
+      "perfect_matches": 7,
+      "total_cases": 10
     },
     "sim_files": {
-      "average_score": 0.5,
-      "min_score": 0.5,
-      "max_score": 0.5,
-      "perfect_matches": 0,
-      "total_cases": 3
+      "average_score": 0.5545454545454546,
+      "min_score": 0.04545454545454545,
+      "max_score": 1.0,
+      "perfect_matches": 2,
+      "total_cases": 10
     },
     "extra_flags": {
       "average_score": 1.0,
       "min_score": 1.0,
       "max_score": 1.0,
-      "perfect_matches": 3,
-      "total_cases": 3
+      "perfect_matches": 10,
+      "total_cases": 10
     },
     "march": {
-      "average_score": 0.6666666666666666,
+      "average_score": 0.9,
       "min_score": 0.0,
       "max_score": 1.0,
-      "perfect_matches": 2,
-      "total_cases": 3
+      "perfect_matches": 9,
+      "total_cases": 10
     },
     "two_memory": {
-      "average_score": 0.6666666666666666,
+      "average_score": 0.7,
       "min_score": 0.0,
       "max_score": 1.0,
-      "perfect_matches": 2,
-      "total_cases": 3
+      "perfect_matches": 7,
+      "total_cases": 10
     }
   }
 }
