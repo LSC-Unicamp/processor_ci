@@ -474,7 +474,7 @@ class ConfigValidator:
             field_performance[field] = {
                 'average_score': sum(scores) / len(scores),
                 'min_score': min(scores),
-                'max_score': max(scores),
+              'max_score': max(scores),
                 'perfect_matches': len([s for s in scores if s == 1.0]),
                 'total_cases': len(scores)
             }

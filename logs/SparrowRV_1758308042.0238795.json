@@ -1,0 +1,24 @@
+{
+    "name": "SparrowRV",
+    "folder": "SparrowRV",
+    "sim_files": [
+        "rtl/perips/sm3/tb/tb_sm3_core_top.sv",
+        "tb/tb_core.sv"
+    ],
+    "files": [
+        "rtl/perips/sm3/sm3_cmprss_ceil_comb.v",
+        "rtl/perips/sm3/sm3_cmprss_core.v",
+        "rtl/perips/sm3/sm3_core_top.v",
+        "rtl/perips/sm3/sm3_expnd_core.v",
+        "rtl/perips/sm3/sm3_pad_core.v"
+    ],
+    "include_dirs": [
+        "rtl"
+    ],
+    "repository": "https://github.com/xiaowuzxc/SparrowRV",
+    "top_module": "sm3_core_top",
+    "extra_flags": [],
+    "language_version": "2005",
+    "march": "rv32i",
+    "two_memory": false
+}

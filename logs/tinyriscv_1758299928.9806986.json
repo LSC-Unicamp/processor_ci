@@ -1,0 +1,21 @@
+{
+    "name": "tinyriscv",
+    "folder": "tinyriscv",
+    "sim_files": [
+        "tb/tinyriscv_soc_tb.v",
+        "tb/compliance_test/tinyriscv_soc_tb.v"
+    ],
+    "files": [
+        "rtl/core/tinyriscv.v",
+        "rtl/utils/gen_dff.v"
+    ],
+    "include_dirs": [
+        "rtl/core"
+    ],
+    "repository": "https://github.com/liangkangnan/tinyriscv.git",
+    "top_module": "tinyriscv",
+    "extra_flags": [],
+    "language_version": "2012",
+    "march": "rv32i",
+    "two_memory": false
+}

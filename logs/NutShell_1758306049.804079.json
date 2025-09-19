@@ -1,0 +1,41 @@
+{
+    "name": "NutShell",
+    "folder": "NutShell",
+    "sim_files": [
+        "difftest/src/test/vsrc/common/SimJTAG.v",
+        "difftest/src/test/vsrc/common/assert.v",
+        "difftest/src/test/vsrc/common/ref.v",
+        "difftest/src/test/vsrc/fpga/Difftest2AXI.v",
+        "difftest/src/test/vsrc/fpga/bram_port.v",
+        "difftest/src/test/vsrc/fpga/fpga_clock_gate.v",
+        "difftest/src/test/vsrc/fpga_sim/xdma_axi.v",
+        "difftest/src/test/vsrc/fpga_sim/xdma_clock.v",
+        "difftest/src/test/vsrc/fpga_sim/xdma_wrapper.v",
+        "difftest/src/test/vsrc/vcs/DeferredControl.v",
+        "difftest/src/test/vsrc/vcs/top.v",
+        "difftest/src/test/vsrc/fpga/dual_buffer_bram.sv",
+        "difftest/src/test/vsrc/vcs/DifftestEndpoint.sv"
+    ],
+    "files": [
+        "fpga/board/PXIe/rtl/addr_mapper.v",
+        "fpga/board/PXIe/rtl/system_top.v",
+        "fpga/board/axu3cg/rtl/addr_mapper.v",
+        "fpga/board/axu3cg/rtl/system_top.v",
+        "fpga/board/axu3cg/rtl/hdmi/i2c_config.v",
+        "fpga/board/axu3cg/rtl/hdmi/i2c_master_bit_ctrl.v",
+        "fpga/board/axu3cg/rtl/hdmi/i2c_master_byte_ctrl.v",
+        "fpga/board/axu3cg/rtl/hdmi/i2c_master_defines.v",
+        "fpga/board/axu3cg/rtl/hdmi/i2c_master_top.v",
+        "fpga/board/axu3cg/rtl/hdmi/timescale.v"
+    ],
+    "include_dirs": [
+        "fpga/board/axu3cg/rtl/hdmi",
+        "fpga/lib/include"
+    ],
+    "repository": "https://github.com/OSCPU/NutShell",
+    "top_module": "system_top",
+    "extra_flags": [],
+    "language_version": "2005",
+    "march": "rv32i",
+    "two_memory": false
+}

@@ -1,0 +1,20 @@
+{
+    "name": "RISC-V",
+    "folder": "RISC-V",
+    "sim_files": [
+        "test/rv32i_soc.v",
+        "test/rv32i_soc_TB.v"
+    ],
+    "files": [
+        "rtl/rv32i_memoryaccess.v"
+    ],
+    "include_dirs": [
+        "rtl"
+    ],
+    "repository": "https://github.com/AngeloJacobo/RISC-V.git",
+    "top_module": "rv32i_memoryaccess",
+    "extra_flags": [],
+    "language_version": "2005",
+    "march": "rv32i",
+    "two_memory": false
+}

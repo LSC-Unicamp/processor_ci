@@ -1,0 +1,21 @@
+{
+    "name": "Pequeno-Risco-5",
+    "folder": "Pequeno-Risco-5",
+    "sim_files": [
+        "tests/alu_test.v",
+        "tests/core_test.v",
+        "tests/mux_test.v",
+        "tests/pc_test.v",
+        "tests/registers_test.v"
+    ],
+    "files": [
+        "src/registers.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/JN513/Pequeno-Risco-5",
+    "top_module": "Registers",
+    "extra_flags": [],
+    "language_version": "2012",
+    "march": "rv32i",
+    "two_memory": false
+}

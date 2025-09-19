@@ -339,7 +339,7 @@ def _find_cpu_core_in_soc(top_module: str, module_graph: dict, modules: list) ->
     instantiated_modules = patterns.get('instantiated_modules', [])
     
     # If SoC ratio is significant OR has many instances, look for CPU core candidates among instantiated modules
-    if soc_ratio > 0.1 or total_instances > 8:  # Has significant peripheral instantiations OR is complex enough to be an SoC
+    if soc_ratio > 0.1:  # Has significant peripheral instantiations
         print_green(f"[CORE_SEARCH] {top_module} appears to be a SoC (soc_ratio={soc_ratio:.2f}, total_instances={total_instances}), searching for CPU core...")
         
         # Look for CPU core candidates among instantiated modules
@@ -665,7 +665,9 @@ def run_simulation_with_config(
         verilator_extra_flags = verilator_extra_flags or []
         ghdl_extra_flags = ghdl_extra_flags or []
 
-        file_list = " ".join(shlex.quote(f) for f in files)
+        # Reorder files to put package definitions first
+        ordered_files = reorder_files_by_dependencies(repo_root, files)
+        file_list = " ".join(shlex.quote(f) for f in ordered_files)
 
         if language_version and language_version.lower() in ("vhd", "vhdl"):
             ghdl_flags = " ".join(shlex.quote(f) for f in ghdl_extra_flags)
@@ -795,6 +797,373 @@ def parse_missing_includes_from_log(log_text: str) -> list:
     return list(missing)
 
 
+def parse_missing_packages_from_log(log_text: str) -> list:
+    """
+    Parse simulator output looking for missing package/import errors.
+    """
+    missing_packages = set()
+    patterns = [
+        r"Package/class '([^']+)' not found",
+        r"Importing from missing package '([^']+)'",
+        r"Package '([^']+)' not found",
+        r"Unknown package '([^']+)'",
+        r"Cannot find package '([^']+)'",
+        r"%Error.*Package.*'([^']+)'.*not found",
+        r"package.*'([^']+)'.*not declared",
+        r"'([^']+)' is not a valid package",
+    ]
+    
+    for pat in patterns:
+        for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
+            package_name = m.group(1).strip()
+            # Clean up package name (remove _pkg suffix, :: namespace operators, etc.)
+            clean_name = package_name.replace('_pkg', '').replace('::', '').strip()
+            if clean_name:
+                missing_packages.add(clean_name)
+    
+    return list(missing_packages)
+
+
+def parse_syntax_errors_from_log(log_text: str) -> list:
+    """
+    Parse simulator output looking for syntax errors and extract the files that contain them.
+    Returns a list of file paths that have syntax errors.
+    """
+    error_files = set()
+    
+    # Pattern to match Verilator error messages with file paths
+    # Examples:
+    # %Error: rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv:105:40: Too many digits for 1 bit number: '1'b10100101'
+    # %Error: file.sv:123:45: Syntax error: unexpected token
+    error_patterns = [
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*(?:Too many digits|Syntax error|Parse error|unexpected token)",
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+.*(?:syntax|parse|unexpected)",
+        r"Error.*?:\s+([^:]+\.s?v[h]?):\d+.*(?:syntax|parse|unexpected)",
+        r"Syntax error.*?in\s+([^:]+\.s?v[h]?)",
+        r"Parse error.*?in\s+([^:]+\.s?v[h]?)",
+    ]
+    
+    for pattern in error_patterns:
+        for match in re.finditer(pattern, log_text, flags=re.IGNORECASE | re.MULTILINE):
+            file_path = match.group(1).strip()
+            if file_path and (file_path.endswith('.sv') or file_path.endswith('.v') or file_path.endswith('.svh') or file_path.endswith('.vh')):
+                error_files.add(file_path)
+    
+    return list(error_files)
+
+
+def find_files_with_syntax_errors(repo_root: str, file_list: list) -> list:
+    """
+    Identify files that contain syntax errors by running a quick Verilator syntax check.
+    Returns a list of files that should be excluded due to syntax errors.
+    """
+    syntax_error_files = []
+    
+    # Test each file individually to isolate syntax errors
+    for file_path in file_list:
+        full_path = os.path.join(repo_root, file_path)
+        if not os.path.exists(full_path):
+            continue
+            
+        if not (file_path.endswith('.sv') or file_path.endswith('.v')):
+            continue
+        
+        # Run a quick syntax check on individual file
+        cmd = ['verilator', '--lint-only', '--sv', '-Wno-lint', '-Wno-fatal', '-Wno-style', full_path]
+        
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+            if result.returncode != 0 and result.stderr:
+                # Check if this specific file has syntax errors
+                syntax_files = parse_syntax_errors_from_log(result.stderr)
+                if syntax_files:
+                    # Check if our file is mentioned in the syntax errors
+                    for error_file in syntax_files:
+                        if error_file == file_path or error_file.endswith(file_path.split('/')[-1]):
+                            syntax_error_files.append(file_path)
+                            print_yellow(f"[SYNTAX_ERROR] Found syntax error in {file_path}")
+                            break
+        except subprocess.TimeoutExpired:
+            print_yellow(f"[SYNTAX_ERROR] Timeout checking {file_path}")
+            continue
+        except Exception as e:
+            print_yellow(f"[SYNTAX_ERROR] Error checking {file_path}: {e}")
+            continue
+    
+    return syntax_error_files
+
+
+def check_package_exists_in_repo(repo_root: str, package_name: str) -> bool:
+    """
+    Check if a package definition exists anywhere in the repository.
+    """
+    # Search for package definitions
+    package_patterns = [
+        rf'\bpackage\s+{re.escape(package_name)}_pkg\s*;',
+        rf'\bpackage\s+{re.escape(package_name)}\s*;',
+        rf'^\s*package\s+{re.escape(package_name)}_pkg\b',
+        rf'^\s*package\s+{re.escape(package_name)}\b',
+    ]
+    
+    for root, _, files in os.walk(repo_root):
+        for file in files:
+            if not file.endswith(('.sv', '.svh', '.v', '.vh', '.vhd', '.vhdl')):
+                continue
+                
+            file_path = os.path.join(root, file)
+            try:
+                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                    
+                for pattern in package_patterns:
+                    if re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
+                        print_green(f"[PACKAGE_CHECK] Found package '{package_name}' in {file_path}")
+                        return True
+                        
+            except Exception:
+                continue
+    
+    return False
+
+
+def find_package_files(repo_root: str, files: list) -> dict:
+    """
+    Find files that contain package definitions and map package names to file paths.
+    Returns dict: {package_name: file_path}
+    """
+    package_files = {}
+    
+    print_green("[PKG_ORDER] Scanning for package definitions...")
+    
+    for file_path in files:
+        full_path = file_path
+        if not os.path.isabs(file_path):
+            full_path = os.path.join(repo_root, file_path)
+        
+        if not os.path.exists(full_path):
+            continue
+            
+        try:
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+                
+            # Search for package definitions
+            package_patterns = [
+                r'^\s*package\s+(\w+)\s*;',
+                r'\bpackage\s+(\w+)\s*;',
+            ]
+            
+            for pattern in package_patterns:
+                matches = re.finditer(pattern, content, re.IGNORECASE | re.MULTILINE)
+                for match in matches:
+                    package_name = match.group(1)
+                    package_files[package_name] = file_path
+                    print_green(f"[PKG_ORDER] Found package '{package_name}' in {file_path}")
+                    
+        except Exception as e:
+            print_yellow(f"[PKG_ORDER] Warning: Could not analyze file {file_path}: {e}")
+            continue
+    
+    return package_files
+
+
+def find_import_dependencies(repo_root: str, files: list) -> dict:
+    """
+    Find which files import which packages.
+    Returns dict: {file_path: [list_of_imported_packages]}
+    """
+    file_imports = {}
+    
+    print_green("[PKG_ORDER] Scanning for import dependencies...")
+    
+    for file_path in files:
+        full_path = file_path
+        if not os.path.isabs(file_path):
+            full_path = os.path.join(repo_root, file_path)
+        
+        if not os.path.exists(full_path):
+            continue
+            
+        try:
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+                
+            imports = []
+            
+            # Search for import statements
+            import_patterns = [
+                r'\bimport\s+(\w+)(?:_pkg)?\s*::\s*\*\s*;',
+                r'\bimport\s+(\w+)(?:_pkg)?\s*::\s*\w+',
+                r'\bfrom\s+(\w+)(?:_pkg)?\s+import',
+                r'\buse\s+(\w+)(?:_pkg)?\.',
+            ]
+            
+            for pattern in import_patterns:
+                matches = re.finditer(pattern, content, re.IGNORECASE)
+                for match in matches:
+                    package_name = match.group(1)
+                    # Clean up package name
+                    clean_name = package_name.replace('_pkg', '').strip()
+                    if clean_name and clean_name not in imports:
+                        imports.append(clean_name)
+            
+            if imports:
+                file_imports[file_path] = imports
+                print_green(f"[PKG_ORDER] File {file_path} imports: {imports}")
+                    
+        except Exception as e:
+            print_yellow(f"[PKG_ORDER] Warning: Could not analyze file {file_path}: {e}")
+            continue
+    
+    return file_imports
+
+
+def reorder_files_by_dependencies(repo_root: str, files: list) -> list:
+    """
+    Reorder files so that package definitions come before files that import them.
+    """
+    print_green("[PKG_ORDER] Reordering files by package dependencies...")
+    
+    # Find package definitions and imports
+    package_files = find_package_files(repo_root, files)
+    file_imports = find_import_dependencies(repo_root, files)
+    
+    if not package_files and not file_imports:
+        print_green("[PKG_ORDER] No packages or imports found, keeping original order")
+        return files
+    
+    # Separate files into categories
+    pkg_definition_files = set(package_files.values())
+    importing_files = set(file_imports.keys())
+    other_files = set(files) - pkg_definition_files - importing_files
+    
+    print_green(f"[PKG_ORDER] Found {len(pkg_definition_files)} package files, {len(importing_files)} importing files, {len(other_files)} other files")
+    
+    # Create dependency-ordered list
+    ordered_files = []
+    
+    # 1. First, add package definition files
+    for pkg_file in sorted(pkg_definition_files):
+        if pkg_file not in ordered_files:
+            ordered_files.append(pkg_file)
+            print_green(f"[PKG_ORDER] Added package file: {pkg_file}")
+    
+    # 2. Then add other non-importing files
+    for other_file in sorted(other_files):
+        if other_file not in ordered_files:
+            ordered_files.append(other_file)
+    
+    # 3. Finally add importing files (with dependency resolution)
+    remaining_importing_files = list(importing_files)
+    max_iterations = len(remaining_importing_files) + 5
+    iteration = 0
+    
+    while remaining_importing_files and iteration < max_iterations:
+        iteration += 1
+        made_progress = False
+        
+        for file_path in remaining_importing_files[:]:  # Copy to avoid modification during iteration
+            imports = file_imports.get(file_path, [])
+            
+            # Check if all dependencies are satisfied
+            dependencies_satisfied = True
+            for imported_pkg in imports:
+                # Check if the package file is already in ordered_files
+                pkg_file = package_files.get(imported_pkg) or package_files.get(f"{imported_pkg}_pkg")
+                if pkg_file and pkg_file not in ordered_files:
+                    dependencies_satisfied = False
+                    break
+            
+            if dependencies_satisfied:
+                ordered_files.append(file_path)
+                remaining_importing_files.remove(file_path)
+                made_progress = True
+                print_green(f"[PKG_ORDER] Added importing file: {file_path}")
+        
+        if not made_progress:
+            # Add remaining files anyway to avoid infinite loop
+            for file_path in remaining_importing_files:
+                ordered_files.append(file_path)
+                print_yellow(f"[PKG_ORDER] Added file with unresolved dependencies: {file_path}")
+            break
+    
+    # Ensure we didn't lose any files
+    if len(ordered_files) != len(files):
+        print_yellow(f"[PKG_ORDER] Warning: File count mismatch. Original: {len(files)}, Ordered: {len(ordered_files)}")
+        # Add any missing files at the end
+        for f in files:
+            if f not in ordered_files:
+                ordered_files.append(f)
+                print_yellow(f"[PKG_ORDER] Added missing file: {f}")
+    
+    print_green(f"[PKG_ORDER] Reordering complete. Package files moved to front.")
+    return ordered_files
+
+
+def find_files_with_broken_imports(repo_root: str, files: list, missing_packages: list) -> list:
+    """
+    Find files that import missing packages that cannot be resolved.
+    Returns list of files that should be excluded from simulation.
+    """
+    broken_files = []
+    
+    if not missing_packages:
+        return broken_files
+    
+    print_green(f"[BROKEN_IMPORTS] Searching for files with missing packages: {missing_packages}")
+    
+    # First, check which packages actually don't exist in the repo
+    truly_missing_packages = []
+    for package in missing_packages:
+        if not check_package_exists_in_repo(repo_root, package):
+            truly_missing_packages.append(package)
+            print_yellow(f"[BROKEN_IMPORTS] Package '{package}' not found in repository")
+        else:
+            print_green(f"[BROKEN_IMPORTS] Package '{package}' exists in repository, not excluding files")
+    
+    if not truly_missing_packages:
+        print_green("[BROKEN_IMPORTS] All packages exist in repository, no files to exclude")
+        return broken_files
+    
+    for file_path in files:
+        full_path = file_path
+        if not os.path.isabs(file_path):
+            full_path = os.path.join(repo_root, file_path)
+        
+        if not os.path.exists(full_path):
+            continue
+            
+        try:
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+                
+            # Check for import statements of truly missing packages
+            for package in truly_missing_packages:
+                # Match various import patterns
+                import_patterns = [
+                    rf'\bimport\s+{re.escape(package)}_pkg\s*::\s*\*\s*;',
+                    rf'\bimport\s+{re.escape(package)}\s*::\s*\*\s*;',
+                    rf'\bfrom\s+{re.escape(package)}_pkg\s+import',
+                    rf'\bfrom\s+{re.escape(package)}\s+import',
+                    rf'\buse\s+{re.escape(package)}_pkg\.',
+                    rf'\buse\s+{re.escape(package)}\.',
+                    rf'`include\s+["\'][^"\']*{re.escape(package)}[^"\']*["\']',
+                ]
+                
+                for pattern in import_patterns:
+                    if re.search(pattern, content, re.IGNORECASE):
+                        if file_path not in broken_files:
+                            broken_files.append(file_path)
+                            print_yellow(f"[BROKEN_IMPORTS] Found broken import in {file_path}: {package}")
+                        break
+                        
+        except Exception as e:
+            print_yellow(f"[BROKEN_IMPORTS] Warning: Could not analyze file {file_path}: {e}")
+            continue
+    
+    return broken_files
+
+
 def _add_include_dirs_from_missing_files(repo_root: str, include_dirs: set, missing_basenames: list) -> list:
     """
     For each basename in missing_basenames, search the repo for matching files.
@@ -880,15 +1249,68 @@ def interactive_simulate_and_minimize(
             break
 
         missing = parse_missing_includes_from_log(out)
-        if not missing:
-            print_yellow("[BOOT] No missing includes detected; stopping include-fix loop")
+        missing_packages = parse_missing_packages_from_log(out)
+        
+        # Handle missing includes first
+        newly_added = []
+        if missing:
+            newly_added = _add_include_dirs_from_missing_files(repo_root, inclu, missing)
+            if newly_added:
+                print_green(f"[BOOT] Added include dirs: {newly_added} — retrying")
+                continue
+            else:
+                print_yellow("[BOOT] Could not resolve missing includes")
+        
+        # Handle broken imports - first try reordering, then exclude if needed
+        if missing_packages:
+            # First, try reordering files to fix dependency order
+            print_green(f"[BOOT] Missing packages detected: {missing_packages}")
+            print_green(f"[BOOT] Attempting to fix by reordering files...")
+            original_files = files[:]
+            files = reorder_files_by_dependencies(repo_root, files)
+            
+            # If we reordered files, try again immediately
+            if files != original_files:
+                print_green(f"[BOOT] Files reordered for dependency resolution — retrying")
+                continue
+            
+            # If reordering didn't help, look for truly broken imports to exclude
+            broken_files = find_files_with_broken_imports(repo_root, files, missing_packages)
+            if broken_files:
+                print_yellow(f"[BOOT] Found {len(broken_files)} files with unresolvable imports")
+                original_count = len(files)
+                files = [f for f in files if f not in broken_files]
+                excluded_count = original_count - len(files)
+                print_green(f"[BOOT] Excluded {excluded_count} files with broken imports — retrying")
+                continue
+        
+        # Handle syntax errors - check for files with syntax errors and exclude them
+        syntax_error_files_in_log = parse_syntax_errors_from_log(out)
+        if syntax_error_files_in_log:
+            print_yellow(f"[BOOT] Syntax errors detected in: {syntax_error_files_in_log}")
+            # Find which files in our current file list have syntax errors
+            files_to_exclude = []
+            for error_file in syntax_error_files_in_log:
+                # Match both exact paths and filename-only matches
+                for f in files:
+                    if f == error_file or f.endswith(error_file.split('/')[-1]):
+                        files_to_exclude.append(f)
+            
+            if files_to_exclude:
+                original_count = len(files)
+                files = [f for f in files if f not in files_to_exclude]
+                excluded_count = original_count - len(files)
+                print_green(f"[BOOT] Excluded {excluded_count} files with syntax errors — retrying")
+                for excluded in files_to_exclude:
+                    print_yellow(f"[SYNTAX_EXCLUDE] Excluded file: {excluded}")
+                continue
+        
+        # If no missing includes, packages, or syntax errors, or couldn't resolve them, break
+        if not missing and not missing_packages and not syntax_error_files_in_log:
+            print_yellow("[BOOT] No missing includes, packages, or syntax errors detected; stopping include-fix loop")
             break
-
-        newly_added = _add_include_dirs_from_missing_files(repo_root, inclu, missing)
-        if newly_added:
-            print_green(f"[BOOT] Added include dirs: {newly_added} — retrying")
-        else:
-            print_yellow("[BOOT] Could not resolve missing includes")
+        elif (missing and not newly_added) and (missing_packages and not broken_files) and (syntax_error_files_in_log and not files_to_exclude):
+            print_yellow("[BOOT] Could not resolve missing includes, packages, or syntax errors")
             break
 
     # Phase B: top selection
@@ -1014,7 +1436,11 @@ def interactive_simulate_and_minimize(
             
         is_top_file = module_to_file.get(top_module, "") == f
         print_green(f"[MIN] Trying to remove file: {f}")
-        files.remove(f)
+        try:
+            files.remove(f)
+        except ValueError:
+            print_yellow(f"[MIN] Warning: file {f} not found in current file list, skipping")
+            continue
 
         if not is_top_file:
             # Normal case: keep same top
@@ -1036,6 +1462,44 @@ def interactive_simulate_and_minimize(
                 print_green(f"[MIN] Removed {f} successfully")
                 continue
             else:
+                # Check if the failure is due to syntax errors that we can fix by excluding more files
+                syntax_error_files = parse_syntax_errors_from_log(out)
+                if syntax_error_files:
+                    # Find files with syntax errors and exclude them
+                    files_to_exclude = []
+                    for error_file in syntax_error_files:
+                        for candidate_f in files:
+                            if candidate_f == error_file or candidate_f.endswith(error_file.split('/')[-1]):
+                                files_to_exclude.append(candidate_f)
+                    
+                    if files_to_exclude:
+                        # Remove syntax error files and try again with the current removal
+                        original_count = len(files)
+                        files = [candidate_f for candidate_f in files if candidate_f not in files_to_exclude]
+                        excluded_count = original_count - len(files)
+                        print_green(f"[MIN] Excluded {excluded_count} additional files with syntax errors")
+                        for excluded in files_to_exclude:
+                            print_yellow(f"[MIN-SYNTAX] Excluded file: {excluded}")
+                        
+                        # Try simulation again without the syntax error files
+                        rc2, out2, cfg2 = run_simulation_with_config(
+                            repo_root,
+                            repo_name,
+                            url,
+                            tb_files,
+                            files,
+                            inclu,
+                            top_module,
+                            language_version,
+                            timeout=240,
+                            verilator_extra_flags=verilator_extra_flags,
+                            ghdl_extra_flags=ghdl_extra_flags,
+                        )
+                        last_log = out2
+                        if rc2 == 0:
+                            print_green(f"[MIN] Removed {f} successfully after excluding syntax error files")
+                            continue
+                
                 print_yellow(f"[MIN] Removing {f} broke sim, restoring")
                 files.append(f)
                 continue
@@ -1064,6 +1528,42 @@ def interactive_simulate_and_minimize(
             if rc == 0:
                 new_top = cand
                 break
+            else:
+                # Try to handle syntax errors during top module reselection
+                syntax_error_files = parse_syntax_errors_from_log(out)
+                if syntax_error_files:
+                    files_to_exclude = []
+                    for error_file in syntax_error_files:
+                        for candidate_f in files:
+                            if candidate_f == error_file or candidate_f.endswith(error_file.split('/')[-1]):
+                                files_to_exclude.append(candidate_f)
+                    
+                    if files_to_exclude:
+                        # Try once more after excluding syntax error files
+                        temp_files = [candidate_f for candidate_f in files if candidate_f not in files_to_exclude]
+                        if module_to_file.get(cand, "") in temp_files:
+                            rc2, out2, cfg2 = run_simulation_with_config(
+                                repo_root,
+                                repo_name,
+                                url,
+                                tb_files,
+                                temp_files,
+                                inclu,
+                                cand,
+                                language_version,
+                                timeout=240,
+                                verilator_extra_flags=verilator_extra_flags,
+                                ghdl_extra_flags=ghdl_extra_flags,
+                            )
+                            if rc2 == 0:
+                                # Success! Update files and set new top
+                                files = temp_files
+                                new_top = cand
+                                excluded_count = len(files_to_exclude)
+                                print_green(f"[MIN] Excluded {excluded_count} syntax error files during top reselection")
+                                for excluded in files_to_exclude:
+                                    print_yellow(f"[MIN-TOP-SYNTAX] Excluded file: {excluded}")
+                                break
 
         if new_top:
             print_green(f"[MIN] Promoted new top_module: {new_top}")
@@ -1457,7 +1957,7 @@ def generate_processor_config(
         language_version=language_version,
         cpu_core_matches=cpu_core_matches,
         maximize_attempts=6,
-        verilator_extra_flags=['-Wno-lint', '-Wno-fatal', '-Wno-style'],
+        verilator_extra_flags=['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED'],
         ghdl_extra_flags=['--std=08'],
     )
 

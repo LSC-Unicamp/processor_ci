@@ -1,0 +1,23 @@
+{
+    "name": "SprintRV",
+    "folder": "SprintRV",
+    "sim_files": [
+        "rtl/tb/bus.v",
+        "rtl/tb/console.v",
+        "rtl/tb/ram.v",
+        "rtl/tb/simple_system.v",
+        "rtl/tb/timer.v"
+    ],
+    "files": [
+        "rtl/core/lsu/mem.v"
+    ],
+    "include_dirs": [
+        "rtl/core/include"
+    ],
+    "repository": "https://github.com/CastoHu/SprintRV",
+    "top_module": "mem",
+    "extra_flags": [],
+    "language_version": "2012",
+    "march": "rv32i",
+    "two_memory": false
+}
