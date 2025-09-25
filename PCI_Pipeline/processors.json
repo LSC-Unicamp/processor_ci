@@ -1,0 +1,24 @@
+{
+    "processors": [
+        {
+            "name": "RVX",
+            "github": "https://github.com/rafaelcalcada/rvx"
+        },
+        {
+            "name": "Risco 5",
+            "github": "https://github.com/JN513/Risco-5"
+        },
+        {
+            "name": "Kronos",
+            "github": "https://github.com/SonalPinto/kronos"
+        },
+        {
+            "name": "Leaf",
+            "github": "https://github.com/daniel-santos-7/leaf"
+        },
+        {
+            "name": "Tinyriscv",
+            "github": "https://github.com/liangkangnan/tinyriscv"
+        }
+    ]
+}
