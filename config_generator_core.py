@@ -138,6 +138,58 @@ def _reachable_size(children_of: Any, start: str) -> int:
     return len(seen)
 
 
+def _find_missing_dependencies(repo_root: str, files_to_check: list, module_to_file: dict, current_files: list) -> list:
+    """
+    Generic function to find missing dependencies for VHDL files.
+    Analyzes import statements and finds required packages/entities not in current file list.
+    """
+    missing_deps = []
+    checked_files = set()
+    
+    def analyze_file_dependencies(file_path: str):
+        if file_path in checked_files:
+            return
+        checked_files.add(file_path)
+        
+        full_path = os.path.join(repo_root, file_path)
+        if not os.path.exists(full_path):
+            return
+            
+        try:
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+        except Exception:
+            return
+            
+        # Find use statements and library imports
+        use_patterns = [
+            r'use\s+work\.(\w+)\.all',      # use work.package.all
+            r'use\s+work\.(\w+)',           # use work.package
+            r'library\s+(\w+)',             # library name
+        ]
+        
+        for pattern in use_patterns:
+            matches = re.findall(pattern, content, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                # Skip standard libraries
+                if match.lower() in ['ieee', 'std', 'work']:
+                    continue
+                    
+                # Find the file that contains this package/entity
+                dep_file = module_to_file.get(match, "")
+                if dep_file and dep_file not in current_files and dep_file not in missing_deps:
+                    missing_deps.append(dep_file)
+                    print_green(f"[DEP] Found missing dependency: {match} -> {dep_file}")
+                    # Recursively check dependencies of dependencies
+                    analyze_file_dependencies(dep_file)
+    
+    # Start analysis with the provided files
+    for file_path in files_to_check:
+        analyze_file_dependencies(file_path)
+    
+    return missing_deps
+
+
 def _analyze_instantiation_patterns(module_name: str, file_path: str) -> dict:
     """
     Analyze what types of components a module instantiates to classify it as CPU core vs SoC top.
@@ -186,34 +238,30 @@ def _analyze_instantiation_patterns(module_name: str, file_path: str) -> dict:
         r'\b(debug|jtag)\b'
     ]
     
-    # Look for instantiation patterns in Verilog/SystemVerilog
-    # Pattern: module_name instance_name ( or module_name #( ... ) instance_name (
     instantiation_regex = r'^\s*(\w+)\s*(?:#\s*\([^)]*\))?\s*(\w+)\s*\('
-    
+
     cpu_score = 0
     soc_score = 0
     total_instances = 0
     instantiated_modules = []
     
-    # Find all instantiations
     for match in re.finditer(instantiation_regex, content, re.MULTILINE | re.IGNORECASE):
         module_type = match.group(1).lower()
         instance_name = match.group(2).lower()
         total_instances += 1
         instantiated_modules.append(module_type)
         
-        # Check if instantiated module or instance name matches CPU patterns
         combined_text = f"{module_type} {instance_name}"
         
         for pattern in cpu_patterns:
             if re.search(pattern, combined_text, re.IGNORECASE):
                 cpu_score += 1
-                break  # Only count once per instantiation
+                break  
         
         for pattern in soc_patterns:
             if re.search(pattern, combined_text, re.IGNORECASE):
                 soc_score += 1
-                break  # Only count once per instantiation
+                break  
     
     return {
         'cpu_score': cpu_score,
@@ -449,17 +497,6 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
     zero_parent_modules = [m for m in valid_modules if not parents_of.get(m, [])]
     low_parent_modules = [m for m in valid_modules if len(parents_of.get(m, [])) <= 2]
     
-    print_green(f"[DEBUG] Zero parent modules: {sorted(zero_parent_modules)}")
-    print_green(f"[DEBUG] Low parent modules: {sorted(low_parent_modules)}")
-    
-    # Debug: check specific modules
-    for mod in ['aukv', 'aukv_eggs_soc']:
-        if mod in valid_modules:
-            parents = parents_of.get(mod, [])
-            print_green(f"[DEBUG] Module '{mod}' has parents: {parents}")
-        else:
-            print_yellow(f"[DEBUG] Module '{mod}' not in valid_modules")
-    
     # Include repo name matches even if they have many parents
     repo_name_matches = []
     cpu_core_matches = []
@@ -483,7 +520,9 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
             if (any(pattern in module_lower for pattern in [repo_lower, 'cpu', 'core', 'risc', 'processor']) and 
                 module not in zero_parent_modules and module not in low_parent_modules and
                 not any(bad_pattern in module_lower for bad_pattern in 
-                       ['div', 'mul', 'alu', 'fpu', 'cache', 'mem', 'bus', 'ctrl', 'reg', 'decode', 'fetch', 'exec', 'forward', 'hazard', 'pred'])):
+                       ['div', 'mul', 'alu', 'fpu', 'cache', 'mem', 'bus', 'ctrl', 'reg', 'decode', 'fetch', 'exec', 'forward', 'hazard', 'pred',
+                        'sm3', 'sha', 'aes', 'des', 'rsa', 'ecc', 'crypto', 'hash', 'cipher', 'encrypt', 'decrypt', 'uart', 'spi', 'i2c', 'gpio',
+                        'timer', 'interrupt', 'dma', 'pll', 'clk'])):
                 
                 # Check instantiation patterns if file path is available
                 is_cpu_core = False
@@ -495,15 +534,10 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
                         soc_ratio = patterns.get('soc_ratio', 0)
                         total_instances = patterns.get('total_instances', 0)
                         
-                        # Consider it a CPU core if:
-                        # 1. It has more CPU-like instantiations than SoC-like ones
-                        # 2. It has at least some instantiations (not empty)
-                        # 3. CPU ratio is significantly higher than SoC ratio
                         if total_instances > 0 and (cpu_ratio > soc_ratio * 1.5 or cpu_ratio > 0.3):
                             is_cpu_core = True
                             print_green(f"[INSTANTIATION] {module}: CPU core (cpu_ratio={cpu_ratio:.2f}, soc_ratio={soc_ratio:.2f}, instances={total_instances})")
                         elif total_instances == 0:
-                            # Fallback to name-based heuristics if no instantiations found
                             is_cpu_core = True
                             print_green(f"[INSTANTIATION] {module}: CPU core (fallback - no instantiations found)")
                 
@@ -635,7 +669,7 @@ def run_simulation_with_config(
     Write a temporary JSON config and invoke the appropriate simulator.
     """
     config = create_output_json(
-        repo_name, url, tb_files, files, include_dirs, top_module, language_version
+        repo_name, url, tb_files, files, include_dirs, top_module, language_version, is_simulable=False
     )
     tmpdir = tempfile.mkdtemp(prefix="simcfg_")
     try:
@@ -669,12 +703,26 @@ def run_simulation_with_config(
         ordered_files = reorder_files_by_dependencies(repo_root, files)
         file_list = " ".join(shlex.quote(f) for f in ordered_files)
 
-        if language_version and language_version.lower() in ("vhd", "vhdl"):
+        # Check if we're dealing with VHDL files by examining file extensions
+        is_vhdl = any(f.endswith(('.vhdl', '.vhd')) for f in files) if files else False
+        
+        if is_vhdl:
             ghdl_flags = " ".join(shlex.quote(f) for f in ghdl_extra_flags)
-            cmd = (
-                f"ghdl -a {include_flags_ghdl} {ghdl_flags} {file_list} "
-                f"&& ghdl -e {shlex.quote(top_module)}"
-            )
+            # Add -frelaxed flag by default to handle some GHDL warnings as warnings instead of errors
+            relaxed_flag = "-frelaxed" if "-frelaxed" not in ghdl_flags else ""
+            
+            # Ensure proper spacing between flags
+            include_part = f"{include_flags_ghdl} " if include_flags_ghdl else ""
+            relaxed_part = f"{relaxed_flag} " if relaxed_flag else ""
+            ghdl_part = f"{ghdl_flags} " if ghdl_flags else ""
+            
+            # Add --std flag explicitly to both analyze and elaborate steps
+            std_flag = f"--std={language_version.lstrip('0')}"  # Remove leading zeros: "08" -> "8"
+            if language_version == "08":
+                std_flag = "--std=08"
+            
+            cmd = (f"ghdl -a {std_flag} {include_part}{relaxed_part}{ghdl_part}{file_list} && "
+                   f"ghdl -e {std_flag} {shlex.quote(top_module)}")
             print_green(f"[SIM] Running GHDL syntax check: {cmd}")
             return _run_shell_cmd(cmd, repo_root, timeout, config_path)
         else:
@@ -683,14 +731,21 @@ def run_simulation_with_config(
             
             # Add language standard flags based on version
             std_flags = ""
-            if language_version == '2012' or any(f.endswith(('.sv', '.svh')) for f in files):
-                std_flags = "--sv"
-            elif language_version == '2017':
-                std_flags = "--sv +1800-2017"
-            elif language_version == '2009':
-                std_flags = "+1364-2005 --sv"
+            if language_version.startswith('1800-'):  # SystemVerilog versions
+                if language_version in ['1800-2017']:
+                    std_flags = "--sv +1800-2017"
+                elif language_version in ['1800-2012', '1800-2009', '1800-2005']:
+                    std_flags = "--sv"
+                else:
+                    std_flags = "--sv"
+            elif language_version.startswith('1364-'):  # Verilog versions
+                std_flags = f"+{language_version}ext+"
             else:
-                std_flags = "+1364-2005"
+                # Fallback: detect SystemVerilog by file extensions
+                if any(f.endswith(('.sv', '.svh')) for f in files):
+                    std_flags = "--sv"
+                else:
+                    std_flags = "+1364-2005ext+"
             
             verilator_cmd = (
                 f"verilator --lint-only {std_flags} {top_opt} "
@@ -785,6 +840,9 @@ def parse_missing_includes_from_log(log_text: str) -> list:
         r"error: file not found: '([^']+)'",
         r"Cannot find include file: ['\"]([^'\"]+)['\"]",
         r"%Error: .*Cannot find include file: ['\"]([^'\"]+)['\"]",
+        r"%error: unit '([^']+)' not found",
+        r"error: unit \"([^\"]+)\" not found in library",
+        r"error: unit '([^']+)' not found in library",
     ]
 
     for pat in patterns:
@@ -816,12 +874,62 @@ def parse_missing_packages_from_log(log_text: str) -> list:
     for pat in patterns:
         for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
             package_name = m.group(1).strip()
-            # Clean up package name (remove _pkg suffix, :: namespace operators, etc.)
-            clean_name = package_name.replace('_pkg', '').replace('::', '').strip()
+            # Keep the full package name as reported, only clean up namespace operators
+            clean_name = package_name.replace('::', '').strip()
             if clean_name:
                 missing_packages.add(clean_name)
     
     return list(missing_packages)
+
+
+def parse_ghdl_missing_entities_from_log(log_text: str) -> list:
+    """
+    Parse GHDL output looking for missing entity references.
+    
+    Returns entities that are truly missing, not compilation order issues.
+    GHDL gives errors like: 
+    - unit "entity_name" not found in library "work"
+    - entity "entity_name" not found
+    
+    Note: "obsoleted by package" errors are logged but not returned as missing entities
+    since they indicate compilation order issues, not missing files.
+    """
+    missing_entities = set()
+    # Only patterns for truly missing entities - not compilation order issues
+    patterns = [
+        r'unit "([^"]+)" not found in library "work"',
+        r"unit '([^']+)' not found in library 'work'",
+        r'entity "([^"]+)" not found',
+        r"entity '([^']+)' not found",
+        r'cannot find entity "([^"]+)"',
+        r"cannot find entity '([^']+)'",
+        r'undefined entity "([^"]+)"',
+        r"undefined entity '([^']+)'",
+        # Note: "obsoleted by package" errors removed - these are compilation order issues, not missing entities
+    ]
+    
+    for pat in patterns:
+        for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
+            entity_name = m.group(1).strip()
+            if entity_name:
+                missing_entities.add(entity_name)
+    
+    # Log "obsoleted by package" errors for debugging but don't treat as missing entities
+    obsoleted_patterns = [
+        r'entity "([^"]+)" is obsoleted by package "([^"]+)"',
+        r"entity '([^']+)' is obsoleted by package '([^']+)'",
+        r':error:\s*entity\s*"([^"]+)"\s*is\s*obsoleted\s*by\s*package\s*"([^"]+)"',
+        r":error:\s*entity\s*'([^']+)'\s*is\s*obsoleted\s*by\s*package\s*'([^']+)'",
+    ]
+    
+    for pat in obsoleted_patterns:
+        for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
+            if len(m.groups()) >= 2:
+                entity_name = m.group(1).strip()
+                package_name = m.group(2).strip()
+                print(f"[MIN-GHDL-DEBUG] Entity '{entity_name}' obsoleted by package '{package_name}' - treating as compilation order issue, not missing entity")
+    
+    return list(missing_entities)
 
 
 def parse_syntax_errors_from_log(log_text: str) -> list:
@@ -834,9 +942,10 @@ def parse_syntax_errors_from_log(log_text: str) -> list:
     # Pattern to match Verilator error messages with file paths
     # Examples:
     # %Error: rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv:105:40: Too many digits for 1 bit number: '1'b10100101'
-    # %Error: file.sv:123:45: Syntax error: unexpected token
+    # %Error: file.sv:123:45: Syntax error: unexpected token  
+    # %Error: rtl/verilog/core/memory/riscv_dmem_ctrl.sv:67:44: syntax error, unexpected IDENTIFIER, expecting ','
     error_patterns = [
-        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*(?:Too many digits|Syntax error|Parse error|unexpected token)",
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*(?:syntax error|parse error|Too many digits|unexpected)",
         r"%Error:\s+([^:]+\.s?v[h]?):\d+.*(?:syntax|parse|unexpected)",
         r"Error.*?:\s+([^:]+\.s?v[h]?):\d+.*(?:syntax|parse|unexpected)",
         r"Syntax error.*?in\s+([^:]+\.s?v[h]?)",
@@ -893,11 +1002,62 @@ def find_files_with_syntax_errors(repo_root: str, file_list: list) -> list:
     return syntax_error_files
 
 
+def is_vhdl_project(files: list) -> bool:
+    """
+    Check if this is a VHDL project by examining file extensions.
+    """
+    vhdl_extensions = ['.vhd', '.vhdl']
+    vhdl_count = sum(1 for f in files if any(f.endswith(ext) for ext in vhdl_extensions))
+    total_count = len(files)
+    
+    # Consider it VHDL if more than 50% of files are VHDL
+    return vhdl_count > total_count * 0.5 if total_count > 0 else False
+
+
+def references_missing_entity(file_path: str, entity_name: str, repo_root: str) -> bool:
+    """
+    Check if a VHDL file references a missing entity or has GHDL-specific conflicts.
+    Returns True if the file should be excluded due to referencing missing entities or conflicts.
+    """
+    full_path = os.path.join(repo_root, file_path)
+    if not os.path.exists(full_path):
+        return False
+    
+    try:
+        with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+            
+        # Check for entity instantiation patterns that reference the missing entity
+        patterns = [
+            rf'\bentity\s+work\.{re.escape(entity_name)}\b',  # entity work.entity_name
+            rf':\s*entity\s+work\.{re.escape(entity_name)}\b',  # label: entity work.entity_name
+            rf'\bentity\s+{re.escape(entity_name)}\b',  # entity entity_name (without work prefix)
+            rf':\s*entity\s+{re.escape(entity_name)}\b',  # label: entity entity_name
+        ]
+        
+        for pattern in patterns:
+            if re.search(pattern, content, re.IGNORECASE):
+                return True
+        
+        # Check if this file defines the problematic entity (GHDL obsoleted entity issue)
+        # If a file defines an entity that GHDL says is "obsoleted", it might be the problem file itself
+        entity_def_pattern = rf'^\s*entity\s+{re.escape(entity_name)}\s+is'
+        if re.search(entity_def_pattern, content, re.MULTILINE | re.IGNORECASE):
+            return True
+                
+        return False
+        
+    except Exception as e:
+        print_yellow(f"[MIN-GHDL] Error reading {file_path}: {e}")
+        return False
+
+
 def check_package_exists_in_repo(repo_root: str, package_name: str) -> bool:
     """
     Check if a package definition exists anywhere in the repository.
+    Only returns True for exact matches to avoid false positives.
     """
-    # Search for package definitions
+    # Search for exact package definitions only
     package_patterns = [
         rf'\bpackage\s+{re.escape(package_name)}_pkg\s*;',
         rf'\bpackage\s+{re.escape(package_name)}\s*;',
@@ -928,12 +1088,13 @@ def check_package_exists_in_repo(repo_root: str, package_name: str) -> bool:
 
 def find_package_files(repo_root: str, files: list) -> dict:
     """
-    Find files that contain package definitions and map package names to file paths.
-    Returns dict: {package_name: file_path}
+    Find files that contain package definitions and entity definitions.
+    Map package/entity names to file paths.
+    Returns dict: {package_or_entity_name: file_path}
     """
     package_files = {}
     
-    print_green("[PKG_ORDER] Scanning for package definitions...")
+    print_green("[PKG_ORDER] Scanning for package and entity definitions...")
     
     for file_path in files:
         full_path = file_path
@@ -958,7 +1119,18 @@ def find_package_files(repo_root: str, files: list) -> dict:
                 for match in matches:
                     package_name = match.group(1)
                     package_files[package_name] = file_path
-                    print_green(f"[PKG_ORDER] Found package '{package_name}' in {file_path}")
+            
+            # Search for entity definitions
+            entity_patterns = [
+                r'^\s*entity\s+(\w+)\s+is',
+                r'\bentity\s+(\w+)\s+is',
+            ]
+            
+            for pattern in entity_patterns:
+                matches = re.finditer(pattern, content, re.IGNORECASE | re.MULTILINE)
+                for match in matches:
+                    entity_name = match.group(1)
+                    package_files[entity_name] = file_path
                     
         except Exception as e:
             print_yellow(f"[PKG_ORDER] Warning: Could not analyze file {file_path}: {e}")
@@ -969,8 +1141,8 @@ def find_package_files(repo_root: str, files: list) -> dict:
 
 def find_import_dependencies(repo_root: str, files: list) -> dict:
     """
-    Find which files import which packages.
-    Returns dict: {file_path: [list_of_imported_packages]}
+    Find which files import which packages and instantiate entities.
+    Returns dict: {file_path: [list_of_imported_packages_and_entities]}
     """
     file_imports = {}
     
@@ -992,10 +1164,14 @@ def find_import_dependencies(repo_root: str, files: list) -> dict:
             
             # Search for import statements
             import_patterns = [
+                # SystemVerilog import patterns
                 r'\bimport\s+(\w+)(?:_pkg)?\s*::\s*\*\s*;',
                 r'\bimport\s+(\w+)(?:_pkg)?\s*::\s*\w+',
                 r'\bfrom\s+(\w+)(?:_pkg)?\s+import',
-                r'\buse\s+(\w+)(?:_pkg)?\.',
+                # VHDL use patterns - more comprehensive
+                r'\buse\s+work\.(\w+)\.all\s*;',  # use work.package_name.all;
+                r'\buse\s+work\.(\w+)\.\w+\s*;',  # use work.package_name.something;
+                r'\buse\s+(\w+)(?:_pkg)?\.',       # fallback for other patterns
             ]
             
             for pattern in import_patterns:
@@ -1007,9 +1183,27 @@ def find_import_dependencies(repo_root: str, files: list) -> dict:
                     if clean_name and clean_name not in imports:
                         imports.append(clean_name)
             
+            # Search for VHDL entity instantiations
+            entity_patterns = [
+                # entity work.entity_name port map
+                r'\bentity\s+work\.(\w+)\s+port\s+map',
+                # entity work.entity_name generic map
+                r'\bentity\s+work\.(\w+)\s+generic\s+map',
+                # entity work.entity_name (without explicit port/generic map)
+                r'\bentity\s+work\.(\w+)(?:\s|$|\()',
+                # component instantiation: entity_name : entity work.entity_name
+                r':\s*entity\s+work\.(\w+)',
+            ]
+            
+            for pattern in entity_patterns:
+                matches = re.finditer(pattern, content, re.IGNORECASE)
+                for match in matches:
+                    entity_name = match.group(1).strip()
+                    if entity_name and entity_name not in imports:
+                        imports.append(entity_name)
+            
             if imports:
                 file_imports[file_path] = imports
-                print_green(f"[PKG_ORDER] File {file_path} imports: {imports}")
                     
         except Exception as e:
             print_yellow(f"[PKG_ORDER] Warning: Could not analyze file {file_path}: {e}")
@@ -1042,11 +1236,39 @@ def reorder_files_by_dependencies(repo_root: str, files: list) -> list:
     # Create dependency-ordered list
     ordered_files = []
     
-    # 1. First, add package definition files
-    for pkg_file in sorted(pkg_definition_files):
-        if pkg_file not in ordered_files:
-            ordered_files.append(pkg_file)
-            print_green(f"[PKG_ORDER] Added package file: {pkg_file}")
+    # 1. First, add package definition files with dependency resolution
+    remaining_pkg_files = list(pkg_definition_files)
+    max_pkg_iterations = len(remaining_pkg_files) + 5
+    pkg_iteration = 0
+    
+    while remaining_pkg_files and pkg_iteration < max_pkg_iterations:
+        pkg_iteration += 1
+        made_progress = False
+        
+        for pkg_file in remaining_pkg_files[:]:  # Copy to avoid modification during iteration
+            imports = file_imports.get(pkg_file, [])
+            
+            # Check if all package dependencies are satisfied
+            dependencies_satisfied = True
+            for imported_pkg in imports:
+                # Check if the imported package file is already in ordered_files
+                imported_pkg_file = package_files.get(imported_pkg) or package_files.get(f"{imported_pkg}_pkg")
+                if imported_pkg_file and imported_pkg_file not in ordered_files and imported_pkg_file in pkg_definition_files:
+                    dependencies_satisfied = False
+                    break
+            
+            if dependencies_satisfied:
+                ordered_files.append(pkg_file)
+                remaining_pkg_files.remove(pkg_file)
+                made_progress = True
+                print_green(f"[PKG_ORDER] Added package file: {pkg_file}")
+        
+        if not made_progress:
+            # Add remaining package files anyway to avoid infinite loop
+            for pkg_file in remaining_pkg_files:
+                ordered_files.append(pkg_file)
+                print_yellow(f"[PKG_ORDER] Added package file with unresolved dependencies: {pkg_file}")
+            break
     
     # 2. Then add other non-importing files
     for other_file in sorted(other_files):
@@ -1054,7 +1276,8 @@ def reorder_files_by_dependencies(repo_root: str, files: list) -> list:
             ordered_files.append(other_file)
     
     # 3. Finally add importing files (with dependency resolution)
-    remaining_importing_files = list(importing_files)
+    # Filter out files that are already added as package files
+    remaining_importing_files = [f for f in importing_files if f not in ordered_files]
     max_iterations = len(remaining_importing_files) + 5
     iteration = 0
     
@@ -1087,14 +1310,37 @@ def reorder_files_by_dependencies(repo_root: str, files: list) -> list:
                 print_yellow(f"[PKG_ORDER] Added file with unresolved dependencies: {file_path}")
             break
     
-    # Ensure we didn't lose any files
+    # Only add missing files if they weren't intentionally excluded
+    # Check if missing files have broken imports that would make them problematic
     if len(ordered_files) != len(files):
+        missing_files = [f for f in files if f not in ordered_files]
         print_yellow(f"[PKG_ORDER] Warning: File count mismatch. Original: {len(files)}, Ordered: {len(ordered_files)}")
-        # Add any missing files at the end
-        for f in files:
-            if f not in ordered_files:
-                ordered_files.append(f)
-                print_yellow(f"[PKG_ORDER] Added missing file: {f}")
+        print_yellow(f"[PKG_ORDER] Missing files: {missing_files}")
+        
+        # Check if missing files have broken imports before re-adding them
+        for f in missing_files:
+            # Quick check: if file imports packages that don't exist, don't re-add it
+            file_path = os.path.join(repo_root, f)
+            if os.path.exists(file_path):
+                try:
+                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
+                        content = file.read()
+                        # Look for import statements that might be problematic
+                        import_matches = re.findall(r'import\s+(\w+)(?:::.*)?;', content, re.IGNORECASE)
+                        has_potentially_broken_import = any(
+                            pkg_name.endswith('_pkg') and pkg_name not in package_files 
+                            for pkg_name in import_matches
+                        )
+                        
+                        if has_potentially_broken_import:
+                            print_yellow(f"[PKG_ORDER] Skipping re-addition of {f} (has potentially broken imports)")
+                            continue
+                except:
+                    pass
+            
+            # If we get here, the file seems safe to re-add
+            ordered_files.append(f)
+            print_yellow(f"[PKG_ORDER] Added missing file: {f}")
     
     print_green(f"[PKG_ORDER] Reordering complete. Package files moved to front.")
     return ordered_files
@@ -1192,7 +1438,6 @@ def interactive_simulate_and_minimize(
     module_graph: dict,
     module_graph_inverse: dict,
     language_version: str,
-    cpu_core_matches: list,
     maximize_attempts: int = 6,
     verilator_extra_flags: list | None = None,
     ghdl_extra_flags: list | None = None,
@@ -1200,13 +1445,19 @@ def interactive_simulate_and_minimize(
     """
     Interactive simulation and file minimization.
     """
+    print_yellow(f"[DEBUG] Files list: {candidate_files}") 
     files = list(candidate_files)
     inclu = set(include_dirs)
     last_log = ""
+    
+    # Build module-to-file mapping from modules list
+    module_to_file = {}
+    for module_name, file_path in modules:
+        module_to_file[module_name] = file_path
 
     # Phase A: include fixing
     print_green(f"[DEBUG] Bootstrapping with repo_name='{repo_name}'")
-    bootstrap_candidates, _ = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
+    bootstrap_candidates, cpu_core_candidates = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
     print_green(f"[BOOT] Bootstrap candidates: {bootstrap_candidates[:5]}")
     
     heuristic_top = None
@@ -1215,7 +1466,11 @@ def interactive_simulate_and_minimize(
         if repo_name:
             words_to_check.append(repo_name.lower())
         print_green(f"[DEBUG] Checking candidate '{candidate}' against words {words_to_check}")
-        if any(word in candidate.lower() for word in words_to_check):
+        candidate_lower = candidate.lower()
+        if (any(word in candidate_lower for word in words_to_check) and
+            not any(bad_pattern in candidate_lower for bad_pattern in 
+                   ['sm3', 'sha', 'aes', 'des', 'rsa', 'ecc', 'crypto', 'hash', 'cipher', 'encrypt', 'decrypt', 
+                    'uart', 'spi', 'i2c', 'gpio', 'timer', 'interrupt', 'dma', 'pll', 'clk'])):
             heuristic_top = candidate
             print_green(f"[DEBUG] Selected '{candidate}' as heuristic_top")
             break
@@ -1250,9 +1505,16 @@ def interactive_simulate_and_minimize(
 
         missing = parse_missing_includes_from_log(out)
         missing_packages = parse_missing_packages_from_log(out)
+        missing_entities = parse_ghdl_missing_entities_from_log(out)
+        syntax_error_files_in_log = parse_syntax_errors_from_log(out)
+        
+        # Initialize exclusion tracking variables
+        newly_added = []
+        broken_files = []
+        entity_files_to_exclude = []
+        syntax_files_to_exclude = []
         
         # Handle missing includes first
-        newly_added = []
         if missing:
             newly_added = _add_include_dirs_from_missing_files(repo_root, inclu, missing)
             if newly_added:
@@ -1260,6 +1522,8 @@ def interactive_simulate_and_minimize(
                 continue
             else:
                 print_yellow("[BOOT] Could not resolve missing includes")
+                print_yellow(f"[BOOT] Ressorting to file exclusion for missing includes: {missing}")
+                
         
         # Handle broken imports - first try reordering, then exclude if needed
         if missing_packages:
@@ -1284,33 +1548,51 @@ def interactive_simulate_and_minimize(
                 print_green(f"[BOOT] Excluded {excluded_count} files with broken imports — retrying")
                 continue
         
+        # Handle missing GHDL entities - exclude files that reference missing entities
+        if missing_entities and is_vhdl_project(files):
+            print_yellow(f"[BOOT] Missing GHDL entities detected: {missing_entities}")
+            entity_files_to_exclude = []
+            for missing_entity in missing_entities:
+                for f in files:
+                    if references_missing_entity(f, missing_entity, repo_root):
+                        entity_files_to_exclude.append(f)
+                        print_yellow(f"[BOOT] File '{f}' references missing entity '{missing_entity}' - marking for exclusion")
+            
+            if entity_files_to_exclude:
+                original_count = len(files)
+                files = [f for f in files if f not in entity_files_to_exclude]
+                excluded_count = original_count - len(files)
+                print_green(f"[BOOT] Excluded {excluded_count} files with missing entity references — retrying")
+                for excluded in entity_files_to_exclude:
+                    print_yellow(f"[MISSING_ENTITY] Excluded file: {excluded}")
+                continue
+        
         # Handle syntax errors - check for files with syntax errors and exclude them
-        syntax_error_files_in_log = parse_syntax_errors_from_log(out)
         if syntax_error_files_in_log:
             print_yellow(f"[BOOT] Syntax errors detected in: {syntax_error_files_in_log}")
             # Find which files in our current file list have syntax errors
-            files_to_exclude = []
+            syntax_files_to_exclude = []
             for error_file in syntax_error_files_in_log:
                 # Match both exact paths and filename-only matches
                 for f in files:
                     if f == error_file or f.endswith(error_file.split('/')[-1]):
-                        files_to_exclude.append(f)
+                        syntax_files_to_exclude.append(f)
             
-            if files_to_exclude:
+            if syntax_files_to_exclude:
                 original_count = len(files)
-                files = [f for f in files if f not in files_to_exclude]
+                files = [f for f in files if f not in syntax_files_to_exclude]
                 excluded_count = original_count - len(files)
                 print_green(f"[BOOT] Excluded {excluded_count} files with syntax errors — retrying")
-                for excluded in files_to_exclude:
+                for excluded in syntax_files_to_exclude:
                     print_yellow(f"[SYNTAX_EXCLUDE] Excluded file: {excluded}")
                 continue
         
-        # If no missing includes, packages, or syntax errors, or couldn't resolve them, break
-        if not missing and not missing_packages and not syntax_error_files_in_log:
-            print_yellow("[BOOT] No missing includes, packages, or syntax errors detected; stopping include-fix loop")
+        # If no missing includes, packages, entities, or syntax errors, or couldn't resolve them, break
+        if not missing and not missing_packages and not missing_entities and not syntax_error_files_in_log:
+            print_yellow("[BOOT] No missing includes, packages, entities, or syntax errors detected; stopping include-fix loop")
             break
-        elif (missing and not newly_added) and (missing_packages and not broken_files) and (syntax_error_files_in_log and not files_to_exclude):
-            print_yellow("[BOOT] Could not resolve missing includes, packages, or syntax errors")
+        elif (missing and not newly_added) and (missing_packages and not broken_files) and (missing_entities and not entity_files_to_exclude) and (syntax_error_files_in_log and not syntax_files_to_exclude):
+            print_yellow("[BOOT] Could not resolve missing includes, packages, entities, or syntax errors")
             break
 
     # Phase B: top selection
@@ -1364,11 +1646,15 @@ def interactive_simulate_and_minimize(
                     print_green(f"[TOP-CAND] Selected detected CPU core '{selected_top}' (cpu_core pattern match)")
                     break
         
-        # Third priority: core/CPU modules without "soc" 
+        # Third priority: core/CPU modules without "soc" and without peripheral patterns
         if not selected_top:
             for cand in working_candidates:
                 cand_lower = cand.lower()
-                if (any(tok in cand_lower for tok in ["core", "cpu"]) and "soc" not in cand_lower):
+                if (any(tok in cand_lower for tok in ["core", "cpu"]) and 
+                    "soc" not in cand_lower and
+                    not any(bad_pattern in cand_lower for bad_pattern in 
+                           ['sm3', 'sha', 'aes', 'des', 'rsa', 'ecc', 'crypto', 'hash', 'cipher', 'encrypt', 'decrypt', 
+                            'uart', 'spi', 'i2c', 'gpio', 'timer', 'interrupt', 'dma', 'pll', 'clk'])):
                     selected_top = cand
                     print_green(f"[TOP-CAND] Selected core module '{selected_top}' (core/cpu preference)")
                     break
@@ -1381,6 +1667,74 @@ def interactive_simulate_and_minimize(
     if not selected_top:
         selected_top = candidates[0] if candidates else heuristic_top
         print_yellow(f"[TOP-CAND] Falling back to heuristic choice: {selected_top}")
+
+    # CRITICAL CHECK: Ensure the selected top module's file is actually in our file list
+    top_module_file = module_to_file.get(selected_top, "")
+    if top_module_file not in files:
+        print_red(f"[TOP-CAND] ERROR: Selected top module '{selected_top}' file '{top_module_file}' not in file list!")
+        
+        # First, try to add the missing top module file if it exists in the repository
+        if top_module_file and os.path.exists(os.path.join(repo_root, top_module_file)):
+            # Normalize the path to be relative to repo_root
+            normalized_top_file = os.path.relpath(top_module_file, repo_root) if os.path.isabs(top_module_file) else top_module_file
+            print_green(f"[TOP-CAND] FIXING: Adding missing top module file '{normalized_top_file}' to file list")
+            files.append(normalized_top_file)
+            
+            # For VHDL files, dynamically find and include missing dependencies
+            if top_module_file.endswith(('.vhd', '.vhdl')):
+                missing_deps = _find_missing_dependencies(repo_root, [top_module_file], module_to_file, files)
+                for dep_file in missing_deps:
+                    if os.path.exists(os.path.join(repo_root, dep_file)):
+                        # Also normalize dependency paths
+                        normalized_dep_file = os.path.relpath(dep_file, repo_root) if os.path.isabs(dep_file) else dep_file
+                        print_green(f"[TOP-CAND] FIXING: Adding missing dependency '{normalized_dep_file}' for top module")
+                        files.append(normalized_dep_file)
+                        
+            print_green(f"[TOP-CAND] Successfully added top module file and dependencies. Total files now: {len(files)}")
+        else:
+            print_green(f"[TOP-CAND] Available files: {files[:10]}...")  # Show first 10 files for debugging
+            print_green(f"[TOP-CAND] Searching for alternative top module from available files...")
+        
+        # Find alternative top modules that actually have files in our list
+        alternative_candidates = []
+        for cand in candidates:
+            cand_file = module_to_file.get(cand, "")
+            if cand_file and cand_file in files:
+                alternative_candidates.append(cand)
+        
+        print_green(f"[TOP-CAND] Found {len(alternative_candidates)} alternative candidates with available files: {alternative_candidates}")
+        
+        # Test alternatives to find a working one
+        final_top = None
+        for alt_cand in alternative_candidates:
+            print_green(f"[TOP-CAND] Testing alternative: {alt_cand}")
+            rc, out, cfg = run_simulation_with_config(
+                repo_root,
+                repo_name,
+                url,
+                tb_files,
+                files,
+                inclu,
+                alt_cand,
+                language_version,
+                timeout=120,
+                verilator_extra_flags=verilator_extra_flags,
+                ghdl_extra_flags=ghdl_extra_flags,
+            )
+            if rc == 0:
+                final_top = alt_cand
+                print_green(f"[TOP-CAND] Found working alternative: {alt_cand}")
+                break
+        
+        if final_top:
+            selected_top = final_top
+            print_green(f"[TOP-CAND] Successfully switched to alternative top module: {selected_top}")
+        else:
+            print_red(f"[TOP-CAND] No working alternative found! This will likely fail in simulation.")
+            # Keep the original selection but warn user
+            print_yellow(f"[TOP-CAND] Continuing with missing top module '{selected_top}' - expect compilation failure")
+    else:
+        print_green(f"[TOP-CAND] Verified top module '{selected_top}' file '{top_module_file}' is available")
 
     top_module = selected_top
 
@@ -1435,6 +1789,21 @@ def interactive_simulate_and_minimize(
             break
             
         is_top_file = module_to_file.get(top_module, "") == f
+        
+        # Smart protection: Use existing analysis to determine if top module is CPU core vs SoC  
+        if is_top_file:
+            # Analyze the top module using existing instantiation pattern analysis
+            patterns = _analyze_instantiation_patterns(top_module, f)
+            cpu_ratio = patterns.get('cpu_ratio', 0)
+            soc_ratio = patterns.get('soc_ratio', 0)
+            
+            # Protect CPU cores (high CPU ratio, low SoC ratio), allow SoC wrappers to be removed
+            if cpu_ratio > soc_ratio and cpu_ratio > 0.3:
+                print_yellow(f"[MIN] Protecting CPU core top module file: {f} (contains {top_module}, cpu_ratio={cpu_ratio:.2f})")
+                continue
+            else:
+                print_green(f"[MIN] Top module '{top_module}' appears to be SoC wrapper (cpu_ratio={cpu_ratio:.2f}, soc_ratio={soc_ratio:.2f}) - allowing removal to find CPU core")
+            
         print_green(f"[MIN] Trying to remove file: {f}")
         try:
             files.remove(f)
@@ -1462,6 +1831,39 @@ def interactive_simulate_and_minimize(
                 print_green(f"[MIN] Removed {f} successfully")
                 continue
             else:
+                # Check if the failure is due to missing packages that we can fix by excluding more files
+                missing_packages = parse_missing_packages_from_log(out)
+                if missing_packages:
+                    # Find files with broken imports and exclude them
+                    broken_files = find_files_with_broken_imports(repo_root, files, missing_packages)
+                    if broken_files:
+                        # Remove broken files and try again with the current removal
+                        original_count = len(files)
+                        files = [candidate_f for candidate_f in files if candidate_f not in broken_files]
+                        excluded_count = original_count - len(files)
+                        print_green(f"[MIN] Excluded {excluded_count} additional files with broken imports")
+                        for excluded in broken_files:
+                            print_yellow(f"[MIN-BROKEN_IMPORTS] Excluded file: {excluded}")
+                        
+                        # Try simulation again without the broken files
+                        rc_broken, out_broken, cfg_broken = run_simulation_with_config(
+                            repo_root,
+                            repo_name,
+                            url,
+                            tb_files,
+                            files,
+                            inclu,
+                            top_module,
+                            language_version,
+                            timeout=240,
+                            verilator_extra_flags=verilator_extra_flags,
+                            ghdl_extra_flags=ghdl_extra_flags,
+                        )
+                        last_log = out_broken
+                        if rc_broken == 0:
+                            print_green(f"[MIN] Removed {f} successfully after excluding files with broken imports")
+                            continue
+                
                 # Check if the failure is due to syntax errors that we can fix by excluding more files
                 syntax_error_files = parse_syntax_errors_from_log(out)
                 if syntax_error_files:
@@ -1500,17 +1902,84 @@ def interactive_simulate_and_minimize(
                             print_green(f"[MIN] Removed {f} successfully after excluding syntax error files")
                             continue
                 
+                # Check if the failure is due to missing entities in GHDL that we can fix by excluding files with broken references
+                missing_entities = parse_ghdl_missing_entities_from_log(out)
+                if missing_entities and is_vhdl_project(files):
+                    # Find files that reference missing entities and exclude them
+                    files_to_exclude = []
+                    for missing_entity in missing_entities:
+                        for candidate_f in files:
+                            if references_missing_entity(candidate_f, missing_entity, repo_root):
+                                files_to_exclude.append(candidate_f)
+                    
+                    if files_to_exclude:
+                        # Remove files with broken entity references and try again with the current removal
+                        original_count = len(files)
+                        files = [candidate_f for candidate_f in files if candidate_f not in files_to_exclude]
+                        excluded_count = original_count - len(files)
+                        print_green(f"[MIN] Excluded {excluded_count} additional files with missing entity references")
+                        for excluded in files_to_exclude:
+                            print_yellow(f"[MIN-GHDL] Excluded file: {excluded} (references missing entities)")
+                        
+                        # Try simulation again without the files with broken references
+                        rc3, out3, cfg3 = run_simulation_with_config(
+                            repo_root,
+                            repo_name,
+                            url,
+                            tb_files,
+                            files,
+                            inclu,
+                            top_module,
+                            language_version,
+                            timeout=240,
+                            verilator_extra_flags=verilator_extra_flags,
+                            ghdl_extra_flags=ghdl_extra_flags,
+                        )
+                        last_log = out3
+                        if rc3 == 0:
+                            print_green(f"[MIN] Removed {f} successfully after excluding files with missing entity references")
+                            continue
+                
                 print_yellow(f"[MIN] Removing {f} broke sim, restoring")
                 files.append(f)
                 continue
 
-        # Special case: removed the top file
-        print_yellow(f"[MIN] Removed file of current top '{top_module}', trying to reselect…")
+        # Special case: removed the top file - decide whether to keep or replace
+        print_yellow(f"[MIN] Removed file of current top '{top_module}' - analyzing module type...")
+        
+        # Analyze if the top module is likely a CPU core or SoC wrapper
+        top_name_lower = top_module.lower()
+        is_likely_core = any(term in top_name_lower for term in ['core', 'cpu', 'proc', 'processor'])
+        is_likely_soc = any(term in top_name_lower for term in ['soc', 'system', 'chip', 'top'])
+        
+        # If it looks like a CPU core and not a SoC, keep the file
+        if is_likely_core and not is_likely_soc:
+            print_green(f"[MIN] Top module '{top_module}' appears to be CPU core - restoring file {f}")
+            files.append(f)
+            continue
+        
+        # Otherwise, try to find a replacement top module
+        print_green(f"[MIN] Top module '{top_module}' appears to be SoC wrapper - searching for CPU core replacement...")
         candidates, _ = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
-        new_top = None
+        
+        # Filter candidates to those that still have files available and prefer CPU cores
+        available_candidates = []
         for cand in candidates:
-            if module_to_file.get(cand, "") not in files:
-                continue
+            if cand != top_module and module_to_file.get(cand, "") in files:
+                cand_lower = cand.lower()
+                cand_is_core = any(term in cand_lower for term in ['core', 'cpu', 'proc', 'processor'])
+                cand_is_soc = any(term in cand_lower for term in ['soc', 'system', 'chip', 'top'])
+                # Prefer CPU cores over SoC wrappers
+                priority = 2 if cand_is_core and not cand_is_soc else 1 if not cand_is_soc else 0
+                available_candidates.append((priority, cand))
+        
+        # Sort by priority (higher first)
+        available_candidates.sort(key=lambda x: x[0], reverse=True)
+        
+        print_green(f"[MIN] Testing {len(available_candidates)} replacement candidates...")
+        new_top = None
+        for priority, cand in available_candidates:
+            print_green(f"[MIN] Testing candidate: {cand} (priority: {priority})")
             rc, out, cfg = run_simulation_with_config(
                 repo_root,
                 repo_name,
@@ -1527,6 +1996,7 @@ def interactive_simulate_and_minimize(
             last_log = out
             if rc == 0:
                 new_top = cand
+                print_green(f"[MIN] Found working replacement: {cand}")
                 break
             else:
                 # Try to handle syntax errors during top module reselection
@@ -1566,14 +2036,38 @@ def interactive_simulate_and_minimize(
                                 break
 
         if new_top:
-            print_green(f"[MIN] Promoted new top_module: {new_top}")
+            print_green(f"[MIN] Successfully switched from SoC '{top_module}' to replacement '{new_top}'")
             top_module = new_top
         else:
-            print_yellow(f"[MIN] No valid replacement top found, restoring {f}")
+            print_yellow(f"[MIN] No valid replacement top found, restoring SoC file {f}")
             files.append(f)
 
     print_green("[MIN] Minimization finished")
-    return files, inclu, last_log, top_module
+    
+    # Final simulation test to verify the configuration is actually simulable
+    print_green("[FINAL_TEST] Testing final configuration for simulability...")
+    rc, final_test_log, _ = run_simulation_with_config(
+        repo_root,
+        repo_name,
+        url,
+        tb_files,
+        files,
+        inclu,
+        top_module,
+        language_version,
+        timeout=60,
+        verilator_extra_flags=verilator_extra_flags,
+        ghdl_extra_flags=ghdl_extra_flags,
+    )
+    
+    is_simulable = (rc == 0)
+    if is_simulable:
+        print_green("[FINAL_TEST] ✓ Configuration is simulable!")
+    else:
+        print_yellow("[FINAL_TEST] ✗ Configuration failed final simulation test")
+        print_yellow(f"[FINAL_TEST] Errors: {parse_syntax_errors_from_log(final_test_log)}")
+    
+    return files, inclu, last_log, top_module, is_simulable
 
 
 def detect_systemverilog_features(files: list) -> bool:
@@ -1640,151 +2134,116 @@ def determine_language_version(extension: str, files: list = None, base_path: st
     base_version = {
         '.vhdl': '08',
         '.vhd': '08', 
-        '.sv': '2017',    # SystemVerilog files - start with newest
-        '.svh': '2017',   # SystemVerilog headers - start with newest
-    }.get(extension, '2017')  # Default to newest SystemVerilog for .v files
+        '.sv': '2017',    
+        '.svh': '2017',   
+    }.get(extension, '2017')  
     
-    # If no files to analyze, return base version
     if not files:
         return base_version
     
-    # For VHDL files, return base version (could be enhanced later)
     if extension in ['.vhdl', '.vhd']:
         return base_version
     
-    # Analyze for incompatible syntax that forces regression
     detected_version = analyze_verilog_language_features(files, base_path)
-    
-    # For .sv/.svh files, enforce minimum SystemVerilog-2005 (never pure Verilog)
-    if extension in ['.sv', '.svh']:
-        if detected_version in ['1995', '2001']:
-            print_green(f"[LANG] .sv/.svh extension requires SystemVerilog - upgrading from {detected_version} to 2005")
-            return '2005'
-        return detected_version
-    
-    # For .v files, the detected version is what we use
-    if detected_version != base_version:
-        if detected_version in ['1995', '2001', '2005']:
-            print_green(f"[LANG] Regressed from {base_version} to {detected_version} due to incompatible syntax")
-        else:
-            print_green(f"[LANG] Using {detected_version} (no incompatible syntax found)")
     
     return detected_version
 
 
 def analyze_verilog_language_features(files: list, base_path: str = None) -> str:
     """
-    Analyzes Verilog files to detect incompatible syntax that requires regression.
-    Starts with newest version and only regresses when unsupported syntax is found.
+    Analyze Verilog/SystemVerilog files and return the lowest common denominator
+    language version string compatible with Verilator's --language flag.
+    Starts from SystemVerilog-2017 and downgrades only if discontinued syntax is found.
     """
-    # Start with the newest widely supported version
-    detected_version = '2017'
-    
-    # Syntax that's NOT SUPPORTED in newer standards (forces regression)
-    incompatible_with_systemverilog = [
-        # These constructs cause issues with SystemVerilog parsers
-        r'defparam\s+\w+\.\w+\s*=',  # defparam not recommended in SV, use parameter ports
-        r'^\s*UDP\s+\w+\s*\(',  # User Defined Primitives rarely supported in SV tools
-        r'\$time\b(?!\s*\()',  # $time without parentheses (old Verilog-95 style)
-        r'^\s*specify\s*$',  # specify blocks often unsupported in SV synthesis
-        r'\bwand\b|\bwor\b|\btri0\b|\btri1\b|\btriand\b|\btrior\b',  # Complex wire types problematic in SV
-    ]
-    
-    # Syntax that requires regression to Verilog-2005 or earlier
-    incompatible_with_modern_sv = [
-        r'`timescale\s+\d+\s*\w+\s*/\s*\d+\s*\w+(?!\s*//)',  # Old timescale format without units
-        r'\bforce\b|\brelease\b',  # Force/release statements problematic in modern SV
-        r'`include\s+"[^"]*\.vh"',  # .vh includes instead of .svh
-    ]
-    
-    # Syntax that forces regression to basic Verilog (pre-2001)
-    requires_old_verilog = [
-        r'`expand_vectornets',  # Very old Verilog directive
-        r'\bscalared\b|\bvectored\b',  # Old net declarations
-        r'^\s*primitive\s+\w+\s*\(',  # Primitive definitions (Verilog-95 style)
-    ]
-    
-    # Check what unsupported syntax we find
-    files_to_check = files[:20] if len(files) > 20 else files
-    
-    found_incompatible = {
-        'needs_old_verilog': False,
-        'needs_verilog_2005': False, 
-        'needs_basic_systemverilog': False,
+
+    versions = {
+        "1364-1995": 0,
+        "1364-2001": 1,
+        "1364-2005": 2,
+        "1800-2005": 3,
+        "1800-2009": 4,
+        "1800-2012": 5,
+        "1800-2017": 6,
     }
-    
-    for file_path in files_to_check:
+    detected = versions["1800-2017"]  
+
+    downgrade_rules = {
+        "1364-1995": [
+            r'`expand_vectornets',                 
+            r'\bscalared\b|\bvectored\b',          
+            r'^\s*primitive\s+\w+\s*\(',          
+        ],
+        "1364-2005": [
+            r'`timescale\s+\d+\s*\w+\s*/\s*\d+\s*\w+(?!\s*//)',  
+            r'\bforce\b|\brelease\b',             
+            r'`include\s+"[^"]*\.vh"',             
+        ],
+        "1800-2005": [
+            r'defparam\s+\w+\.\w+\s*=',            
+            r'^\s*UDP\s+\w+\s*\(',                
+            r'\$time\b(?!\s*\()',                  
+            r'^\s*specify\s*$',                    
+            r'\bwand\b|\bwor\b|\btri0\b|\btri1\b|\btriand\b|\btrior\b',
+        ],
+    }
+
+    modern_features = [
+        r'\balways_ff\b|\balways_comb\b|\balways_latch\b',
+        r'\binterface\b|\bmodport\b',
+        r'\blogic\b',
+        r'\bclass\b|\bpackage\b',
+        r'\btypedef\s+(enum|struct|union)',
+        r'\bunique\s+case|\bpriority\s+case',
+        r'\bcovergroup\b|\bassert\b|\bconstraint\b',
+    ]
+
+    compiled_rules = {
+        target: [re.compile(p, re.I | re.M) for p in pats]
+        for target, pats in downgrade_rules.items()
+    }
+    compiled_features = [re.compile(p, re.I | re.M) for p in modern_features]
+
+    found_modern = False
+
+    for file_path in files:
         try:
-            # Handle relative paths by combining with base_path
-            full_path = file_path
-            if base_path and not os.path.isabs(file_path):
-                full_path = os.path.join(base_path, file_path)
-            
-            with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
-                content = f.read(8192)
-                
-                # Check for syntax that forces old Verilog
-                for pattern in requires_old_verilog:
-                    if re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
-                        found_incompatible['needs_old_verilog'] = True
-                        print_yellow(f"[LANG] Found old Verilog syntax in {file_path}: {pattern}")
+            full_path = (
+                os.path.join(base_path, file_path)
+                if base_path and not os.path.isabs(file_path)
+                else file_path
+            )
+            with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
+                content = f.read()
+
+            for target, patterns in compiled_rules.items():
+                for pat in patterns:
+                    if pat.search(content):
+                        detected = min(detected, versions[target])
+                        print(f"[LANG] {file_path}: matched {pat.pattern}, downgrade → {target}")
                         break
-                
-                # Check for syntax incompatible with modern SystemVerilog
-                for pattern in incompatible_with_modern_sv:
-                    if re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
-                        found_incompatible['needs_verilog_2005'] = True
-                        print_yellow(f"[LANG] Found legacy syntax in {file_path}")
+                if detected == versions[target]:
+                    break  
+
+            if detected >= versions["1800-2009"]:
+                for feat in compiled_features:
+                    if feat.search(content):
+                        found_modern = True
+                        print(f"[LANG] {file_path}: found modern SV feature {feat.pattern}")
                         break
-                
-                # Check for syntax incompatible with SystemVerilog
-                for pattern in incompatible_with_systemverilog:
-                    if re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
-                        found_incompatible['needs_basic_systemverilog'] = True
-                        print_yellow(f"[LANG] Found SystemVerilog-incompatible syntax in {file_path}")
-                        break
-                        
+
         except Exception as e:
-            print_yellow(f"[LANG] Warning: Could not analyze file {file_path}: {e}")
-            continue
-    
-    # Regress only if we found incompatible syntax
-    if found_incompatible['needs_old_verilog']:
-        detected_version = '1995'
-        print_green("[LANG] Found Verilog-95 only syntax, regressing to 1995")
-    elif found_incompatible['needs_verilog_2005']:
-        detected_version = '2005'
-        print_green("[LANG] Found legacy constructs, regressing to Verilog-2005")
-    elif found_incompatible['needs_basic_systemverilog']:
-        detected_version = '2005'  # Basic SystemVerilog
-        print_green("[LANG] Found SystemVerilog-incompatible syntax, using SystemVerilog-2005")
+            print(f"[LANG] Warning: Could not analyze {file_path}: {e}")
+
+    if detected < versions["1800-2005"]:  
+        resolved = [v for v, pri in versions.items() if pri == detected][0]
     else:
-        # No incompatible syntax found - check if we have modern features that benefit from newer versions
-        has_modern_features = False
-        for file_path in files_to_check[:5]:
-            try:
-                # Handle relative paths by combining with base_path
-                full_path = file_path
-                if base_path and not os.path.isabs(file_path):
-                    full_path = os.path.join(base_path, file_path)
-                
-                with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
-                    content = f.read(4096)
-                    # Look for modern SystemVerilog constructs
-                    if re.search(r'\balways_ff\b|\balways_comb\b|\binterface\b|\blogic\b|\bclass\b|\bpackage\b', content, re.IGNORECASE):
-                        has_modern_features = True
-                        break
-            except Exception:
-                continue
-        
-        if has_modern_features:
-            detected_version = '2017'
-            print_green("[LANG] Found modern SystemVerilog features, using 2017 standard")
+        if found_modern:
+            resolved = "1800-2017"
         else:
-            detected_version = '2012'
-            print_green("[LANG] No incompatible syntax found, using SystemVerilog-2012 default")
-    
-    return detected_version
+            resolved = "1800-2012"
+
+    print(f"[LANG] Final detected version: {resolved}")
+    return resolved
 
 
 def create_output_json(
@@ -1795,6 +2254,7 @@ def create_output_json(
     include_dirs,
     top_module,
     language_version,
+    is_simulable=False,
 ):
     """
     Creates the output JSON structure for the processor configuration.
@@ -1811,6 +2271,7 @@ def create_output_json(
         'language_version': language_version,
         'march': 'rv32i',
         'two_memory': False,
+        'is_simulable': is_simulable,
     }
 
 
@@ -1834,7 +2295,6 @@ def find_and_log_files(destination_path: str) -> tuple:
     """Finds files with specific extensions in the repository and logs the result."""
     print_green('[LOG] Procurando arquivos com extensão .v, .sv, .vhdl ou .vhd\n')
     files, extension = find_files_with_extension(destination_path, EXTENSIONS)
-    print_green('[LOG] Arquivos encontrados com sucesso\n')
     return files, extension
 
 
@@ -1940,11 +2400,8 @@ def generate_processor_config(
         no_llama, non_tb_files, tb_files, modules, module_graph, repo_name, model,
     )
     language_version = determine_language_version(extension, filtered_files, destination_path)
-    
-    # Get cpu_core_matches for selection logic
-    _, cpu_core_matches = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
 
-    final_files, final_include_dirs, last_log, top_module = interactive_simulate_and_minimize(
+    final_files, final_include_dirs, last_log, top_module, is_simulable = interactive_simulate_and_minimize(
         repo_root=destination_path,
         repo_name=repo_name,
         url=url,
@@ -1955,14 +2412,13 @@ def generate_processor_config(
         module_graph=module_graph,
         module_graph_inverse=module_graph_inverse,
         language_version=language_version,
-        cpu_core_matches=cpu_core_matches,
         maximize_attempts=6,
         verilator_extra_flags=['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED'],
-        ghdl_extra_flags=['--std=08'],
+        ghdl_extra_flags=['--std=08', '-frelaxed'],
     )
 
     output_json = create_output_json(
-        repo_name, url, tb_files, final_files, final_include_dirs, top_module, language_version,
+        repo_name, url, tb_files, final_files, final_include_dirs, top_module, language_version, is_simulable,
     )
 
     # Save configuration
@@ -2061,7 +2517,6 @@ def main() -> None:
             args.no_llama,
             args.model,
         )
-        
         print('Result: ')
         print(json.dumps(config, indent=4))
         
