@@ -1,0 +1,16 @@
+{
+    "name": "dv-cpu-rv",
+    "folder": "dv-cpu-rv",
+    "sim_files": [],
+    "files": [
+        "core/rtl/rv_rf.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/devindang/dv-cpu-rv",
+    "top_module": "rv_rf",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

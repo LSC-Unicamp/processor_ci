@@ -46,9 +46,11 @@ from core.file_manager import (
     clone_repo,
     remove_repo,
     find_files_with_extension,
+    find_files_with_extension_smart,
     extract_modules,
     is_testbench_file,
     find_include_dirs,
+    should_exclude_file,
 )
 from core.graph import build_module_graph, plot_processor_graph
 from core.ollama import (
@@ -216,26 +218,36 @@ def _analyze_instantiation_patterns(module_name: str, file_path: str) -> dict:
         r'\b(decode|decoder)\b',
         r'\b(execute|exec|execution)\b',
         r'\b(fetch|instruction)\b',
-        r'\b(register|regfile|rf)\b',
+        r'\b(register|regfile|rf|mprf)\b',
         r'\b(pipeline|pipe)\b',
         r'\b(hazard|forward|forwarding)\b',
-        r'\b(csr|control|status)\b'
+        r'\b(csr|control|status)\b',
+        # SuperScalar and RISC-V specific patterns
+        r'\b(schedule|scheduler|issue|dispatch)\b',
+        r'\b(retire|commit|completion)\b',
+        r'\b(reservation|station|rob|reorder)\b',
+        r'\b(inst|instr|instruction)\b',
+        r'\b(mem|memory)(?!_external|_ext|_sys)\b',  # Internal memory components
+        r'\b(lsu|load|store)\b',
+        r'\b(sys|system)_(?!bus|external)\b'  # System components but not external bus
     ]
     
     # SoC/System component patterns (things an SoC top would instantiate)
+    # Note: Exclude memory/clock patterns that could be internal to CPU cores
     soc_patterns = [
-        r'\b(ram|memory|mem)\b',
-        r'\b(rom|flash)\b',
         r'\b(gpio|pin|port)\b',
         r'\b(uart|serial)\b',
-        r'\b(spi|i2c|bus)\b',
+        r'\b(spi|i2c)\b',
         r'\b(timer|counter)\b',
         r'\b(interrupt|plic|clint)\b',
         r'\b(dma|direct|memory|access)\b',
-        r'\b(clock|clk|reset|rst)\b',
         r'\b(peripheral|periph)\b',
         r'\b(bridge|interconnect)\b',
-        r'\b(debug|jtag)\b'
+        r'\b(debug|jtag)\b',
+        # Only count external memory interfaces, not internal ones
+        r'\b(external_mem|ext_mem|ddr|sdram)\b',
+        # Only count system-level bus interfaces 
+        r'\b(system_bus|main_bus|soc_bus)\b'
     ]
     
     instantiation_regex = r'^\s*(\w+)\s*(?:#\s*\([^)]*\))?\s*(\w+)\s*\('
@@ -387,7 +399,7 @@ def _find_cpu_core_in_soc(top_module: str, module_graph: dict, modules: list) ->
     instantiated_modules = patterns.get('instantiated_modules', [])
     
     # If SoC ratio is significant OR has many instances, look for CPU core candidates among instantiated modules
-    if soc_ratio > 0.1:  # Has significant peripheral instantiations
+    if soc_ratio > 0.3:  # Has significant peripheral instantiations (increased threshold)
         print_green(f"[CORE_SEARCH] {top_module} appears to be a SoC (soc_ratio={soc_ratio:.2f}, total_instances={total_instances}), searching for CPU core...")
         
         # Look for CPU core candidates among instantiated modules
@@ -595,6 +607,18 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
         if any(term in name_lower for term in ["cpu", "processor"]):
             score += 2000
         
+        # Specific CPU core boost - give highest priority to actual core modules
+        if "core" in name_lower and repo_lower:
+            # Strong boost for exact core modules like "repo_core"
+            if name_lower == f"{repo_lower}_core" or name_lower == f"core_{repo_lower}":
+                score += 25000
+                print_green(f"[SCORE] {c}: +25000 (exact repo core module)")
+            # Medium boost for modules containing both repo name and core
+            elif repo_lower in name_lower and "core" in name_lower:
+                if not any(unit in name_lower for unit in ["div", "mul", "alu", "fpu", "mem", "cache", "bus", "ctrl", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred"]):
+                    score += 15000
+                    print_green(f"[SCORE] {c}: +15000 (repo core module)")
+        
         if "core" in name_lower:
             if any(unit in name_lower for unit in ["div", "mul", "alu", "fpu"]):
                 score -= 5000
@@ -623,7 +647,7 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
             score += 200
 
         # NEGATIVE INDICATORS
-        if any(pattern in name_lower for pattern in ["_tb", "tb_", "test", "bench"]):
+        if any(pattern in name_lower for pattern in ["_tb", "tb_", "test", "bench", "compliance", "verify", "checker", "monitor", "fpv", "bind", "assert"]):
             score -= 10000
         
         peripheral_terms = ["uart", "spi", "i2c", "gpio", "timer", "dma", "plic", "clint", "baud", "fifo", "ram", "rom", "cache"]
@@ -971,6 +995,11 @@ def find_files_with_syntax_errors(repo_root: str, file_list: list) -> list:
     # Test each file individually to isolate syntax errors
     for file_path in file_list:
         full_path = os.path.join(repo_root, file_path)
+        
+        # Skip problematic files entirely
+        if should_exclude_file(full_path, repo_root):
+            continue
+            
         if not os.path.exists(full_path):
             continue
             
@@ -1376,6 +1405,10 @@ def find_files_with_broken_imports(repo_root: str, files: list, missing_packages
         if not os.path.isabs(file_path):
             full_path = os.path.join(repo_root, file_path)
         
+        # Skip problematic files entirely
+        if should_exclude_file(full_path, repo_root):
+            continue
+            
         if not os.path.exists(full_path):
             continue
             
@@ -1467,6 +1500,13 @@ def interactive_simulate_and_minimize(
             words_to_check.append(repo_name.lower())
         print_green(f"[DEBUG] Checking candidate '{candidate}' against words {words_to_check}")
         candidate_lower = candidate.lower()
+        
+        # Skip testbench and verification modules
+        if any(tb_pattern in candidate_lower for tb_pattern in 
+               ['tb', 'test', 'bench', 'compliance', 'verify', 'checker', 'monitor', 'fpv', 'bind', 'assert']):
+            print_green(f"[DEBUG] Skipping testbench/verification module '{candidate}'")
+            continue
+        
         if (any(word in candidate_lower for word in words_to_check) and
             not any(bad_pattern in candidate_lower for bad_pattern in 
                    ['sm3', 'sha', 'aes', 'des', 'rsa', 'ecc', 'crypto', 'hash', 'cipher', 'encrypt', 'decrypt', 
@@ -1483,6 +1523,27 @@ def interactive_simulate_and_minimize(
         return files, inclu, last_log, ""
     
     print_green(f"[BOOT] Using heuristic bootstrap top_module: {heuristic_top}")
+    
+    # Phase A1: Smart dependency-based file refinement
+    print_green(f"[SMART] Performing dependency-based file refinement for top module: {heuristic_top}")
+    try:
+        # Use smart dependency analysis to refine file list
+        extensions_no_dot = ['v', 'sv', 'vhd', 'vhdl']  # remove dots from extensions
+        smart_files, smart_extension = find_files_with_extension_smart(
+            repo_root, extensions_no_dot, [heuristic_top]
+        )
+        
+        if smart_files and len(smart_files) < len(files):
+            original_count = len(files)
+            files = smart_files
+            print_green(f"[SMART] Refined file list from {original_count} to {len(files)} files using dependency analysis")
+            print_yellow(f"[SMART] Smart selection kept {len(files)} essential files for top module '{heuristic_top}'")
+        else:
+            print_yellow(f"[SMART] Smart analysis didn't reduce file count significantly, using original list")
+            
+    except Exception as e:
+        print_yellow(f"[SMART] Smart dependency analysis failed: {e}")
+        print_yellow(f"[SMART] Continuing with original file list")
 
     for attempt in range(maximize_attempts):
         rc, out, cfg = run_simulation_with_config(
@@ -1797,9 +1858,23 @@ def interactive_simulate_and_minimize(
             cpu_ratio = patterns.get('cpu_ratio', 0)
             soc_ratio = patterns.get('soc_ratio', 0)
             
-            # Protect CPU cores (high CPU ratio, low SoC ratio), allow SoC wrappers to be removed
-            if cpu_ratio > soc_ratio and cpu_ratio > 0.3:
-                print_yellow(f"[MIN] Protecting CPU core top module file: {f} (contains {top_module}, cpu_ratio={cpu_ratio:.2f})")
+            # Additional heuristic: check module name for CPU/core indicators
+            top_name_lower = top_module.lower()
+            has_cpu_indicators = any(term in top_name_lower for term in ['cpu', 'core', 'risc', 'processor'])
+            has_soc_indicators = any(term in top_name_lower for term in ['soc', 'system', 'chip'])
+            
+            # Protect CPU cores: 
+            # 1. High CPU ratio and low SoC ratio, OR
+            # 2. Module name indicates CPU/core but not SoC, OR  
+            # 3. CPU ratio is decent (>0.2) and name has CPU indicators
+            should_protect = (
+                (cpu_ratio > soc_ratio and cpu_ratio > 0.3) or
+                (has_cpu_indicators and not has_soc_indicators) or
+                (cpu_ratio > 0.2 and has_cpu_indicators)
+            )
+            
+            if should_protect:
+                print_yellow(f"[MIN] Protecting CPU core top module file: {f} (contains {top_module}, cpu_ratio={cpu_ratio:.2f}, has_cpu_indicators={has_cpu_indicators})")
                 continue
             else:
                 print_green(f"[MIN] Top module '{top_module}' appears to be SoC wrapper (cpu_ratio={cpu_ratio:.2f}, soc_ratio={soc_ratio:.2f}) - allowing removal to find CPU core")

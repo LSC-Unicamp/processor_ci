@@ -1,0 +1,31 @@
+{
+    "name": "Grande-Risco-5",
+    "folder": "Grande-Risco-5",
+    "sim_files": [],
+    "files": [
+        "rtl/core/alu.sv",
+        "rtl/core/alu_control.sv",
+        "rtl/core/branch_prediction.sv",
+        "rtl/core/core.sv",
+        "rtl/core/csr_unit.sv",
+        "rtl/core/forwarding_unit.sv",
+        "rtl/core/grande_risco5_types.sv",
+        "rtl/core/immediate_generator.sv",
+        "rtl/core/invalid_ir_check.sv",
+        "rtl/core/ir_decomp.sv",
+        "rtl/core/mdu.sv",
+        "rtl/core/mux.sv",
+        "rtl/core/registers.sv"
+    ],
+    "include_dirs": [
+        "rtl/peripheral",
+        "rtl/core"
+    ],
+    "repository": "https://github.com/JN513/Grande-Risco-5",
+    "top_module": "Core",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

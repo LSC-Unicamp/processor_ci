@@ -54,6 +54,7 @@ import networkx as nx
 import matplotlib
 matplotlib.use('TkAgg')  
 import matplotlib.pyplot as plt
+from .file_manager import should_exclude_file
 
 
 def find_module_instances(content: str, module_list: list) -> list:
@@ -120,28 +121,38 @@ def build_module_graph(files: list, modules: list[dict]) -> tuple[list, list]:
         module_graph[module_name] = []
         module_graph_inverse[module_name] = []
 
+    # Filter out problematic files before processing
+    filtered_files = []
     for file_path in files:
-        with open(
-            file_path, 'r', errors='ignore', encoding='utf-8'
-        ) as f:  # Ignore decoding errors
-            content = f.read()
+        if not should_exclude_file(file_path):
+            filtered_files.append(file_path)
 
-            # Find the current module name (module where instances are being made)
-            current_module_match = re.search(r'module\s+(\w+)', content)
-            if not current_module_match:
-                continue  # Skip files without a Verilog module
+    for file_path in filtered_files:
+        try:
+            with open(
+                file_path, 'r', errors='ignore', encoding='utf-8'
+            ) as f:  # Ignore decoding errors
+                content = f.read()
 
-            current_module_name = current_module_match.group(1)
+                # Find the current module name (module where instances are being made)
+                current_module_match = re.search(r'module\s+(\w+)', content)
+                if not current_module_match:
+                    continue  # Skip files without a Verilog module
 
-            # Find instances within this module
-            module_instances = find_module_instances(content, module_names)
+                current_module_name = current_module_match.group(1)
 
-            # Update the direct (instantiated -> instantiator) and inverse
-            # (instantiator -> instantiated) graphs
-            for instance in module_instances:
-                if instance in module_graph:
-                    module_graph[instance].append(current_module_name)
-                    module_graph_inverse[current_module_name].append(instance)
+                # Find instances within this module
+                module_instances = find_module_instances(content, module_names)
+
+                # Update the direct (instantiated -> instantiator) and inverse
+                # (instantiator -> instantiated) graphs
+                for instance in module_instances:
+                    if instance in module_graph:
+                        module_graph[instance].append(current_module_name)
+                        module_graph_inverse[current_module_name].append(instance)
+        except Exception:
+            # Skip files that can't be read
+            continue
 
     return module_graph, module_graph_inverse
 

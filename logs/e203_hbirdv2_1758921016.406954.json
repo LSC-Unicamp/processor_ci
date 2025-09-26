@@ -1,0 +1,19 @@
+{
+    "name": "e203_hbirdv2",
+    "folder": "e203_hbirdv2",
+    "sim_files": [],
+    "files": [
+        "rtl/e203/perips/sirv_pmu_core.v"
+    ],
+    "include_dirs": [
+        "rtl/e203/perips/apb_i2c",
+        "rtl/e203/core"
+    ],
+    "repository": "https://github.com/riscv-mcu/e203_hbirdv2",
+    "top_module": "sirv_pmu_core",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

@@ -1,0 +1,19 @@
+{
+    "name": "VexRiscv",
+    "folder": "VexRiscv",
+    "sim_files": [],
+    "files": [
+        "scripts/Murax/arty_a7/toplevel.v",
+        "scripts/Murax/iCE40-hx8k_breakout_board/toplevel.v",
+        "scripts/Murax/iCE40HX8K-EVB/toplevel.v",
+        "scripts/Murax/iCE40HX8K-EVB/toplevel_pll.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/SpinalHDL/VexRiscv",
+    "top_module": "toplevel",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": false
+}

@@ -21,6 +21,234 @@ import shutil
 # Constant for the destination directory
 DESTINATION_DIR = './temp'
 
+# Problematic directories and patterns that should be excluded
+EXCLUDE_DIRECTORIES = [
+    'dv', 'google_riscv-dv', 'lowrisc_ip/dv',
+    'formal', 'fpv', 'verification', 'testbench', 'tb',
+    'test', 'tests', 'sim', 'simulation', 'verification',
+    'uvm', 'compliance', 'property', 'assert', 'bind',
+    'coverage', 'checker', 'monitor', 'sequence'
+]
+
+EXCLUDE_PATTERNS = [
+    r'\buvm_',  # UVM prefixed files
+    r'\bdv_',   # DV prefixed files  
+    r'_dv\b',   # Files ending with _dv
+    r'riscv-dv', # Google RISC-V DV
+    r'compliance', # RISC-V compliance tests
+    r'formal',  # Formal verification
+    r'fpv',     # Formal Property Verification
+    r'assert',  # Assertion files
+    r'bind',    # Bind files
+    r'property', # Property files
+    r'sequence', # Sequence files
+    r'checker',  # Checker files
+    r'monitor',  # Monitor files
+    r'coverage', # Coverage files
+    r'_tb\b',   # Testbench files
+    r'\btb_',   # TB prefixed files
+    r'_test\b', # Files ending with _test
+    r'\btest_', # Test prefixed files
+    r'_verif\b',# Verification files
+    r'\bverif_',# Verification prefixed files
+    r'_pkg\b.*test', # Package files for testing
+    r'_lib\b.*test', # Library files for testing
+    r'vendor/google', # All Google vendor files  
+    r'prim_generic.*flash', # Problematic flash primitives
+    r'prim.*lc_', # Lifecycle control primitives
+    r'prim_edn_req', # EDN request primitive
+]
+
+
+def analyze_file_dependencies(file_path: str) -> set:
+    """Analyze a SystemVerilog file to extract its dependencies (includes, imports, instances).
+    
+    Args:
+        file_path (str): Path to the SystemVerilog file
+        
+    Returns:
+        set: Set of dependency names (packages, modules, includes)
+    """
+    dependencies = set()
+    
+    if not os.path.exists(file_path):
+        return dependencies
+        
+    try:
+        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+            
+        # Find include statements
+        include_pattern = r'`include\s+"([^"]+)"'
+        for match in re.finditer(include_pattern, content):
+            dependencies.add(match.group(1))
+            
+        # Find package imports
+        import_pattern = r'import\s+(\w+)::'
+        for match in re.finditer(import_pattern, content):
+            dependencies.add(match.group(1))
+            
+        # Find module instantiations
+        instance_pattern = r'^\s*(\w+)\s+(?:\#\([^)]*\)\s*)?(\w+)\s*\('
+        for match in re.finditer(instance_pattern, content, re.MULTILINE):
+            module_name = match.group(1)
+            # Skip built-in SystemVerilog keywords and primitives
+            if module_name not in ['logic', 'reg', 'wire', 'input', 'output', 'inout', 
+                                  'parameter', 'localparam', 'genvar', 'generate', 'if', 
+                                  'for', 'case', 'always', 'initial', 'assign']:
+                dependencies.add(module_name)
+                
+    except Exception as e:
+        # If we can't read the file, assume no dependencies
+        pass
+        
+    return dependencies
+
+
+def find_essential_files_by_dependency(directory: str, top_modules: list) -> set:
+    """Find essential files by analyzing dependency chains from top modules.
+    
+    Args:
+        directory (str): Root directory to search
+        top_modules (list): List of top module names to start dependency analysis from
+        
+    Returns:
+        set: Set of file paths that are essential based on dependency analysis
+    """
+    essential_files = set()
+    
+    # First, find all SystemVerilog files and map module names to file paths
+    module_to_file = {}
+    all_sv_files = find_files_with_extension(directory, ['.sv', '.svh'], exclude_filtered=False)
+    
+    for file_path in all_sv_files:
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+                
+            # Find module/package definitions
+            module_pattern = r'^\s*(module|package|interface)\s+(\w+)'
+            for match in re.finditer(module_pattern, content, re.MULTILINE):
+                module_name = match.group(2)
+                module_to_file[module_name] = file_path
+                
+        except Exception:
+            continue
+    
+    # Perform dependency analysis starting from top modules
+    visited = set()
+    
+    def analyze_dependencies_recursive(module_name: str):
+        if module_name in visited:
+            return
+        visited.add(module_name)
+        
+        # Find the file for this module
+        if module_name not in module_to_file:
+            return
+            
+        file_path = module_to_file[module_name]
+        
+        # Skip files that are obviously verification-related
+        if should_exclude_file(file_path, directory):
+            return
+            
+        essential_files.add(file_path)
+        
+        # Analyze dependencies of this file
+        deps = analyze_file_dependencies(file_path)
+        for dep in deps:
+            # For includes, try to find the actual file
+            if dep.endswith('.svh') or dep.endswith('.sv'):
+                # Try to find this include file
+                include_candidates = []
+                for sv_file in all_sv_files:
+                    if sv_file.endswith(dep):
+                        include_candidates.append(sv_file)
+                
+                # Add include files that aren't verification-related
+                for candidate in include_candidates:
+                    if not should_exclude_file(candidate, directory):
+                        essential_files.add(candidate)
+            else:
+                # This is a module/package dependency
+                analyze_dependencies_recursive(dep)
+    
+    # Start analysis from each top module
+    for top_module in top_modules:
+        analyze_dependencies_recursive(top_module)
+    
+    return essential_files
+
+
+def should_exclude_file(file_path: str, base_directory: str = None) -> bool:
+    """Check if a file should be excluded based on its path and name.
+    
+    Args:
+        file_path (str): Path to the file to check
+        base_directory (str): Base directory to calculate relative path from
+        
+    Returns:
+        bool: True if the file should be excluded, False otherwise
+    """
+    if base_directory:
+        rel_path = os.path.relpath(file_path, base_directory)
+    else:
+        rel_path = file_path
+        
+    file_name = os.path.basename(file_path)
+    
+    # First, check for obvious verification/testbench patterns
+    verification_patterns = [
+        r'\buvm_', r'\bdv_', r'_dv\b', r'riscv-dv', r'compliance',
+        r'formal', r'fpv', r'bind', r'property', r'sequence',
+        r'checker', r'monitor', r'coverage', r'_tb\b', r'\btb_',
+        r'_test\b', r'\btest_', r'_verif\b', r'\bverif_',
+        r'_pkg\b.*test', r'_lib\b.*test'
+    ]
+    
+    for pattern in verification_patterns:
+        if re.search(pattern, file_name, re.IGNORECASE):
+            return True
+    
+    # Check for verification directories
+    verification_dirs = [
+        'dv', 'google_riscv-dv', 'formal', 'fpv', 'verification',
+        'testbench', 'tb', 'test', 'tests', 'sim', 'simulation',
+        'uvm', 'compliance', 'property', 'assert', 'bind',
+        'coverage', 'checker', 'monitor', 'sequence'
+    ]
+    
+    for exclude_dir in verification_dirs:
+        if exclude_dir in rel_path:
+            return True
+    
+    # For vendor directories, be more selective - exclude obvious problematic files
+    if 'vendor' in rel_path:
+        # Exclude Google RISC-V DV completely
+        if 'google_riscv-dv' in rel_path:
+            return True
+            
+        # For lowrisc_ip, only exclude DV subdirectories
+        if 'lowrisc_ip/dv' in rel_path:
+            return True
+            
+        # Exclude problematic vendor files that commonly cause syntax errors
+        problematic_vendor_patterns = [
+            r'prim_generic.*flash',  # Flash primitives often have syntax issues
+            r'prim.*usb_diff_rx',    # USB primitives
+            r'prim.*latch',          # Latch files with special syntax
+            r'crypto_dpi',           # Crypto DPI files
+            r'mem_bkdr_util',        # Memory backdoor utilities
+        ]
+        
+        for pattern in problematic_vendor_patterns:
+            if re.search(pattern, file_name, re.IGNORECASE):
+                return True
+    
+    # Don't exclude based on vendor paths alone - let dependency analysis decide
+    return False
+
 
 def clone_repo(url: str, repo_name: str) -> str:
     """Clones a GitHub repository to a specified directory.
@@ -77,10 +305,16 @@ def find_files_with_extension(
     """
     extension = '.v'
     files = []
-    for extension in extensions:
-        files.extend(
-            glob.glob(f'{directory}/**/*.{extension}', recursive=True)
-        )
+    
+    for ext in extensions:
+        found_files = glob.glob(f'{directory}/**/*.{ext}', recursive=True)
+        
+        for file_path in found_files:            
+            if not should_exclude_file(file_path, directory):
+                files.append(file_path)
+
+    if not files:
+        return [], '.v'
 
     if '.sv' in files[0]:
         extension = '.sv'
@@ -94,6 +328,47 @@ def find_files_with_extension(
     return files, extension
 
 
+def find_files_with_extension_smart(
+    directory: str, extensions: list[str], top_modules: list[str] = None
+) -> tuple[list[str], str]:
+    """Find files using intelligent dependency-based filtering.
+    
+    Args:
+        directory (str): Directory to search in
+        extensions (list[str]): List of file extensions to look for
+        top_modules (list[str]): Optional list of top modules for dependency analysis
+        
+    Returns:
+        tuple[list[str], str]: List of essential files and predominant extension
+    """
+    if top_modules:
+        # Use dependency-based analysis
+        essential_files = find_essential_files_by_dependency(directory, top_modules)
+        
+        # Filter by extensions
+        filtered_files = []
+        for file_path in essential_files:
+            for ext in extensions:
+                if file_path.endswith(f'.{ext}'):
+                    filtered_files.append(file_path)
+                    break
+        
+        # Determine predominant extension
+        extension = '.v'
+        if filtered_files:
+            if any('.sv' in f for f in filtered_files):
+                extension = '.sv'
+            elif any('.vhdl' in f for f in filtered_files):
+                extension = '.vhdl'
+            elif any('.vhd' in f for f in filtered_files):
+                extension = '.vhd'
+                
+        return filtered_files, extension
+    else:
+        # Fall back to pattern-based filtering
+        return find_files_with_extension(directory, extensions)
+
+
 def is_testbench_file(file_path: str, repo_name: str) -> bool:
     """Checks if a file is likely to be a testbench based on its name or location.
 
@@ -104,18 +379,22 @@ def is_testbench_file(file_path: str, repo_name: str) -> bool:
     Returns:
         bool: True if the file is a testbench, otherwise False.
     """
-    relative_path = os.path.relpath(
-        file_path, os.path.join(DESTINATION_DIR, repo_name)
-    )
-
+    base_directory = os.path.join(DESTINATION_DIR, repo_name)
+    
+    # Use the shared exclusion logic
+    if should_exclude_file(file_path, base_directory):
+        return True
+    
+    # Additional testbench-specific checks
+    relative_path = os.path.relpath(file_path, base_directory)
     file_name = os.path.basename(relative_path)
     directory_parts = os.path.dirname(relative_path).split(os.sep)
 
-    # Checking if the file name contains keywords (use word boundaries to avoid false positives)
+    # Checking if the file name contains testbench keywords (use word boundaries to avoid false positives)
     if re.search(r'\b(tb|testbench|test|verif)\b', file_name, re.IGNORECASE):
         return True
 
-    # Checking if any part of the path contains keywords (use word boundaries)
+    # Checking if any part of the path contains testbench keywords (use word boundaries)
     for part in directory_parts:
         if re.search(
             r'\b(tests?|testbenches?|testbenchs?|simulations?|tb|sim|verif)\b',

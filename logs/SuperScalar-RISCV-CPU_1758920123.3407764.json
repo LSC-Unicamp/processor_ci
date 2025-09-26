@@ -1,0 +1,24 @@
+{
+    "name": "SuperScalar-RISCV-CPU",
+    "folder": "SuperScalar-RISCV-CPU",
+    "sim_files": [],
+    "files": [
+        "rtl/alu.v",
+        "rtl/ssrv_top.v"
+    ],
+    "include_dirs": [
+        "ssrv-on-scr1/fpga/scr1/includes",
+        "ssrv-on-scr1/fpga/rtl",
+        "rtl",
+        "ssrv-on-scr1/sim/scr1/src/includes",
+        "scr1/src/includes",
+        "ssrv-on-scr1/sim/rtl"
+    ],
+    "repository": "https://github.com/risclite/SuperScalar-RISCV-CPU",
+    "top_module": "ssrv_top",
+    "extra_flags": [],
+    "language_version": "1364-1995",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

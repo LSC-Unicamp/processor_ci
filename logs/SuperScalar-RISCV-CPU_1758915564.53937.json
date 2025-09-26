@@ -70,12 +70,12 @@
         "rtl/ssrv_top.v"
     ],
     "include_dirs": [
-        "scr1/src/includes",
         "ssrv-on-scr1/fpga/rtl",
-        "rtl",
         "ssrv-on-scr1/sim/rtl",
-        "ssrv-on-scr1/fpga/scr1/includes",
-        "ssrv-on-scr1/sim/scr1/src/includes"
+        "rtl",
+        "scr1/src/includes",
+        "ssrv-on-scr1/sim/scr1/src/includes",
+        "ssrv-on-scr1/fpga/scr1/includes"
     ],
     "repository": "https://github.com/risclite/SuperScalar-RISCV-CPU",
     "top_module": "ssrv_top",
