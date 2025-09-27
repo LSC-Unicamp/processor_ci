@@ -1705,31 +1705,14 @@ def interactive_simulate_and_minimize(
     # Prefer core modules over SoC wrappers from working candidates
     if working_candidates:
         repo_lower = (repo_name or "").lower()
-        
-        # PRIORITY 0: High-priority CPU cores from all candidates (even if they failed compilation)
-        # This ensures we pick obvious CPU cores like "e203_core" even if they have compilation issues
-        for cand in candidates[:5]:  # Check top 5 ranked candidates first
-            cand_lower = cand.lower()
-            # Look for obvious CPU core patterns
-            if (cand_lower.endswith("_core") and 
-                not any(bad_pattern in cand_lower for bad_pattern in 
-                       ['div', 'mul', 'alu', 'fpu', 'cache', 'mem', 'bus', 'ctrl', 'reg', 'decode', 'fetch', 'exec', 'forward', 'hazard', 'pred',
-                        'sm3', 'sha', 'aes', 'des', 'rsa', 'ecc', 'crypto', 'hash', 'cipher', 'encrypt', 'decrypt', 'uart', 'spi', 'i2c', 'gpio',
-                        'timer', 'interrupt', 'dma', 'pll', 'clk', 'pwm', 'aon', 'hclk', 'oitf', 'wrapper', 'regs']) and
-                not any(cand_lower.startswith(prefix) for prefix in ['sirv_', 'apb_', 'axi_', 'ahb_', 'wb_', 'avalon_'])):
+        # First priority: exact repo name match
+        for cand in working_candidates:
+            if repo_lower and repo_lower == cand.lower():
                 selected_top = cand
-                print_green(f"[TOP-CAND] Selected high-priority core module '{selected_top}' (obvious CPU core, may have compilation issues)")
+                print_green(f"[TOP-CAND] Selected core module '{selected_top}' (exact repo match)")
                 break
         
-        # PRIORITY 1: exact repo name match (from working candidates only)
-        if not selected_top:
-            for cand in working_candidates:
-                if repo_lower and repo_lower == cand.lower():
-                    selected_top = cand
-                    print_green(f"[TOP-CAND] Selected core module '{selected_top}' (exact repo match)")
-                    break
-        
-        # PRIORITY 2: detected CPU cores (from working candidates only)
+        # Second priority: detected CPU cores
         if not selected_top:
             for cand in working_candidates:
                 if cand in cpu_core_matches:
@@ -1737,7 +1720,7 @@ def interactive_simulate_and_minimize(
                     print_green(f"[TOP-CAND] Selected detected CPU core '{selected_top}' (cpu_core pattern match)")
                     break
         
-        # PRIORITY 3: core/CPU modules without "soc" and without peripheral patterns (from working candidates only)
+        # Third priority: core/CPU modules without "soc" and without peripheral patterns
         if not selected_top:
             for cand in working_candidates:
                 cand_lower = cand.lower()
@@ -1750,7 +1733,7 @@ def interactive_simulate_and_minimize(
                     print_green(f"[TOP-CAND] Selected core module '{selected_top}' (core/cpu preference)")
                     break
         
-        # PRIORITY 4: first working candidate
+        # Fallback: first working candidate
         if not selected_top:
             selected_top = working_candidates[0]
             print_green(f"[TOP-CAND] Selected first working candidate '{selected_top}'")
