@@ -1,0 +1,19 @@
+{
+    "name": "leaf",
+    "folder": "leaf",
+    "sim_files": [],
+    "files": [
+        "cpu/rtl/alu.vhdl",
+        "cpu/rtl/alu_ctrl.vhdl",
+        "cpu/rtl/br_detector.vhdl",
+        "cpu/rtl/core.vhdl"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/daniel-santos-7/leaf",
+    "top_module": "leaf",
+    "extra_flags": [],
+    "language_version": "08",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

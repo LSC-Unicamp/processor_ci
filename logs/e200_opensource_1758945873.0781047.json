@@ -1,0 +1,19 @@
+{
+    "name": "e200_opensource",
+    "folder": "e200_opensource",
+    "sim_files": [],
+    "files": [
+        "rtl/e203/perips/sirv_pmu_core.v"
+    ],
+    "include_dirs": [
+        "rtl/e203/perips",
+        "rtl/e203/core"
+    ],
+    "repository": "https://github.com/SI-RISCV/e200_opensource",
+    "top_module": "sirv_pmu_core",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

@@ -1,0 +1,18 @@
+{
+    "name": "rv3n",
+    "folder": "rv3n",
+    "sim_files": [],
+    "files": [
+        "rtl/rv3n_top.v"
+    ],
+    "include_dirs": [
+        "rtl"
+    ],
+    "repository": "https://github.com/risclite/rv3n",
+    "top_module": "rv3n_top",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

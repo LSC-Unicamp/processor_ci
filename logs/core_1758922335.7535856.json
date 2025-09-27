@@ -1,0 +1,21 @@
+{
+    "name": "core",
+    "folder": "core",
+    "sim_files": [],
+    "files": [
+        "lib/LibFPGA/AutoReset.v",
+        "lib/LibFPGA/BinaryCounter.v",
+        "lib/LibFPGA/LCDControler.v",
+        "lib/LibFPGA/LFSR.v",
+        "lib/LibFPGA/MyPLL.v",
+        "lib/LibFPGA/VGAGenerator.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/RISCuinho/core",
+    "top_module": "MyPLL",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": false
+}

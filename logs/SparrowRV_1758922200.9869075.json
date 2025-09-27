@@ -1,0 +1,26 @@
+{
+    "name": "SparrowRV",
+    "folder": "SparrowRV",
+    "sim_files": [],
+    "files": [
+        "rtl/core/core.v",
+        "rtl/core/csr.v",
+        "rtl/core/div.v",
+        "rtl/core/dpram.v",
+        "rtl/core/idex.v",
+        "rtl/core/iram.v",
+        "rtl/core/regs.v",
+        "rtl/core/sctr.v",
+        "rtl/core/trap.v"
+    ],
+    "include_dirs": [
+        "rtl"
+    ],
+    "repository": "https://github.com/xiaowuzxc/SparrowRV",
+    "top_module": "core",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

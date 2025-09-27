@@ -28,7 +28,7 @@
         "vendor/lowrisc_ip/dv/sv/dv_utils/"
     ],
     "repository": "https://github.com/lowRISC/ibex",
-    "top_module": "rtl/ibex_core",
+    "top_module": "ibex_core",
     "extra_flags": [],
     "language_version": "2012",
     "march": "rv32i",

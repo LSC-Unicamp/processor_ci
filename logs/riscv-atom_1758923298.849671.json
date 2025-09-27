@@ -1,0 +1,22 @@
+{
+    "name": "riscv-atom",
+    "folder": "riscv-atom",
+    "sim_files": [],
+    "files": [
+        "rtl/uncore/gpio/IOBuf.v"
+    ],
+    "include_dirs": [
+        "rtl/core",
+        "rtl/common",
+        "rtl/soc/atombones",
+        "rtl/uncore/gpio",
+        "rtl/soc/hydrogensoc"
+    ],
+    "repository": "https://github.com/saursin/riscv-atom",
+    "top_module": "IOBuf",
+    "extra_flags": [],
+    "language_version": "1364-1995",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

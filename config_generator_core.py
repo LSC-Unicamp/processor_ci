@@ -399,7 +399,7 @@ def _find_cpu_core_in_soc(top_module: str, module_graph: dict, modules: list) ->
     instantiated_modules = patterns.get('instantiated_modules', [])
     
     # If SoC ratio is significant OR has many instances, look for CPU core candidates among instantiated modules
-    if soc_ratio > 0.3:  # Has significant peripheral instantiations (increased threshold)
+    if soc_ratio > 0.2:  # Has significant peripheral instantiations (increased threshold)
         print_green(f"[CORE_SEARCH] {top_module} appears to be a SoC (soc_ratio={soc_ratio:.2f}, total_instances={total_instances}), searching for CPU core...")
         
         # Look for CPU core candidates among instantiated modules
@@ -534,7 +534,8 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
                 not any(bad_pattern in module_lower for bad_pattern in 
                        ['div', 'mul', 'alu', 'fpu', 'cache', 'mem', 'bus', 'ctrl', 'reg', 'decode', 'fetch', 'exec', 'forward', 'hazard', 'pred',
                         'sm3', 'sha', 'aes', 'des', 'rsa', 'ecc', 'crypto', 'hash', 'cipher', 'encrypt', 'decrypt', 'uart', 'spi', 'i2c', 'gpio',
-                        'timer', 'interrupt', 'dma', 'pll', 'clk'])):
+                        'timer', 'interrupt', 'dma', 'pll', 'clk', 'pwm', 'aon', 'hclk', 'oitf', 'wrapper', 'regs']) and
+                not any(module_lower.startswith(prefix) for prefix in ['sirv_', 'apb_', 'axi_', 'ahb_', 'wb_', 'avalon_'])):  # Exclude peripheral prefix modules
                 
                 # Check instantiation patterns if file path is available
                 is_cpu_core = False
@@ -613,6 +614,12 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
             if name_lower == f"{repo_lower}_core" or name_lower == f"core_{repo_lower}":
                 score += 25000
                 print_green(f"[SCORE] {c}: +25000 (exact repo core module)")
+            # Generic pattern: any module ending with "_core" that looks like a main core module
+            elif name_lower.endswith("_core"):
+                # Check if it's a likely CPU core (not a functional unit core)
+                if not any(unit in name_lower for unit in ["div", "mul", "alu", "fpu", "mem", "cache", "bus", "ctrl", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred"]):
+                    score += 20000
+                    print_green(f"[SCORE] {c}: +20000 (generic core module)")
             # Medium boost for modules containing both repo name and core
             elif repo_lower in name_lower and "core" in name_lower:
                 if not any(unit in name_lower for unit in ["div", "mul", "alu", "fpu", "mem", "cache", "bus", "ctrl", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred"]):
@@ -650,9 +657,15 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
         if any(pattern in name_lower for pattern in ["_tb", "tb_", "test", "bench", "compliance", "verify", "checker", "monitor", "fpv", "bind", "assert"]):
             score -= 10000
         
-        peripheral_terms = ["uart", "spi", "i2c", "gpio", "timer", "dma", "plic", "clint", "baud", "fifo", "ram", "rom", "cache"]
+        peripheral_terms = ["uart", "spi", "i2c", "gpio", "timer", "dma", "plic", "clint", "baud", "fifo", "ram", "rom", "cache", "pwm", "aon", "hclk", "oitf", "wrapper", "regs"]
         if any(term in name_lower for term in peripheral_terms):
             score -= 3000
+        
+        # Generic penalty for likely peripheral module prefixes
+        peripheral_prefixes = ["sirv_", "apb_", "axi_", "ahb_", "wb_", "avalon_"]
+        if any(name_lower.startswith(prefix) for prefix in peripheral_prefixes):
+            score -= 4000
+            print_green(f"[SCORE] {c}: -4000 (peripheral prefix module)")
         
         if any(pattern in name_lower for pattern in ["debug", "jtag", "bram"]):
             score -= 2000
@@ -1692,14 +1705,31 @@ def interactive_simulate_and_minimize(
     # Prefer core modules over SoC wrappers from working candidates
     if working_candidates:
         repo_lower = (repo_name or "").lower()
-        # First priority: exact repo name match
-        for cand in working_candidates:
-            if repo_lower and repo_lower == cand.lower():
+        
+        # PRIORITY 0: High-priority CPU cores from all candidates (even if they failed compilation)
+        # This ensures we pick obvious CPU cores like "e203_core" even if they have compilation issues
+        for cand in candidates[:5]:  # Check top 5 ranked candidates first
+            cand_lower = cand.lower()
+            # Look for obvious CPU core patterns
+            if (cand_lower.endswith("_core") and 
+                not any(bad_pattern in cand_lower for bad_pattern in 
+                       ['div', 'mul', 'alu', 'fpu', 'cache', 'mem', 'bus', 'ctrl', 'reg', 'decode', 'fetch', 'exec', 'forward', 'hazard', 'pred',
+                        'sm3', 'sha', 'aes', 'des', 'rsa', 'ecc', 'crypto', 'hash', 'cipher', 'encrypt', 'decrypt', 'uart', 'spi', 'i2c', 'gpio',
+                        'timer', 'interrupt', 'dma', 'pll', 'clk', 'pwm', 'aon', 'hclk', 'oitf', 'wrapper', 'regs']) and
+                not any(cand_lower.startswith(prefix) for prefix in ['sirv_', 'apb_', 'axi_', 'ahb_', 'wb_', 'avalon_'])):
                 selected_top = cand
-                print_green(f"[TOP-CAND] Selected core module '{selected_top}' (exact repo match)")
+                print_green(f"[TOP-CAND] Selected high-priority core module '{selected_top}' (obvious CPU core, may have compilation issues)")
                 break
         
-        # Second priority: detected CPU cores
+        # PRIORITY 1: exact repo name match (from working candidates only)
+        if not selected_top:
+            for cand in working_candidates:
+                if repo_lower and repo_lower == cand.lower():
+                    selected_top = cand
+                    print_green(f"[TOP-CAND] Selected core module '{selected_top}' (exact repo match)")
+                    break
+        
+        # PRIORITY 2: detected CPU cores (from working candidates only)
         if not selected_top:
             for cand in working_candidates:
                 if cand in cpu_core_matches:
@@ -1707,7 +1737,7 @@ def interactive_simulate_and_minimize(
                     print_green(f"[TOP-CAND] Selected detected CPU core '{selected_top}' (cpu_core pattern match)")
                     break
         
-        # Third priority: core/CPU modules without "soc" and without peripheral patterns
+        # PRIORITY 3: core/CPU modules without "soc" and without peripheral patterns (from working candidates only)
         if not selected_top:
             for cand in working_candidates:
                 cand_lower = cand.lower()
@@ -1720,7 +1750,7 @@ def interactive_simulate_and_minimize(
                     print_green(f"[TOP-CAND] Selected core module '{selected_top}' (core/cpu preference)")
                     break
         
-        # Fallback: first working candidate
+        # PRIORITY 4: first working candidate
         if not selected_top:
             selected_top = working_candidates[0]
             print_green(f"[TOP-CAND] Selected first working candidate '{selected_top}'")

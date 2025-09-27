@@ -1,0 +1,19 @@
+{
+    "name": "riscado-v",
+    "folder": "riscado-v",
+    "sim_files": [],
+    "files": [
+        "clk_divider.v",
+        "gpu.v",
+        "vga_encoder.v",
+        "vram.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/zxmarcos/riscado-v",
+    "top_module": "GPU",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

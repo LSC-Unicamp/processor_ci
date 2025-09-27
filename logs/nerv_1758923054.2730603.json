@@ -1,0 +1,22 @@
+{
+    "name": "nerv",
+    "folder": "nerv",
+    "sim_files": [],
+    "files": [
+        "axi_cache/axi_ram.v",
+        "examples/icebreaker/top.v",
+        "nerv.sv",
+        "nervsoc.sv",
+        "axi_cache/nerv_axi_cache.sv",
+        "axi_cache/nerv_axi_cache_dcache.sv",
+        "axi_cache/nerv_axi_cache_icache.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/YosysHQ/nerv",
+    "top_module": "nerv",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

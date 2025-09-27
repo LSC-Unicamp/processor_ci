@@ -1,0 +1,28 @@
+{
+    "name": "Risco-5",
+    "folder": "Risco-5",
+    "sim_files": [],
+    "files": [
+        "src/core/alu.v",
+        "src/core/alu_control.v",
+        "src/core/control_unit.v",
+        "src/core/core.v",
+        "src/core/csr_unit.v",
+        "src/core/immediate_generator.v",
+        "src/core/mdu.v",
+        "src/core/mux.v",
+        "src/core/pc.v",
+        "src/core/registers.v"
+    ],
+    "include_dirs": [
+        "src/core",
+        "src/peripheral"
+    ],
+    "repository": "https://github.com/JN513/Risco-5.git",
+    "top_module": "Core",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}
