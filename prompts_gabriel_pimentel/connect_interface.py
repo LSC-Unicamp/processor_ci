@@ -27,8 +27,8 @@ Your task has two parts:
         "optional": ["sel", "err", "rty", "stall"]
     }}
 - Allow for alternate names (e.g. "rw_address" ~= "adr", "write_request" ~= "write")
-- If needed, generate expressions to convert signals (e.g., `"core_we": "wstrb != 0"`, `"core_stb & core_cyc": "read_request || write_request"`)
-- If the sel signal is missing, complete it with 4'b1111 or the equivalent in VHDL.
+- If needed, generate expressions to convert signals (e.g., `"core_we": "wstrb != 0"`, `"core_stb & core_cyc": "read_request | write_request"`)
+- If the sel signal is missing, complete it with "4'b1111" or the equivalent in VHDL.
 - If an input signal is missing (e.g. ack) leave it open using `null`
 - Check the reset signal polarity (rst or rst_n) and invert if needed.
 - Treat `cyc` and `stb` signals from a Wishbone interface as potentially merged into a single signal (e.g., read_request can represent cyc & stb). 
@@ -45,7 +45,7 @@ Example format:
   "core_data_out": "data_o",
   "core_data_in": "data_i",
   "core_ack": "ack_i",
-  "core_sel": null,
+  "core_sel": "4'b1111",
   "data_mem_cyc": null,
   ...
 }}
@@ -224,7 +224,120 @@ Connections:
 
 ############################################################################
 
-axi_prompt = 
+axi_prompt = """You are a hardware engineer. Your task is to connect a processor interface to a wrapper interface following the rules of a Wishbone memory-mapped bus. You will be given:
+
+1. A processor interface (Verilog/VHDL module).
+2. A adapter interface (Verilog/VHDL module).
+3. The AHB specification with required and optional signals.
+4. Information about single or dual memory interfaces.
+
+Your task has two parts:
+
+---
+
+**Part 1: Map signals to the adapter**
+
+- Create a JSON where the key is the adapter signal and the value is the processor signal or an expression to generate it.
+- It's a connection: match processor outputs to adapter inputs and vice-versa.
+- Use comments in the code if they mention the interface (e.g. "AHB master port")
+- Both the name and the function must match (timing, purpose, driver).
+- Connect signals with the same bit width.
+- Use the AXI mapping:
+    "AXI": {{
+    "required": ["araddr", "arvalid", "arready", "rdata", "rvalid", "rready",
+                "awaddr", "awvalid", "awready", "wdata", "wvalid", "wready",
+                "bresp", "bvalid", "bready"],
+    "optional": ["arsize", "arburst", "arlen", "arprot", "arcache",
+                "awsize", "awburst", "awlen", "awprot", "awcache",
+                "wstrb", "wlast", "rlast"]
+    }}
+- Allow for alternate names (e.g. "rw_address" ~= "adr", "write_request" ~= "write").
+- Check the reset signal polarity and invert if needed (e.g. "rst_n": "!reset").
+- If there is a dual memory interface, consider two adapters and put a prefix (adapter_instr or adapter_data) before the AXI signal.
+
+Example format:
+{{
+  "sys_clk": "clk",
+  "rst_n": "reset_n",
+  "awaddr": "s_awaddr",
+  ...
+}}
+or
+{{
+  "sys_clk": "HCLK",
+  "rst_n": "HRESETn",
+  "adapter_instr_awaddr": "instr_mem_awaddr",
+  "adapter_data_awaddr": "data_mem_awaddr",
+  ...
+}}
+
+---
+
+Adapter interface:
+module AXI4Lite_to_Wishbone #(
+    parameter ADDR_WIDTH = 32,
+    parameter DATA_WIDTH = 32
+)(
+    input  logic                  ACLK,
+    input  logic                  ARESETN,
+
+    // AXI4-Lite Slave Interface
+    input  logic [ADDR_WIDTH-1:0] AWADDR,
+    input  logic [2:0]            AWPROT,
+    input  logic                  AWVALID,
+    output logic                  AWREADY,
+
+    input  logic [DATA_WIDTH-1:0] WDATA,
+    input  logic [(DATA_WIDTH/8)-1:0] WSTRB,
+    input  logic                  WVALID,
+    output logic                  WREADY,
+
+    output logic [1:0]            BRESP,
+    output logic                  BVALID,
+    input  logic                  BREADY,
+
+    input  logic [ADDR_WIDTH-1:0] ARADDR,
+    input  logic [2:0]            ARPROT,
+    input  logic                  ARVALID,
+    output logic                  ARREADY,
+
+    output logic [DATA_WIDTH-1:0] RDATA,
+    output logic [1:0]            RRESP,
+    output logic                  RVALID,
+    input  logic                  RREADY,
+
+    // Wishbone Master Interface
+    output logic [ADDR_WIDTH-1:0] wb_adr_o,
+    output logic [DATA_WIDTH-1:0] wb_dat_o,
+    output logic                  wb_we_o,
+    output logic                  wb_stb_o,
+    output logic                  wb_cyc_o,
+    output logic [(DATA_WIDTH/8)-1:0] wb_sel_o,
+    input  logic [DATA_WIDTH-1:0] wb_dat_i,
+    input  logic                  wb_ack_i,
+    input  logic                  wb_err_i
+);
+
+Processor interface:
+
+{processor_interface}
+
+Memory interface: {memory_interface}
+
+---
+
+**Final output format**
+
+You must first give your reasoning and then output the json in this format:
+
+```
+Connections:
+{{
+    "sys_clk" : "clk",
+    ...
+}}
+```
+"""
 
 ############################################################################
 def connect_interfaces(interface_info, processor_interface):
@@ -235,6 +348,11 @@ def connect_interfaces(interface_info, processor_interface):
         )
     elif interface_info["bus_type"] == "AHB":
         prompt = ahb_prompt.format(
+            processor_interface=processor_interface,
+            memory_interface=interface_info["memory_interface"],
+        )
+    elif interface_info["bus_type"] == "AXI":
+        prompt = axi_prompt.format(
             processor_interface=processor_interface,
             memory_interface=interface_info["memory_interface"],
         )
@@ -271,7 +389,10 @@ def filter_connections_from_response(response):
         print("Could not find Connections in the response.")
         return None
     
-    connections_str = clean_json_block(connections_match.group(1)) 
+    connections_str = clean_json_block(connections_match.group(1))
+
+    print("Extracted Connections JSON:") # debug
+    print(connections_str) # debug
 
     connections = json.loads(connections_str)
 
