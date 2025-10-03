@@ -867,7 +867,7 @@ def run_simulation_with_config(
             verilator_cmd = (
                 f"verilator --lint-only --no-timing {std_flags} {top_opt} "
                 f"{include_flags_verilator} {extra_flags} -Wno-lint -Wno-fatal -Wno-style "
-                f"-Wno-UNOPTFLAT -Wno-UNDRIVEN -Wno-UNUSED -Wno-TIMESCALEMOD -Wno-MODDUP {file_list}"
+                f"-Wno-UNOPTFLAT -Wno-UNDRIVEN -Wno-UNUSED -Wno-TIMESCALEMOD -Wno-MODDUP  -Wno-PROTECTED  {file_list}"
             )
             print_green(f"[SIM] Verilator syntax check: {verilator_cmd}")
             rc, out, cfg = _run_shell_cmd(verilator_cmd, repo_root, timeout, config_path)

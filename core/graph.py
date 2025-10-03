@@ -115,6 +115,7 @@ def build_module_graph(files: list, modules: list[dict]) -> tuple[list, list]:
     module_graph_inverse = {}
 
     module_names = [module[0] for module in modules]
+    module_names_set = set(module_names)  # Use set for O(1) lookup
 
     # Initialize the direct and inverse graphs with each module
     for module_name, _ in modules:
@@ -127,33 +128,65 @@ def build_module_graph(files: list, modules: list[dict]) -> tuple[list, list]:
         if not should_exclude_file(file_path):
             filtered_files.append(file_path)
 
+    print(f"[GRAPH] Processing {len(filtered_files)} files for {len(module_names)} modules...")
+    
+    # Create a more efficient pattern for Verilog/SystemVerilog module instances
+    # This pattern captures: module_name #(params) instance_name (ports);
+    instance_pattern = re.compile(
+        r'^\s*(\w+)\s*(?:#\s*\([^)]*\))?\s+\w+\s*\([^;]*\)\s*;', 
+        re.MULTILINE | re.DOTALL
+    )
+
+    processed_files = 0
     for file_path in filtered_files:
+        processed_files += 1
+        if processed_files % 50 == 0:  # Progress indicator
+            print(f"[GRAPH] Processed {processed_files}/{len(filtered_files)} files...")
+            
         try:
-            with open(
-                file_path, 'r', errors='ignore', encoding='utf-8'
-            ) as f:  # Ignore decoding errors
+            with open(file_path, 'r', errors='ignore', encoding='utf-8') as f:
                 content = f.read()
 
                 # Find the current module name (module where instances are being made)
-                current_module_match = re.search(r'module\s+(\w+)', content)
+                current_module_match = re.search(r'^\s*module\s+(\w+)', content, re.MULTILINE)
                 if not current_module_match:
                     continue  # Skip files without a Verilog module
 
                 current_module_name = current_module_match.group(1)
 
-                # Find instances within this module
-                module_instances = find_module_instances(content, module_names)
+                # Only process if this module is in our module list
+                if current_module_name not in module_names_set:
+                    continue
 
-                # Update the direct (instantiated -> instantiator) and inverse
-                # (instantiator -> instantiated) graphs
-                for instance in module_instances:
-                    if instance in module_graph:
+                # Find instances within this module using the optimized pattern
+                instances_found = set()  # Use set to avoid duplicates
+                for match in instance_pattern.finditer(content):
+                    potential_module = match.group(1)
+                    
+                    # Skip Verilog built-in primitives and keywords
+                    if potential_module in {'input', 'output', 'inout', 'wire', 'reg', 'logic', 
+                                          'parameter', 'localparam', 'genvar', 'generate', 
+                                          'if', 'for', 'case', 'always', 'initial', 'assign',
+                                          'and', 'or', 'not', 'nand', 'nor', 'xor', 'xnor',
+                                          'buf', 'bufif0', 'bufif1', 'notif0', 'notif1'}:
+                        continue
+                        
+                    # Only add if it's in our module list
+                    if potential_module in module_names_set:
+                        instances_found.add(potential_module)
+
+                # Update the direct and inverse graphs
+                for instance in instances_found:
+                    if instance in module_graph and current_module_name != instance:  # Avoid self-reference
                         module_graph[instance].append(current_module_name)
                         module_graph_inverse[current_module_name].append(instance)
-        except Exception:
-            # Skip files that can't be read
+                        
+        except Exception as e:
+            # Skip files that can't be read, but log for debugging
+            print(f"[GRAPH] Warning: Could not process file {file_path}: {e}")
             continue
 
+    print(f"[GRAPH] Graph construction completed. Processed {processed_files} files.")
     return module_graph, module_graph_inverse
 
 
