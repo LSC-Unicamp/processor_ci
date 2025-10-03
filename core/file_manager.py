@@ -407,7 +407,7 @@ def is_testbench_file(file_path: str, repo_name: str) -> bool:
 
 
 def find_include_dirs(directory: str) -> set[str]:
-    """Finds directories containing include files (.svh or .vh).
+    """Finds directories containing include files (.svh, .vh, or .v definition files).
 
     Args:
         directory (str): Path to the directory to search.
@@ -415,9 +415,109 @@ def find_include_dirs(directory: str) -> set[str]:
     Returns:
         set[str]: Set of directories containing include files.
     """
-    include_files = glob.glob(f'{directory}/**/*.(svh|vh)', recursive=True)
-    include_dirs = {os.path.dirname(file) for file in include_files}
+    # Find .svh and .vh files
+    include_files = []
+    include_files.extend(glob.glob(f'{directory}/**/*.svh', recursive=True))
+    include_files.extend(glob.glob(f'{directory}/**/*.vh', recursive=True))
+    
+    # Also find .v files that appear to be include/definition files
+    # Look for files with common include patterns in their names
+    v_files = glob.glob(f'{directory}/**/*.v', recursive=True)
+    for v_file in v_files:
+        filename = os.path.basename(v_file).lower()
+        if any(pattern in filename for pattern in ['define', 'param', 'config', 'include', 'const']):
+            include_files.append(v_file)
+    
+    include_dirs = set()
+    for file in include_files:
+        dir_path = os.path.dirname(file)
+        # Convert to relative path from the directory
+        relative_dir_path = os.path.relpath(dir_path, directory)
+        include_dirs.add(relative_dir_path)
     return include_dirs
+
+
+def find_missing_modules(directory: str, missing_module_names: list) -> set[str]:
+    """Find directories containing specific missing modules.
+    
+    Args:
+        directory (str): Base directory path to search
+        missing_module_names (list): List of module names to search for
+        
+    Returns:
+        set[str]: Set of directory paths that contain the missing modules
+    """
+    found_dirs = set()
+    
+    if not missing_module_names:
+        return found_dirs
+    
+    try:
+        # Search for .v/.sv files that might contain the missing modules
+        for extension in ['**/*.v', '**/*.sv']:
+            source_files = glob.glob(os.path.join(directory, extension), recursive=True)
+            
+            for file_path in source_files:
+                try:
+                    # Quick filename check first (most modules are named after their files)
+                    file_basename = os.path.basename(file_path)
+                    
+                    for module_name in missing_module_names:
+                        if module_name in file_basename:
+                            dir_path = os.path.dirname(file_path)
+                            # Convert to relative path from the directory
+                            relative_dir_path = os.path.relpath(dir_path, directory)
+                            found_dirs.add(relative_dir_path)
+                            print(f"[DEBUG] Found potential module {module_name} in {file_path}")
+                    
+                except Exception as e:
+                    print(f"[WARNING] Error checking file {file_path}: {e}")
+                    
+    except Exception as e:
+        print(f"[WARNING] Error finding missing modules: {e}")
+    
+    return found_dirs
+
+
+def find_missing_module_files(directory: str, missing_module_names: list) -> list[str]:
+    """Find specific files containing missing modules.
+    
+    Args:
+        directory (str): Base directory path to search
+        missing_module_names (list): List of module names to search for
+        
+    Returns:
+        list[str]: List of relative file paths that contain the missing modules
+    """
+    found_files = []
+    
+    if not missing_module_names:
+        return found_files
+    
+    try:
+        # Search for .v/.sv files that might contain the missing modules
+        for extension in ['**/*.v', '**/*.sv']:
+            source_files = glob.glob(os.path.join(directory, extension), recursive=True)
+            
+            for file_path in source_files:
+                try:
+                    # Quick filename check first (most modules are named after their files)
+                    file_basename = os.path.basename(file_path)
+                    
+                    for module_name in missing_module_names:
+                        if module_name in file_basename:
+                            # Convert to relative path from the directory
+                            relative_path = os.path.relpath(file_path, directory)
+                            found_files.append(relative_path)
+                            print(f"[DEBUG] Found potential module {module_name} in {relative_path}")
+                    
+                except Exception as e:
+                    print(f"[WARNING] Error checking file {file_path}: {e}")
+                    
+    except Exception as e:
+        print(f"[WARNING] Error finding missing modules: {e}")
+    
+    return found_files
 
 
 def extract_modules(files: list[str]) -> list[tuple[str, str]]:

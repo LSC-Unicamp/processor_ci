@@ -50,6 +50,8 @@ from core.file_manager import (
     extract_modules,
     is_testbench_file,
     find_include_dirs,
+    find_missing_modules,
+    find_missing_module_files,
     should_exclude_file,
 )
 from core.graph import build_module_graph, plot_processor_graph
@@ -523,10 +525,20 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
         repo_lower = repo_name.lower()
         for module in valid_modules:
             module_lower = module.lower()
+            # Enhanced repo matching - include exact matches regardless of parent count
             if (repo_lower == module_lower or 
                 repo_lower in module_lower or 
                 module_lower in repo_lower):
                 repo_name_matches.append(module)
+                print_green(f"[REPO-MATCH] Found repo name match: {module} (parents: {len(parents_of.get(module, []))})")
+            
+            # Also check for common variations
+            repo_variations = [repo_lower, repo_lower.upper(), repo_lower.capitalize()]
+            for variation in repo_variations:
+                if variation == module:
+                    repo_name_matches.append(module)
+                    print_green(f"[REPO-MATCH] Found repo variation match: {module} -> {variation}")
+                    break
             
             # Enhanced CPU core detection using instantiation patterns
             if (any(pattern in module_lower for pattern in [repo_lower, 'cpu', 'core', 'risc', 'processor']) and 
@@ -578,7 +590,8 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
         name_lower = c.lower()
 
         # REPOSITORY NAME MATCHING (Highest Priority)
-        if repo_lower and len(repo_lower) > 2:
+        # Only apply repo matching if the module actually exists in the dependency graph
+        if repo_lower and len(repo_lower) > 2 and c in module_graph:
             if repo_lower == name_lower:
                 score += 50000
                 print_green(f"[SCORE] {c}: +50000 (exact repo match)")
@@ -603,33 +616,75 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
                 elif clean_repo in clean_module or clean_module in clean_repo:
                     score += 20000
                     print_green(f"[SCORE] {c}: +20000 (cleaned partial match)")
+        
+        # SPECIAL CASE: "Top" module when repo name doesn't match any real module
+        if name_lower == "top" and repo_lower:
+            # Check if the exact repo name exists as a real module in the graph
+            repo_name_exists = any(repo_lower == mod.lower() for mod in module_graph.keys() if mod in valid_modules)
+            if not repo_name_exists:
+                score += 48000  # High but slightly less than exact repo match
+                print_green(f"[SCORE] {c}: +48000 (Top module fallback - repo name '{repo_lower}' not found as real module)")
 
         # ARCHITECTURAL INDICATORS
         if any(term in name_lower for term in ["cpu", "processor"]):
             score += 2000
         
+        # CPU TOP MODULE DETECTION (Very High Priority)
+        # Look for typical CPU top module patterns
+        cpu_top_patterns = [
+            f"{repo_lower}_top", f"top_{repo_lower}", f"{repo_lower}_cpu", f"cpu_{repo_lower}",
+            "cpu_top", "core_top", "processor_top", "riscv_top", "risc_top"
+        ]
+        if repo_lower:
+            cpu_top_patterns.extend([repo_lower, f"{repo_lower}_core", f"core_{repo_lower}"])
+        
+        for pattern in cpu_top_patterns:
+            if name_lower == pattern:
+                # Ensure it's not a functional unit
+                if not any(unit in name_lower for unit in ["fadd", "fmul", "fdiv", "fsqrt", "fpu", "div", "mul", "alu"]):
+                    score += 45000
+                    print_green(f"[SCORE] {c}: +45000 (CPU top module pattern: {pattern})")
+                    break
+        
+        # DIRECT CORE NAME PATTERNS (high priority - we want cores, not SoCs)
+        # Special case for exact "Core" module name - very common CPU top module pattern
+        if name_lower == "core":
+            score += 40000
+            print_green(f"[SCORE] {c}: +40000 (exact Core module name - likely CPU top)")
+        
+        # Look for modules that are exactly the repo name (likely the core)
+        if repo_lower and name_lower == repo_lower:
+            score += 25000
+            print_green(f"[SCORE] {c}: +25000 (exact core name match)")
+        
         # Specific CPU core boost - give highest priority to actual core modules
         if "core" in name_lower and repo_lower:
+            # Check if it's a functional unit core first - apply heavy penalty
+            if any(unit in name_lower for unit in ["fadd", "fmul", "fdiv", "fsqrt", "fpu", "div", "mul", "alu", "mem", "cache", "bus", "ctrl", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred", "shift", "barrel", "adder", "mult", "divider", "encoder", "decoder"]):
+                score -= 15000
+                print_green(f"[SCORE] {c}: -15000 (functional unit core with repo match)")
             # Strong boost for exact core modules like "repo_core"
-            if name_lower == f"{repo_lower}_core" or name_lower == f"core_{repo_lower}":
+            elif name_lower == f"{repo_lower}_core" or name_lower == f"core_{repo_lower}":
                 score += 25000
                 print_green(f"[SCORE] {c}: +25000 (exact repo core module)")
             # Generic pattern: any module ending with "_core" that looks like a main core module
             elif name_lower.endswith("_core"):
-                # Check if it's a likely CPU core (not a functional unit core)
-                if not any(unit in name_lower for unit in ["div", "mul", "alu", "fpu", "mem", "cache", "bus", "ctrl", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred"]):
-                    score += 20000
-                    print_green(f"[SCORE] {c}: +20000 (generic core module)")
+                score += 20000
+                print_green(f"[SCORE] {c}: +20000 (generic core module)")
             # Medium boost for modules containing both repo name and core
             elif repo_lower in name_lower and "core" in name_lower:
-                if not any(unit in name_lower for unit in ["div", "mul", "alu", "fpu", "mem", "cache", "bus", "ctrl", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred"]):
-                    score += 15000
-                    print_green(f"[SCORE] {c}: +15000 (repo core module)")
+                score += 15000
+                print_green(f"[SCORE] {c}: +15000 (repo core module)")
         
         if "core" in name_lower:
-            if any(unit in name_lower for unit in ["div", "mul", "alu", "fpu"]):
+            # Heavy penalty for functional unit cores
+            if any(unit in name_lower for unit in ["fadd", "fmul", "fdiv", "fsqrt", "fpu", "div", "mul", "alu"]):
+                score -= 10000
+                print_green(f"[SCORE] {c}: -10000 (functional unit core)")
+            # Additional penalty for other peripheral cores
+            elif any(unit in name_lower for unit in ["mem", "cache", "bus", "ctrl", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred", "shift", "barrel", "adder", "mult", "divider", "encoder", "decoder"]):
                 score -= 5000
-                print_green(f"[SCORE] {c}: -5000 (functional unit core)")
+                print_green(f"[SCORE] {c}: -5000 (peripheral unit core)")
             else:
                 score += 1500
         
@@ -639,8 +694,10 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
         if name_lower.endswith("_top") or name_lower.startswith("top_"):
             score += 800
         
+        # SOC penalty - we want CPU cores, not full system-on-chip
         if "soc" in name_lower:
-            score += 500
+            score -= 5000
+            print_green(f"[SCORE] {c}: -5000 (SoC penalty - prefer cores)")
 
         # STRUCTURAL HEURISTICS
         num_children = len(children_of.get(c, []))
@@ -736,12 +793,35 @@ def run_simulation_with_config(
         verilator_extra_flags = verilator_extra_flags or []
         ghdl_extra_flags = ghdl_extra_flags or []
 
-        # Reorder files to put package definitions first
-        ordered_files = reorder_files_by_dependencies(repo_root, files)
-        file_list = " ".join(shlex.quote(f) for f in ordered_files)
-
         # Check if we're dealing with VHDL files by examining file extensions
-        is_vhdl = any(f.endswith(('.vhdl', '.vhd')) for f in files) if files else False
+        # Use majority rule for mixed-language projects and exclude external/auxiliary files
+        if files:
+            # Separate main files from external/auxiliary files
+            main_files = [f for f in files if not any(exclude in f.lower() for exclude in ['external', 'test', 'tb', '_tb', 'testbench'])]
+            
+            # Count file types for main files first, then fall back to all files
+            check_files = main_files if main_files else files
+            
+            vhdl_count = sum(1 for f in check_files if f.endswith(('.vhdl', '.vhd')))
+            verilog_count = sum(1 for f in check_files if f.endswith(('.v', '.sv')))
+            
+            # Check if there are any VHDL files in the entire project (including external)
+            total_vhdl_count = sum(1 for f in files if f.endswith(('.vhdl', '.vhd')))
+            
+            # Use VHDL only if VHDL files are the majority in main files AND there are actual VHDL files
+            is_vhdl = vhdl_count > 0 and vhdl_count > verilog_count
+            
+            # If project is primarily Verilog but has VHDL files (including external), exclude all VHDL files
+            if not is_vhdl and total_vhdl_count > 0:
+                print_yellow(f"[LANG] Mixed-language project detected: {verilog_count} Verilog/SV files in main project, {total_vhdl_count} VHDL files total")
+                print_yellow(f"[LANG] Processing as Verilog project - excluding all VHDL files from compilation")
+                files = [f for f in files if not f.endswith(('.vhdl', '.vhd'))]
+        else:
+            is_vhdl = False
+
+        # Reorder files to put package definitions first (after VHDL exclusion)
+        ordered_files = reorder_files_by_dependencies(repo_root, files, set())
+        file_list = " ".join(shlex.quote(f) for f in ordered_files)
         
         if is_vhdl:
             ghdl_flags = " ".join(shlex.quote(f) for f in ghdl_extra_flags)
@@ -770,7 +850,7 @@ def run_simulation_with_config(
             std_flags = ""
             if language_version.startswith('1800-'):  # SystemVerilog versions
                 if language_version in ['1800-2017']:
-                    std_flags = "--sv +1800-2017"
+                    std_flags = "--sv +1800-2017ext+"
                 elif language_version in ['1800-2012', '1800-2009', '1800-2005']:
                     std_flags = "--sv"
                 else:
@@ -785,8 +865,9 @@ def run_simulation_with_config(
                     std_flags = "+1364-2005ext+"
             
             verilator_cmd = (
-                f"verilator --lint-only {std_flags} {top_opt} "
-                f"{include_flags_verilator} {extra_flags} {file_list}"
+                f"verilator --lint-only --no-timing {std_flags} {top_opt} "
+                f"{include_flags_verilator} {extra_flags} -Wno-lint -Wno-fatal -Wno-style "
+                f"-Wno-UNOPTFLAT -Wno-UNDRIVEN -Wno-UNUSED -Wno-TIMESCALEMOD -Wno-MODDUP {file_list}"
             )
             print_green(f"[SIM] Verilator syntax check: {verilator_cmd}")
             rc, out, cfg = _run_shell_cmd(verilator_cmd, repo_root, timeout, config_path)
@@ -795,8 +876,9 @@ def run_simulation_with_config(
             if rc != 0 and std_flags == "+1364-2005":
                 print_yellow("[SIM] Verilog 2005 failed, trying SystemVerilog fallback...")
                 sv_cmd = (
-                    f"verilator --lint-only --sv {top_opt} "
-                    f"{include_flags_verilator} {extra_flags} {file_list}"
+                    f"verilator --lint-only --no-timing --sv {top_opt} "
+                    f"{include_flags_verilator} {extra_flags} -Wno-lint -Wno-fatal -Wno-style "
+                    f"-Wno-UNOPTFLAT -Wno-UNDRIVEN -Wno-UNUSED {file_list}"
                 )
                 print_green(f"[SIM] SystemVerilog fallback: {sv_cmd}")
                 return _run_shell_cmd(sv_cmd, repo_root, timeout, config_path)
@@ -855,6 +937,116 @@ def _search_repo_for_basename(repo_root: str, basename: str) -> list:
             if f == basename:
                 matches.append(os.path.relpath(os.path.join(root, f), repo_root))
     return matches
+
+
+def parse_duplicate_declarations_from_log(log_text: str) -> list:
+    """
+    Parse simulator output looking for duplicate declaration errors.
+    Returns list of files that contain duplicate declarations.
+    """
+    duplicate_files = set()
+    patterns = [
+        # Module duplicates
+        r"%Warning-MODDUP: ([^:]+):\d+:\d+: Duplicate declaration of module:",
+        r"%Error: ([^:]+):\d+:\d+: Duplicate declaration of module:",
+        # Signal/parameter duplicates  
+        r"%Error: ([^:]+):\d+:\d+: Duplicate declaration of signal:",
+        r"%Error: ([^:]+):\d+:\d+: Duplicate declaration of TYPEDEF:",
+        # Other duplicate patterns
+        r"Duplicate declaration.*?in\s+([^:]+):",
+        r"([^:]+):\d+.*Duplicate declaration",
+    ]
+    
+    for pattern in patterns:
+        for match in re.finditer(pattern, log_text, flags=re.IGNORECASE | re.MULTILINE):
+            file_path = match.group(1).strip()
+            # Remove any leading path info if it's an absolute path
+            if file_path.startswith('./'):
+                file_path = file_path[2:]
+            duplicate_files.add(file_path)
+    
+    return list(duplicate_files)
+
+
+def find_files_with_duplicate_declarations(repo_root: str, file_list: list) -> list:
+    """
+    Find files that cause duplicate declaration errors by analyzing patterns.
+    This looks for files that are likely duplicates (e.g., VivadoSim vs main source).
+    """
+    duplicate_files = []
+    
+    # First, identify and exclude conflicting unit test files
+    test_files = []
+    for file_path in file_list:
+        path_lower = file_path.lower()
+        # Look for unit test patterns
+        if ('test' in path_lower and 
+            ('unittest' in path_lower or 'verification' in path_lower or 
+             'testbench' in path_lower or path_lower.startswith('test') or
+             '/test' in path_lower)):
+            test_files.append(file_path)
+    
+    # If we have multiple test files, they likely define conflicting parameters
+    # Keep only essential verification files, exclude unit tests
+    if len(test_files) > 1:
+        print_yellow(f"[DUPLICATE] Found {len(test_files)} unit test files that may have conflicting parameters")
+        
+        # Keep only essential test files (e.g., main testbench, clock generator)
+        essential_patterns = ['testbenchclockgenerator', 'testmain', 'main_test', 'tb_top']
+        essential_tests = []
+        conflicting_tests = []
+        
+        for test_file in test_files:
+            test_lower = test_file.lower()
+            basename_lower = os.path.basename(test_file).lower()
+            
+            if any(pattern in basename_lower for pattern in essential_patterns):
+                essential_tests.append(test_file)
+                print_green(f"[DUPLICATE] Keeping essential test file: {test_file}")
+            else:
+                conflicting_tests.append(test_file)
+                print_yellow(f"[DUPLICATE] Excluding unit test (parameter conflicts): {test_file}")
+        
+        duplicate_files.extend(conflicting_tests)
+    
+    # Then handle traditional duplicate files (same basename)
+    basename_to_paths = {}
+    for file_path in file_list:
+        if file_path not in duplicate_files:  # Skip already marked duplicates
+            basename = os.path.basename(file_path)
+            if basename not in basename_to_paths:
+                basename_to_paths[basename] = []
+            basename_to_paths[basename].append(file_path)
+    
+    # Find files with the same basename (potential duplicates)
+    for basename, paths in basename_to_paths.items():
+        if len(paths) > 1:
+            print_yellow(f"[DUPLICATE] Found {len(paths)} files with same basename '{basename}': {paths}")
+            
+            # Apply heuristics to decide which files to exclude
+            paths_to_exclude = []
+            
+            # Prioritize main source over project-specific versions
+            # Exclude VivadoSim, Xilinx, ModelSim, Quartus project files
+            project_keywords = ['vivadosim', 'xilinx', 'modelsim', 'quartus', 'project', 'build', 'syn', 'synthesis']
+            
+            for path in paths:
+                path_lower = path.lower()
+                if any(keyword in path_lower for keyword in project_keywords):
+                    paths_to_exclude.append(path)
+                    print_yellow(f"[DUPLICATE] Excluding project file: {path}")
+            
+            # If we found project files to exclude, exclude them
+            if paths_to_exclude:
+                duplicate_files.extend(paths_to_exclude)
+            else:
+                # If no clear project files, exclude all but the first (shortest path)
+                sorted_paths = sorted(paths, key=len)
+                paths_to_exclude = sorted_paths[1:]  # Keep the shortest path
+                duplicate_files.extend(paths_to_exclude)
+                print_yellow(f"[DUPLICATE] No clear project pattern, excluding: {paths_to_exclude}")
+    
+    return duplicate_files
 
 
 def parse_missing_includes_from_log(log_text: str) -> list:
@@ -919,6 +1111,36 @@ def parse_missing_packages_from_log(log_text: str) -> list:
     return list(missing_packages)
 
 
+def parse_missing_modules_from_log(log_text: str) -> list:
+    """
+    Parse simulator output looking for missing module errors.
+    """
+    missing_modules = set()
+    patterns = [
+        r"Cannot find file containing module: '([^']+)'",
+        r'Cannot find file containing module: "([^"]+)"',
+        r"Cannot find module '([^']+)'",
+        r'Cannot find module "([^"]+)"',
+        r"Module '([^']+)' not found",
+        r'Module "([^"]+)" not found',
+        r"%Error.*Cannot find file containing module: ['\"]([^'\"]+)['\"]",
+        r"module '([^']+)' not found",
+        r'module "([^"]+)" not found',
+        r"undefined module '([^']+)'",
+        r'undefined module "([^"]+)"',
+        r"unresolved module '([^']+)'",
+        r'unresolved module "([^"]+)"',
+    ]
+    
+    for pat in patterns:
+        for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
+            module_name = m.group(1).strip()
+            if module_name:
+                missing_modules.add(module_name)
+    
+    return list(missing_modules)
+
+
 def parse_ghdl_missing_entities_from_log(log_text: str) -> list:
     """
     Parse GHDL output looking for missing entity references.
@@ -981,12 +1203,27 @@ def parse_syntax_errors_from_log(log_text: str) -> list:
     # %Error: rtl/external_peripheral/DRAM_Controller/fpga/opensourceSDRLabKintex7/main.sv:105:40: Too many digits for 1 bit number: '1'b10100101'
     # %Error: file.sv:123:45: Syntax error: unexpected token  
     # %Error: rtl/verilog/core/memory/riscv_dmem_ctrl.sv:67:44: syntax error, unexpected IDENTIFIER, expecting ','
+    # %Error: Processor/Src/Cache/ICache.sv:518:19: Expected numeric type, but got a 'logic$[0:1]' data type
     error_patterns = [
         r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*(?:syntax error|parse error|Too many digits|unexpected)",
         r"%Error:\s+([^:]+\.s?v[h]?):\d+.*(?:syntax|parse|unexpected)",
         r"Error.*?:\s+([^:]+\.s?v[h]?):\d+.*(?:syntax|parse|unexpected)",
         r"Syntax error.*?in\s+([^:]+\.s?v[h]?)",
         r"Parse error.*?in\s+([^:]+\.s?v[h]?)",
+        # SystemVerilog type mismatch errors
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*Expected numeric type.*but got.*data type",
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*Type mismatch",
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*Incompatible.*type",
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*Invalid.*type.*for.*function",
+        # SystemVerilog function argument type errors
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*\$onehot.*expects.*numeric",
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*\$onehot0.*expects.*numeric",
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*\$countones.*expects.*numeric",
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*\$clog2.*expects.*numeric",
+        # Module resolution errors - exclude files that try to instantiate non-existent modules
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*Can't resolve module reference",
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*Cannot find module",
+        r"%Error:\s+([^:]+\.s?v[h]?):\d+:\d+:.*Unknown module",
     ]
     
     for pattern in error_patterns:
@@ -1020,7 +1257,7 @@ def find_files_with_syntax_errors(repo_root: str, file_list: list) -> list:
             continue
         
         # Run a quick syntax check on individual file
-        cmd = ['verilator', '--lint-only', '--sv', '-Wno-lint', '-Wno-fatal', '-Wno-style', full_path]
+        cmd = ['verilator', '--lint-only', '--no-timing', '--sv', '-Wno-lint', '-Wno-fatal', '-Wno-style', full_path]
         
         try:
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
@@ -1094,9 +1331,111 @@ def references_missing_entity(file_path: str, entity_name: str, repo_root: str) 
         return False
 
 
+def check_syntax_with_dynamic_includes(
+    repo_root: str,
+    repo_name: str,
+    url: str,
+    tb_files: list,
+    files: list,
+    include_dirs: set,
+    top_module: str,
+    language_version: str,
+    timeout: int = 300,
+    verilator_extra_flags: list = None,
+    ghdl_extra_flags: list = None,
+    max_retries: int = 2,
+    excluded_files_blacklist: set = None
+) -> tuple:
+    """
+    Enhanced syntax check that dynamically finds missing modules and retries.
+    
+    Args:
+        repo_root: Repository root path
+        repo_name: Repository name
+        url: Repository URL
+        tb_files: Testbench files list
+        files: List of source files
+        include_dirs: Set of initial include directories
+        top_module: Name of top module
+        language_version: HDL language version
+        timeout: Command timeout
+        verilator_extra_flags: Extra Verilator flags
+        ghdl_extra_flags: Extra GHDL flags
+        max_retries: Maximum number of retry attempts
+        excluded_files_blacklist: Set of files to never re-add
+        
+    Returns:
+        Tuple of (return_code, output, config_path)
+    """
+    if excluded_files_blacklist is None:
+        excluded_files_blacklist = set()
+        
+    current_include_dirs = set(include_dirs)  # Make a copy
+    
+    for attempt in range(max_retries + 1):
+        print_green(f"[SYNTAX-CHECK] Attempt {attempt + 1}/{max_retries + 1}")
+        
+        # Try the standard syntax check using the existing function
+        rc, output, config_path = run_simulation_with_config(
+            repo_root=repo_root,
+            repo_name=repo_name,
+            url=url,
+            tb_files=tb_files,
+            files=files,
+            include_dirs=list(current_include_dirs),
+            top_module=top_module,
+            language_version=language_version,
+            timeout=timeout,
+            verilator_extra_flags=verilator_extra_flags,
+            ghdl_extra_flags=ghdl_extra_flags
+        )
+        
+        # If successful or last attempt, return result
+        if rc == 0 or attempt == max_retries:
+            return rc, output, config_path
+        
+        # Parse output for missing modules
+        missing_modules = parse_missing_modules_from_log(output)
+        if not missing_modules:
+            print_yellow("[SYNTAX-CHECK] Failed but no missing modules detected, stopping retries")
+            return rc, output, config_path
+        
+        print_yellow(f"[SYNTAX-CHECK] Found missing modules: {missing_modules}")
+        
+        # Search for the missing modules
+        additional_dirs = find_missing_modules(repo_root, missing_modules)
+        additional_files = find_missing_module_files(repo_root, missing_modules)
+        
+        if not additional_dirs and not additional_files:
+            print_yellow("[SYNTAX-CHECK] Could not find any missing modules, stopping retries")
+            return rc, output, config_path
+        
+        # Add missing files to the files list
+        if additional_files:
+            # Filter out blacklisted files to prevent re-adding problematic files
+            filtered_additional_files = [f for f in additional_files if f not in excluded_files_blacklist]
+            if filtered_additional_files:
+                print_green(f"[SYNTAX-CHECK] Adding files: {filtered_additional_files}")
+                files.extend(filtered_additional_files)
+            else:
+                print_yellow(f"[SYNTAX-CHECK] All additional files ({len(additional_files)}) were blacklisted, skipping")
+        
+        
+        # Add new directories to include paths
+        new_dirs = additional_dirs - current_include_dirs
+        if new_dirs:
+            print_green(f"[SYNTAX-CHECK] Adding directories: {new_dirs}")
+            current_include_dirs.update(additional_dirs)
+        else:
+            print_yellow("[SYNTAX-CHECK] No new directories found, stopping retries")
+            return rc, output, config_path
+    
+    return rc, output, config_path
+
+
 def check_package_exists_in_repo(repo_root: str, package_name: str) -> bool:
     """
-    Check if a package definition exists anywhere in the repository.
+    Searches for package definitions in the repository files.
     Only returns True for exact matches to avoid false positives.
     """
     # Search for exact package definitions only
@@ -1254,24 +1593,41 @@ def find_import_dependencies(repo_root: str, files: list) -> dict:
     return file_imports
 
 
-def reorder_files_by_dependencies(repo_root: str, files: list) -> list:
+def reorder_files_by_dependencies(repo_root: str, files: list, excluded_files_blacklist: set = None) -> list:
     """
     Reorder files so that package definitions come before files that import them.
+    
+    Args:
+        repo_root: Repository root path
+        files: List of files to reorder
+        excluded_files_blacklist: Set of files to never include in the result
+        
+    Returns:
+        List of reordered files with blacklisted files removed
     """
+    if excluded_files_blacklist is None:
+        excluded_files_blacklist = set()
+        
     print_green("[PKG_ORDER] Reordering files by package dependencies...")
     
+    # Filter out blacklisted files from input
+    filtered_files = [f for f in files if f not in excluded_files_blacklist]
+    if len(filtered_files) != len(files):
+        excluded_count = len(files) - len(filtered_files)
+        print_yellow(f"[PKG_ORDER] Filtered out {excluded_count} blacklisted files before reordering")
+    
     # Find package definitions and imports
-    package_files = find_package_files(repo_root, files)
-    file_imports = find_import_dependencies(repo_root, files)
+    package_files = find_package_files(repo_root, filtered_files)
+    file_imports = find_import_dependencies(repo_root, filtered_files)
     
     if not package_files and not file_imports:
         print_green("[PKG_ORDER] No packages or imports found, keeping original order")
-        return files
+        return filtered_files
     
     # Separate files into categories
     pkg_definition_files = set(package_files.values())
     importing_files = set(file_imports.keys())
-    other_files = set(files) - pkg_definition_files - importing_files
+    other_files = set(filtered_files) - pkg_definition_files - importing_files
     
     print_green(f"[PKG_ORDER] Found {len(pkg_definition_files)} package files, {len(importing_files)} importing files, {len(other_files)} other files")
     
@@ -1496,6 +1852,9 @@ def interactive_simulate_and_minimize(
     inclu = set(include_dirs)
     last_log = ""
     
+    # Maintain a blacklist of files that should never be re-added due to duplicates/conflicts
+    excluded_files_blacklist = set()
+    
     # Build module-to-file mapping from modules list
     module_to_file = {}
     for module_name, file_path in modules:
@@ -1518,6 +1877,14 @@ def interactive_simulate_and_minimize(
         if any(tb_pattern in candidate_lower for tb_pattern in 
                ['tb', 'test', 'bench', 'compliance', 'verify', 'checker', 'monitor', 'fpv', 'bind', 'assert']):
             print_green(f"[DEBUG] Skipping testbench/verification module '{candidate}'")
+            continue
+        
+        # Skip functional unit cores - these are peripheral components, not top modules
+        if any(functional_unit in candidate_lower for functional_unit in 
+               ['fadd', 'fmul', 'fdiv', 'fsqrt', 'fpu_', 'alu_', 'mul_', 'div_', 'shift_', 'barrel_',
+                'adder_', 'mult_', 'divider_', 'decoder_', 'encoder_', 'mux_', 'demux_', 'fifo_',
+                'cache_', 'mem_', 'ram_', 'rom_', 'regfile_', 'register_', 'counter_', 'timer_']):
+            print_green(f"[DEBUG] Skipping functional unit core '{candidate}'")
             continue
         
         if (any(word in candidate_lower for word in words_to_check) and
@@ -1554,9 +1921,32 @@ def interactive_simulate_and_minimize(
         else:
             print_yellow(f"[SMART] Smart analysis didn't reduce file count significantly, using original list")
             
+        # Filter out any blacklisted files that might have been re-added by smart analysis
+        if excluded_files_blacklist:
+            original_count = len(files)
+            files = [f for f in files if f not in excluded_files_blacklist]
+            filtered_count = original_count - len(files)
+            if filtered_count > 0:
+                print_yellow(f"[BLACKLIST] Filtered out {filtered_count} blacklisted files after smart analysis")
+            
     except Exception as e:
         print_yellow(f"[SMART] Smart dependency analysis failed: {e}")
         print_yellow(f"[SMART] Continuing with original file list")
+
+    # Phase A0: Early duplicate detection to pre-populate blacklist
+    print_green(f"[EARLY-DUP] Performing early duplicate detection")
+    early_duplicate_files = find_files_with_duplicate_declarations(repo_root, files)
+    if early_duplicate_files:
+        print_yellow(f"[EARLY-DUP] Pre-identified {len(early_duplicate_files)} potential duplicate files")
+        for dup_file in early_duplicate_files:
+            excluded_files_blacklist.add(dup_file)
+            print_yellow(f"[EARLY-DUP] Pre-blacklisted: {dup_file}")
+        
+        # Remove them from current file list
+        original_count = len(files)
+        files = [f for f in files if f not in excluded_files_blacklist]
+        filtered_count = original_count - len(files)
+        print_green(f"[EARLY-DUP] Removed {filtered_count} early duplicate files")
 
     for attempt in range(maximize_attempts):
         rc, out, cfg = run_simulation_with_config(
@@ -1581,12 +1971,14 @@ def interactive_simulate_and_minimize(
         missing_packages = parse_missing_packages_from_log(out)
         missing_entities = parse_ghdl_missing_entities_from_log(out)
         syntax_error_files_in_log = parse_syntax_errors_from_log(out)
+        duplicate_files_in_log = parse_duplicate_declarations_from_log(out)
         
         # Initialize exclusion tracking variables
         newly_added = []
         broken_files = []
         entity_files_to_exclude = []
         syntax_files_to_exclude = []
+        duplicate_files_to_exclude = []
         
         # Handle missing includes first
         if missing:
@@ -1605,7 +1997,7 @@ def interactive_simulate_and_minimize(
             print_green(f"[BOOT] Missing packages detected: {missing_packages}")
             print_green(f"[BOOT] Attempting to fix by reordering files...")
             original_files = files[:]
-            files = reorder_files_by_dependencies(repo_root, files)
+            files = reorder_files_by_dependencies(repo_root, files, excluded_files_blacklist)
             
             # If we reordered files, try again immediately
             if files != original_files:
@@ -1657,17 +2049,61 @@ def interactive_simulate_and_minimize(
                 files = [f for f in files if f not in syntax_files_to_exclude]
                 excluded_count = original_count - len(files)
                 print_green(f"[BOOT] Excluded {excluded_count} files with syntax errors — retrying")
+                # Add to blacklist to prevent re-addition
                 for excluded in syntax_files_to_exclude:
-                    print_yellow(f"[SYNTAX_EXCLUDE] Excluded file: {excluded}")
+                    excluded_files_blacklist.add(excluded)
+                    print_yellow(f"[SYNTAX_EXCLUDE] Excluded and blacklisted file: {excluded}")
                 continue
         
-        # If no missing includes, packages, entities, or syntax errors, or couldn't resolve them, break
-        if not missing and not missing_packages and not missing_entities and not syntax_error_files_in_log:
-            print_yellow("[BOOT] No missing includes, packages, entities, or syntax errors detected; stopping include-fix loop")
+        # Handle duplicate declarations - exclude files that cause duplicate errors
+        if duplicate_files_in_log:
+            print_yellow(f"[BOOT] Duplicate declarations detected in: {duplicate_files_in_log}")
+            
+            # First, try to automatically identify and exclude duplicate files
+            duplicate_pattern_files = find_files_with_duplicate_declarations(repo_root, files)
+            if duplicate_pattern_files:
+                original_count = len(files)
+                files = [f for f in files if f not in duplicate_pattern_files]
+                excluded_count = original_count - len(files)
+                print_green(f"[BOOT] Excluded {excluded_count} pattern-based duplicate files — retrying")
+                for excluded in duplicate_pattern_files:
+                    print_yellow(f"[DUPLICATE_PATTERN] Excluded file: {excluded}")
+                    excluded_files_blacklist.add(excluded)  # Add to blacklist to prevent re-addition
+                continue
+            
+            # If pattern-based exclusion didn't work, exclude specific files from log
+            duplicate_files_to_exclude = []
+            for dup_file in duplicate_files_in_log:
+                # Match both exact paths and filename-only matches
+                for f in files:
+                    if f == dup_file or f.endswith(dup_file.split('/')[-1]):
+                        duplicate_files_to_exclude.append(f)
+            
+            if duplicate_files_to_exclude:
+                original_count = len(files)
+                files = [f for f in files if f not in duplicate_files_to_exclude]
+                excluded_count = original_count - len(files)
+                print_green(f"[BOOT] Excluded {excluded_count} files with duplicate declarations — retrying")
+                for excluded in duplicate_files_to_exclude:
+                    print_yellow(f"[DUPLICATE_EXCLUDE] Excluded file: {excluded}")
+                    excluded_files_blacklist.add(excluded)  # Add to blacklist to prevent re-addition
+                continue
+        
+        # If no missing includes, packages, entities, syntax errors, or duplicates, or couldn't resolve them, break
+        if not missing and not missing_packages and not missing_entities and not syntax_error_files_in_log and not duplicate_files_in_log:
+            print_yellow("[BOOT] No missing includes, packages, entities, syntax errors, or duplicates detected; stopping include-fix loop")
             break
-        elif (missing and not newly_added) and (missing_packages and not broken_files) and (missing_entities and not entity_files_to_exclude) and (syntax_error_files_in_log and not syntax_files_to_exclude):
-            print_yellow("[BOOT] Could not resolve missing includes, packages, entities, or syntax errors")
+        elif (missing and not newly_added) and (missing_packages and not broken_files) and (missing_entities and not entity_files_to_exclude) and (syntax_error_files_in_log and not syntax_files_to_exclude) and (duplicate_files_in_log and not duplicate_files_to_exclude):
+            print_yellow("[BOOT] Could not resolve missing includes, packages, entities, syntax errors, or duplicates")
             break
+        
+        # Final blacklist filter at end of each iteration to catch any re-added files
+        if excluded_files_blacklist:
+            original_count = len(files)
+            files = [f for f in files if f not in excluded_files_blacklist]
+            filtered_count = original_count - len(files)
+            if filtered_count > 0:
+                print_yellow(f"[BLACKLIST] Filtered out {filtered_count} blacklisted files at end of iteration")
 
     # Phase B: top selection
     print_green(f"[DEBUG] About to rank candidates with repo_name='{repo_name}'")
@@ -1682,7 +2118,38 @@ def interactive_simulate_and_minimize(
     
     # Test all candidates to find working ones
     for cand in candidates:
-        rc, out, cfg = run_simulation_with_config(
+        # Special handling for "Core" module - try harder with multiple strategies
+        if cand.lower() == "core":
+            print_green(f"[TOP-CAND] Testing priority candidate 'Core' with enhanced strategies")
+            
+            # Strategy 1: Try with relaxed SystemVerilog flags first
+            relaxed_flags = verilator_extra_flags + ["-Wno-SYMRSVDWORD", "-Wno-CASEX", "-Wno-CASEINCOMPLETE"]
+            rc, out, cfg = check_syntax_with_dynamic_includes(
+                repo_root,
+                repo_name,
+                url,
+                tb_files,
+                files,
+                inclu,
+                cand,
+                language_version,
+                timeout=120,
+                verilator_extra_flags=relaxed_flags,
+                ghdl_extra_flags=ghdl_extra_flags,
+                max_retries=3,
+                excluded_files_blacklist=excluded_files_blacklist
+            )
+            
+            if rc == 0:
+                print_green(f"[TOP-CAND] Candidate 'Core' succeeded with relaxed flags")
+                working_candidates.append(cand)
+                last_log = out
+                continue
+            else:
+                print_yellow(f"[TOP-CAND] Core failed with relaxed flags, trying standard approach")
+        
+        # Use dynamic module checking instead of static approach
+        rc, out, cfg = check_syntax_with_dynamic_includes(
             repo_root,
             repo_name,
             url,
@@ -1694,6 +2161,8 @@ def interactive_simulate_and_minimize(
             timeout=120,
             verilator_extra_flags=verilator_extra_flags,
             ghdl_extra_flags=ghdl_extra_flags,
+            max_retries=3,
+            excluded_files_blacklist=excluded_files_blacklist
         )
         last_log = out
         if rc == 0:
@@ -2505,8 +2974,21 @@ def generate_processor_config(
         ghdl_extra_flags=['--std=08', '-frelaxed'],
     )
 
+    # Convert absolute include directories to relative paths
+    relative_include_dirs = []
+    for include_dir in final_include_dirs:
+        if os.path.isabs(include_dir):
+            try:
+                relative_path = os.path.relpath(include_dir, destination_path)
+                relative_include_dirs.append(relative_path)
+            except ValueError:
+                # If we can't make it relative, use the original
+                relative_include_dirs.append(include_dir)
+        else:
+            relative_include_dirs.append(include_dir)
+
     output_json = create_output_json(
-        repo_name, url, tb_files, final_files, final_include_dirs, top_module, language_version, is_simulable,
+        repo_name, url, tb_files, final_files, relative_include_dirs, top_module, language_version, is_simulable,
     )
 
     # Save configuration
