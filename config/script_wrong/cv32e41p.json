@@ -1,0 +1,20 @@
+{
+    "name": "cv32e41p",
+    "folder": "cv32e41p",
+    "sim_files": [],
+    "files": [
+        "bhv/cv32e41p_wrapper.sv",
+        "bhv/include/cv32e41p_tracer_pkg.sv",
+        "rtl/include/cv32e41p_apu_core_pkg.sv",
+        "rtl/include/cv32e41p_fpu_pkg.sv",
+        "rtl/include/cv32e41p_pkg.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/openhwgroup/cv32e41p",
+    "top_module": "cv32e41p_core_log",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

@@ -1,0 +1,21 @@
+{
+    "name": "I2SRV32-V-v1",
+    "folder": "I2SRV32-V-v1",
+    "sim_files": [],
+    "files": [
+        "Source code/rtl/FPU/fpu/CONVERT.v",
+        "Source code/rtl/FPU/fpu/FP_to_FP.v",
+        "Source code/rtl/FPU/fpu/FP_to_int.v",
+        "Source code/rtl/FPU/fpu/LZC.v",
+        "Source code/rtl/FPU/fpu/SIGN_INJECTION.v",
+        "Source code/rtl/FPU/fpu/int_to_FP.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/RClabiisc/I2SRV32-V-v1",
+    "top_module": "CONVERT",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

@@ -1,0 +1,16 @@
+{
+    "name": "I2SRV64-SS-v1",
+    "folder": "I2SRV64-SS-v1",
+    "sim_files": [],
+    "files": [
+        "Hardware_Source_Files/rtl/Processor/CoreCFG/CoreCFG_v1_0.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/RClabiisc/I2SRV64-SS-v1.git",
+    "top_module": "CoreCFG_v1_0",
+    "extra_flags": [],
+    "language_version": "1800-2017ext+",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

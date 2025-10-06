@@ -1,0 +1,22 @@
+{
+    "name": "e203_hbirdv2",
+    "folder": "e203_hbirdv2",
+    "sim_files": [],
+    "files": [
+        "rtl/e203/core/e203_core.v",
+        "rtl/e203/general/sirv_gnrl_bufs.v",
+        "rtl/e203/general/sirv_gnrl_dffs.v",
+        "rtl/e203/general/sirv_gnrl_icbs.v"
+    ],
+    "include_dirs": [
+        "rtl/e203/general",
+        "rtl/e203/core"
+    ],
+    "repository": "https://github.com/riscv-mcu/e203_hbirdv2",
+    "top_module": "e203_core",
+    "extra_flags": [],
+    "language_version": "1800-2017ext+",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

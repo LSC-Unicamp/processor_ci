@@ -1,0 +1,32 @@
+{
+    "name": "Taiga",
+    "folder": "Taiga",
+    "sim_files": [],
+    "files": [
+        "core/csr_types.sv",
+        "core/external_interfaces.sv",
+        "core/interfaces.sv",
+        "core/riscv_types.sv",
+        "core/taiga.sv",
+        "core/taiga_config.sv",
+        "core/taiga_types.sv",
+        "core/lutrams/lutram_1w_1r.sv",
+        "core/lutrams/lutram_1w_mr.sv",
+        "debug_module/debug_cfg_types.sv",
+        "debug_module/debug_interfaces.sv",
+        "l2_arbiter/l2_config_and_types.sv",
+        "l2_arbiter/l2_external_interfaces.sv",
+        "l2_arbiter/l2_interfaces.sv",
+        "local_memory/local_memory_interface.sv"
+    ],
+    "include_dirs": [
+        "core"
+    ],
+    "repository": "https://gitlab.com/sfu-rcl/Taiga",
+    "top_module": "taiga",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

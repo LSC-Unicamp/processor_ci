@@ -1,0 +1,16 @@
+{
+    "name": "lizard",
+    "folder": "lizard",
+    "sim_files": [],
+    "files": [
+        "asic/designs/GcdUnit-demo.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/cornell-brg/lizard",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": false
+}

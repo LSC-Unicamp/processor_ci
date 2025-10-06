@@ -1,0 +1,16 @@
+{
+    "name": "arRISCado",
+    "folder": "arRISCado",
+    "sim_files": [],
+    "files": [
+        "project/flash.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/arRISCado/arRISCado",
+    "top_module": "flash",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

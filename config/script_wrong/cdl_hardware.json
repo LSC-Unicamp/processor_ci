@@ -1,0 +1,14 @@
+{
+    "name": "cdl_hardware",
+    "folder": "cdl_hardware",
+    "sim_files": [],
+    "files": [],
+    "include_dirs": [],
+    "repository": "https://github.com/atthecodeface/cdl_hardware.git",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": false
+}

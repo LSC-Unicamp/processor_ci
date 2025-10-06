@@ -1,0 +1,21 @@
+{
+    "name": "airisc_core_complex",
+    "folder": "airisc_core_complex",
+    "sim_files": [],
+    "files": [
+        "src/airi5c_PC_mux.v",
+        "src/airi5c_core.v"
+    ],
+    "include_dirs": [
+        "src",
+        "src/modules/airi5c_mul_div/src",
+        "src/modules/airi5c_fpu"
+    ],
+    "repository": "https://github.com/Fraunhofer-IMS/airisc_core_complex",
+    "top_module": "airi5c_core",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

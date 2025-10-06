@@ -1,0 +1,16 @@
+{
+    "name": "Rift2Core",
+    "folder": "Rift2Core",
+    "sim_files": [],
+    "files": [
+        "dependencies/rocket-chip/src/main/resources/vsrc/SimDTM.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/whutddk/Rift2Core",
+    "top_module": "SimDTM",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

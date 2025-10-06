@@ -1,0 +1,16 @@
+{
+    "name": "clarvi",
+    "folder": "clarvi",
+    "sim_files": [],
+    "files": [
+        "clarvi.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/ucam-comparch/clarvi",
+    "top_module": "clarvi",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

@@ -1,0 +1,39 @@
+{
+    "name": "black-parrot",
+    "folder": "black-parrot",
+    "sim_files": [],
+    "files": [
+        "external/basejump_stl/bsg_legacy/bsg_fsb/bsg_fsb_pkg.v",
+        "bp_be/src/include/bp_be_pkg.sv",
+        "bp_common/src/include/bp_common_pkg.sv",
+        "bp_fe/src/include/bp_fe_pkg.sv",
+        "bp_me/src/include/bp_me_pkg.sv",
+        "bp_top/src/include/bp_top_pkg.sv",
+        "external/HardFloat/source/bsg_hardfloat_pkg.sv",
+        "external/basejump_stl/bsg_axi/bsg_axi_pkg.sv",
+        "external/basejump_stl/bsg_cache/bsg_cache_non_blocking_pkg.sv",
+        "external/basejump_stl/bsg_cache/bsg_cache_pkg.sv",
+        "external/basejump_stl/bsg_dmc/bsg_dmc_pkg.sv",
+        "external/basejump_stl/bsg_link/bsg_link_pkg.sv",
+        "external/basejump_stl/bsg_misc/bsg_icg_pos.sv",
+        "external/basejump_stl/bsg_noc/bsg_mesh_router_pkg.sv",
+        "external/basejump_stl/bsg_noc/bsg_noc_pkg.sv",
+        "external/basejump_stl/bsg_noc/bsg_wormhole_router_pkg.sv",
+        "external/basejump_stl/bsg_tag/bsg_tag_pkg.sv"
+    ],
+    "include_dirs": [
+        "external/HardFloat/source/RISCV",
+        "external/HardFloat/source",
+        "bp_common/src/include",
+        "external/basejump_stl/bsg_cache",
+        "external/basejump_stl/bsg_noc",
+        "external/basejump_stl/bsg_misc"
+    ],
+    "repository": "https://github.com/black-parrot/black-parrot.git",
+    "top_module": "bsg_icg_pos",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

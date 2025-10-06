@@ -1,0 +1,16 @@
+{
+    "name": "fedar-f1-rv64im",
+    "folder": "fedar-f1-rv64im",
+    "sim_files": [],
+    "files": [
+        "src/CPU.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/eminfedar/fedar-f1-rv64im",
+    "top_module": "CPU",
+    "extra_flags": [],
+    "language_version": "1800-2012ext+",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

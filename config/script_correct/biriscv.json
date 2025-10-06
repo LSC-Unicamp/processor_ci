@@ -1,0 +1,30 @@
+{
+    "name": "biriscv",
+    "folder": "biriscv",
+    "sim_files": [],
+    "files": [
+        "src/dcache/dcache.v",
+        "src/dcache/dcache_axi.v",
+        "src/dcache/dcache_axi_axi.v",
+        "src/dcache/dcache_core.v",
+        "src/dcache/dcache_core_data_ram.v",
+        "src/dcache/dcache_core_tag_ram.v",
+        "src/dcache/dcache_if_pmem.v",
+        "src/dcache/dcache_mux.v",
+        "src/dcache/dcache_pmem_mux.v",
+        "src/icache/icache.v",
+        "src/icache/icache_data_ram.v",
+        "src/icache/icache_tag_ram.v",
+        "src/top/riscv_top.v"
+    ],
+    "include_dirs": [
+        "src/core"
+    ],
+    "repository": "https://github.com/ultraembedded/biriscv",
+    "top_module": "riscv_top",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

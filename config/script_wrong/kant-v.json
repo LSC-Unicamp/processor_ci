@@ -1,0 +1,18 @@
+{
+    "name": "kant-v",
+    "folder": "kant-v",
+    "sim_files": [],
+    "files": [
+        "src/alu.v",
+        "src/control.v",
+        "src/registers.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/viniciuskant/kant-v",
+    "top_module": "",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": false
+}

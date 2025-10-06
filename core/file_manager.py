@@ -27,7 +27,8 @@ EXCLUDE_DIRECTORIES = [
     'formal', 'fpv', 'verification', 'testbench', 'tb',
     'test', 'tests', 'sim', 'simulation', 'verification',
     'uvm', 'compliance', 'property', 'assert', 'bind',
-    'coverage', 'checker', 'monitor', 'sequence'
+    'coverage', 'checker', 'monitor', 'sequence',
+    'boards', 'board', 'fpga'  # FPGA board-specific files
 ]
 
 EXCLUDE_PATTERNS = [
@@ -211,12 +212,13 @@ def should_exclude_file(file_path: str, base_directory: str = None) -> bool:
         if re.search(pattern, file_name, re.IGNORECASE):
             return True
     
-    # Check for verification directories
+    # Check for verification directories and FPGA board directories
     verification_dirs = [
         'dv', 'google_riscv-dv', 'formal', 'fpv', 'verification',
         'testbench', 'tb', 'test', 'tests', 'sim', 'simulation',
         'uvm', 'compliance', 'property', 'assert', 'bind',
-        'coverage', 'checker', 'monitor', 'sequence'
+        'coverage', 'checker', 'monitor', 'sequence',
+        'boards', 'board', 'fpga'  # FPGA board-specific directories
     ]
     
     for exclude_dir in verification_dirs:
@@ -503,13 +505,27 @@ def find_missing_module_files(directory: str, missing_module_names: list) -> lis
                 try:
                     # Quick filename check first (most modules are named after their files)
                     file_basename = os.path.basename(file_path)
-                    
+                    matched = False
                     for module_name in missing_module_names:
                         if module_name in file_basename:
+                            matched = True
                             # Convert to relative path from the directory
                             relative_path = os.path.relpath(file_path, directory)
                             found_files.append(relative_path)
                             print(f"[DEBUG] Found potential module {module_name} in {relative_path}")
+                    # If basename doesn't hint, do a light content scan for 'module <name>'
+                    if not matched and file_path.endswith(('.v', '.sv')):
+                        try:
+                            with open(file_path, 'r', encoding='utf-8', errors='ignore') as fh:
+                                head = fh.read(200000)
+                            for module_name in missing_module_names:
+                                # Verilog module decl pattern
+                                if re.search(rf"\bmodule\s+{re.escape(module_name)}\b", head):
+                                    relative_path = os.path.relpath(file_path, directory)
+                                    found_files.append(relative_path)
+                                    print(f"[DEBUG] Found module by content {module_name} in {relative_path}")
+                        except Exception as _:
+                            pass
                     
                 except Exception as e:
                     print(f"[WARNING] Error checking file {file_path}: {e}")

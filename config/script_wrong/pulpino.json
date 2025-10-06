@@ -1,0 +1,19 @@
+{
+    "name": "pulpino",
+    "folder": "pulpino",
+    "sim_files": [],
+    "files": [
+        "rtl/components/pulp_clock_mux2.sv",
+        "rtl/includes/apb_bus.sv",
+        "rtl/includes/axi_bus.sv",
+        "rtl/includes/debug_bus.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/pulp-platform/pulpino",
+    "top_module": "pulp_clock_mux2",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

@@ -1,0 +1,16 @@
+{
+    "name": "rocket-chip",
+    "folder": "rocket-chip",
+    "sim_files": [],
+    "files": [
+        "src/main/resources/vsrc/plusarg_reader.v"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/chipsalliance/rocket-chip",
+    "top_module": "plusarg_reader",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

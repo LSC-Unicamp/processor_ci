@@ -1,0 +1,20 @@
+{
+    "name": "RiftCore",
+    "folder": "RiftCore",
+    "sim_files": [],
+    "files": [
+        "RiftChip/element/gen_dffr.v",
+        "RiftChip/element/gen_dffren.v",
+        "RiftChip/riftCore/cache/wt_block.v"
+    ],
+    "include_dirs": [
+        "RiftChip"
+    ],
+    "repository": "https://github.com/whutddk/RiftCore",
+    "top_module": "wt_block",
+    "extra_flags": [],
+    "language_version": "1364-2005",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

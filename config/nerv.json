@@ -1,0 +1,16 @@
+{
+    "name": "nerv",
+    "folder": "nerv",
+    "sim_files": [],
+    "files": [
+        "nerv.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/YosysHQ/nerv",
+    "top_module": "nerv",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

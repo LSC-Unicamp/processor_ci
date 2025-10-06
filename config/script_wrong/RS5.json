@@ -1,0 +1,20 @@
+{
+    "name": "RS5",
+    "folder": "RS5",
+    "sim_files": [],
+    "files": [
+        "rtl/RS5_pkg.sv",
+        "rtl/aes/riscv_crypto_aes_fwd_sbox.sv",
+        "rtl/aes/riscv_crypto_sbox_aes_out.sv",
+        "rtl/aes/riscv_crypto_sbox_aes_top.sv",
+        "rtl/aes/riscv_crypto_sbox_inv_mid.sv"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/gaph-pucrs/RS5",
+    "top_module": "riscv_crypto_aes_fwd_sbox",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}
