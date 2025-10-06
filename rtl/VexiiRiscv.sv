@@ -145,6 +145,8 @@ logic vexii_d_cyc, vexii_d_stb, vexii_d_ack, vexii_d_we;
 logic [7:0] vexii_i_sel, vexii_d_sel;
 logic [63:0] vexii_i_mosi, vexii_d_mosi, vexii_i_miso, vexii_d_miso;
 logic [28:0] vexii_i_addr, vexii_d_addr;
+logic [2:0] vexii_i_cti, vexii_d_cti;
+logic [1:0] vexii_i_bte, vexii_d_bte;
 
 VexiiRiscv u_VexiiRiscv (
     .PrivilegedPlugin_logic_rdtime                         (0), // 64 bits
@@ -160,8 +162,8 @@ VexiiRiscv u_VexiiRiscv (
     .LsuL1WishbonePlugin_logic_bus_DAT_MOSI                (vexii_d_mosi), // 64 bits
     .LsuL1WishbonePlugin_logic_bus_SEL                     (vexii_d_sel), // 8 bits
     .LsuL1WishbonePlugin_logic_bus_ERR                     (0), // 1 bit
-    .LsuL1WishbonePlugin_logic_bus_CTI                     (), // 3 bits
-    .LsuL1WishbonePlugin_logic_bus_BTE                     (), // 2 bits
+    .LsuL1WishbonePlugin_logic_bus_CTI                     (vexii_d_cti), // 3 bits
+    .LsuL1WishbonePlugin_logic_bus_BTE                     (vexii_d_bte), // 2 bits
     .FetchL1WishbonePlugin_logic_bus_CYC                   (vexii_i_cyc), // 1 bit
     .FetchL1WishbonePlugin_logic_bus_STB                   (vexii_i_stb), // 1 bit
     .FetchL1WishbonePlugin_logic_bus_ACK                   (vexii_i_ack), // 1 bit
@@ -171,8 +173,8 @@ VexiiRiscv u_VexiiRiscv (
     .FetchL1WishbonePlugin_logic_bus_DAT_MOSI              (vexii_i_mosi), // 64 bits
     .FetchL1WishbonePlugin_logic_bus_SEL                   (vexii_i_sel), // 8 bits
     .FetchL1WishbonePlugin_logic_bus_ERR                   (0), // 1 bit
-    .FetchL1WishbonePlugin_logic_bus_CTI                   (), // 3 bits
-    .FetchL1WishbonePlugin_logic_bus_BTE                   (), // 2 bits
+    .FetchL1WishbonePlugin_logic_bus_CTI                   (vexii_i_cti), // 3 bits
+    .FetchL1WishbonePlugin_logic_bus_BTE                   (vexii_i_bte), // 2 bits
     .LsuCachelessWishbonePlugin_logic_bridge_down_CYC      (), // 1 bit
     .LsuCachelessWishbonePlugin_logic_bridge_down_STB      (), // 1 bit
     .LsuCachelessWishbonePlugin_logic_bridge_down_ACK      (0), // 1 bit
@@ -203,6 +205,8 @@ wb64_to_wb32_bridge u_wb64_to_wb32_i (
     .dat_o      (vexii_i_miso), // 64 bits
     .sel_i      (vexii_i_sel),      // 8 bits
     .ack_o      (vexii_i_ack),
+    .cti_i      (vexii_i_cti),
+    .bte_i      (vexii_i_bte),
 
     // Lado Core 32 bits
     .core_cyc_o     (core_cyc),
@@ -229,6 +233,8 @@ wb64_to_wb32_bridge u_wb64_to_wb32_d (
     .dat_o      (vexii_d_miso), // 64 bits
     .sel_i      (vexii_d_sel),      // 8 bits
     .ack_o      (vexii_d_ack),
+    .cti_i      (vexii_d_cti),
+    .bte_i      (vexii_d_bte),
 
     // Lado Core 32 bits
     .core_cyc_o     (data_mem_cyc),
@@ -248,17 +254,19 @@ module wb64_to_wb32_bridge (
     input  logic        clk,
     input  logic        rst,
 
-    // Wishbone 64-bit lado CPU
+    // Wishbone 64-bit lado CPU (master)
     input  logic        cyc_i,
     input  logic        stb_i,
     input  logic        we_i,
-    input  logic [28:0] adr_i,      // 64-bit Wishbone address (word aligned)
-    input  logic [63:0] dat_i,      // mosi
-    output logic [63:0] dat_o,      // miso
+    input  logic [28:0] adr_i,      // endereço word-alinhado 64b
+    input  logic [63:0] dat_i,
+    output logic [63:0] dat_o,
     input  logic [7:0]  sel_i,
     output logic        ack_o,
+    input  logic [2:0]  cti_i,
+    input  logic [1:0]  bte_i,
 
-    // Wishbone 32-bit lado Core
+    // Wishbone 32-bit lado Core (slave)
     output logic        core_cyc_o,
     output logic        core_stb_o,
     output logic        core_we_o,
@@ -272,92 +280,130 @@ module wb64_to_wb32_bridge (
     typedef enum logic [1:0] {
         IDLE,
         ACCESS_LOW,
-        ACCESS_HIGH,
-        DONE
+        ACCESS_HIGH
     } state_t;
 
     state_t state, next_state;
-    logic [63:0] data_buffer;
-    logic [28:0] addr_reg;
-    logic        we_reg;
-    logic [7:0]  sel_reg;
-    logic [63:0] dat_i_reg;
 
-    // Registradores de entrada
+    // registradores
+    logic [63:0] data_buffer_reg, data_buffer_next;
+    logic [28:0] addr_reg, addr_next;
+    logic        we_reg,   we_next;
+    logic [7:0]  sel_reg,  sel_next;
+    logic [63:0] dat_i_reg, dat_i_next;
+    logic [2:0]  cti_reg,  cti_next;
+    logic [1:0]  bte_reg,  bte_next;
+
+    // função: calcula próximo endereço conforme BTE (em unidades de 64-bit word)
+    function automatic [28:0] next_addr(input [28:0] a, input [1:0] bte);
+        case (bte)
+            2'b00: next_addr = a + 1; // linear
+            2'b01: next_addr = {a[28:2], (a[1:0]+1) & 2'b11};   // wrap-4
+            2'b10: next_addr = {a[28:3], (a[2:0]+1) & 3'b111};  // wrap-8
+            2'b11: next_addr = {a[28:4], (a[3:0]+1) & 4'b1111}; // wrap-16
+        endcase
+    endfunction
+
+    // estado + registradores
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            state <= IDLE;
+            state           <= IDLE;
+            addr_reg        <= '0;
+            we_reg          <= '0;
+            sel_reg         <= '0;
+            dat_i_reg       <= '0;
+            cti_reg         <= '0;
+            bte_reg         <= '0;
+            data_buffer_reg <= '0;
         end else begin
-            state <= next_state;
+            state           <= next_state;
+            addr_reg        <= addr_next;
+            we_reg          <= we_next;
+            sel_reg         <= sel_next;
+            dat_i_reg       <= dat_i_next;
+            cti_reg         <= cti_next;
+            bte_reg         <= bte_next;
+            data_buffer_reg <= data_buffer_next;
         end
     end
 
-    // FSM de controle
+    // FSM combinacional
     always_comb begin
-        // Defaults
-        next_state   = state;
-        core_cyc_o   = 1'b0;
+        // defaults
+        next_state        = state;
+        addr_next         = addr_reg;
+        we_next           = we_reg;
+        sel_next          = sel_reg;
+        dat_i_next        = dat_i_reg;
+        cti_next          = cti_reg;
+        bte_next          = bte_reg;
+        data_buffer_next  = data_buffer_reg;
+
+        core_cyc_o   = (state != IDLE);
         core_stb_o   = 1'b0;
         core_we_o    = we_reg;
         core_addr_o  = 32'h0;
         core_dat_o   = 32'h0;
         core_sel_o   = 4'h0;
         ack_o        = 1'b0;
+        dat_o        = data_buffer_reg;
 
         case (state)
             IDLE: begin
                 if (cyc_i && stb_i) begin
-                    // Latch comandos
                     next_state = ACCESS_LOW;
+                    addr_next  = adr_i;
+                    we_next    = we_i;
+                    sel_next   = sel_i;
+                    dat_i_next = dat_i;
+                    cti_next   = cti_i;
+                    bte_next   = bte_i;
                 end
             end
 
             ACCESS_LOW: begin
-                core_cyc_o  = 1'b1;
                 core_stb_o  = 1'b1;
-                core_we_o   = we_reg;
-                core_addr_o = {addr_reg, 2'b00}; // endereço base
+                core_addr_o = {addr_reg, 3'b000};
                 core_sel_o  = sel_reg[3:0];
                 core_dat_o  = dat_i_reg[31:0];
                 if (core_ack_i) begin
-                    if (!we_reg) begin
-                        data_buffer[31:0] = core_dat_i;
-                    end
+                    if (!we_reg)
+                        data_buffer_next[31:0] = core_dat_i;
                     next_state = ACCESS_HIGH;
                 end
             end
 
             ACCESS_HIGH: begin
-                core_cyc_o  = 1'b1;
                 core_stb_o  = 1'b1;
-                core_we_o   = we_reg;
-                core_addr_o = {addr_reg + 1, 2'b00}; // próximo endereço (offset +4 bytes)
+                core_addr_o = {addr_reg, 3'b100};
                 core_sel_o  = sel_reg[7:4];
                 core_dat_o  = dat_i_reg[63:32];
                 if (core_ack_i) begin
-                    if (!we_reg) begin
-                        data_buffer[63:32] = core_dat_i;
+                    if (!we_reg)
+                        data_buffer_next[63:32] = core_dat_i;
+
+                    // gera ack para o master 64b
+                    ack_o  = 1'b1;
+
+                    if (cti_reg == 3'b111) begin
+                        // fim do burst
+                        next_state = IDLE;
+                    end else begin
+                        // continua burst
+                        addr_next  = next_addr(addr_reg, bte_reg);
+                        next_state = ACCESS_LOW;
+
+                        // capturar próximo beat (se master já forneceu)
+                        if (cyc_i && stb_i) begin
+                            dat_i_next = dat_i;
+                            sel_next   = sel_i;
+                            cti_next   = cti_i;
+                            bte_next   = bte_i;
+                        end
                     end
-                    next_state = DONE;
                 end
             end
-
-            DONE: begin
-                ack_o  = 1'b1;
-                dat_o  = data_buffer;
-                next_state = IDLE;
-            end
         endcase
-    end
-
-    // Latch dos sinais de comando
-    always_ff @(posedge clk) begin
-        if (state == IDLE && cyc_i && stb_i) begin
-            addr_reg  <= adr_i;
-            we_reg    <= we_i;
-            sel_reg   <= sel_i;
-            dat_i_reg <= dat_i;
-        end
     end
 
 endmodule

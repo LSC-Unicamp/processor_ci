@@ -10,4 +10,6 @@ _start:
     nop;
     nop; # 3 nops to not cause forwarding
 
+    li a2, 0x80000000;
+
     sw a1, 60(zero);
