@@ -27,6 +27,22 @@ from core.file_manager import (
 )
 
 
+def _normalize_path(path: str, repo_root: str) -> str:
+    """
+    Normalize a file path to be relative to repo_root for consistent comparison.
+    Handles both absolute and relative paths, and normalizes path separators.
+    """
+    try:
+        # If it's already absolute, make it relative
+        if os.path.isabs(path):
+            return os.path.relpath(path, repo_root).replace("\\", "/")
+        # If it's relative, normalize separators and return as-is
+        return path.replace("\\", "/")
+    except Exception:
+        # If normalization fails, just normalize separators
+        return path.replace("\\", "/")
+
+
 def _is_pkg_file(path: str) -> bool:
     """Heuristic: treat files that define packages as package files.
     Common convention is *_pkg.sv or *_pkg.svh. Many repos also use *_types.sv or *_config*.sv.
@@ -507,7 +523,13 @@ def _build_verilator_cmd(
         cmd.extend(["--top-module", top_module])
 
     # Include directories (Verilator expects -I<dir> without space)
+    # Filter out problematic legacy directories that cause undefined macro/package errors
     for idir in sorted(include_dirs):
+        idir_lower = idir.lower()
+        # Skip legacy Rocket chip integration directories - they have undefined macros and missing packages
+        if "/bsg_legacy/" in idir_lower and any(x in idir_lower for x in ["/bsg_chip/", "/bsg_fsb/", "/bsg_tag/"]):
+            print_yellow(f"[VERILATOR] Skipping legacy include dir: {idir}")
+            continue
         # Verilator expects native paths; repo_root is handled by caller providing relative dirs
         cmd.append(f"-I{idir}")
 
@@ -748,6 +770,147 @@ def _parse_syntax_error_files(log_text: str) -> List[str]:
     return list(error_files)
 
 
+def _parse_all_error_files(log_text: str) -> List[str]:
+    """
+    Parse ANY file mentioned in %Error lines from Verilator output.
+    This is a catch-all parser for iterative error fixing.
+    Returns files with .v, .sv, .vh, .svh extensions mentioned in error messages.
+    """
+    error_files = set()
+    # Match any %Error line with a file path (file:line:col: message pattern)
+    # This catches syntax errors, undefined symbols, missing defines, etc.
+    pattern = r"%Error[^:]*:\s+([^:]+\.(?:sv|v|svh|vh)):\d+"
+    for m in re.finditer(pattern, log_text, flags=re.IGNORECASE):
+        error_files.add(m.group(1))
+    return list(error_files)
+
+
+def _parse_missing_include_files(log_text: str) -> List[str]:
+    """
+    Parse files that try to include missing or excluded files.
+    When a file tries to include a file that doesn't exist or was already excluded,
+    we should exclude the file that's trying to include it.
+    
+    Example: %Error: file.sv:10:5: Cannot find include file: 'missing.vh'
+    We want to exclude 'file.sv'
+    """
+    problematic_files = set()
+    
+    # Pattern: %Error: file.sv:line:col: Cannot find include file: 'missing.vh'
+    pattern = r"%Error:\s+([^:]+\.(?:sv|v|svh|vh)):\d+:\d+:\s+Cannot find include file:"
+    for m in re.finditer(pattern, log_text, flags=re.IGNORECASE):
+        problematic_files.add(m.group(1))
+    
+    return list(problematic_files)
+
+
+def _parse_missing_module_files(log_text: str) -> List[str]:
+    """
+    Parse files that try to instantiate modules that cannot be found.
+    When a file tries to instantiate a module that Verilator can't find,
+    we should exclude the file that's trying to instantiate it.
+    
+    Example: %Error: bsg_two_fifo.sv:56:4: Cannot find file containing module: 'bsg_mem_1r1w'
+    We want to exclude 'bsg_two_fifo.sv'
+    """
+    problematic_files = set()
+    
+    # Pattern: %Error: file.sv:line:col: Cannot find file containing module: 'module_name'
+    pattern = r"%Error:\s+([^:]+\.(?:sv|v|svh|vh)):\d+:\d+:\s+Cannot find file containing module:"
+    for m in re.finditer(pattern, log_text, flags=re.IGNORECASE):
+        problematic_files.add(m.group(1))
+    
+    return list(problematic_files)
+
+
+def _parse_parameter_mismatch_files(log_text: str) -> List[str]:
+    """
+    Parse files involved in parameter mismatch errors (PINNOTFOUND).
+    These are typically external utility modules being instantiated with wrong parameters.
+    We want to exclude BOTH the problematic utility file AND the parent file that calls it.
+    """
+    problematic_files = set()
+    
+    # Pattern 1: The utility file with the parameter error
+    # %Error-PINNOTFOUND: external/basejump_stl/bsg_misc/bsg_dff_reset_en_bypass.sv:26:7: Parameter not found
+    pattern1 = r"%Error-PINNOTFOUND:\s+([^:]+\.(?:sv|v|svh|vh)):\d+:\d+:"
+    for m in re.finditer(pattern1, log_text, flags=re.IGNORECASE):
+        problematic_files.add(m.group(1))
+    
+    # Pattern 2: Parent file that includes the problematic file
+    # "... note: In file included from 'bp_fe_top.sv'"
+    pattern2 = r"\.\.\.\s+note:\s+In file included from '([^']+)'"
+    for m in re.finditer(pattern2, log_text, flags=re.IGNORECASE):
+        parent_file = m.group(1)
+        # Only add if it looks like a source file
+        if parent_file.endswith(('.sv', '.v', '.svh', '.vh')):
+            problematic_files.add(parent_file)
+    
+    return list(problematic_files)
+
+
+def _parse_undefined_package_files(log_text: str) -> List[str]:
+    """
+    Parse files trying to import packages that don't exist (PKGNODECL).
+    Example: %Error-PKGNODECL: file.v:6:10: Package/class 'bsg_fsb_packet' not found
+    We want to exclude the file trying to import the missing package.
+    """
+    problematic_files = set()
+    
+    # Pattern: %Error-PKGNODECL: file.sv:line:col: Package/class 'name' not found
+    # Note: May have no space or single space after colon
+    pattern = r"%Error-PKGNODECL:\s*([^:]+\.(?:sv|v|svh|vh)):\d+:\d+:"
+    for m in re.finditer(pattern, log_text, flags=re.IGNORECASE):
+        problematic_files.add(m.group(1))
+    
+    return list(problematic_files)
+
+
+def _parse_undefined_macro_files(log_text: str) -> List[str]:
+    """
+    Parse files using undefined macros/defines.
+    Example: %Error: file.v:31:36: Define or directive not defined: '`TILE_MAX_X'
+    We want to exclude files that use undefined macros.
+    """
+    problematic_files = set()
+    
+    # Pattern: %Error: file.v:line:col: Define or directive not defined
+    # Note: May have no space or single space after colon
+    pattern = r"%Error:\s*([^:]+\.(?:sv|v|svh|vh)):\d+:\d+:\s+Define or directive not defined"
+    for m in re.finditer(pattern, log_text, flags=re.IGNORECASE):
+        problematic_files.add(m.group(1))
+    
+    return list(problematic_files)
+
+
+def _parse_parent_files_from_errors(log_text: str) -> List[str]:
+    """
+    Parse parent files that include/instantiate problematic modules.
+    When a file has a parameter mismatch or missing port, the file that instantiates
+    it is often the real problem. Verilator shows: "... note: In file included from 'parent.sv'"
+    
+    This parser extracts those parent files so we can exclude them instead of the utility module.
+    
+    NOTE: Verilator sometimes reports just the basename in quotes (e.g., 'file.sv') instead of
+    the full path. In such cases, we also extract the full path from the first part of the message.
+    """
+    parent_files = set()
+    
+    # Pattern: Match filepath right before line:col, avoiding capturing error message context
+    # Format: "    path/to/file.sv:69:1: ... note: In file included from 'file.sv'"
+    # Use \s+ to skip leading whitespace, then ([^\s:]+) to capture the filepath
+    pattern = r"\s+([^\s:]+\.(?:sv|v|svh|vh)):\d+:\d+:\s+\.\.\.\s+note:\s+In file included from '([^']+)'"
+    for m in re.finditer(pattern, log_text, flags=re.IGNORECASE):
+        full_path = m.group(1)  # The full path before the line number
+        parent_file = m.group(2)  # The filename in quotes
+        
+        # Add both the quoted filename and the full path to handle both cases
+        parent_files.add(parent_file)
+        parent_files.add(full_path)
+    
+    return list(parent_files)
+
+
 def _parse_missing_packages(log_text: str) -> List[str]:
     """Parse Verilator output for missing package/import errors."""
     missing = set()
@@ -928,6 +1091,210 @@ def _minimize_include_dirs(
         return set(keep_dirs), last_local_log
 
 
+def compile_with_iterative_error_fixing(
+    repo_root: str,
+    files: List[str],
+    include_dirs: Set[str],
+    top_module: str | None,
+    language_version: str,
+    timeout: int = 300,
+    extra_flags: List[str] | None = None,
+    max_fix_iterations: int = 5,
+    excluded_files_blacklist: Set[str] | None = None,
+) -> Tuple[int, str, List[str], Set[str]]:
+    """
+    Iteratively compile with error fixing by progressively excluding problematic files.
+    Parses Verilator errors and excludes files that cause issues, then retries.
+    This is more aggressive than compile_with_dependency_resolution and will exclude
+    any file causing errors, not just obvious wrapper/testbench files.
+    
+    Returns: (rc, log, files, include_dirs)
+    """
+    print_green(f"[VERILATOR-FIX] Starting iterative error fixing | top={top_module} max_iterations={max_fix_iterations}")
+    
+    excluded = set(excluded_files_blacklist or [])
+    current_files = [f for f in files if f not in excluded]
+    current_includes = set(include_dirs)
+    last_log = ""
+    last_error_count = float('inf')
+    
+    for iteration in range(max_fix_iterations):
+        print_yellow(f"[VERILATOR-FIX] Iteration {iteration + 1}/{max_fix_iterations} | files={len(current_files)}")
+        print_yellow(f"[VERILATOR-FIX] DEBUG: Starting iteration with {len(excluded)} files in blacklist")
+        
+        # Try normal dependency resolution with minimal retries (we'll handle retries at this level)
+        rc, out, fixed_files, fixed_incl = compile_with_dependency_resolution(
+            repo_root,
+            current_files,
+            current_includes,
+            top_module,
+            language_version,
+            timeout=timeout,
+            extra_flags=extra_flags,
+            max_retries=1,  # Keep retries minimal, we handle iteration here
+            excluded_files_blacklist=excluded,
+        )
+        
+        last_log = out
+        
+        if rc == 0:
+            print_green(f"[VERILATOR-FIX] ✓ Success after {iteration + 1} iteration(s) | files={len(fixed_files)}")
+            return rc, out, fixed_files, fixed_incl
+        
+        # Parse all error types from Verilator log
+        syntax_error_files = _parse_syntax_error_files(out)
+        duplicate_files = _parse_duplicate_declarations(out)
+        all_error_files = _parse_all_error_files(out)  # Catch-all for any %Error with file
+        parent_files = _parse_parent_files_from_errors(out)  # Files that include problematic modules
+        param_mismatch_files = _parse_parameter_mismatch_files(out)  # PINNOTFOUND errors
+        missing_include_files = _parse_missing_include_files(out)  # Files with missing includes
+        missing_module_files = _parse_missing_module_files(out)  # Cannot find module errors
+        undefined_package_files = _parse_undefined_package_files(out)  # PKGNODECL errors
+        undefined_macro_files = _parse_undefined_macro_files(out)  # Undefined macro/define errors
+        
+        # Count total errors to track progress
+        _, error_count = _summarize_verilator_log(out)
+        print_yellow(f"[VERILATOR-FIX] Errors: {error_count}")
+        
+        # Collect all problematic files (union of all parsers)
+        problematic_files = set()
+        problematic_files.update(syntax_error_files)
+        problematic_files.update(duplicate_files)
+        problematic_files.update(all_error_files)
+        problematic_files.update(parent_files)
+        problematic_files.update(param_mismatch_files)
+        problematic_files.update(missing_include_files)
+        problematic_files.update(missing_module_files)
+        problematic_files.update(undefined_package_files)
+        problematic_files.update(undefined_macro_files)
+        
+        if not problematic_files:
+            print_red(f"[VERILATOR-FIX] No error files identified")
+            return rc, last_log, fixed_files, fixed_incl
+        
+        # Convert to relative paths and filter
+        files_to_exclude = set()
+        skipped_already_excluded = 0
+        skipped_not_found = 0
+        
+        for bad_file in problematic_files:
+            # Normalize path for consistent comparison
+            rel = _normalize_path(bad_file, repo_root)
+            
+            # Skip if already excluded
+            if rel in excluded:
+                skipped_already_excluded += 1
+                continue
+            
+            # Check if file exists in repo (some error messages might have relative paths)
+            file_exists = os.path.isfile(os.path.join(repo_root, rel))
+            if not file_exists:
+                skipped_not_found += 1
+                continue
+            
+            # Prioritize excluding certain types of files first
+            path_lower = rel.lower().replace("\\", "/")
+            priority = 0
+            
+            # Priority 8: Files with undefined macros - likely missing configuration
+            # These require external defines that we can't provide
+            if bad_file in undefined_macro_files:
+                priority = 8
+            # Priority 7: Files trying to import missing packages (PKGNODECL)
+            # These depend on packages that don't exist or weren't compiled
+            elif bad_file in undefined_package_files:
+                priority = 7
+            # Priority 6: Files trying to include missing/excluded files OR instantiate missing modules
+            # These cause cascading errors and should be excluded immediately
+            elif bad_file in missing_include_files or bad_file in missing_module_files:
+                priority = 6
+            # Priority 5: Files with parameter mismatch errors (PINNOTFOUND)
+            # These are broken external utilities or parent files calling them wrong
+            elif bad_file in param_mismatch_files:
+                priority = 5
+            # Priority 4: parent files that instantiate modules with wrong parameters
+            # These are often core files with bugs that we should exclude
+            elif bad_file in parent_files:
+                priority = 4
+            # Priority 3: external/vendor/legacy code (most likely to have issues)
+            elif any(x in path_lower for x in ["/external/", "/legacy/", "/vendor/", "/third_party/", "/3rdparty/"]):
+                priority = 3
+            # Priority 2: testbenches and non-synthesizable code
+            elif any(x in path_lower for x in ["_tb", "tb_", "test", "nonsynth", "wrapper"]):
+                priority = 2
+            # Priority 1: duplicate declarations (likely utility/compatibility files)
+            elif bad_file in duplicate_files:
+                priority = 1
+            # Priority 0: syntax errors in any file
+            else:
+                priority = 0
+            
+            files_to_exclude.add((priority, rel))
+        
+        if not files_to_exclude:
+            print_red(f"[VERILATOR-FIX] All error files already excluded or not in file list")
+            return rc, last_log, fixed_files, fixed_incl
+        
+        # Sort by priority (highest first) and take up to 10 files per iteration
+        # Prioritize external/legacy files to quickly eliminate problematic dependencies
+        sorted_excludes = sorted(files_to_exclude, key=lambda x: (-x[0], x[1]))
+        files_to_exclude_this_round = [rel for _, rel in sorted_excludes[:10]]
+        
+        # Exclude the problematic files
+        for rel in files_to_exclude_this_round:
+            excluded.add(rel)
+            if excluded_files_blacklist is not None:
+                excluded_files_blacklist.add(rel)
+            priority = next(p for p, r in files_to_exclude if r == rel)
+            
+            # Determine the specific priority label based on which parser caught it
+            if priority == 8:
+                priority_label = "undefined-macro"
+            elif priority == 7:
+                priority_label = "missing-package"
+            elif priority == 6:
+                # Both missing include and missing module have priority 6
+                if rel in missing_include_files:
+                    priority_label = "missing-include"
+                elif rel in missing_module_files:
+                    priority_label = "missing-module"
+                else:
+                    priority_label = "missing-dependency"
+            elif priority == 5:
+                priority_label = "param-mismatch"
+            elif priority == 4:
+                priority_label = "parent-instantiation"
+            elif priority == 3:
+                priority_label = "external"
+            elif priority == 2:
+                priority_label = "test/wrapper"
+            elif priority == 1:
+                priority_label = "duplicate"
+            else:
+                priority_label = "syntax"
+                
+            print_yellow(f"[VERILATOR-FIX] Excluding [{priority_label}]: {rel}")
+        
+        current_files = [f for f in fixed_files if f not in excluded]
+        current_includes = fixed_incl
+        
+        # Check if we're making progress
+        if error_count >= last_error_count:
+            print_yellow(f"[VERILATOR-FIX] Warning: Error count not decreasing (was {last_error_count}, now {error_count})")
+        
+        last_error_count = error_count
+        print_yellow(f"[VERILATOR-FIX] Excluded {len(files_to_exclude_this_round)} file(s), {len(current_files)} files remaining")
+        print_yellow(f"[VERILATOR-FIX] DEBUG: Total files in blacklist: {len(excluded)}")
+        
+        # Sample what's in the blacklist
+        if len(excluded) > 0:
+            sample = list(excluded)[:5]
+            print_yellow(f"[VERILATOR-FIX] DEBUG: Sample blacklist: {sample}")
+    
+    print_red(f"[VERILATOR-FIX] Failed to achieve clean build after {max_fix_iterations} iterations")
+    return rc, last_log, current_files, current_includes
+
+
 def compile_with_dependency_resolution(
     repo_root: str,
     files: List[str],
@@ -1096,9 +1463,17 @@ def compile_with_dependency_resolution(
         if missing_packages:
             pkg_files = _find_sv_package_files(repo_root, missing_packages)
             for p in pkg_files:
-                if p not in excluded and p not in current_files:
-                    current_files.append(p)
-                    print_green(f"[VERILATOR] Added package file: {p}")
+                # Normalize path for consistent exclusion checking
+                p_rel = _normalize_path(p, repo_root)
+                
+                # Check if this file is in the blacklist (excluded due to errors)
+                if p_rel in excluded:
+                    print_yellow(f"[VERILATOR] Skipping blacklisted package file: {p_rel}")
+                    continue
+                
+                if p_rel not in current_files:
+                    current_files.append(p_rel)
+                    print_green(f"[VERILATOR] Added package file: {p_rel}")
                     changed = True
                 # Also add their directories as -I to help header lookup within package dirs
                 try:
@@ -1156,10 +1531,15 @@ def compile_with_dependency_resolution(
         if missing_interfaces:
             if_files = _find_missing_interface_files(repo_root, missing_interfaces)
             for p in if_files:
-                if p not in excluded and p not in current_files:
-                    current_files.append(p)
-                    print_green(f"[VERILATOR] Added interface file: {p}")
+                # Normalize path for consistent exclusion checking
+                p_rel = _normalize_path(p, repo_root)
+                
+                if p_rel not in excluded and p_rel not in current_files:
+                    current_files.append(p_rel)
+                    print_green(f"[VERILATOR] Added interface file: {p_rel}")
                     changed = True
+                elif p_rel in excluded:
+                    print_yellow(f"[VERILATOR] Skipping blacklisted interface file: {p_rel}")
             # Add their directories as -I too
             for p in if_files:
                 d = os.path.dirname(p)
@@ -1172,15 +1552,41 @@ def compile_with_dependency_resolution(
         if missing_modules:
             # Do not satisfy missing modules using sim/project wrappers (e.g., VivadoSim/Main.sv)
             module_paths = []
+            unresolvable_modules = []  # Track modules we can't find or are blacklisted
+            blacklisted_modules = set()  # Track modules that are in the blacklist
+            
             for p in find_missing_module_files(repo_root, missing_modules):
+                # Normalize path for consistent exclusion checking
+                p_rel = _normalize_path(p, repo_root)
+                
                 # Skip adding wrapper-ish modules (e.g., Main, tb_*) to avoid steering toward benches
-                if _is_wrapperish_source(p, repo_root):
+                if _is_wrapperish_source(p_rel, repo_root):
                     continue
                 # Skip by module-name semantics when possible
-                base_mod = os.path.splitext(os.path.basename(p))[0]
+                base_mod = os.path.splitext(os.path.basename(p_rel))[0]
                 if _is_wrapperish_module_name(base_mod):
                     continue
-                module_paths.append(p)
+                # Skip if blacklisted - track these as they cause dependencies to be unresolvable
+                if p_rel in excluded:
+                    blacklisted_modules.add(base_mod)
+                    print_yellow(f"[VERILATOR] Module '{base_mod}' is blacklisted - files using it will be excluded")
+                    continue
+                module_paths.append(p_rel)
+            
+            # Identify which modules we couldn't find files for (either don't exist or are blacklisted)
+            found_module_names = {os.path.splitext(os.path.basename(p))[0] for p in module_paths}
+            for mod_name in missing_modules:
+                if mod_name not in found_module_names:
+                    unresolvable_modules.append(mod_name)
+            
+            # DON'T add back any module files if they have unresolvable dependencies
+            # Check all module_paths to see if they use unresolvable modules
+            if unresolvable_modules or blacklisted_modules:
+                unavailable = set(unresolvable_modules) | blacklisted_modules
+                if unavailable:
+                    print_yellow(f"[VERILATOR] Unavailable modules (missing or blacklisted): {_fmt_list(sorted(unavailable), 5)}")
+                    print_yellow(f"[VERILATOR] Files using these modules will NOT be added back")
+            
             for p in module_paths:
                 if p not in excluded and p not in current_files:
                     current_files.append(p)
@@ -1323,6 +1729,19 @@ def auto_orchestrate(
     """
     print_green(f"[VERILATOR] Orchestrate start | repo={repo_name} candidates={len(top_candidates)} files={len(candidate_files)}")
 
+    # Limit number of candidates for large projects to avoid excessive testing
+    MAX_CANDIDATES_TO_TRY = 10
+    if len(top_candidates) > MAX_CANDIDATES_TO_TRY:
+        print_yellow(f"[VERILATOR] Large project detected ({len(top_candidates)} candidates). Limiting to top {MAX_CANDIDATES_TO_TRY} candidates.")
+        top_candidates = top_candidates[:MAX_CANDIDATES_TO_TRY]
+
+    # Determine if this is a large project that needs iterative fixing
+    is_large_project = len(candidate_files) > 200
+    max_fix_iterations = 10 if is_large_project else 3
+    
+    if is_large_project:
+        print_yellow(f"[VERILATOR] Large project detected ({len(candidate_files)} files). Using iterative error fixing with {max_fix_iterations} iterations per candidate.")
+
     # Filter out wrapper-ish files from initial candidates
     files = [f for f in candidate_files if not _is_wrapperish_source(f, repo_root)]
     incl: Set[str] = set(include_dirs or set())
@@ -1335,17 +1754,33 @@ def auto_orchestrate(
     for cand in top_candidates:
         print_green(f"[VERILATOR] Trying top candidate: {cand}")
         transcript += f"[TOP-TRY] {cand}\n"
-        rc, out, fixed_files, fixed_incl = compile_with_dependency_resolution(
-            repo_root,
-            files,
-            incl,
-            cand,
-            language_version,
-            timeout=timeout,
-            extra_flags=extra_flags,
-            max_retries=max_retries,
-            excluded_files_blacklist=excluded_files_blacklist,
-        )
+        
+        # Use iterative fixing for large projects, normal resolution for small ones
+        if is_large_project:
+            rc, out, fixed_files, fixed_incl = compile_with_iterative_error_fixing(
+                repo_root,
+                files,
+                incl,
+                cand,
+                language_version,
+                timeout=timeout,
+                extra_flags=extra_flags,
+                max_fix_iterations=max_fix_iterations,
+                excluded_files_blacklist=excluded_files_blacklist,
+            )
+        else:
+            rc, out, fixed_files, fixed_incl = compile_with_dependency_resolution(
+                repo_root,
+                files,
+                incl,
+                cand,
+                language_version,
+                timeout=timeout,
+                extra_flags=extra_flags,
+                max_retries=max_retries,
+                excluded_files_blacklist=excluded_files_blacklist,
+            )
+        
         # Summarize attempt and append to transcript
         w_try, e_try = _summarize_verilator_log(out)
         transcript += f"[TOP-TRY-RESULT] {cand} rc={rc} errors={e_try} warnings={w_try}\n"

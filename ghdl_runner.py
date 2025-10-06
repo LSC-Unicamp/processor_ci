@@ -578,6 +578,13 @@ def auto_orchestrate(
 ) -> Tuple[List[str], Set[str], str, str, bool]:
     """End-to-end flow for VHDL: try candidates, resolve deps, minimize, final check."""
     print_green(f"[GHDL] Orchestrate start | candidates={len(top_candidates)} files={len(candidate_files)}")
+    
+    # Limit number of candidates for large projects to avoid excessive testing
+    MAX_CANDIDATES_TO_TRY = 10
+    if len(top_candidates) > MAX_CANDIDATES_TO_TRY:
+        print_yellow(f"[GHDL] Large project detected ({len(top_candidates)} candidates). Limiting to top {MAX_CANDIDATES_TO_TRY} candidates.")
+        top_candidates = top_candidates[:MAX_CANDIDATES_TO_TRY]
+    
     files = list(candidate_files)
     last_log = ""
     selected_top = top_candidates[0] if top_candidates else ""

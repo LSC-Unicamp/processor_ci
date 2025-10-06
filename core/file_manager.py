@@ -547,12 +547,19 @@ def extract_modules(files: list[str]) -> list[tuple[str, str]]:
     """
     modules = []
 
-    module_pattern_verilog = re.compile(r'module\s+(\w+)\s*')
-    entity_pattern_vhdl = re.compile(r'entity\s+(\w+)\s+is', re.IGNORECASE)
+    # Match module declarations at line start (after optional whitespace)
+    # Avoids matching "module" in comments or strings
+    module_pattern_verilog = re.compile(r'^\s*module\s+(\w+)\s*', re.MULTILINE)
+    entity_pattern_vhdl = re.compile(r'^\s*entity\s+(\w+)\s+is', re.IGNORECASE | re.MULTILINE)
 
     for file_path in files:
         with open(file_path, 'r', errors='ignore', encoding='utf-8') as f:
             content = f.read()
+            
+            # Remove block comments (/* ... */) to avoid false matches
+            content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+            # Remove line comments (// ...) to avoid false matches
+            content = re.sub(r'//.*?$', '', content, flags=re.MULTILINE)
 
             # Find Verilog/SystemVerilog modules
             verilog_matches = module_pattern_verilog.findall(content)

@@ -105,9 +105,23 @@ def _is_functional_unit_name(name: str) -> bool:
     "encoder", "decoder",
     "fpu", "fpdiv", "fpsqrt",
     "cache", "icache", "dcache", "tlb",
-    "btb", "branch", "predictor", "bp", "ras", "returnaddress", "rsb"
+    "btb", "branch", "predictor", "ras", "returnaddress", "rsb"
     ]
-    return any(t in n for t in terms)
+    # Check for branch predictor patterns but avoid false positives with project initials
+    # e.g., "bp" should match "branch_predictor" or "_bp_" but not "bp_core" (BlackParrot core)
+    for t in terms:
+        if t in n:
+            return True
+    
+    # Special check for "bp" (branch predictor) - only match if it's clearly branch predictor context
+    # Match: "_bp_", "_bp", "bp_pred", "bpred", etc.
+    # Don't match: "bp_core", "bp_processor", "bp_unicore" (BlackParrot modules)
+    if ("_bp_" in n or n.endswith("_bp") or n.startswith("bp_pred") or "bpred" in n):
+        # But don't penalize if it's clearly a CPU core/processor
+        if not any(x in n for x in ["core", "processor", "cpu", "unicore", "multicore"]):
+            return True
+    
+    return False
 
 
 def _is_micro_stage_name(name: str) -> bool:
@@ -618,6 +632,18 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
             elif name_lower in repo_lower:
                 score += 35000
             else:
+                # Check initialism matching (e.g., "black-parrot" → "bp")
+                # Extract initials from words separated by hyphens or underscores
+                repo_words = repo_lower.replace('_', '-').split('-')
+                if len(repo_words) >= 2:
+                    initialism = ''.join(word[0] for word in repo_words if word)
+                    # Check if module starts with initialism + underscore (e.g., "bp_core")
+                    if name_lower.startswith(initialism + '_'):
+                        # Check if it's a core/processor/cpu module
+                        if any(x in name_lower for x in ['core', 'processor', 'cpu', 'unicore', 'multicore']):
+                            score += 45000
+                            print_green(f"[REPO-MATCH] Initialism match: {repo_lower} → {initialism} → {c}")
+                
                 # Fuzzy matching
                 clean_repo = repo_lower
                 clean_module = name_lower
@@ -729,6 +755,26 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
         # SOC penalty - we want CPU cores, not full system-on-chip
         if "soc" in name_lower:
             score -= 5000
+        
+        # Penalize utility library modules when project-specific modules exist
+        # e.g., penalize bsg_* modules when bp_* modules exist (basejump_stl vs black-parrot)
+        if repo_lower and len(repo_lower) > 2:
+            repo_words = repo_lower.replace('_', '-').split('-')
+            if len(repo_words) >= 2:
+                initialism = ''.join(word[0] for word in repo_words if word)
+                # Check if any modules start with the project initialism
+                project_modules_exist = any(m.lower().startswith(initialism + '_') for m in valid_modules)
+                
+                # If project modules exist (like bp_*) and this is a utility (like bsg_*)
+                if project_modules_exist:
+                    # Penalize modules that don't start with the project initialism
+                    # Common utility prefixes: bsg_, hardfloat_, common_
+                    if not name_lower.startswith(initialism + '_'):
+                        # Only penalize if it starts with a known utility prefix
+                        utility_prefixes = ['bsg_', 'common_', 'util_', 'lib_', 'helper_']
+                        if any(name_lower.startswith(prefix) for prefix in utility_prefixes):
+                            score -= 35000
+                            print_green(f"[PENALTY] Utility module {c} penalized (project uses {initialism}_* modules)")
 
     # STRUCTURAL HEURISTICS
         num_children = len(children_of.get(c, []))
@@ -794,6 +840,11 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
 
     # Sort by score (descending), then by reach (descending), then by name
     scored.sort(reverse=True, key=lambda t: (t[0], t[1], t[2]))
+
+    # Debug: Print top 20 scored candidates
+    print_green("[DEBUG] Top 20 scored candidates:")
+    for i, (s, r, c) in enumerate(scored[:20]):
+        print_green(f"  {i+1}. {c}: score={s}, reach={r}")
 
     ranked = [c for score, _, c in scored if score > -5000]
     # If the top few are micro-stage or interface modules, try to skip them in favor of a core-like one
