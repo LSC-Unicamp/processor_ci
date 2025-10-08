@@ -155,6 +155,7 @@ def _parse_missing_entities(log_text: str) -> List[str]:
         r"entity '([^']+)' not found",
         r'cannot find entity "([^"]+)"',
         r"cannot find entity '([^']+)'",
+        r'no declaration for "([^"]+)"',  # GHDL "no declaration" errors
     ]
     for pat in entity_patterns:
         for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
@@ -297,15 +298,29 @@ def _find_file_declaring_entity(repo_root: str, entity_name: str, modules: List[
     candidates = []
     entity_lower = entity_name.lower()
     
+    print_yellow(f"[GHDL-INCREMENTAL-DEBUG] Looking for entity '{entity_name}' (lowercase: '{entity_lower}')")
+    
     # First check modules list for exact matches (fast path)
     for mod_name, file_path in modules:
         if mod_name.lower() == entity_lower:
             normalized_path = _normalize_file_path(file_path, repo_name) if repo_name else file_path
             candidates.append(normalized_path)
+            print_yellow(f"[GHDL-INCREMENTAL-DEBUG] Found in modules list: {mod_name} -> {normalized_path}")
     
     # If not found in modules, search entire repository
     if not candidates:
+        print_yellow(f"[GHDL-INCREMENTAL-DEBUG] Not found in modules list, searching repo...")
         candidates = _search_repo_for_declaration(repo_root, entity_name, "entity", repo_name)
+        
+        # Debug: show what we found
+        if candidates:
+            for c in candidates:
+                print_yellow(f"[GHDL-INCREMENTAL-DEBUG] Found in repo search: {c}")
+        else:
+            print_yellow(f"[GHDL-INCREMENTAL-DEBUG] No candidates found in repo search for '{entity_name}'")
+            # List all available modules for debugging
+            available_modules = [mod_name for mod_name, _ in modules]
+            print_yellow(f"[GHDL-INCREMENTAL-DEBUG] Available modules: {', '.join(available_modules[:10])}...")
     
     return candidates
 
@@ -327,6 +342,25 @@ def _find_file_declaring_package(repo_root: str, package_name: str, modules: Lis
     candidates = _search_repo_for_declaration(repo_root, package_name, "package", repo_name)
     
     return candidates
+
+
+def _parse_missing_entities_with_context(log_text: str) -> List[Tuple[str, str]]:
+    """Parse GHDL output for missing entity errors with the file context.
+    Returns list of (file_with_error, missing_entity_name) tuples.
+    
+    Example error:
+    Project/Components/microcontroller.vhd:59:24:error: no declaration for "controller"
+    """
+    missing = []
+    # Pattern: filename:line:col:error: no declaration for "entity_name"
+    pattern = r'([^\s:]+\.vhdl?):\d+:\d+:.*?no\s+declaration\s+for\s+["\']([^"\']+)["\']'
+    for m in re.finditer(pattern, log_text, flags=re.IGNORECASE):
+        filename = m.group(1)
+        entity = m.group(2)
+        # Filter out IEEE/STD libraries
+        if entity.lower() not in ['std', 'ieee', 'work', 'std_logic', 'std_logic_vector']:
+            missing.append((filename, entity))
+    return missing
 
 
 def _parse_missing_packages_with_context(log_text: str) -> List[Tuple[str, str]]:
@@ -351,13 +385,17 @@ def _parse_missing_packages_with_context(log_text: str) -> List[Tuple[str, str]]
 def _reorder_by_dependencies(files: List[str], log_text: str, repo_root: str) -> List[str]:
     """
     Reorder files based on GHDL error messages showing dependencies.
-    If file A needs package from file B, ensure B comes before A.
+    If file A needs package/entity from file B, ensure B comes before A.
     
     Returns reordered file list.
     """
-    missing_deps = _parse_missing_packages_with_context(log_text)
-    if not missing_deps:
+    missing_pkg_deps = _parse_missing_packages_with_context(log_text)
+    missing_ent_deps = _parse_missing_entities_with_context(log_text)
+    
+    if not missing_pkg_deps and not missing_ent_deps:
         return files
+    
+    print_yellow(f"[GHDL-INCREMENTAL] Found dependencies - packages: {len(missing_pkg_deps)}, entities: {len(missing_ent_deps)}")
     
     # Build a map: package/entity name -> file that declares it
     symbol_to_file: Dict[str, str] = {}
@@ -377,10 +415,13 @@ def _reorder_by_dependencies(files: List[str], log_text: str, repo_root: str) ->
         except Exception:
             continue
     
+    print_blue(f"[GHDL-INCREMENTAL] Symbol map: {symbol_to_file}")
+    
     # Build constraints: provider_file must come before dependent_file
     must_come_before: Dict[str, Set[str]] = {}  # provider_file -> set of files that need it
     
-    for error_file, missing_symbol in missing_deps:
+    # Handle package dependencies
+    for error_file, missing_symbol in missing_pkg_deps:
         # Normalize error_file path to match our file list
         error_file_normalized = None
         error_basename = os.path.basename(error_file)
@@ -398,8 +439,31 @@ def _reorder_by_dependencies(files: List[str], log_text: str, repo_root: str) ->
             if provider_file not in must_come_before:
                 must_come_before[provider_file] = set()
             must_come_before[provider_file].add(error_file_normalized)
+            print_green(f"[GHDL-INCREMENTAL] Package dependency: {provider_file} must come before {error_file_normalized} (provides {missing_symbol})")
+    
+    # Handle entity dependencies  
+    for error_file, missing_symbol in missing_ent_deps:
+        # Normalize error_file path to match our file list
+        error_file_normalized = None
+        error_basename = os.path.basename(error_file)
+        for f in files:
+            if os.path.basename(f) == error_basename:
+                error_file_normalized = f
+                break
+        
+        if not error_file_normalized:
+            continue
+        
+        # Find which file provides this symbol
+        provider_file = symbol_to_file.get(missing_symbol.lower())
+        if provider_file and provider_file != error_file_normalized:
+            if provider_file not in must_come_before:
+                must_come_before[provider_file] = set()
+            must_come_before[provider_file].add(error_file_normalized)
+            print_green(f"[GHDL-INCREMENTAL] Entity dependency: {provider_file} must come before {error_file_normalized} (provides {missing_symbol})")
     
     if not must_come_before:
+        print_yellow("[GHDL-INCREMENTAL] No actionable dependencies found for reordering")
         return files
     
     # Reorder: move provider files before their dependents
@@ -501,18 +565,120 @@ def _ghdl_clean_work(repo_root: str, workdir: str, library_name: str = "work") -
                 pass
 
 
-def _validation_flags(ghdl_extra_flags: List[str] = None) -> List[str]:
+def _detect_vendor_libraries(files: List[str], repo_root: str) -> List[str]:
+    """
+    Detect files that use vendor-specific libraries that are incompatible with GHDL.
+    Returns list of problematic files that should be excluded.
+    """
+    vendor_patterns = [
+        r'library\s+altera_mf\b',       # Altera/Intel libraries
+        r'library\s+altera\b',
+        r'library\s+xilinx\b',          # Xilinx libraries
+        r'library\s+unisim\b',          # Xilinx simulation library
+        r'library\s+unimacro\b',        # Xilinx macro library
+        r'use\s+altera_mf\.',           # Direct use statements
+        r'use\s+xilinx\.',
+        r'use\s+unisim\.',
+        r'use\s+unimacro\.',
+    ]
+    
+    problematic_files = []
+    
+    for file in files:
+        full_path = os.path.join(repo_root, file) if not os.path.isabs(file) else file
+        try:
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as fh:
+                content = fh.read()
+                for pattern in vendor_patterns:
+                    if re.search(pattern, content, re.IGNORECASE):
+                        print_yellow(f"[GHDL-INCREMENTAL] Detected vendor-specific library in {file}, excluding from compilation")
+                        problematic_files.append(file)
+                        break  # No need to check other patterns for this file
+        except Exception:
+            continue
+    
+    return problematic_files
+
+
+def _detect_synopsys_packages(files: List[str], repo_root: str) -> bool:
+    """
+    Detect if any of the VHDL files use Synopsys non-standard packages.
+    Returns True if -fsynopsys flag should be added.
+    """
+    synopsys_patterns = [
+        r'use\s+ieee\.std_logic_unsigned\.',
+        r'use\s+ieee\.std_logic_signed\.',
+        r'use\s+ieee\.std_logic_arith\.',
+        r'library\s+synopsys\b',
+    ]
+    
+    for file in files:  # Check all files, not just first 10
+        full_path = os.path.join(repo_root, file) if not os.path.isabs(file) else file
+        try:
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as fh:
+                content = fh.read()
+                for pattern in synopsys_patterns:
+                    if re.search(pattern, content, re.IGNORECASE):
+                        print_yellow(f"[GHDL-INCREMENTAL] Detected Synopsys package usage in {file}")
+                        return True
+        except Exception:
+            continue
+    
+    return False
+    """
+    Detect if any of the VHDL files use Synopsys non-standard packages.
+    Returns True if -fsynopsys flag should be added.
+    """
+    synopsys_patterns = [
+        r'use\s+ieee\.std_logic_unsigned\.',
+        r'use\s+ieee\.std_logic_signed\.',
+        r'use\s+ieee\.std_logic_arith\.',
+        r'library\s+synopsys\b',
+    ]
+    
+    for file in files:  # Check all files, not just first 10
+        full_path = os.path.join(repo_root, file) if not os.path.isabs(file) else file
+        try:
+            with open(full_path, 'r', encoding='utf-8', errors='ignore') as fh:
+                content = fh.read()
+                for pattern in synopsys_patterns:
+                    if re.search(pattern, content, re.IGNORECASE):
+                        print_yellow(f"[GHDL-INCREMENTAL] Detected Synopsys package usage in {file}")
+                        return True
+        except Exception:
+            continue
+    
+    return False
+
+
+def _validation_flags(ghdl_extra_flags: List[str] = None, files: List[str] = None, repo_root: str = None) -> List[str]:
     """
     Return flags for proper validation:
     - keep relaxed parsing (-frelaxed) for VHDL features
     - treat binding warnings as errors (--warn-error=binding) to catch missing entities
+    - add -fsynopsys if Synopsys packages are detected
+    - disable hide warnings (-Wno-hide) to avoid signal/port naming conflicts
     """
     base = list(ghdl_extra_flags or [])
+    
     # Keep -frelaxed for shared variables and other VHDL relaxations
     # But add --warn-error=binding to catch missing entities/components
     has_warn_binding = any((f.startswith("--warn-error=") and "binding" in f) for f in base)
     if not has_warn_binding:
         base.append("--warn-error=binding")
+    
+    # Disable hide warnings to avoid signal/port naming conflicts (common in VHDL designs)
+    has_no_hide = any(f == "-Wno-hide" for f in base)
+    if not has_no_hide:
+        base.append("-Wno-hide")
+    
+    # Auto-detect and add -fsynopsys if needed
+    has_synopsys = any(f == "-fsynopsys" for f in base)
+    if not has_synopsys and files and repo_root:
+        if _detect_synopsys_packages(files, repo_root):
+            base.append("-fsynopsys")
+            print_green("[GHDL-INCREMENTAL] Added -fsynopsys flag for Synopsys package support")
+    
     return base
 
 
@@ -521,7 +687,8 @@ def _build_ghdl_cmd(
     top_entity: str,
     workdir: str,
     ghdl_extra_flags: List[str] = None,
-    work_library: str = None
+    work_library: str = None,
+    repo_root: str = None
 ) -> List[str]:
     """Build the GHDL analyze command with validation flags.
     
@@ -531,6 +698,7 @@ def _build_ghdl_cmd(
         workdir: Working directory for GHDL
         ghdl_extra_flags: Additional GHDL flags
         work_library: Custom library name (default: "work")
+        repo_root: Repository root for Synopsys package detection
     """
     cmd = ["ghdl", "-a", "--std=08", f"--workdir={workdir}"]
     
@@ -539,7 +707,7 @@ def _build_ghdl_cmd(
         cmd.append(f"--work={work_library}")
     
     # Use validation flags to ensure --warn-error=binding is included
-    flags = _validation_flags(ghdl_extra_flags)
+    flags = _validation_flags(ghdl_extra_flags, files, repo_root)
     if flags:
         cmd.extend(flags)
     
@@ -552,7 +720,9 @@ def _build_elab_cmd(
     top_entity: str,
     workdir: str,
     ghdl_extra_flags: List[str] = None,
-    work_library: str = None
+    work_library: str = None,
+    files: List[str] = None,
+    repo_root: str = None
 ) -> List[str]:
     """Build the GHDL elaboration command.
     
@@ -561,6 +731,8 @@ def _build_elab_cmd(
         workdir: Working directory for GHDL
         ghdl_extra_flags: Additional GHDL flags
         work_library: Custom library name (default: "work")
+        files: List of files for Synopsys detection
+        repo_root: Repository root for Synopsys package detection
     """
     cmd = ["ghdl", "-e", "--std=08", f"--workdir={workdir}"]
     
@@ -569,7 +741,7 @@ def _build_elab_cmd(
         cmd.append(f"--work={work_library}")
     
     # Use validation flags
-    flags = _validation_flags(ghdl_extra_flags)
+    flags = _validation_flags(ghdl_extra_flags, files, repo_root)
     if flags:
         cmd.extend(flags)
     
@@ -614,6 +786,12 @@ def compile_incremental(
         current_files = [top_entity_file]
         added_files_history = set([top_entity_file])
         
+        # Detect and filter out vendor-specific files
+        vendor_files = _detect_vendor_libraries([top_entity_file], repo_root)
+        if vendor_files:
+            print_red(f"[GHDL-INCREMENTAL] ✗ Top entity file uses vendor-specific libraries, cannot compile with GHDL")
+            return 1, "Top entity file contains vendor-specific libraries incompatible with GHDL", current_files
+        
         # Detect if files use a custom library name (like "neorv32" instead of "work")
         work_library = _detect_custom_library(repo_root, [top_entity_file])
         
@@ -635,7 +813,7 @@ def compile_incremental(
                 ordered_files = _order_vhdl_files(current_files, repo_root)
             
             # Build and run GHDL command
-            cmd = _build_ghdl_cmd(ordered_files, top_entity, workdir, ghdl_extra_flags, work_library)
+            cmd = _build_ghdl_cmd(ordered_files, top_entity, workdir, ghdl_extra_flags, work_library, repo_root)
             
             print_blue(f"[GHDL-INCREMENTAL] Files: {', '.join(ordered_files)}")
             print(f"[GHDL-INCREMENTAL-DEBUG] Command: {' '.join(cmd)}")
@@ -645,7 +823,7 @@ def compile_incremental(
             if rc == 0:
                 # Analysis successful, now try elaboration to catch missing entity instantiations
                 print_blue(f"[GHDL-INCREMENTAL] Analysis succeeded, running elaboration...")
-                elab_cmd = _build_elab_cmd(top_entity, workdir, ghdl_extra_flags, work_library)
+                elab_cmd = _build_elab_cmd(top_entity, workdir, ghdl_extra_flags, work_library, ordered_files, repo_root)
                 print(f"[GHDL-INCREMENTAL-DEBUG] Elaboration command: {' '.join(elab_cmd)}")
                 rc_elab, output_elab = _run(elab_cmd, repo_root, timeout)
                 
@@ -707,19 +885,33 @@ def compile_incremental(
                 if pkg_files:
                     for pkg_file in pkg_files:
                         if pkg_file not in added_files_history:
+                            # Check for vendor-specific libraries before adding
+                            vendor_files = _detect_vendor_libraries([pkg_file], repo_root)
+                            if vendor_files:
+                                print_yellow(f"[GHDL-INCREMENTAL] Skipping {pkg_file} due to vendor-specific libraries")
+                                continue
+                            
+                            # Just append - let the reordering functions handle proper positioning
                             current_files.append(pkg_file)
                             added_files_history.add(pkg_file)
                             print_green(f"[GHDL-INCREMENTAL] + Adding package file: {pkg_file} (provides '{pkg_name}')")
                             added_something = True
                             break  # Use first candidate
             
-            # Add missing entities
+            # Add missing entities 
             for entity_name in missing_entities:
                 entity_files = _find_file_declaring_entity(repo_root, entity_name, modules, repo_name)
                 
                 if entity_files:
                     for entity_file in entity_files:
                         if entity_file not in added_files_history:
+                            # Check for vendor-specific libraries before adding
+                            vendor_files = _detect_vendor_libraries([entity_file], repo_root)
+                            if vendor_files:
+                                print_yellow(f"[GHDL-INCREMENTAL] Skipping {entity_file} due to vendor-specific libraries")
+                                continue
+                            
+                            # Just append - let the reordering functions handle proper positioning
                             current_files.append(entity_file)
                             added_files_history.add(entity_file)
                             print_green(f"[GHDL-INCREMENTAL] + Adding entity file: {entity_file} (provides '{entity_name}')")
@@ -730,19 +922,74 @@ def compile_incremental(
             # so the new files get properly ordered in the next iteration
             if added_something:
                 files_are_dependency_ordered = False
+                print_yellow(f"[GHDL-INCREMENTAL] Added new files, will reorder in next iteration")
+                print_blue(f"[GHDL-INCREMENTAL] Current file order: {', '.join(current_files)}")
+                
+                # Immediately try reordering to fix dependency issues
+                reordered_files = _reorder_by_dependencies(current_files, output, repo_root)
+                if reordered_files != current_files:
+                    print_yellow(f"[GHDL-INCREMENTAL] Reordering files after adding dependencies...")
+                    print_blue(f"[GHDL-INCREMENTAL] New file order: {', '.join(reordered_files)}")
+                    current_files = reordered_files
+                    files_are_dependency_ordered = True
+                else:
+                    print_yellow(f"[GHDL-INCREMENTAL] No reordering needed or possible")
+                    # Try basic VHDL ordering (packages first, then entities)
+                    basic_ordered = _order_vhdl_files(current_files, repo_root)
+                    if basic_ordered != current_files:
+                        print_yellow(f"[GHDL-INCREMENTAL] Applying basic VHDL ordering...")
+                        print_blue(f"[GHDL-INCREMENTAL] Basic ordered: {', '.join(basic_ordered)}")
+                        current_files = basic_ordered
             
             # Check if we're stuck
             if not added_something:
-                print_red("[GHDL-INCREMENTAL] ✗ No progress made in iteration {iteration}")
+                print_red(f"[GHDL-INCREMENTAL] ✗ No progress made in iteration {iteration}")
                 print_red("[GHDL-INCREMENTAL] Still have unresolved dependencies:")
                 for e in missing_entities:
                     print_red(f"  - Entity: {e}")
                 for p in missing_packages:
                     print_red(f"  - Package: {p}")
-                break
+                
+                print_blue(f"[GHDL-INCREMENTAL] Current files in order:")
+                for i, f in enumerate(current_files):
+                    print_blue(f"  {i+1}. {f}")
+                
+                # Fallback: if we've made significant progress but are stuck, try including all VHDL files
+                if iteration > 2 and len(current_files) > 5:
+                    print_yellow("[GHDL-INCREMENTAL] Attempting fallback: including ALL VHDL files...")
+                    all_vhdl_files = []
+                    for mod_name, file_path in modules:
+                        normalized_path = _normalize_file_path(file_path, repo_name) if repo_name else file_path
+                        if normalized_path.lower().endswith(('.vhd', '.vhdl')) and normalized_path not in added_files_history:
+                            # Check for vendor-specific libraries before adding
+                            vendor_files = _detect_vendor_libraries([normalized_path], repo_root)
+                            if vendor_files:
+                                print_yellow(f"[GHDL-INCREMENTAL] Skipping {normalized_path} in fallback due to vendor-specific libraries")
+                                continue
+                            all_vhdl_files.append(normalized_path)
+                    
+                    if all_vhdl_files:
+                        # Just append all files - let the reordering functions handle proper positioning
+                        current_files.extend(all_vhdl_files)
+                        for vhdl_file in all_vhdl_files:
+                            added_files_history.add(vhdl_file)
+                        
+                        print_green(f"[GHDL-INCREMENTAL] Added {len(all_vhdl_files)} additional VHDL files for fallback")
+                        
+                        # Force a complete reordering with all files
+                        ordered_all = _order_vhdl_files(current_files, repo_root)
+                        if ordered_all != current_files:
+                            print_yellow("[GHDL-INCREMENTAL] Reordering all files...")
+                            current_files = ordered_all
+                        
+                        added_something = True
+                        files_are_dependency_ordered = False  # Trigger reordering
+                
+                if not added_something:
+                    break
         
         print_red(f"[GHDL-INCREMENTAL] ✗ Failed to achieve clean compilation after {max_iterations} iterations")
-        return rc, output, current_files
+        return 1, output, current_files  # Explicitly return failure code
         
     finally:
         # Clean up work directory

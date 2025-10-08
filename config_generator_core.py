@@ -585,12 +585,12 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
                     break
             
             # Enhanced CPU core detection using instantiation patterns
-            if (any(pattern in module_lower for pattern in [repo_lower, 'cpu', 'core', 'risc', 'processor']) and 
+            if (any(pattern in module_lower for pattern in [repo_lower, 'cpu', 'core', 'risc', 'processor', 'microcontroller']) and 
                 module not in zero_parent_modules and module not in low_parent_modules and
-                not any(bad_pattern in module_lower for bad_pattern in 
-                       ['div', 'mul', 'alu', 'fpu', 'cache', 'mem', 'bus', 'ctrl', 'reg', 'decode', 'fetch', 'exec', 'forward', 'hazard', 'pred',
+                (module_lower == 'microcontroller' or not any(bad_pattern in module_lower for bad_pattern in 
+                       ['div', 'mul', 'alu', 'fpu', 'cache', 'mem', 'bus', '_ctrl', 'ctrl_', 'reg', 'decode', 'fetch', 'exec', 'forward', 'hazard', 'pred',
                         'sm3', 'sha', 'aes', 'des', 'rsa', 'ecc', 'crypto', 'hash', 'cipher', 'encrypt', 'decrypt', 'uart', 'spi', 'i2c', 'gpio',
-                        'timer', 'interrupt', 'dma', 'pll', 'clk', 'pwm', 'aon', 'hclk', 'oitf', 'wrapper', 'regs']) and
+                        'timer', 'interrupt', 'dma', 'pll', 'clk', 'pwm', 'aon', 'hclk', 'oitf', 'wrapper', 'regs'])) and
                 not any(module_lower.startswith(prefix) for prefix in ['sirv_', 'apb_', 'axi_', 'ahb_', 'wb_', 'avalon_'])):  # Exclude peripheral prefix modules
                 
                 # Check instantiation patterns if file path is available
@@ -679,6 +679,10 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
         if any(term in name_lower for term in ["cpu", "processor"]):
             score += 2000
         
+        # Special case for microcontroller - this is a CPU top module
+        if "microcontroller" in name_lower:
+            score += 3000
+        
         # CPU TOP MODULE DETECTION (Very High Priority)
         # Look for typical CPU top module patterns
         cpu_top_patterns = [
@@ -707,8 +711,10 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
         # Specific CPU core boost - give highest priority to actual core modules
         if "core" in name_lower and repo_lower:
             # Check if it's a functional unit core first - apply heavy penalty
-            if any(unit in name_lower for unit in ["fadd", "fmul", "fdiv", "fsqrt", "fpu", "div", "mul", "alu", "mem", "cache", "bus", "ctrl", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred", "shift", "barrel", "adder", "mult", "divider", "encoder", "decoder"]):
-                score -= 15000
+            if any(unit in name_lower for unit in ["fadd", "fmul", "fdiv", "fsqrt", "fpu", "div", "mul", "alu", "mem", "cache", "bus", "_ctrl", "ctrl_", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred", "shift", "barrel", "adder", "mult", "divider", "encoder", "decoder"]):
+                # Exception: don't penalize microcontroller
+                if "microcontroller" not in name_lower:
+                    score -= 15000
             # Strong boost for exact core modules like "repo_core"
             elif name_lower == f"{repo_lower}_core" or name_lower == f"core_{repo_lower}":
                 score += 25000
@@ -723,8 +729,8 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
             # Heavy penalty for functional unit cores
             if any(unit in name_lower for unit in ["fadd", "fmul", "fdiv", "fsqrt", "fpu", "div", "mul", "alu"]):
                 score -= 10000
-            # Additional penalty for other peripheral cores
-            elif any(unit in name_lower for unit in ["mem", "cache", "bus", "ctrl", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred", "shift", "barrel", "adder", "mult", "divider", "encoder", "decoder"]):
+            # Additional penalty for other peripheral cores (but exclude microcontroller)
+            elif not ("microcontroller" in name_lower) and any(unit in name_lower for unit in ["mem", "cache", "bus", "_ctrl", "ctrl_", "reg", "decode", "fetch", "exec", "forward", "hazard", "pred", "shift", "barrel", "adder", "mult", "divider", "encoder", "decoder"]):
                 score -= 5000
             else:
                 score += 1500
