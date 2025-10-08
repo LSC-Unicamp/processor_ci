@@ -1,0 +1,34 @@
+{
+    "name": "mriscv",
+    "folder": "mriscv",
+    "sim_files": [],
+    "files": [
+        "mriscvcore/mriscvcore.v",
+        "mriscvcore/REG_FILE/REG_FILE.v",
+        "mriscvcore/UTILITIES/UTILITY.v",
+        "mriscvcore/MULT/MULT.v",
+        "mriscvcore/MEMORY_INTERFACE/MEMORY_INTERFACE.v",
+        "mriscvcore/FSM/FSM.v",
+        "mriscvcore/DECO_INSTR/DECO_INSTR.v",
+        "mriscvcore/IRQ/IRQ.v",
+        "mriscvcore/ALU/ALU.v"
+    ],
+    "include_dirs": [
+        "mriscvcore/REG_FILE",
+        "mriscvcore",
+        "mriscvcore/MULT",
+        "mriscvcore/ALU",
+        "mriscvcore/UTILITIES",
+        "mriscvcore/DECO_INSTR",
+        "mriscvcore/IRQ",
+        "mriscvcore/MEMORY_INTERFACE",
+        "mriscvcore/FSM"
+    ],
+    "repository": "https://github.com/onchipuis/mriscv",
+    "top_module": "mriscvcore",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

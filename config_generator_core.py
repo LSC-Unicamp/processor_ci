@@ -64,9 +64,15 @@ from verilator_runner import (
     compile_with_dependency_resolution as verilator_compile,
     auto_orchestrate as verilator_auto,
 )
+from verilator_runner_incremental import (
+    compile_incremental as verilator_incremental,
+)
 from ghdl_runner import (
     analyze_with_dependency_resolution as ghdl_analyze,
     auto_orchestrate as ghdl_auto,
+)
+from ghdl_runner_incremental import (
+    try_incremental_compilation as ghdl_incremental,
 )
 
 
@@ -130,13 +136,18 @@ def _is_micro_stage_name(name: str) -> bool:
     terms = [
     "fetch", "decode", "rename", "issue", "schedule", "commit", "retire",
     "execute", "registerread", "registerwrite", "regread", "regwrite",
-    "lsu", "mmu", "reorder", "rob", "rs", "iq", "btb", "bpu", "ras",
+    "lsu", "mmu", "reorder", "rob", "iq", "btb", "bpu", "ras",
     "predecode", "dispatch", "wakeup", "queue", "storequeue", "loadqueue",
     "activelist", "freelist", "rmt", "nextpc", "pcstage"
     ]
     exact_stage_names = ["wb", "id", "ex", "mem", "if", "ma", "wr", "pc", "ctrl", "regs", "alu", "dram", "iram", "halt", "machine"]
     if n in exact_stage_names:
         return True
+    
+    # Check for 'rs' (reservation station) with word boundaries to avoid matching "RS5"
+    if "_rs_" in n or n.startswith("rs_") or n.endswith("_rs") or n == "rs":
+        return True
+    
     return any(t in n for t in terms)
 
 
@@ -854,6 +865,95 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
     return ranked, cpu_core_matches
 
 
+def try_incremental_approach(
+    repo_root: str,
+    repo_name: str,
+    top_candidates: list,
+    modules: list,
+    module_graph: dict,
+    language_version: str = "1800-2017",
+    verilator_extra_flags: list = None,
+    timeout: int = 300,
+) -> tuple:
+    """
+    Try the incremental bottom-up approach for Verilog/SystemVerilog files.
+    
+    Returns: (final_files, final_includes, last_log, selected_top, is_simulable)
+    """
+    print_green(f"[INCREMENTAL] Trying bottom-up incremental approach for {repo_name}")
+    
+    # Limit number of candidates to avoid excessive testing
+    MAX_CANDIDATES_TO_TRY = 10
+    if len(top_candidates) > MAX_CANDIDATES_TO_TRY:
+        print_yellow(f"[INCREMENTAL] Limiting to top {MAX_CANDIDATES_TO_TRY} candidates (out of {len(top_candidates)})")
+        top_candidates = top_candidates[:MAX_CANDIDATES_TO_TRY]
+    
+    print_green(f"[INCREMENTAL] Candidates to try: {', '.join(top_candidates)}")
+    
+    # Build module->file map
+    module_to_file = {}
+    for mname, mfile in (modules or []):
+        module_to_file[mname] = mfile
+    
+    # Try each top candidate with incremental compilation
+    for idx, top_module in enumerate(top_candidates, 1):
+        print_green(f"[INCREMENTAL] === Candidate {idx}/{len(top_candidates)}: {top_module} ===")
+        if top_module not in module_to_file:
+            print_yellow(f"[INCREMENTAL] Skipping {top_module} - no file mapping found")
+            continue
+        
+        top_module_file = module_to_file[top_module]
+        
+        # Make sure it's a relative path
+        if os.path.isabs(top_module_file):
+            top_module_file = os.path.relpath(top_module_file, repo_root)
+        
+        # Also strip any leading repo path components that might be in the path
+        # For example: "temp/black-parrot/bp_be/..." should become "bp_be/..."
+        repo_basename = os.path.basename(repo_root)
+        if top_module_file.startswith(f"{repo_basename}/"):
+            top_module_file = top_module_file[len(repo_basename)+1:]
+        elif top_module_file.startswith("temp/"):
+            # Handle "temp/black-parrot/..." -> strip temp/ prefix
+            parts = top_module_file.split('/')
+            if len(parts) > 2 and parts[0] == "temp":
+                top_module_file = "/".join(parts[2:])  # Skip "temp/reponame/"
+        
+        print_green(f"[INCREMENTAL] Testing top module: {top_module}")
+        print_green(f"[INCREMENTAL] Top module file (final): {top_module_file}")
+        print_yellow(f"[INCREMENTAL] Repo root: {repo_root}")
+        print_yellow(f"[INCREMENTAL] Repo basename: {repo_basename}")
+        
+        # Verify the file exists
+        full_path = os.path.join(repo_root, top_module_file)
+        if not os.path.exists(full_path):
+            print_red(f"[INCREMENTAL] ERROR: File does not exist: {full_path}")
+            print_red(f"[INCREMENTAL] Skipping {top_module}")
+            continue
+        else:
+            print_green(f"[INCREMENTAL] ✓ File exists: {full_path}")
+        
+        rc, log, final_files, final_includes = verilator_incremental(
+            repo_root=repo_root,
+            top_module=top_module,
+            top_module_file=top_module_file,
+            module_graph=module_graph,
+            language_version=language_version,
+            extra_flags=verilator_extra_flags or ['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-BLKANDNBLK', '-Wno-SYMRSVDWORD'],
+            max_iterations=20,
+            timeout=timeout,
+        )
+        
+        if rc == 0:
+            print_green(f"[INCREMENTAL] ✓ Success with top module: {top_module}")
+            return final_files, final_includes, log, top_module, True
+        else:
+            print_yellow(f"[INCREMENTAL] ✗ Failed with top module: {top_module}")
+    
+    # If all failed, return empty result
+    return [], set(), "", "", False
+
+
 def interactive_simulate_and_minimize(
     repo_root: str,
     repo_name: str,
@@ -868,9 +968,11 @@ def interactive_simulate_and_minimize(
     maximize_attempts: int = 6,
     verilator_extra_flags: list | None = None,
     ghdl_extra_flags: list | None = None,
+    use_incremental: bool = False,
 ) -> tuple:
     """
     Interactive flow is now delegated to runners. Core only selects candidates and passes to runners.
+    If use_incremental is True, tries the incremental bottom-up approach first.
     """
     # Proactively drop any FPGA-related files from candidates to avoid board wrappers influencing top detection
     candidate_files = [f for f in candidate_files if not _is_fpga_path(f)]
@@ -952,8 +1054,10 @@ def interactive_simulate_and_minimize(
     tb_verilog = [f for f in tb_files if os.path.splitext(f)[1].lower() in verilog_exts]
     tb_vhdl = [f for f in tb_files if os.path.splitext(f)[1].lower() in vhdl_exts]
 
+
     verilog_candidates = [c for c in candidates if os.path.splitext(module_to_file.get(c, ''))[1].lower() in verilog_exts]
     vhdl_candidates = [c for c in candidates if os.path.splitext(module_to_file.get(c, ''))[1].lower() in vhdl_exts]
+
 
     # Filter out peripheral-like candidates if we still have others left; keep primary_top if it's the only option
     non_periph_verilog = [
@@ -993,7 +1097,26 @@ def interactive_simulate_and_minimize(
 
     if prefer_ghdl and vhdl_candidates:
         print_green(f"[CORE] Selecting GHDL (VHDL) | top={primary_top} vhdl_candidates={len(vhdl_candidates)} files={len(vhdl_files)}")
-        # Run GHDL on VHDL-only files/candidates
+        
+        # Try incremental approach first if enabled
+        if use_incremental:
+            print_green(f"[CORE] Trying incremental bottom-up GHDL approach first...")
+            is_simulable, last_log, final_files, top_module = ghdl_incremental(
+                repo_root=repo_root,
+                repo_name=repo_name,
+                top_candidates=vhdl_candidates,
+                modules=modules,
+                ghdl_extra_flags=ghdl_extra_flags or ["-frelaxed"],
+                timeout=240,
+            )
+            if is_simulable:
+                print_green(f"[CORE] ✓ Incremental GHDL approach succeeded!")
+                return final_files, set(), last_log, top_module, is_simulable
+            else:
+                print_yellow(f"[CORE] Incremental GHDL approach failed, returning failure...")
+                return final_files, set(), last_log, top_module, is_simulable
+        
+        # Run GHDL on VHDL-only files/candidates (old approach)
         final_files, final_includes, last_log, top_module, is_simulable = ghdl_auto(
             repo_root=repo_root,
             repo_name=repo_name,
@@ -1013,25 +1136,65 @@ def interactive_simulate_and_minimize(
     # Try Verilator if preferred path failed or primary is Verilog
     if verilog_candidates:
         print_green(f"[CORE] Selecting Verilator (Verilog/SV) | top={primary_top} verilog_candidates={len(verilog_candidates)} files={len(verilog_files)} includes={len(include_dirs)}")
-        final_files, final_includes, last_log, top_module, is_simulable = verilator_auto(
-            repo_root=repo_root,
-            repo_name=repo_name,
-            tb_files=tb_verilog,
-            candidate_files=verilog_files,
-            include_dirs=set(include_dirs),
-            top_candidates=verilog_candidates,
-            language_version=language_version,
-            timeout=240,
-            extra_flags=verilator_extra_flags or ['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED', '-Wno-TIMESCALEMOD', '-Wno-PROTECTED', '-Wno-MODDUP', '-Wno-REDEFMACRO'],
-            max_retries=3,
-            excluded_files_blacklist=excluded_share,
-        )
-        if is_simulable or not prefer_ghdl:
-            return final_files, final_includes, last_log, top_module, is_simulable
+        
+        # Try incremental approach first if enabled
+        if use_incremental:
+            print_green(f"[CORE] Trying incremental bottom-up approach first...")
+            final_files, final_includes, last_log, top_module, is_simulable = try_incremental_approach(
+                repo_root=repo_root,
+                repo_name=repo_name,
+                top_candidates=verilog_candidates,
+                modules=modules,
+                module_graph=module_graph,
+                language_version=language_version,
+                verilator_extra_flags=verilator_extra_flags,
+                timeout=240,
+            )
+            if is_simulable:
+                print_green(f"[CORE] ✓ Incremental approach succeeded!")
+                return final_files, final_includes, last_log, top_module, is_simulable
+            else:
+                print_yellow(f"[CORE] Incremental approach failed, returning failure...")
+                return final_files, final_includes, last_log, top_module, is_simulable
+        
+        # Standard approach (top-down with exclusion) - COMMENTED OUT for testing incremental only
+        # final_files, final_includes, last_log, top_module, is_simulable = verilator_auto(
+        #     repo_root=repo_root,
+        #     repo_name=repo_name,
+        #     tb_files=tb_verilog,
+        #     candidate_files=verilog_files,
+        #     include_dirs=set(include_dirs),
+        #     top_candidates=verilog_candidates,
+        #     language_version=language_version,
+        #     timeout=240,
+        #     extra_flags=verilator_extra_flags or ['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED', '-Wno-TIMESCALEMOD', '-Wno-PROTECTED', '-Wno-MODDUP', '-Wno-REDEFMACRO'],
+        #     max_retries=3,
+        #     excluded_files_blacklist=excluded_share,
+        # )
+        # if is_simulable or not prefer_ghdl:
+        #     return final_files, final_includes, last_log, top_module, is_simulable
+        
+        # Return empty result if incremental is disabled
+        return [], set(), "", "", False
 
     # Final fallback: try GHDL if not yet tried or both lists empty
     if vhdl_candidates:
         print_yellow(f"[CORE] Fallback to GHDL (VHDL) after Verilator path | candidates={len(vhdl_candidates)}")
+        
+        # Try incremental approach first if enabled
+        if use_incremental:
+            print_green(f"[CORE] Trying fallback incremental GHDL approach...")
+            is_simulable, last_log, final_files, top_module = ghdl_incremental(
+                repo_root=repo_root,
+                repo_name=repo_name,
+                top_candidates=vhdl_candidates,
+                modules=modules,
+                ghdl_extra_flags=ghdl_extra_flags or ["-frelaxed"],
+                timeout=240,
+            )
+            return final_files, set(), last_log, top_module, is_simulable
+        
+        # Old approach
         final_files, final_includes, last_log, top_module, is_simulable = ghdl_auto(
             repo_root=repo_root,
             repo_name=repo_name,
@@ -1053,148 +1216,20 @@ def interactive_simulate_and_minimize(
 
 def determine_language_version(extension: str, files: list = None, base_path: str = None) -> str:
     """
-    Determines the language version based on file extension and incompatible syntax detection.
-    Starts with newest version and only regresses when unsupported syntax is found.
+    Determines a starting language version based on file extension.
+    The actual language will be detected per-file-set during incremental compilation.
     """
-    # Start optimistic with modern versions
+    # Return a reasonable default based on extension
+    # The incremental compiler will do the actual detection on the selected files
     base_version = {
         '.vhdl': '08',
         '.vhd': '08', 
-        '.sv': '2017',    
-        '.svh': '2017',   
-    }.get(extension, '2017')  
+        '.sv': '1800-2017',    # SystemVerilog files default to SV
+        '.svh': '1800-2017',   
+        '.v': '1800-2017',     # .v files default to SV (will be downgraded if needed)
+    }.get(extension, '1800-2017')
     
-    if not files:
-        return base_version
-    
-    if extension in ['.vhdl', '.vhd']:
-        return base_version
-    
-    detected_version = analyze_verilog_language_features(files, base_path)
-    
-    return detected_version
-
-
-def analyze_verilog_language_features(files: list, base_path: str = None) -> str:
-    """
-    Analyze Verilog/SystemVerilog files and return the lowest common denominator
-    language version string compatible with Verilator's --language flag.
-    Starts from SystemVerilog-2017 and downgrades only if discontinued syntax is found.
-    """
-
-    versions = {
-        "1364-1995ext+": 0,
-        "1364-2001ext+": 1,
-        "1364-2005ext+": 2,
-        "1800-2005ext+": 3,
-        "1800-2009ext+": 4,
-        "1800-2012ext+": 5,
-        "1800-2017ext+": 6,
-    }
-    detected = versions["1800-2017ext+"]  
-
-    downgrade_rules = {
-        "1364-1995ext+": [
-            r'`expand_vectornets',                 
-            r'\bscalared\b|\bvectored\b',          
-            r'^\s*primitive\s+\w+\s*\(',          
-        ],
-        "1364-2005ext+": [
-            r'`timescale\s+\d+\s*\w+\s*/\s*\d+\s*\w+(?!\s*//)',  
-            r'\bforce\b|\brelease\b',             
-            r'`include\s+"[^"]*\.vh"',             
-        ],
-        "1800-2005ext+": [
-            r'defparam\s+\w+\.\w+\s*=',            
-            r'^\s*UDP\s+\w+\s*\(',                
-            r'\$time\b(?!\s*\()',                  
-            r'^\s*specify\s*$',                    
-            r'\bwand\b|\bwor\b|\btri0\b|\btri1\b|\btriand\b|\btrior\b',
-        ],
-    }
-
-    modern_features = [
-        r'\balways_ff\b|\balways_comb\b|\balways_latch\b',
-        r'\binterface\b|\bmodport\b',
-        r'\blogic\b',
-        r'\bclass\b|\bpackage\b',
-        r'\btypedef\s+(enum|struct|union)',
-        r'\bunique\s+case|\bpriority\s+case',
-        r'\bcovergroup\b|\bconstraint\b',
-    ]
-    
-    # SystemVerilog-specific assertion features that require SV mode even in .v files
-    sv_assertion_features = [
-        r'\bassert\s+property\b',
-        r'\bassume\s+property\b',
-        r'\bcover\s+property\b',
-        r'\brestrict\s+property\b',
-        r'\bexpect\s*\(',
-        r'\b(strong|weak)\s*\(',
-        r'##\d+',  # Temporal delay operator
-        r'\|->|\|=>',  # Implication operators
-    ]
-
-    compiled_rules = {
-        target: [re.compile(p, re.I | re.M) for p in pats]
-        for target, pats in downgrade_rules.items()
-    }
-    compiled_features = [re.compile(p, re.I | re.M) for p in modern_features]
-    compiled_sv_assertions = [re.compile(p, re.I | re.M) for p in sv_assertion_features]
-
-    found_modern = False
-    found_sv_assertions = False
-
-    for file_path in files:
-        try:
-            full_path = (
-                os.path.join(base_path, file_path)
-                if base_path and not os.path.isabs(file_path)
-                else file_path
-            )
-            with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
-                content = f.read()
-
-            # Check for SystemVerilog assertion features (these force SV mode)
-            for feat in compiled_sv_assertions:
-                if feat.search(content):
-                    found_sv_assertions = True
-                    print(f"[LANG] {file_path}: found SV assertion feature {feat.pattern}, forcing SystemVerilog mode")
-                    break
-
-            for target, patterns in compiled_rules.items():
-                for pat in patterns:
-                    if pat.search(content):
-                        detected = min(detected, versions[target])
-                        print(f"[LANG] {file_path}: matched {pat.pattern}, downgrade → {target}")
-                        break
-                if detected == versions[target]:
-                    break  
-
-            if detected >= versions["1800-2009ext+"]:
-                for feat in compiled_features:
-                    if feat.search(content):
-                        found_modern = True
-                        print(f"[LANG] {file_path}: found modern SV feature {feat.pattern}")
-                        break
-
-        except Exception as e:
-            print(f"[LANG] Warning: Could not analyze {file_path}: {e}")
-
-    # If SystemVerilog assertions are found, force SystemVerilog 2017 mode
-    if found_sv_assertions:
-        resolved = "1800-2017ext+"
-        print(f"[LANG] SystemVerilog assertions detected, forcing: {resolved}")
-    elif detected < versions["1800-2005ext+"]:  
-        resolved = [v for v, pri in versions.items() if pri == detected][0]
-    else:
-        if found_modern:
-            resolved = "1800-2017ext+"
-        else:
-            resolved = "1800-2012ext+"
-
-    print(f"[LANG] Final detected version: {resolved}")
-    return resolved
+    return base_version
 
 
 def create_output_json(
@@ -1232,6 +1267,106 @@ def extract_repo_name(url: str) -> str:
     return url.split('/')[-1].replace('.git', '')
 
 
+def detect_and_run_config_script(repo_path: str, repo_name: str) -> bool:
+    """
+    Detects and runs configuration scripts that generate necessary defines/headers.
+    
+    Supports multiple patterns:
+    - configs/*.config scripts (VeeR cores, etc.) - runs with no args or -target=default
+    - configs/*.py scripts - runs with python3
+    - configure scripts in root
+    
+    Returns:
+        bool: True if a config script was found and run successfully
+    """
+    import subprocess
+    
+    # Pattern 1: configs directory with scripts
+    config_dir = os.path.join(repo_path, 'configs')
+    if os.path.isdir(config_dir):
+        # Find config scripts (.config, .py, executable files)
+        config_files = []
+        for f in os.listdir(config_dir):
+            full_path = os.path.join(config_dir, f)
+            if f.endswith(('.config', '.py')) or (os.access(full_path, os.X_OK) and not f.startswith('.')):
+                config_files.append(f)
+        
+        if config_files:
+            # Use the first config file found
+            config_file = config_files[0]
+            config_script = os.path.join(config_dir, config_file)
+            print_yellow(f"[CONFIG] Found configuration script: {config_script}")
+            
+            # Make script executable
+            try:
+                os.chmod(config_script, 0o755)
+            except Exception:
+                pass
+            
+            # Set up environment variables
+            env = os.environ.copy()
+            env['RV_ROOT'] = repo_path  # VeeR-specific
+            env['ROOT'] = repo_path
+            env['REPO_ROOT'] = repo_path
+            
+            # Determine command based on file type
+            if config_file.endswith('.py'):
+                base_cmd = ['python3', config_script]
+            else:
+                base_cmd = [config_script]
+            
+            # Try different argument patterns
+            arg_patterns = [
+                [],  # No arguments (most generic)
+                ['-target=default'],  # VeeR-style
+                ['--default'],  # Common default flag
+            ]
+            
+            for args in arg_patterns:
+                cmd = base_cmd + args
+                cmd_str = ' '.join(cmd)
+                print_yellow(f"[CONFIG] Attempting: {cmd_str}")
+                
+                try:
+                    result = subprocess.run(
+                        cmd,
+                        cwd=repo_path,
+                        env=env,
+                        capture_output=True,
+                        text=True,
+                        timeout=60
+                    )
+                    
+                    if result.returncode == 0:
+                        print_green(f"[CONFIG] ✓ Configuration script completed successfully")
+                        return True
+                    else:
+                        error_msg = result.stderr if result.stderr else result.stdout
+                        # Check for specific errors
+                        if 'Can\'t locate' in error_msg or 'BEGIN failed' in error_msg:
+                            print_yellow(f"[CONFIG] ⚠ Config script requires dependencies: {error_msg.split(chr(10))[0]}")
+                            return False
+                        elif 'usage:' in error_msg.lower() and args == []:
+                            # Script requires arguments, try next pattern
+                            continue
+                        else:
+                            # Other error, try next pattern
+                            continue
+                            
+                except subprocess.TimeoutExpired:
+                    print_yellow(f"[CONFIG] Config script timed out")
+                    return False
+                except Exception as e:
+                    print_yellow(f"[CONFIG] Could not run config script: {str(e)}")
+                    continue
+            
+            # If all patterns failed but script exists, that's okay - continue anyway
+            print_yellow(f"[CONFIG] Config script found but could not determine correct arguments, continuing...")
+            return False
+    
+    return False
+
+
 def clone_and_validate_repo(url: str, repo_name: str) -> str:
     """Clones the repository and validates the operation."""
     destination_path = clone_repo(url, repo_name)
@@ -1239,6 +1374,13 @@ def clone_and_validate_repo(url: str, repo_name: str) -> str:
         print_red('[ERROR] Não foi possível clonar o repositório.')
     else:
         print_green('[LOG] Repositório clonado com sucesso\n')
+        
+        # Convert to absolute path for config script
+        abs_path = os.path.abspath(destination_path)
+        
+        # Try to detect and run config scripts
+        detect_and_run_config_script(abs_path, repo_name)
+        
     return destination_path
 
 
@@ -1331,9 +1473,19 @@ def generate_processor_config(
     add_to_config: bool = False,
     no_llama: bool = False,
     model: str = 'qwen2.5:32b',
+    use_incremental: bool = False,
 ) -> dict:
     """
     Main function to generate a processor configuration.
+    
+    Args:
+        url: Repository URL
+        config_path: Path to save configuration
+        plot_graph: Whether to plot dependency graphs
+        add_to_config: Whether to add to central config
+        no_llama: Skip OLLAMA processing
+        model: OLLAMA model to use
+        use_incremental: Use incremental bottom-up compilation (experimental)
     """
     repo_name = extract_repo_name(url)
     destination_path = clone_and_validate_repo(url, repo_name)
@@ -1387,8 +1539,9 @@ def generate_processor_config(
         module_graph_inverse=module_graph_inverse,
         language_version=language_version,
         maximize_attempts=6,
-        verilator_extra_flags=['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED', '-Wno-TIMESCALEMOD', '-Wno-PROTECTED', '-Wno-MODDUP', '-Wno-REDEFMACRO'],
+        verilator_extra_flags=['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED', '-Wno-TIMESCALEMOD', '-Wno-PROTECTED', '-Wno-MODDUP', '-Wno-REDEFMACRO', '-Wno-BLKANDNBLK', '-Wno-SYMRSVDWORD'],
         ghdl_extra_flags=['--std=08', '-frelaxed'],
+        use_incremental=use_incremental,
     )
 
     # Convert absolute include directories to relative paths
@@ -1544,6 +1697,12 @@ def main() -> None:
         default='qwen2.5:32b',
         help='OLLAMA model to use'
     )
+    parser.add_argument(
+        '-i', 
+        '--incremental', 
+        action='store_true',
+        help='Use incremental bottom-up compilation (experimental)'
+    )
 
     args = parser.parse_args()
 
@@ -1555,6 +1714,7 @@ def main() -> None:
             args.add_to_config,
             args.no_llama,
             args.model,
+            args.incremental,
         )
         print('Result: ')
         print(json.dumps(config, indent=4))

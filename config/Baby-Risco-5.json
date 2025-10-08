@@ -1,0 +1,23 @@
+{
+    "name": "Baby-Risco-5",
+    "folder": "Baby-Risco-5",
+    "sim_files": [],
+    "files": [
+        "src/core/core.v",
+        "src/core/alu.v",
+        "src/core/registers.v",
+        "src/core/control_unit.v",
+        "src/core/immediate_generator.v",
+        "src/core/alu_control.v"
+    ],
+    "include_dirs": [
+        "src/core"
+    ],
+    "repository": "https://github.com/JN513/Baby-Risco-5",
+    "top_module": "Core",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

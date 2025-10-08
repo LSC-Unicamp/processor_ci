@@ -1,0 +1,19 @@
+{
+    "name": "simodense",
+    "folder": "simodense",
+    "sim_files": [],
+    "files": [
+        "FPGA_Implementation_AXI_peripheral/cpu.v",
+        "FPGA_Implementation_AXI_peripheral/custom.v"
+    ],
+    "include_dirs": [
+        "FPGA_Implementation_AXI_peripheral"
+    ],
+    "repository": "https://github.com/pphilippos/simodense",
+    "top_module": "Core",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

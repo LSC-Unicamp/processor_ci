@@ -15,7 +15,7 @@ for path in [simulable_path]:
 
                 if url:
                     process = subprocess.Popen(
-                        ["python3", "config_generator_core.py", "-n", "-u", url],
+                        ["python3", "config_generator_core.py", "-n","-i", "-u", url],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                     )

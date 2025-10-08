@@ -1,0 +1,18 @@
+{
+    "name": "RS5",
+    "folder": "RS5",
+    "sim_files": [],
+    "files": [
+        "rtl/RS5.sv"
+    ],
+    "include_dirs": [
+        "rtl"
+    ],
+    "repository": "https://github.com/gaph-pucrs/RS5",
+    "top_module": "RS5",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

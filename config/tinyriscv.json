@@ -1,0 +1,20 @@
+{
+    "name": "tinyriscv",
+    "folder": "tinyriscv",
+    "sim_files": [],
+    "files": [
+        "rtl/core/tinyriscv.v",
+        "rtl/utils/gen_dff.v"
+    ],
+    "include_dirs": [
+        "rtl/core",
+        "rtl/utils"
+    ],
+    "repository": "https://github.com/liangkangnan/tinyriscv.git",
+    "top_module": "tinyriscv",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

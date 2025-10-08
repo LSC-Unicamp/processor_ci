@@ -1,0 +1,27 @@
+{
+    "name": "mmRISC-1",
+    "folder": "mmRISC-1",
+    "sim_files": [],
+    "files": [
+        "verilog/cpu/cpu_top.v",
+        "verilog/cpu/cpu_datapath.v",
+        "verilog/cpu/cpu_pipeline.v",
+        "verilog/cpu/cpu_fpu32.v",
+        "verilog/cpu/cpu_fetch.v",
+        "verilog/cpu/cpu_csr_dbg.v",
+        "verilog/cpu/cpu_debug.v",
+        "verilog/cpu/cpu_csr.v",
+        "verilog/cpu/cpu_csr_int.v"
+    ],
+    "include_dirs": [
+        "verilog/common",
+        "verilog/cpu"
+    ],
+    "repository": "https://github.com/munetomo-maruyama/mmRISC-1",
+    "top_module": "CPU_TOP",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

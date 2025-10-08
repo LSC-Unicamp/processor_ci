@@ -1,0 +1,19 @@
+{
+    "name": "SparrowRV",
+    "folder": "SparrowRV",
+    "sim_files": [],
+    "files": [
+        "rtl/core/core.v"
+    ],
+    "include_dirs": [
+        "rtl",
+        "rtl/core"
+    ],
+    "repository": "https://github.com/xiaowuzxc/SparrowRV",
+    "top_module": "core",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

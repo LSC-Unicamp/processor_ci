@@ -1,0 +1,24 @@
+{
+    "name": "biriscv",
+    "folder": "biriscv",
+    "sim_files": [],
+    "files": [
+        "src/top/riscv_top.v",
+        "src/core/riscv_core.v",
+        "src/icache/icache.v",
+        "src/dcache/dcache.v"
+    ],
+    "include_dirs": [
+        "src/core",
+        "src/dcache",
+        "src/top",
+        "src/icache"
+    ],
+    "repository": "https://github.com/ultraembedded/biriscv",
+    "top_module": "riscv_top",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

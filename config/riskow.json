@@ -1,0 +1,26 @@
+{
+    "name": "riskow",
+    "folder": "riskow",
+    "sim_files": [],
+    "files": [
+        "top.v",
+        "cpu/cpu.v",
+        "devices/digital_port.v",
+        "devices/timer.v",
+        "cpu/register_bank.v",
+        "cpu/instruction_decoder.v",
+        "cpu/alu.v",
+        "cpu/program_counter.v"
+    ],
+    "include_dirs": [
+        "cpu",
+        "devices"
+    ],
+    "repository": "https://github.com/racerxdl/riskow",
+    "top_module": "top",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

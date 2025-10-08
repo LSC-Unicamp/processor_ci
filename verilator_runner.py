@@ -87,6 +87,8 @@ def _order_sv_files(files: List[str], repo_root: str | None = None) -> List[str]
     import_re = re.compile(r"^\s*import\s+([a-zA-Z_]\w*)\s*::\s*\*\s*;", re.IGNORECASE | re.MULTILINE)
     # Also catch inline/import lists: import a::*, b::*;
     import_list_re = re.compile(r"^\s*import\s+([^;]+);", re.IGNORECASE | re.MULTILINE)
+    # Detect namespace references like package_name::type_name
+    namespace_ref_re = re.compile(r"\b([a-zA-Z_]\w+)::[a-zA-Z_]\w+", re.MULTILINE)
     # Detect explicit ordering constraints: `ifdef DEFINE + `error means this file must come before files defining DEFINE
     ifdef_error_re = re.compile(r"^\s*`ifdef\s+(\w+)\s*\n\s*`error", re.IGNORECASE | re.MULTILINE)
     # Detect define declarations
@@ -150,6 +152,14 @@ def _order_sv_files(files: List[str], repo_root: str | None = None) -> List[str]
                     pkg = seg.split('::', 1)[0].strip()
                     if re.match(r"^[a-zA-Z_]\w*$", pkg):
                         file_to_imports[f].add(pkg)
+        # Detect namespace references (package_name::identifier)
+        # This catches cases where packages are used without explicit import
+        for m in namespace_ref_re.finditer(text):
+            pkg = m.group(1)
+            # Only consider it if the package exists in our file set
+            # and it's not a common false positive (like $unit::, etc.)
+            if pkg not in ['$unit', 'std', 'this', 'super', 'local'] and pkg in pkg_to_file:
+                file_to_imports[f].add(pkg)
 
     # Build graph: edge from provider file -> importer file
     nodes = list(files)
@@ -747,6 +757,31 @@ def _parse_duplicate_declarations(log_text: str) -> List[str]:
         for m in re.finditer(pattern, log_text):
             duplicate_files.add(m.group(1))
     return list(duplicate_files)
+
+
+def _detect_systemverilog_keyword_conflict(log_text: str) -> bool:
+    """
+    Detect if errors are caused by SystemVerilog reserved keywords being used as identifiers.
+    Common keywords: dist, randomize, constraint, covergroup, inside, with, etc.
+    
+    Returns True if we should retry with plain Verilog mode.
+    """
+    # Pattern: syntax error, unexpected <KEYWORD>, expecting IDENTIFIER
+    # This indicates the code uses a SystemVerilog keyword as an identifier
+    sv_keywords = [
+        'dist', 'randomize', 'constraint', 'covergroup', 'inside', 'with',
+        'foreach', 'unique', 'priority', 'final', 'alias', 'matches',
+        'tagged', 'extern', 'pure', 'context', 'solve', 'before', 'after'
+    ]
+    
+    for keyword in sv_keywords:
+        # Pattern: "syntax error, unexpected <keyword>, expecting IDENTIFIER"
+        pattern = rf"syntax error, unexpected {keyword}, expecting IDENTIFIER"
+        if re.search(pattern, log_text, re.IGNORECASE):
+            print_yellow(f"[VERILATOR] Detected SystemVerilog keyword conflict: '{keyword}' used as identifier")
+            return True
+    
+    return False
 
 
 def _parse_syntax_error_files(log_text: str) -> List[str]:
@@ -1369,6 +1404,21 @@ def compile_with_dependency_resolution(
         except Exception:
             pass
         rc, out = _run(cmd, cwd=repo_root, timeout=timeout)
+        
+        # Check for SystemVerilog keyword conflicts on first attempt
+        # If detected and we're using SystemVerilog mode, retry with plain Verilog
+        if _attempt == 0 and rc != 0:
+            if _detect_systemverilog_keyword_conflict(out):
+                mode, std = _effective_language(current_files, language_version)
+                if mode == 'sv':
+                    print_yellow("[VERILATOR] SystemVerilog keyword conflict detected, retrying with Verilog mode")
+                    # Override language to Verilog 2005
+                    language_version = "1364-2005"
+                    # Rebuild command with Verilog mode
+                    cmd = _build_verilator_cmd(current_files, set(sorted_includes), top_module, language_version, extra_flags, repo_root)
+                    print_blue(f"[VERILATOR] Retrying with Verilog mode: {' '.join(shlex.quote(x) for x in cmd)}")
+                    rc, out = _run(cmd, cwd=repo_root, timeout=timeout)
+        
         if (rc == 0):
             w, e = _summarize_verilator_log(out)
             print_green(f"[VERILATOR] Lint clean | files={len(current_files)} includes={len(current_includes)}")

@@ -1,0 +1,18 @@
+{
+    "name": "rvx",
+    "folder": "rvx",
+    "sim_files": [],
+    "files": [
+        "hardware/rvx.v"
+    ],
+    "include_dirs": [
+        "hardware"
+    ],
+    "repository": "https://github.com/rafaelcalcada/rvx",
+    "top_module": "rvx",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

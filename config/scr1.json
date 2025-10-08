@@ -1,0 +1,24 @@
+{
+    "name": "scr1",
+    "folder": "scr1",
+    "sim_files": [],
+    "files": [
+        "src/core/scr1_core_top.sv",
+        "src/core/pipeline/scr1_pipe_top.sv",
+        "src/core/primitives/scr1_reset_cells.sv",
+        "src/core/primitives/scr1_cg.sv"
+    ],
+    "include_dirs": [
+        "src/core/pipeline",
+        "src/core/primitives",
+        "src/core",
+        "src/includes"
+    ],
+    "repository": "https://github.com/syntacore/scr1",
+    "top_module": "scr1_core_top",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

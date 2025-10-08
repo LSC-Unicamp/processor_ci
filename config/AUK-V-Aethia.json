@@ -1,0 +1,19 @@
+{
+    "name": "AUK-V-Aethia",
+    "folder": "AUK-V-Aethia",
+    "sim_files": [],
+    "files": [
+        "rtl/core/aukv.v",
+        "rtl/core/aukv_gpr_regfilie.v"
+    ],
+    "include_dirs": [
+        "rtl/core"
+    ],
+    "repository": "https://github.com/veeYceeY/AUK-V-Aethia",
+    "top_module": "aukv",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

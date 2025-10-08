@@ -1,0 +1,22 @@
+{
+    "name": "T03x",
+    "folder": "T03x",
+    "sim_files": [],
+    "files": [
+        "klessydra-t0-3th/PKG_RiscV_Klessydra_thread_parameters.vhd",
+        "klessydra-t0-3th/PKG_RiscV_Klessydra.vhd",
+        "klessydra-t0-3th/STR-Klessydra_top.vhd",
+        "klessydra-t0-3th/RTL-Debug_Unit.vhd",
+        "klessydra-t0-3th/RTL-CSR_Unit.vhd",
+        "klessydra-t0-3th/RTL-Processing_Pipeline.vhd",
+        "klessydra-t0-3th/RTL-Program_Counter_unit.vhd"
+    ],
+    "include_dirs": [],
+    "repository": "https://github.com/klessydra/T03x",
+    "top_module": "klessydra_t0_3th_core",
+    "extra_flags": [],
+    "language_version": "08",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

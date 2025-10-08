@@ -1,0 +1,19 @@
+{
+    "name": "kronos",
+    "folder": "kronos",
+    "sim_files": [],
+    "files": [
+        "rtl/core/kronos_types.sv",
+        "rtl/core/kronos_core.sv"
+    ],
+    "include_dirs": [
+        "rtl/core"
+    ],
+    "repository": "https://github.com/SonalPinto/kronos",
+    "top_module": "kronos_core",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

@@ -1,0 +1,22 @@
+{
+    "name": "Hazard3",
+    "folder": "Hazard3",
+    "sim_files": [],
+    "files": [
+        "hdl/hazard3_core.v",
+        "hdl/arith/hazard3_alu.v",
+        "hdl/arith/hazard3_branchcmp.v",
+        "hdl/arith/hazard3_muldiv_seq.v"
+    ],
+    "include_dirs": [
+        "hdl/arith",
+        "hdl"
+    ],
+    "repository": "https://github.com/Wren6991/Hazard3",
+    "top_module": "hazard3_core",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

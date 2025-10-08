@@ -1,0 +1,27 @@
+{
+    "name": "Pequeno-Risco-5",
+    "folder": "Pequeno-Risco-5",
+    "sim_files": [],
+    "files": [
+        "src/core.v",
+        "src/data_memory.v",
+        "src/alu_control.v",
+        "src/immediate_generator.v",
+        "src/mux.v",
+        "src/control_unit.v",
+        "src/alu.v",
+        "src/registers.v",
+        "src/instruction_memory.v",
+        "src/pc.v"
+    ],
+    "include_dirs": [
+        "src"
+    ],
+    "repository": "https://github.com/JN513/Pequeno-Risco-5",
+    "top_module": "Core",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

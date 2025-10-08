@@ -1,0 +1,22 @@
+{
+    "name": "cv32e40x",
+    "folder": "cv32e40x",
+    "sim_files": [],
+    "files": [
+        "rtl/include/cv32e40x_pkg.sv",
+        "rtl/cv32e40x_core.sv",
+        "bhv/cv32e40x_sim_clock_gate.sv"
+    ],
+    "include_dirs": [
+        "rtl",
+        "bhv",
+        "rtl/include"
+    ],
+    "repository": "https://github.com/openhwgroup/cv32e40x",
+    "top_module": "cv32e40x_core",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}

@@ -1,0 +1,23 @@
+{
+    "name": "SuperScalar-RISCV-CPU",
+    "folder": "SuperScalar-RISCV-CPU",
+    "sim_files": [],
+    "files": [
+        "scr1/src/core/scr1_core_top.sv",
+        "scr1/src/core/primitives/scr1_reset_cells.sv",
+        "scr1/src/pipeline/scr1_pipe_top.sv"
+    ],
+    "include_dirs": [
+        "scr1/src/pipeline",
+        "scr1/src/core",
+        "scr1/src/core/primitives",
+        "scr1/src/includes"
+    ],
+    "repository": "https://github.com/risclite/SuperScalar-RISCV-CPU",
+    "top_module": "scr1_core_top",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}
