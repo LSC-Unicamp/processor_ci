@@ -4,7 +4,7 @@
     "sim_files": [],
     "files": [],
     "include_dirs": [],
-    "repository": "https://github.com/lcbcFoo/ReonV",
+    "repository": "https://github.com/lcbcFoo/ReonV.git",
     "top_module": "",
     "extra_flags": [],
     "language_version": "1800-2017",

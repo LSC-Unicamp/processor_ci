@@ -150,12 +150,14 @@ def _parse_missing_entities(log_text: str) -> List[str]:
                     missing.add(unit_name)
     
     # Also check for explicit entity errors
+    # NOTE: "no declaration for" is NOT included - that's for constants/types/functions, not entities
     entity_patterns = [
         r'entity "([^"]+)" not found',
         r"entity '([^']+)' not found",
         r'cannot find entity "([^"]+)"',
         r"cannot find entity '([^']+)'",
-        r'no declaration for "([^"]+)"',  # GHDL "no declaration" errors
+        r'entity "([^"]+)" was not analysed',  # GHDL analysis errors
+        r'architecture .+ of "([^"]+)" is',  # Missing entity for architecture
     ]
     for pat in entity_patterns:
         for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
@@ -174,29 +176,31 @@ def _parse_missing_entities(log_text: str) -> List[str]:
     return list(missing)
 
 
-def _parse_missing_packages(log_text: str) -> List[str]:
+def _parse_missing_packages(log_text: str) -> List[Tuple[str, str]]:
     """Parse GHDL output for missing package errors.
     
     GHDL reports missing packages as:
     - unit "package_name" not found in library "work"
     - unit "package_name" not found in library "custom_lib"
     
+    Returns: List of (package_name, library_name) tuples
+    
+    Note: We ignore "cannot find resource library" errors because they're just
+    warnings - the real errors are the "unit X not found" messages that follow.
+    
     We need to distinguish these from entity errors by checking context.
     """
     missing = set()
-    patterns = [
-        # Pattern for any library (work, custom, etc): unit "X" not found in library "Y"
-        r'unit "([^"]+)" not found in library "[^"]+"',
-        # Backup patterns
-        r'package "([^"]+)" not found',
-        r"package '([^']+)' not found",
-    ]
-    for pat in patterns:
-        for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
-            pkg_name = m.group(1)
-            # Filter out IEEE/STD libraries
-            if pkg_name.lower() not in ['std', 'ieee', 'work', 'std_logic_1164', 'numeric_std']:
-                missing.add(pkg_name)
+    
+    # Pattern: unit "X" not found in library "Y" - capture both X and Y
+    pattern = r'unit "([^"]+)" not found in library "([^"]+)"'
+    for m in re.finditer(pattern, log_text, flags=re.IGNORECASE):
+        pkg_name = m.group(1)
+        lib_name = m.group(2)
+        # Filter out IEEE/STD libraries
+        if pkg_name.lower() not in ['std', 'ieee', 'work', 'std_logic_1164', 'numeric_std']:
+            missing.add((pkg_name, lib_name))
+    
     return list(missing)
 
 
@@ -207,6 +211,51 @@ def _normalize_file_path(file_path: str, repo_name: str) -> str:
     return file_path
 
 
+def _get_file_library(file_path: str, repo_root: str = None) -> str:
+    """Determine which VHDL library a file belongs to.
+    
+    Strategy:
+    1. Use path-based detection (lib/<library_name>/ pattern) - most reliable
+    2. Fallback: check known library names in path
+    3. Final fallback: 'work' library
+    
+    NOTE: We do NOT use "library X;" statements in file content because those indicate
+    which libraries the file USES (imports from), not which library it BELONGS TO.
+    
+    Args:
+        file_path: Relative or absolute path to the file
+        repo_root: Repository root (optional, for resolving relative paths)
+    
+    Returns: Library name (e.g., "grlib", "gaisler", "work")
+    """
+    # Normalize path
+    normalized = file_path.replace('\\', '/')
+    
+    # Path-based detection (most reliable)
+    # Convention: files in lib/<library_name>/ or <library_name>/ belong to that library
+    
+    # Pattern 1: lib/tech/<library_name>/ (ReonV special case for vendor tech libraries)
+    match = re.match(r'^lib/tech/(\w+)/', normalized)
+    if match:
+        return match.group(1)
+    
+    # Pattern 2: lib/<library_name>/
+    match = re.match(r'^lib/(\w+)/', normalized)
+    if match:
+        return match.group(1)
+    
+    # Pattern 3: <library_name>/... where library_name is a known library
+    # (less reliable, so only check for common VHDL library names)
+    known_libs = ['grlib', 'gaisler', 'techmap', 'esa', 'eth', 'cypress', 'micron', 
+                  'fmf', 'spw', 'contrib', 'opencores', 'unisim', 'xilinxcorelib']
+    for lib in known_libs:
+        if normalized.startswith(f'{lib}/'):
+            return lib
+    
+    # Default to 'work' library
+    return 'work'
+
+
 def _detect_custom_library(repo_root: str, files: List[str]) -> Optional[str]:
     """Detect if files use a custom library name instead of 'work'.
     
@@ -214,6 +263,9 @@ def _detect_custom_library(repo_root: str, files: List[str]) -> Optional[str]:
     where <name> is not ieee/std/work.
     
     Returns: custom library name or None if using default 'work'
+    
+    NOTE: This function is for simple projects with ONE custom library.
+    For projects with multiple libraries (like ReonV), use _get_file_library() instead.
     """
     custom_libs = set()
     
@@ -234,8 +286,12 @@ def _detect_custom_library(repo_root: str, files: List[str]) -> Optional[str]:
     # If we found a consistent custom library name, return it
     if len(custom_libs) == 1:
         custom_lib = custom_libs.pop()
-        print_blue(f"[GHDL-INCREMENTAL] Detected custom library name: {custom_lib}")
+        print_blue(f"[GHDL-INCREMENTAL] Detected single custom library: {custom_lib}")
         return custom_lib
+    elif len(custom_libs) > 1:
+        print_blue(f"[GHDL-INCREMENTAL] Detected multiple libraries: {sorted(custom_libs)}")
+        print_blue(f"[GHDL-INCREMENTAL] Using multi-library mode")
+        return "MULTI_LIBRARY"  # Special marker
     
     return None
 
@@ -325,7 +381,8 @@ def _find_file_declaring_entity(repo_root: str, entity_name: str, modules: List[
     return candidates
 
 
-def _find_file_declaring_package(repo_root: str, package_name: str, modules: List[Tuple[str, str]], repo_name: str = None) -> List[str]:
+def _find_file_declaring_package(repo_root: str, package_name: str, modules: List[Tuple[str, str]], 
+                                 repo_name: str = None, library_name: str = None, top_entity_file: str = None) -> List[str]:
     """Find files that declare a specific package.
     
     Args:
@@ -333,6 +390,8 @@ def _find_file_declaring_package(repo_root: str, package_name: str, modules: Lis
         package_name: Name of the package to find
         modules: List of (module_name, file_path) tuples
         repo_name: Repository name for path normalization
+        library_name: Optional library name to filter results (e.g., "grlib", "gaisler")
+        top_entity_file: Optional top entity file to prefer packages from same directory
     
     Returns:
         List of file paths that might contain the package
@@ -340,6 +399,26 @@ def _find_file_declaring_package(repo_root: str, package_name: str, modules: Lis
     # Packages are usually not in the modules list (which typically only has entities)
     # So go straight to repository-wide search
     candidates = _search_repo_for_declaration(repo_root, package_name, "package", repo_name)
+    
+    # If library_name specified, filter candidates to only that library
+    if library_name and library_name.lower() != "work":
+        filtered = []
+        for candidate in candidates:
+            file_lib = _get_file_library(candidate, repo_root)
+            if file_lib.lower() == library_name.lower():
+                filtered.append(candidate)
+        if filtered:
+            print_yellow(f"[GHDL-INCREMENTAL] Filtered package '{package_name}' to library '{library_name}': {len(filtered)} of {len(candidates)} files")
+            return filtered
+    
+    # For 'work' library: prefer packages from same directory as top entity
+    # This handles design-specific config files (e.g., designs/leon3-asic/config.vhd)
+    if library_name and library_name.lower() == "work" and top_entity_file and len(candidates) > 1:
+        top_dir = os.path.dirname(top_entity_file)
+        same_dir_candidates = [c for c in candidates if os.path.dirname(c) == top_dir]
+        if same_dir_candidates:
+            print_yellow(f"[GHDL-INCREMENTAL] Preferring package '{package_name}' from same directory as top entity: {same_dir_candidates[0]}")
+            return same_dir_candidates
     
     return candidates
 
@@ -539,30 +618,43 @@ def _order_vhdl_files(files: List[str], repo_root: str) -> List[str]:
     return packages + entities
 
 
-def _ghdl_clean_work(repo_root: str, workdir: str, library_name: str = "work") -> None:
+def _ghdl_clean_work(repo_root: str, workdir: str, library_name: str = None) -> None:
     """Clean GHDL work library files to ensure fresh analysis.
     
     GHDL uses <library>-obj08.cf in the workdir to store analyzed units.
     Between iterations, we need to clean this to avoid stale analysis results.
-    For custom libraries (like neorv32), we clean the custom library file.
-    """
-    # Clean the specific library file
-    library_file = os.path.join(workdir, f"{library_name}-obj08.cf")
-    if os.path.exists(library_file):
-        try:
-            os.remove(library_file)
-            print_blue(f"[GHDL-INCREMENTAL] Cleaned library: {library_file}")
-        except Exception as e:
-            print_yellow(f"[GHDL-INCREMENTAL] Warning: Could not clean library file: {e}")
     
-    # Also clean work-obj08.cf if it exists (for backwards compatibility)
-    if library_name != "work":
-        work_file = os.path.join(workdir, "work-obj08.cf")
-        if os.path.exists(work_file):
+    Args:
+        repo_root: Repository root (unused, kept for backwards compatibility)
+        workdir: Working directory containing library files
+        library_name: If specified, clean only that library. If None or "MULTI_LIBRARY", clean ALL libraries.
+    """
+    if library_name and library_name != "MULTI_LIBRARY":
+        # Clean specific library only
+        library_file = os.path.join(workdir, f"{library_name}-obj08.cf")
+        if os.path.exists(library_file):
             try:
-                os.remove(work_file)
-            except Exception:
-                pass
+                os.remove(library_file)
+                print_blue(f"[GHDL-INCREMENTAL] Cleaned library: {library_file}")
+            except Exception as e:
+                print_yellow(f"[GHDL-INCREMENTAL] Warning: Could not clean library file: {e}")
+    else:
+        # Clean ALL library files in workdir (multi-library mode or no library specified)
+        if os.path.exists(workdir):
+            try:
+                import glob
+                # Find all *-obj08.cf files
+                library_files = glob.glob(os.path.join(workdir, "*-obj08.cf"))
+                if library_files:
+                    for lib_file in library_files:
+                        try:
+                            os.remove(lib_file)
+                            lib_name = os.path.basename(lib_file).replace("-obj08.cf", "")
+                            print_blue(f"[GHDL-INCREMENTAL] Cleaned library: {lib_name}")
+                        except Exception as e:
+                            print_yellow(f"[GHDL-INCREMENTAL] Warning: Could not clean {lib_file}: {e}")
+            except Exception as e:
+                print_yellow(f"[GHDL-INCREMENTAL] Warning: Could not scan workdir: {e}")
 
 
 def _detect_vendor_libraries(files: List[str], repo_root: str) -> List[str]:
@@ -625,6 +717,52 @@ def _detect_synopsys_packages(files: List[str], repo_root: str) -> bool:
             continue
     
     return False
+
+
+def _has_vhdl2008_conflicts(file_path: str, repo_root: str) -> bool:
+    """
+    Detect if a VHDL file has declarations that conflict with VHDL-2008 standard.
+    Common conflicts:
+    - HRead/HWrite procedures (already in IEEE.std_logic_textio in VHDL-2008)
+    - 'force' keyword used as identifier (reserved in VHDL-2008)
+    - Files that depend on stdio (which has HRead/HWrite conflicts)
+    - Other procedures/identifiers that were standardized in VHDL-2008
+    
+    Returns True if file should be skipped when compiling with --std=08
+    """
+    full_path = os.path.join(repo_root, file_path) if not os.path.isabs(file_path) else file_path
+    
+    try:
+        with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read(100000)  # Read first 100KB (enough for most package files)
+            
+            # Check for HRead/HWrite declarations (conflict with VHDL-2008 std_logic_textio)
+            # These are often in stdio.vhd or similar utility files
+            if re.search(r'procedure\s+HRead\s*\(', content, re.IGNORECASE):
+                # Check if it's wrapped in translate_off pragma (simulation-only code)
+                if re.search(r'pragma\s+translate_off', content, re.IGNORECASE):
+                    print_yellow(f"[GHDL-INCREMENTAL] Skipping {file_path}: contains VHDL-2008 conflicting declarations (HRead/HWrite)")
+                    return True
+            
+            # Check for 'force' used as identifier (reserved keyword in VHDL-2008)
+            # Pattern: "force : in/out/inout type" in port/signal declarations
+            if re.search(r'\bforce\s*:\s*(in|out|inout|buffer)\b', content, re.IGNORECASE):
+                print_yellow(f"[GHDL-INCREMENTAL] Skipping {file_path}: uses 'force' as identifier (VHDL-2008 reserved keyword)")
+                return True
+            
+            # Check for files that import from grlib.stdio (which has VHDL-2008 conflicts)
+            # Files like testlib.vhd depend on stdio but don't directly have conflicts
+            if re.search(r'use\s+grlib\.stdio\s*\.', content, re.IGNORECASE):
+                print_yellow(f"[GHDL-INCREMENTAL] Skipping {file_path}: depends on grlib.stdio (VHDL-2008 incompatible)")
+                return True
+    
+    except Exception:
+        pass
+    
+    return False
+
+
+def _uses_synopsys_packages(files: List[str], repo_root: str) -> bool:
     """
     Detect if any of the VHDL files use Synopsys non-standard packages.
     Returns True if -fsynopsys flag should be added.
@@ -750,6 +888,103 @@ def _build_elab_cmd(
     return cmd
 
 
+def _compile_multi_library(
+    files: List[str],
+    repo_root: str,
+    workdir: str,
+    ghdl_extra_flags: List[str] = None,
+    timeout: int = 300
+) -> Tuple[int, str]:
+    """Compile VHDL files that belong to multiple libraries.
+    
+    This handles projects like ReonV where files are organized as:
+    - lib/grlib/** → grlib library
+    - lib/gaisler/** → gaisler library
+    - lib/techmap/** → techmap library
+    - designs/** → work library
+    
+    Args:
+        files: List of VHDL files to compile
+        repo_root: Repository root directory
+        workdir: Working directory for GHDL
+        ghdl_extra_flags: Additional GHDL flags
+        timeout: Timeout for each command
+    
+    Returns: (return_code, combined_output)
+    """
+    # Group files by library
+    files_by_lib: Dict[str, List[str]] = {}
+    for f in files:
+        lib = _get_file_library(f, repo_root)
+        if lib not in files_by_lib:
+            files_by_lib[lib] = []
+        files_by_lib[lib].append(f)
+    
+    print_blue(f"[GHDL-INCREMENTAL] Multi-library mode: {sorted(files_by_lib.keys())}")
+    
+    # Define library compilation order (dependencies first)
+    # grlib is usually the base, then techmap, gaisler, etc., work last
+    lib_order = ['grlib', 'techmap', 'gaisler', 'esa', 'eth', 'cypress', 'micron', 
+                 'fmf', 'spw', 'contrib', 'opencores', 
+                 # Vendor technology libraries (lib/tech/<vendor>/)
+                 'ec', 'altera', 'xilinx', 'actel', 'lattice', 'peregrine', 'atc18', 
+                 'umc', 'rhumc', 'saed32', 'smic', 'tsmc', 'ihp25', 'ihp25rh',
+                 'tech', 'work']
+    
+    # Sort libraries by the defined order
+    sorted_libs = []
+    for lib in lib_order:
+        if lib in files_by_lib:
+            sorted_libs.append(lib)
+    # Add any remaining libraries not in the order
+    for lib in sorted(files_by_lib.keys()):
+        if lib not in sorted_libs:
+            sorted_libs.append(lib)
+    
+    combined_output = []
+    overall_rc = 0
+    
+    # Compile each library separately
+    for lib in sorted_libs:
+        lib_files = files_by_lib[lib]
+        
+        # Filter out files with VHDL-2008 conflicts
+        filtered_files = []
+        for f in lib_files:
+            if _has_vhdl2008_conflicts(f, repo_root):
+                # Skip this file
+                continue
+            filtered_files.append(f)
+        
+        if not filtered_files:
+            # All files were filtered out
+            print_yellow(f"[GHDL-INCREMENTAL] Skipping library '{lib}': all files filtered out")
+            continue
+        
+        print_blue(f"[GHDL-INCREMENTAL] Compiling library '{lib}' ({len(filtered_files)} files)")
+        
+        # Build command for this library
+        cmd = ["ghdl", "-a", "--std=08", f"--workdir={workdir}", f"--work={lib}"]
+        
+        # Add flags
+        flags = _validation_flags(ghdl_extra_flags, filtered_files, repo_root)
+        if flags:
+            cmd.extend(flags)
+        
+        cmd.extend(filtered_files)
+        
+        # Run compilation
+        print_blue(f"[GHDL-INCREMENTAL-DEBUG] Command: {' '.join(cmd)}")
+        rc, output = _run(cmd, repo_root, timeout)
+        combined_output.append(output)
+        
+        if rc != 0:
+            overall_rc = rc
+            # Don't stop - continue to get all errors
+    
+    return overall_rc, "\n".join(combined_output)
+
+
 def compile_incremental(
     repo_root: str,
     repo_name: str,
@@ -757,7 +992,7 @@ def compile_incremental(
     top_entity_file: str,
     modules: List[Tuple[str, str]],
     ghdl_extra_flags: List[str] = None,
-    max_iterations: int = 20,
+    max_iterations: int = 40,
     timeout: int = 300,
 ) -> Tuple[int, str, List[str]]:
     """
@@ -803,6 +1038,7 @@ def compile_incremental(
             print_blue(f"[GHDL-INCREMENTAL] Iteration {iteration}/{max_iterations} | files={len(current_files)}")
             
             # Clean work library from previous iteration to avoid stale analysis
+            # Pass work_library to clean the right files (automatically cleans all in multi-library mode)
             _ghdl_clean_work(repo_root, workdir, work_library)
             
             # Order files (packages first, then fine-tune based on dependencies)
@@ -812,18 +1048,25 @@ def compile_incremental(
             else:
                 ordered_files = _order_vhdl_files(current_files, repo_root)
             
-            # Build and run GHDL command
-            cmd = _build_ghdl_cmd(ordered_files, top_entity, workdir, ghdl_extra_flags, work_library, repo_root)
-            
-            print_blue(f"[GHDL-INCREMENTAL] Files: {', '.join(ordered_files)}")
-            print(f"[GHDL-INCREMENTAL-DEBUG] Command: {' '.join(cmd)}")
-            
-            rc, output = _run(cmd, repo_root, timeout)
+            # Check if we need multi-library compilation mode
+            if work_library == "MULTI_LIBRARY":
+                # Multi-library mode: compile each library separately
+                print_blue(f"[GHDL-INCREMENTAL] Using multi-library compilation mode")
+                rc, output = _compile_multi_library(ordered_files, repo_root, workdir, ghdl_extra_flags, timeout)
+            else:
+                # Single library mode (original behavior)
+                cmd = _build_ghdl_cmd(ordered_files, top_entity, workdir, ghdl_extra_flags, work_library, repo_root)
+                print_blue(f"[GHDL-INCREMENTAL] Files: {', '.join(ordered_files)}")
+                print(f"[GHDL-INCREMENTAL-DEBUG] Command: {' '.join(cmd)}")
+                rc, output = _run(cmd, repo_root, timeout)
             
             if rc == 0:
                 # Analysis successful, now try elaboration to catch missing entity instantiations
                 print_blue(f"[GHDL-INCREMENTAL] Analysis succeeded, running elaboration...")
-                elab_cmd = _build_elab_cmd(top_entity, workdir, ghdl_extra_flags, work_library, ordered_files, repo_root)
+                
+                # For multi-library mode, top entity is in 'work' library
+                top_lib = 'work' if work_library == "MULTI_LIBRARY" else work_library
+                elab_cmd = _build_elab_cmd(top_entity, workdir, ghdl_extra_flags, top_lib, ordered_files, repo_root)
                 print(f"[GHDL-INCREMENTAL-DEBUG] Elaboration command: {' '.join(elab_cmd)}")
                 rc_elab, output_elab = _run(elab_cmd, repo_root, timeout)
                 
@@ -842,8 +1085,13 @@ def compile_incremental(
                 print_yellow(f"[GHDL-INCREMENTAL] Trying with reordered files...")
                 # Clean work library before retry to ensure fresh analysis
                 _ghdl_clean_work(repo_root, workdir, work_library)
-                cmd = _build_ghdl_cmd(reordered_files, top_entity, workdir, ghdl_extra_flags, work_library)
-                rc, output = _run(cmd, repo_root, timeout)
+                
+                # Recompile with new order
+                if work_library == "MULTI_LIBRARY":
+                    rc, output = _compile_multi_library(reordered_files, repo_root, workdir, ghdl_extra_flags, timeout)
+                else:
+                    cmd = _build_ghdl_cmd(reordered_files, top_entity, workdir, ghdl_extra_flags, work_library, repo_root)
+                    rc, output = _run(cmd, repo_root, timeout)
                 
                 # Mark files as dependency-ordered so we preserve this order in next iteration
                 files_are_dependency_ordered = True
@@ -867,20 +1115,21 @@ def compile_incremental(
             
             # Parse errors
             missing_entities = _parse_missing_entities(output)
-            missing_packages = _parse_missing_packages(output)
+            missing_packages = _parse_missing_packages(output)  # Returns List[Tuple[pkg_name, lib_name]]
             
             # Filter out packages that are actually entities (avoid duplicates)
             # If a symbol appears as both, it's an entity
             entity_names_lower = set(e.lower() for e in missing_entities)
-            missing_packages = [p for p in missing_packages if p.lower() not in entity_names_lower]
+            missing_packages = [(pkg, lib) for pkg, lib in missing_packages if pkg.lower() not in entity_names_lower]
             
             print_blue(f"[GHDL-INCREMENTAL] Missing: entities={len(missing_entities)} packages={len(missing_packages)}")
             
             added_something = False
             
             # Add missing packages first (they must come before entities)
-            for pkg_name in missing_packages:
-                pkg_files = _find_file_declaring_package(repo_root, pkg_name, modules, repo_name)
+            for pkg_name, lib_name in missing_packages:
+                # Library-aware package search (with preference for same directory as top entity)
+                pkg_files = _find_file_declaring_package(repo_root, pkg_name, modules, repo_name, lib_name, top_entity_file)
                 
                 if pkg_files:
                     for pkg_file in pkg_files:
@@ -894,7 +1143,7 @@ def compile_incremental(
                             # Just append - let the reordering functions handle proper positioning
                             current_files.append(pkg_file)
                             added_files_history.add(pkg_file)
-                            print_green(f"[GHDL-INCREMENTAL] + Adding package file: {pkg_file} (provides '{pkg_name}')")
+                            print_green(f"[GHDL-INCREMENTAL] + Adding package file: {pkg_file} (provides '{pkg_name}' from library '{lib_name}')")
                             added_something = True
                             break  # Use first candidate
             
