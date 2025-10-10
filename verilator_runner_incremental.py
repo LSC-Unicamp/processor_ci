@@ -456,6 +456,8 @@ def _build_verilator_cmd(
         "--no-timing",
         "-Wno-PROCASSWIRE",
         "--relative-includes",
+        "-DEN_EXCEPT",
+        "-DEN_RVZICSR",
     ]
     
     # Dynamically detect language for current file set AND their dependencies from module graph

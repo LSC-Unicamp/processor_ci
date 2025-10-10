@@ -1,0 +1,19 @@
+{
+    "name": "riscv-atom",
+    "folder": "riscv-atom",
+    "sim_files": [],
+    "files": [
+        "rtl/core/AtomRV.v"
+    ],
+    "include_dirs": [
+        "rtl/common",
+        "rtl/core"
+    ],
+    "repository": "https://github.com/saursin/riscv-atom",
+    "top_module": "AtomRV",
+    "extra_flags": [],
+    "language_version": "1800-2017",
+    "march": "rv32i",
+    "two_memory": false,
+    "is_simulable": true
+}
