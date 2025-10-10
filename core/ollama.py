@@ -44,12 +44,12 @@ import ast
 import time
 from ollama import Client
 
-SERVER_URL = os.getenv('SERVER_URL', 'http://127.0.0.1:11434')
+SERVER_URL = os.getenv("SERVER_URL", "http://127.0.0.1:11434")
 
 client = Client(host=SERVER_URL)
 
 
-def send_prompt(prompt: str, model: str = 'qwen2.5:32b') -> tuple[bool, str]:
+def send_prompt(prompt: str, model: str = "qwen2.5:32b") -> tuple[bool, str]:
     """
     Sends a prompt to the specified server and receives the model's response.
 
@@ -63,10 +63,10 @@ def send_prompt(prompt: str, model: str = 'qwen2.5:32b') -> tuple[bool, str]:
     """
     response = client.generate(prompt=prompt, model=model)
 
-    if not response or 'response' not in response:
-        return 0, ''
+    if not response or "response" not in response:
+        return 0, ""
 
-    return 1, response['response']
+    return 1, response["response"]
 
 
 def extract_code_block(llm_response: str) -> str:
@@ -80,11 +80,11 @@ def extract_code_block(llm_response: str) -> str:
         str: Content inside the first ``` ``` code block found, without backticks.
              Returns empty string if no code block is found.
     """
-    pattern = re.compile(r'```(?:\n)?(.*?)(?:\n)?```', re.DOTALL)
+    pattern = re.compile(r"```(?:\n)?(.*?)(?:\n)?```", re.DOTALL)
     match = pattern.search(llm_response)
     if match:
         return match.group(1).strip()
-    return ''
+    return ""
 
 
 def parse_filtered_files(text: str) -> list:
@@ -102,14 +102,14 @@ def parse_filtered_files(text: str) -> list:
         list: A list containing the names of files.
               Returns an empty list if no files are found or parsing fails.
     """
-    keys = ['filtered_files', 'core_files', 'relevant_files']
+    keys = ["filtered_files", "core_files", "relevant_files"]
 
     for key in keys:
-        match = re.search(rf'{key}\s*=\s*\[.*?\]', text, re.DOTALL)
+        match = re.search(rf"{key}\s*=\s*\[.*?\]", text, re.DOTALL)
         if match:
             try:
                 # Safely evaluate the list portion after splitting by '='
-                file_list_str = match.group(0).split('=', 1)[1].strip()
+                file_list_str = match.group(0).split("=", 1)[1].strip()
                 files = ast.literal_eval(file_list_str)
                 return [file.strip() for file in files]
             except (SyntaxError, ValueError):
@@ -134,13 +134,13 @@ def extract_bus_interface(llm_response: str) -> str:
              Returns empty string if no valid format is found.
     """
     pattern = re.compile(
-        r'bus_interface:\s*(wishbone|axi4|axi4_lite|ahb|avalon|custom)',
+        r"bus_interface:\s*(wishbone|axi4|axi4_lite|ahb|avalon|custom)",
         re.IGNORECASE,
     )
     match = pattern.search(llm_response)
     if match:
         return match.group(1).lower()
-    return ''
+    return ""
 
 
 def extract_top_module(text: str) -> str:
@@ -160,9 +160,9 @@ def extract_top_module(text: str) -> str:
         str: The name of the top module, or an empty string if not found.
     """
     patterns = [
-        r'top_module:\s*(\S+)',  # Pattern 1
-        r'top:\s*\[\'?([a-zA-Z_]\w*)\'?\]',  # Pattern 2
-        r'Therefore, the answer is:\s*(\S+)',  # Pattern 3
+        r"top_module:\s*(\S+)",  # Pattern 1
+        r"top:\s*\[\'?([a-zA-Z_]\w*)\'?\]",  # Pattern 2
+        r"Therefore, the answer is:\s*(\S+)",  # Pattern 3
     ]
 
     # Try each pattern in order
@@ -172,11 +172,11 @@ def extract_top_module(text: str) -> str:
             return match.group(1)
 
     # Check the first line for a standalone module name (Pattern 4)
-    first_line = text.strip().splitlines()[0] if text.strip() else ''
-    if re.match(r'^[a-zA-Z_]\w*$', first_line):
+    first_line = text.strip().splitlines()[0] if text.strip() else ""
+    if re.match(r"^[a-zA-Z_]\w*$", first_line):
         return first_line
 
-    return ''
+    return ""
 
 
 def get_filtered_files_list(
@@ -185,7 +185,7 @@ def get_filtered_files_list(
     modules: list[str],
     tree,
     repo_name: str,
-    model: str = 'qwen2.5:32b',
+    model: str = "qwen2.5:32b",
 ) -> list[str]:
     """
     Generates a list of files relevant to a processor based on the provided data.
@@ -228,14 +228,14 @@ def get_filtered_files_list(
     filtered_files = [<list_of_files>]
     """
 
-    print(f'\033[32m[INFO] Consultando modelo: {model}\033[0m')
+    print(f"\033[32m[INFO] Consultando modelo: {model}\033[0m")
 
     ok, response = send_prompt(prompt, model)
 
     if not ok:
-        raise NameError('\033[31mErro ao consultar modelo\033[0m')
+        raise NameError("\033[31mErro ao consultar modelo\033[0m")
 
-    print(f'\033[32m[INFO] Resposta do modelo: {response}\033[0m')
+    print(f"\033[32m[INFO] Resposta do modelo: {response}\033[0m")
 
     return parse_filtered_files(response)
 
@@ -246,7 +246,7 @@ def get_top_module(
     modules: list[str],
     tree,
     repo_name: str,
-    model: str = 'qwen2.5:32b',
+    model: str = "qwen2.5:32b",
 ) -> str:
     """
     Identifies the processor's top module within a set of files.
@@ -291,20 +291,20 @@ def get_top_module(
     top_module: <result>
     """
 
-    print(f'\033[32m[INFO] Consultando modelo: {model}\033[0m')
+    print(f"\033[32m[INFO] Consultando modelo: {model}\033[0m")
 
     ok, response = send_prompt(prompt, model)
 
     if not ok:
-        raise NameError('\033[31mErro ao consultar modelo\033[0m')
+        raise NameError("\033[31mErro ao consultar modelo\033[0m")
 
-    print(f'\033[32m[INFO] Resposta do modelo: {response}\033[0m')
+    print(f"\033[32m[INFO] Resposta do modelo: {response}\033[0m")
 
     return extract_top_module(response)
 
 
 def generate_top_file(
-    top_module_file: str, processor_name: str, model: str = 'qwen2.5:32b'
+    top_module_file: str, processor_name: str, model: str = "qwen2.5:32b"
 ) -> None:
     """
     Generates a Verilog file connecting a processor to a verification infrastructure.
@@ -323,15 +323,15 @@ def generate_top_file(
     Raises:
         NameError: If an error occurs during the language model query.
     """
-    with open('rtl/template.sv', 'r', encoding='utf-8') as template_file:
+    with open("rtl/template.sv", "r", encoding="utf-8") as template_file:
         template = template_file.read()
 
     with open(
-        f'temp/{processor_name}/{top_module_file}', 'r', encoding='utf-8'
+        f"temp/{processor_name}/{top_module_file}", "r", encoding="utf-8"
     ) as top_module_file_:
         top_module_content = top_module_file_.read()
 
-    with open('rtl/tinyriscv.sv', 'r', encoding='utf-8') as example_file:
+    with open("rtl/tinyriscv.sv", "r", encoding="utf-8") as example_file:
         example = example_file.read()
 
     template_file.close()
@@ -356,15 +356,15 @@ def generate_top_file(
     - Do not add any comments, explanations, or extra text.
     """
 
-    print(f'\033[32m[INFO] Consultando modelo: {model}\033[0m')
+    print(f"\033[32m[INFO] Consultando modelo: {model}\033[0m")
 
     ok, response = send_prompt(prompt, model)
 
-    print(f'\033[32m[INFO] Resposta do modelo: {response}\033[0m')
+    print(f"\033[32m[INFO] Resposta do modelo: {response}\033[0m")
     top_model = extract_code_block(response)
 
     if not top_model:
-        raise NameError('\033[31mErro ao extrair bloco de código\033[0m')
+        raise NameError("\033[31mErro ao extrair bloco de código\033[0m")
 
     prompt = f"""
     Given the processor instantiation below, determine whether it follows a known bus interface standard (e.g., Wishbone, AXI4, AXI4-Lite, AHB, Avalon) or if it uses a fully custom interface.
@@ -384,36 +384,36 @@ def generate_top_file(
     ```
     """
 
-    print(f'\033[32m[INFO] Consultando modelo: {model}\033[0m')
+    print(f"\033[32m[INFO] Consultando modelo: {model}\033[0m")
     ok, response = send_prompt(prompt, model)
     if not ok:
-        raise NameError('\033[31mErro ao consultar modelo\033[0m')
-    print(f'\033[32m[INFO] Resposta do modelo: {response}\033[0m')
+        raise NameError("\033[31mErro ao consultar modelo\033[0m")
+    print(f"\033[32m[INFO] Resposta do modelo: {response}\033[0m")
 
-    bus_interface = re.search(r'bus_interface:\s*(\w+)', response)
+    bus_interface = re.search(r"bus_interface:\s*(\w+)", response)
     bus_interface = bus_interface.group(1).strip()
 
     print(
-        f'\033[32m[INFO] Interface de barramento identificada: {bus_interface}\033[0m'
+        f"\033[32m[INFO] Interface de barramento identificada: {bus_interface}\033[0m"
     )
 
     # criar pasta rlt_{model} se não existir
 
-    if not os.path.exists(f'models_rtls/rtl_{model}'):
-        os.makedirs(f'models_rtls/rtl_{model}')
+    if not os.path.exists(f"models_rtls/rtl_{model}"):
+        os.makedirs(f"models_rtls/rtl_{model}")
 
-    if os.path.exists(f'models_rtls/rtl_{model}/{processor_name}.sv'):
-        processor_name = f'{processor_name}_{time.time()}'
+    if os.path.exists(f"models_rtls/rtl_{model}/{processor_name}.sv"):
+        processor_name = f"{processor_name}_{time.time()}"
 
-    template = template.replace('endmodule', '')
+    template = template.replace("endmodule", "")
 
     with open(
-        f'models_rtls/rtl_{model}/{processor_name}.sv', 'w', encoding='utf-8'
+        f"models_rtls/rtl_{model}/{processor_name}.sv", "w", encoding="utf-8"
     ) as final_file:
-        final_file.write(f'// Generated by {model}\n')
-        final_file.write(f'// Processor: {processor_name}\n')
-        final_file.write(f'// Bus Interface: {bus_interface}\n\n')
+        final_file.write(f"// Generated by {model}\n")
+        final_file.write(f"// Processor: {processor_name}\n")
+        final_file.write(f"// Bus Interface: {bus_interface}\n\n")
         final_file.write(template)
         final_file.write(top_model)
-        final_file.write('\n\nendmodule\n')
+        final_file.write("\n\nendmodule\n")
         final_file.close()

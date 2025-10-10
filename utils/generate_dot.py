@@ -5,14 +5,14 @@ import json
 
 def generate_dot(graph, graph_name):
     """Gera o conteúdo do arquivo .dot a partir do grafo fornecido."""
-    dot_content = f'digraph {graph_name} {{\n'
+    dot_content = f"digraph {graph_name} {{\n"
 
     for key, values in graph.items():
         for value in values:
-            if key != 'module':  # Remover o módulo 'module'
-                dot_content += f'    {key} -> {value};\n'
+            if key != "module":  # Remover o módulo 'module'
+                dot_content += f"    {key} -> {value};\n"
 
-    dot_content += '}\n'
+    dot_content += "}\n"
     return dot_content
 
 
@@ -22,22 +22,22 @@ def main(json_input):
     data = json.loads(json_input)
 
     # Gerar conteúdo para o arquivo dot do module_graph
-    module_graph_dot = generate_dot(data['module_graph'], 'module_graph')
+    module_graph_dot = generate_dot(data["module_graph"], "module_graph")
 
     # Gerar conteúdo para o arquivo dot do module_graph_inverse
     module_graph_inverse_dot = generate_dot(
-        data['module_graph_inverse'], 'module_graph_inverse'
+        data["module_graph_inverse"], "module_graph_inverse"
     )
 
     # Salvar os arquivos .dot
-    with open('module_graph.dot', 'w', encoding='utf-8') as f:
+    with open("module_graph.dot", "w", encoding="utf-8") as f:
         f.write(module_graph_dot)
 
-    with open('module_graph_inverse.dot', 'w', encoding='utf-8') as f:
+    with open("module_graph_inverse.dot", "w", encoding="utf-8") as f:
         f.write(module_graph_inverse_dot)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Exemplo de JSON (substitua pelo seu JSON)
     json_data = """
     {

@@ -25,15 +25,15 @@ import time
 import subprocess
 
 # Caminho para o arquivo que contém a lista de URLs
-MODEL_PATH = 'models.txt'
-FILE_PATH = 'processadores3.txt'
+MODEL_PATH = "models.txt"
+FILE_PATH = "processadores3.txt"
 
 # Abrir o arquivo e ler as URLs
-with open(FILE_PATH, 'r', encoding='utf-8') as file:
+with open(FILE_PATH, "r", encoding="utf-8") as file:
     urls = file.readlines()
 
 # Abrir o arquivo e ler o nome dos modelos
-with open(MODEL_PATH, 'r', encoding='utf-8') as file:
+with open(MODEL_PATH, "r", encoding="utf-8") as file:
     models = file.readlines()
 
 # Remover qualquer espaço ou quebra de linha ao final de cada URL
@@ -44,17 +44,17 @@ models = [model.strip() for model in models]
 
 # Comando base
 command_base = [
-    'proxychains',
-    'python',
-    'config_generator.py',
-    '-u',
-    '',
-    '-c',
-    '-a',
-    '-p',
-    '',
-    '-m',
-    '',
+    "proxychains",
+    "python",
+    "config_generator.py",
+    "-u",
+    "",
+    "-c",
+    "-a",
+    "-p",
+    "",
+    "-m",
+    "",
     #'-n',
 ]
 
@@ -69,10 +69,10 @@ relatorio = []
 # Para cada URL na lista, executar o comando com timeout
 for model in models:
     tempo_inicio = time.time()
-    command_base[8] = f'{model}.json'
+    command_base[8] = f"{model}.json"
     command_base[10] = model
 
-    print(f'Modelo: {model}\n\n')
+    print(f"Modelo: {model}\n\n")
 
     for url in urls:
         # Montar o comando com a URL
@@ -85,25 +85,25 @@ for model in models:
             urls_sucesso.append(url)
         except subprocess.TimeoutExpired:
             print(
-                f'Comando para {url} atingiu o tempo limite de {TIMEOUT_SECONDS} segundos.'
+                f"Comando para {url} atingiu o tempo limite de {TIMEOUT_SECONDS} segundos."
             )
             urls_falharam.append(url)
         except subprocess.CalledProcessError as e:
-            print(f'Erro ao executar o comando para {url}: {e}')
+            print(f"Erro ao executar o comando para {url}: {e}")
 
     tempo_fim = time.time()
-    print(f'Tempo total de execução: {tempo_fim - tempo_inicio} segundos')
+    print(f"Tempo total de execução: {tempo_fim - tempo_inicio} segundos")
 
     relatorio.append(
-        f'Modelo: {model}\nTempo total de execução: {tempo_fim - tempo_inicio} segundos\n\n'
+        f"Modelo: {model}\nTempo total de execução: {tempo_fim - tempo_inicio} segundos\n\n"
     )
 
-print('\n')
+print("\n")
 
-print(f'URLs que falharam: {urls_falharam}')
-print(f'URLs que tiveram sucesso: {urls_sucesso}')
+print(f"URLs que falharam: {urls_falharam}")
+print(f"URLs que tiveram sucesso: {urls_sucesso}")
 
-with open('relatorio.txt', 'w', encoding='utf-8') as file:
+with open("relatorio.txt", "w", encoding="utf-8") as file:
     file.writelines(relatorio)
 
 print("Relatório salvo em 'relatorio.txt'")

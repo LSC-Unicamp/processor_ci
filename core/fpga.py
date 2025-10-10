@@ -51,28 +51,28 @@ from core.board_defines import DEFINES_BY_BOARD
 CURRENT_DIR = os.getcwd()
 
 VIVADO_BOARDS = [
-    'xilinx_vc709',
-    'digilent_arty_a7_100t',
-    'digilent_nexys4_ddr',
-    'opensdrlab_kintex7',
-    'zedboard',
+    "xilinx_vc709",
+    "digilent_arty_a7_100t",
+    "digilent_nexys4_ddr",
+    "opensdrlab_kintex7",
+    "zedboard",
 ]
 
 YOSYS_BOARDS = [
-    'colorlight_i9',
+    "colorlight_i9",
 ]
 
 GOWIN_BOARDS = [
-    'tangnano_20k',
-    'tangnano_9k',
+    "tangnano_20k",
+    "tangnano_9k",
 ]
 
 
-def write_defines(board_name, filename='processor_ci_defines.vh'):
+def write_defines(board_name, filename="processor_ci_defines.vh"):
     if board_name not in DEFINES_BY_BOARD:
         raise ValueError(f"Board '{board_name}' not found.")
 
-    with open(filename, 'w') as f:
+    with open(filename, "w") as f:
         f.write(DEFINES_BY_BOARD[board_name])
     print(f"File '{filename}' generated for board: '{board_name}'.")
 
@@ -89,10 +89,10 @@ def get_vivado_prefix(vhdl: bool, sverilog: bool) -> str:
         str: The prefix command to use.
     """
     if vhdl:
-        return 'read_vhdl -vhdl2008'
+        return "read_vhdl -vhdl2008"
     if sverilog:
-        return 'read_verilog -sv'
-    return 'read_verilog'
+        return "read_verilog -sv"
+    return "read_verilog"
 
 
 def get_yosys_prefix(vhdl: bool, sverilog: bool) -> str:
@@ -107,10 +107,10 @@ def get_yosys_prefix(vhdl: bool, sverilog: bool) -> str:
         str: The prefix command to use.
     """
     if vhdl:
-        return 'yosys ghdl -a'
+        return "yosys ghdl -a"
     if sverilog:
-        return 'yosys read_systemverilog -defer -I./'
-    return 'yosys read_verilog'
+        return "yosys read_systemverilog -defer -I./"
+    return "yosys read_verilog"
 
 
 def get_gowin_prefix() -> str:
@@ -124,7 +124,7 @@ def get_gowin_prefix() -> str:
     Returns:
         str: The prefix command to use.
     """
-    return 'add_file'
+    return "add_file"
 
 
 def get_quartus_prefix(vhdl: bool, sverilog: bool) -> str:
@@ -139,10 +139,10 @@ def get_quartus_prefix(vhdl: bool, sverilog: bool) -> str:
         str: The prefix command to use.
     """
     if vhdl:
-        return 'vcom'
+        return "vcom"
     if sverilog:
-        return 'vlog'
-    return 'vlog'
+        return "vlog"
+    return "vlog"
 
 
 def get_prefix(board: str, vhdl: bool, sverilog: bool) -> str:
@@ -185,71 +185,62 @@ def make_build_file(config: dict, board: str, toolchain_path: str) -> str:
         FileNotFoundError: If the base configuration file does not exist.
         ValueError: If the base configuration file cannot be read.
     """
-    if toolchain_path[-1] == '/':
+    if toolchain_path[-1] == "/":
         toolchain_path = toolchain_path[:-1]
 
-    base_config_path = (
-        f'{toolchain_path}/processor_ci/build_scripts/{board}.tcl'
-    )
+    base_config_path = f"{toolchain_path}/processor_ci/build_scripts/{board}.tcl"
 
     if not os.path.exists(base_config_path):
         raise FileNotFoundError(
-            f'The configuration file {base_config_path} was not found.'
+            f"The configuration file {base_config_path} was not found."
         )
 
     base_config = None
 
-    with open(base_config_path, 'r', encoding='utf-8') as file:
+    with open(base_config_path, "r", encoding="utf-8") as file:
         base_config = file.read()
 
     if not base_config:
-        raise ValueError(
-            f'Unable to read the configuration file {base_config_path}.'
-        )
+        raise ValueError(f"Unable to read the configuration file {base_config_path}.")
 
-    final_config_path = CURRENT_DIR + f'/build_{board}.tcl'
+    final_config_path = CURRENT_DIR + f"/build_{board}.tcl"
 
     exist_sv_file = False
-    include_dirs_str = ' '.join(
-        f'-I{CURRENT_DIR}/{d}' for d in config['include_dirs']
-    )
+    include_dirs_str = " ".join(f"-I{CURRENT_DIR}/{d}" for d in config["include_dirs"])
 
-    include_dirs_str_vivado = ''
+    include_dirs_str_vivado = ""
 
-    write_defines(board, 'processor_ci_defines.vh')
+    write_defines(board, "processor_ci_defines.vh")
 
-    with open(final_config_path, 'w', encoding='utf-8') as file:
+    with open(final_config_path, "w", encoding="utf-8") as file:
         prefix = get_prefix(board, False, True)
         file.write(
-            prefix
-            + f' {toolchain_path}/processor_ci/rtl/{config["folder"]}.sv\n'
+            prefix + f' {toolchain_path}/processor_ci/rtl/{config["folder"]}.sv\n'
         )
 
-        for i in config['files']:
-            is_sv_file = i.endswith('.sv')
+        for i in config["files"]:
+            is_sv_file = i.endswith(".sv")
             prefix = get_prefix(
                 board,
-                vhdl=i.endswith('.vhd') or i.endswith('.vhdl'),
+                vhdl=i.endswith(".vhd") or i.endswith(".vhdl"),
                 sverilog=is_sv_file,
             )
             exist_sv_file = exist_sv_file or is_sv_file
             if is_sv_file and board in YOSYS_BOARDS:
-                file.write(
-                    prefix + f' {include_dirs_str} {CURRENT_DIR}/' + i + '\n'
-                )
+                file.write(prefix + f" {include_dirs_str} {CURRENT_DIR}/" + i + "\n")
             else:
-                file.write(prefix + f' {CURRENT_DIR}/' + i + '\n')
+                file.write(prefix + f" {CURRENT_DIR}/" + i + "\n")
 
-        if board in VIVADO_BOARDS and config['include_dirs'] != []:
-            include_dirs_str_vivado = 'set_property include_dirs [list '
-            for i in config['include_dirs']:
+        if board in VIVADO_BOARDS and config["include_dirs"] != []:
+            include_dirs_str_vivado = "set_property include_dirs [list "
+            for i in config["include_dirs"]:
                 include_dirs_str_vivado += f'"{CURRENT_DIR}/{i}" '
-            include_dirs_str_vivado += '] [get_filesets sources_1]\n'
+            include_dirs_str_vivado += "] [get_filesets sources_1]\n"
             file.write(include_dirs_str_vivado)
 
         file.write(base_config)
 
-    print(f'Final configuration file generated at {final_config_path}')
+    print(f"Final configuration file generated at {final_config_path}")
 
     return final_config_path
 
@@ -269,18 +260,18 @@ def build(build_script_path: str, board: str, toolchain_path: str) -> None:
     Raises:
         subprocess.CalledProcessError: If the build process fails.
     """
-    if toolchain_path[-1] == '/':
+    if toolchain_path[-1] == "/":
         toolchain_path = toolchain_path[:-1]
 
-    makefile_path = f'{toolchain_path}/processor_ci/makefiles/{board}.mk'
+    makefile_path = f"{toolchain_path}/processor_ci/makefiles/{board}.mk"
 
     # Set the BUILD_SCRIPT variable before running the make command
     with subprocess.Popen(
         [
-            'make',
-            '-f',
+            "make",
+            "-f",
             makefile_path,
-            f'BUILD_SCRIPT={build_script_path}',
+            f"BUILD_SCRIPT={build_script_path}",
         ],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -291,13 +282,13 @@ def build(build_script_path: str, board: str, toolchain_path: str) -> None:
 
         # Check the status of the execution
         if process.returncode == 0:
-            print('Makefile executed successfully.')
-            print('Makefile output:')
+            print("Makefile executed successfully.")
+            print("Makefile output:")
             print(stdout)
         else:
-            print('Error executing Makefile.')
+            print("Error executing Makefile.")
             print(stderr)
-            raise subprocess.CalledProcessError(process.returncode, 'make')
+            raise subprocess.CalledProcessError(process.returncode, "make")
 
 
 def flash(board: str, toolchain_path: str) -> None:
@@ -314,13 +305,13 @@ def flash(board: str, toolchain_path: str) -> None:
     Raises:
         subprocess.CalledProcessError: If the flashing process fails.
     """
-    if toolchain_path[-1] == '/':
+    if toolchain_path[-1] == "/":
         toolchain_path = toolchain_path[:-1]
 
-    makefile_path = f'{toolchain_path}/processor_ci/makefiles/{board}.mk'
+    makefile_path = f"{toolchain_path}/processor_ci/makefiles/{board}.mk"
 
     with subprocess.Popen(
-        ['make', '-f', makefile_path, 'load'],
+        ["make", "-f", makefile_path, "load"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
@@ -330,10 +321,10 @@ def flash(board: str, toolchain_path: str) -> None:
 
         # Check the status of the execution
         if process.returncode == 0:
-            print('Makefile executed successfully.')
-            print('Makefile output:')
+            print("Makefile executed successfully.")
+            print("Makefile output:")
             print(stdout)
         else:
-            print('Error executing Makefile.')
+            print("Error executing Makefile.")
             print(stderr)
-            raise subprocess.CalledProcessError(process.returncode, 'make')
+            raise subprocess.CalledProcessError(process.returncode, "make")

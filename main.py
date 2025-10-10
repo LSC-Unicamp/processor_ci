@@ -39,7 +39,7 @@ from core.config import load_config
 from core.fpga import make_build_file, flash, build
 from core.lock import wait_for_lock, create_lock, remove_lock
 
-LOCKFILE = 'run.lock'
+LOCKFILE = "run.lock"
 
 
 def main(
@@ -79,9 +79,7 @@ def main(
         # Cria o arquivo de bloqueio
         create_lock(LOCKFILE)
 
-        build_file_path = make_build_file(
-            processor_data, board_name, toolchain_path
-        )
+        build_file_path = make_build_file(processor_data, board_name, toolchain_path)
 
         # Remove o arquivo de bloqueio após a construção
         remove_lock(LOCKFILE)
@@ -89,50 +87,50 @@ def main(
         build(build_file_path, board_name, toolchain_path)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='Script para configurar o design com base no processador e placa.'
+        description="Script para configurar o design com base no processador e placa."
     )
 
     # Definição dos argumentos obrigatórios
     parser.add_argument(
-        '-c',
-        '--config',
+        "-c",
+        "--config",
         type=str,
         required=True,
-        help='Caminho do diretorio de configuração do script.',
+        help="Caminho do diretorio de configuração do script.",
     )
     parser.add_argument(
-        '-p',
-        '--processor',
+        "-p",
+        "--processor",
         type=str,
         required=True,
-        help='Nome do processador a ser utilizado.',
+        help="Nome do processador a ser utilizado.",
     )
     parser.add_argument(
-        '-b',
-        '--board',
+        "-b",
+        "--board",
         type=str,
         required=True,
-        help='Nome da placa a ser utilizada.',
+        help="Nome da placa a ser utilizada.",
     )
 
     # Parâmetro opcional para o caminho das toolchains
     parser.add_argument(
-        '-t',
-        '--toolchain',
+        "-t",
+        "--toolchain",
         type=str,
-        default='/eda',
+        default="/eda",
         required=False,
-        help='Caminho para as toolchains (padrão: /eda).',
+        help="Caminho para as toolchains (padrão: /eda).",
     )
 
     # Parâmetro opcional para carregar o bitstream
     parser.add_argument(
-        '-l',
-        '--load',
-        action='store_true',
-        help='Carregar o bitstream na FPGA.',
+        "-l",
+        "--load",
+        action="store_true",
+        help="Carregar o bitstream na FPGA.",
     )
 
     # Parse dos argumentos

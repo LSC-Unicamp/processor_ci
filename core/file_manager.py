@@ -19,7 +19,7 @@ import re
 import shutil
 
 # Constant for the destination directory
-DESTINATION_DIR = './temp'
+DESTINATION_DIR = "./temp"
 
 
 def clone_repo(url: str, repo_name: str) -> str:
@@ -39,11 +39,11 @@ def clone_repo(url: str, repo_name: str) -> str:
 
     try:
         subprocess.run(
-            ['git', 'clone', '--recursive', url, destination_path], check=True
+            ["git", "clone", "--recursive", url, destination_path], check=True
         )
         return destination_path
     except subprocess.CalledProcessError as e:
-        print(f'Error cloning the repository: {e}')
+        print(f"Error cloning the repository: {e}")
         return None
 
 
@@ -75,21 +75,19 @@ def find_files_with_extension(
     Raises:
         IndexError: If no files with the specified extensions are found.
     """
-    extension = '.v'
+    extension = ".v"
     files = []
     for extension in extensions:
-        files.extend(
-            glob.glob(f'{directory}/**/*.{extension}', recursive=True)
-        )
+        files.extend(glob.glob(f"{directory}/**/*.{extension}", recursive=True))
 
-    if '.sv' in files[0]:
-        extension = '.sv'
-    elif '.vhdl' in files[0]:
-        extension = '.vhdl'
-    elif '.vhd' in files[0]:
-        extension = '.vhd'
-    elif '.v' in files[0]:
-        extension = '.v'
+    if ".sv" in files[0]:
+        extension = ".sv"
+    elif ".vhdl" in files[0]:
+        extension = ".vhdl"
+    elif ".vhd" in files[0]:
+        extension = ".vhd"
+    elif ".v" in files[0]:
+        extension = ".v"
 
     return files, extension
 
@@ -104,21 +102,19 @@ def is_testbench_file(file_path: str, repo_name: str) -> bool:
     Returns:
         bool: True if the file is a testbench, otherwise False.
     """
-    relative_path = os.path.relpath(
-        file_path, os.path.join(DESTINATION_DIR, repo_name)
-    )
+    relative_path = os.path.relpath(file_path, os.path.join(DESTINATION_DIR, repo_name))
 
     file_name = os.path.basename(relative_path)
     directory_parts = os.path.dirname(relative_path).split(os.sep)
 
     # Checking if the file name contains keywords
-    if re.search(r'(tb|testbench|test|verif)', file_name, re.IGNORECASE):
+    if re.search(r"(tb|testbench|test|verif)", file_name, re.IGNORECASE):
         return True
 
     # Checking if any part of the path contains keywords
     for part in directory_parts:
         if re.search(
-            r'(tests?|testbenches?|testbenchs?|simulations?|tb|sim|verif)',
+            r"(tests?|testbenches?|testbenchs?|simulations?|tb|sim|verif)",
             part,
             re.IGNORECASE,
         ):
@@ -136,7 +132,7 @@ def find_include_dirs(directory: str) -> set[str]:
     Returns:
         set[str]: Set of directories containing include files.
     """
-    include_files = glob.glob(f'{directory}/**/*.(svh|vh)', recursive=True)
+    include_files = glob.glob(f"{directory}/**/*.(svh|vh)", recursive=True)
     include_dirs = {os.path.dirname(file) for file in include_files}
     return include_dirs
 
@@ -152,11 +148,11 @@ def extract_modules(files: list[str]) -> list[tuple[str, str]]:
     """
     modules = []
 
-    module_pattern_verilog = re.compile(r'module\s+(\w+)\s*')
-    entity_pattern_vhdl = re.compile(r'entity\s+(\w+)\s+is', re.IGNORECASE)
+    module_pattern_verilog = re.compile(r"module\s+(\w+)\s*")
+    entity_pattern_vhdl = re.compile(r"entity\s+(\w+)\s+is", re.IGNORECASE)
 
     for file_path in files:
-        with open(file_path, 'r', errors='ignore', encoding='utf-8') as f:
+        with open(file_path, "r", errors="ignore", encoding="utf-8") as f:
             content = f.read()
 
             # Find Verilog/SystemVerilog modules

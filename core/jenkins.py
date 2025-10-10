@@ -96,14 +96,12 @@ pipeline {{
 """
 
     # Prepare file lists
-    files = ' '.join(config.get('files', []))
-    sim_files = ' '.join(config.get('sim_files', []))
-    include_dirs = ' '.join(
-        f'-I {inc}' for inc in config.get('include_dirs', [])
-    )
+    files = " ".join(config.get("files", []))
+    sim_files = " ".join(config.get("sim_files", []))
+    include_dirs = " ".join(f"-I {inc}" for inc in config.get("include_dirs", []))
 
     # Define extra flags if provided
-    extra_flags_str = ' '.join(extra_flags) if extra_flags else ''
+    extra_flags_str = " ".join(extra_flags) if extra_flags else ""
 
     # Command for extra utilities in the pipeline
     utilities_command = (
@@ -113,19 +111,15 @@ pipeline {{
 
     # Determine simulation command based on file types
     is_vhdl = any(
-        file.endswith('.vhdl') or file.endswith('.vhd')
-        for file in config.get('files', [])
+        file.endswith(".vhdl") or file.endswith(".vhd")
+        for file in config.get("files", [])
     )
-    is_verilog = any(file.endswith('.v') for file in config.get('files', []))
+    is_verilog = any(file.endswith(".v") for file in config.get("files", []))
 
-    is_system_verilog = any(
-        file.endswith('.sv') for file in config.get('files', [])
-    )
+    is_system_verilog = any(file.endswith(".sv") for file in config.get("files", []))
 
     if is_system_verilog:
-        simulation_command = (
-            'echo "simulation not supported for System Verilog files"'
-        )
+        simulation_command = 'echo "simulation not supported for System Verilog files"'
     elif is_vhdl and not is_verilog:
         # VHDL simulation command
         simulation_command = f'sh "ghdl -a --std={lang_version} \
@@ -143,7 +137,7 @@ pipeline {{
         )
 
     # Prepare FPGA stages for each FPGA in parallel
-    fpga_parallel_stages = '\n                '.join(
+    fpga_parallel_stages = "\n                ".join(
         [
             """
                 stage('{fpga}') {{
@@ -180,25 +174,23 @@ pipeline {{
                     }}
                 }}""".format(
                 fpga=fpga,
-                folder=config['folder'],
+                folder=config["folder"],
                 main_script_path=main_script_path,
-                port='/dev/ttyACM0'
-                if fpga == 'colorlight_i9'
-                else '/dev/ttyUSB1',
-                march=config['march'],
-                sync_key='0x41525459'
-                if fpga == 'digilent_arty_a7_100t'
-                else '0x434F4C4F',
-                ctm='-ctm' if config['two_memory'] else '',
+                port="/dev/ttyACM0" if fpga == "colorlight_i9" else "/dev/ttyUSB1",
+                march=config["march"],
+                sync_key=(
+                    "0x41525459" if fpga == "digilent_arty_a7_100t" else "0x434F4C4F"
+                ),
+                ctm="-ctm" if config["two_memory"] else "",
             )
             for fpga in fpgas
         ]
     )
 
     # python main.py -p /dev/ttyUSB2 -b 115200 -s 2 -c config.json -m rv32i -e coremark,dhrystone -k 0x4E455859
-    pre_script = ''
+    pre_script = ""
 
-    if 'pre_script' in config.keys():
+    if "pre_script" in config.keys():
         pre_script = f"""
         stage('Verilog Convert') {{
             steps {{
@@ -211,10 +203,10 @@ pipeline {{
 
     # Generate Jenkinsfile content
     jenkinsfile = jenkinsfile.format(
-        repository=config['repository'],
-        folder=config['folder'],
+        repository=config["repository"],
+        folder=config["folder"],
         pre_script=pre_script,
-        top_module=config['top_module'],
+        top_module=config["top_module"],
         include_dirs=include_dirs,
         files=files,
         sim_files=sim_files,
@@ -224,7 +216,7 @@ pipeline {{
     )
 
     # Save the Jenkinsfile with specified encoding
-    with open('Jenkinsfile', 'w', encoding='utf-8') as f:
+    with open("Jenkinsfile", "w", encoding="utf-8") as f:
         f.write(jenkinsfile)
 
-    print('Jenkinsfile generated successfully.')
+    print("Jenkinsfile generated successfully.")

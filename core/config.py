@@ -25,9 +25,9 @@ def create_default_config(config_path: str, processor_name: str) -> None:
     Raises:
         IOError: If there is an issue writing to the file.
     """
-    full_config_path = os.path.join(config_path, f'{processor_name}.json')
+    full_config_path = os.path.join(config_path, f"{processor_name}.json")
 
-    with open(full_config_path, 'w', encoding='utf-8') as file:
+    with open(full_config_path, "w", encoding="utf-8") as file:
         json.dump({}, file, indent=4)
 
 
@@ -47,27 +47,25 @@ def load_config(config_path: str, processor_name: str) -> dict:
     if not os.path.exists(config_path):
         os.makedirs(config_path, exist_ok=True)
         raise FileNotFoundError(
-            f'The configuration folder {config_path} was not found.'
+            f"The configuration folder {config_path} was not found."
         )
         # create_default_config(config_path)
 
-    full_config_path = os.path.join(config_path, f'{processor_name}.json')
+    full_config_path = os.path.join(config_path, f"{processor_name}.json")
 
     if not os.path.exists(full_config_path):
         create_default_config(config_path, processor_name)
         raise FileNotFoundError(
-            f'The configuration file {full_config_path} was not found.'
+            f"The configuration file {full_config_path} was not found."
         )
 
-    with open(full_config_path, 'r', encoding='utf-8') as file:
+    with open(full_config_path, "r", encoding="utf-8") as file:
         config_data = json.load(file)
 
     return config_data
 
 
-def save_config(
-    config_path: str, config_data: dict, processor_name: str
-) -> None:
+def save_config(config_path: str, config_data: dict, processor_name: str) -> None:
     """Saves a dictionary to a specified JSON configuration file.
 
     Args:
@@ -84,8 +82,8 @@ def save_config(
     if not os.path.exists(config_path):
         os.makedirs(config_path, exist_ok=True)
 
-    full_config_path = os.path.join(config_path, f'{processor_name}.json')
+    full_config_path = os.path.join(config_path, f"{processor_name}.json")
     # Save the configuration data to the specified file
 
-    with open(full_config_path, 'w', encoding='utf-8') as file:
+    with open(full_config_path, "w", encoding="utf-8") as file:
         json.dump(config_data, file, indent=4)

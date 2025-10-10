@@ -7,7 +7,7 @@ def print_green(text: str) -> None:
     Args:
         text (str): Message to be printed.
     """
-    print(f'\033[32m{text}\033[0m')  # Verde
+    print(f"\033[32m{text}\033[0m")  # Verde
 
 
 def print_yellow(text: str) -> None:
@@ -16,7 +16,7 @@ def print_yellow(text: str) -> None:
     Args:
         text (str): Message to be printed.
     """
-    print(f'\033[33m{text}\033[0m')  # Amarelo
+    print(f"\033[33m{text}\033[0m")  # Amarelo
 
 
 def print_red(text: str) -> None:
@@ -25,7 +25,7 @@ def print_red(text: str) -> None:
     Args:
         text (str): Message to be printed.
     """
-    print(f'\033[31m{text}\033[0m')  # Vermelho
+    print(f"\033[31m{text}\033[0m")  # Vermelho
 
 
 def print_blue(text: str) -> None:
@@ -34,7 +34,7 @@ def print_blue(text: str) -> None:
     Args:
         text (str): Message to be printed.
     """
-    print(f'\033[34m{text}\033[0m')  # Azul
+    print(f"\033[34m{text}\033[0m")  # Azul
 
 
 # Exemplos de uso:

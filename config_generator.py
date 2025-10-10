@@ -90,17 +90,17 @@ from core.jenkins import generate_jenkinsfile
 from core.log import print_green, print_red, print_yellow
 
 
-EXTENSIONS = ['v', 'sv', 'vhdl', 'vhd']
-BASE_DIR = 'jenkins_pipeline/'
+EXTENSIONS = ["v", "sv", "vhdl", "vhd"]
+BASE_DIR = "jenkins_pipeline/"
 FPGAs = [
     #'colorlight_i9',
     #'digilent_nexys4_ddr',
     # "gowin_tangnano_20k",
     # "xilinx_vc709",
-    'digilent_arty_a7_100t',
+    "digilent_arty_a7_100t",
 ]
-DESTINATION_DIR = './temp'
-MAIN_SCRIPT_PATH = '/eda/processor_ci/main.py'
+DESTINATION_DIR = "./temp"
+MAIN_SCRIPT_PATH = "/eda/processor_ci/main.py"
 
 
 def get_top_module_file(modules: list[dict[str, str]], top_module: str) -> str:
@@ -116,10 +116,10 @@ def get_top_module_file(modules: list[dict[str, str]], top_module: str) -> str:
         str: The file path of the top module if found, or an empty string otherwise.
     """
     for module in modules:
-        if module['module'] == top_module:
-            return module['file']
+        if module["module"] == top_module:
+            return module["file"]
 
-    return ''
+    return ""
 
 
 def copy_hardware_template(repo_name: str) -> None:
@@ -132,13 +132,13 @@ def copy_hardware_template(repo_name: str) -> None:
     Returns:
         None
     """
-    orig = 'rtl/template.sv'
+    orig = "rtl/template.sv"
 
     # Caminho do diretório de destino
-    dest = f'rtl/{repo_name}.sv'
+    dest = f"rtl/{repo_name}.sv"
 
     if os.path.exists(dest):
-        print_yellow('[WARN] RTL - Arquivo já existe')
+        print_yellow("[WARN] RTL - Arquivo já existe")
         return
 
     # Copiar o diretório
@@ -151,7 +151,7 @@ def generate_processor_config(
     plot_graph: bool,
     config_file_path: str,
     no_llama: bool,
-    model: str = 'qwen2.5:32b',
+    model: str = "qwen2.5:32b",
 ) -> None:
     """
     Generates a processor configuration by cloning a repository, analyzing its files,
@@ -175,9 +175,7 @@ def generate_processor_config(
     files, extension = find_and_log_files(destination_path)
     modulename_list, modules = extract_and_log_modules(files, destination_path)
 
-    tb_files, non_tb_files = categorize_files(
-        files, repo_name, destination_path
-    )
+    tb_files, non_tb_files = categorize_files(files, repo_name, destination_path)
     include_dirs = find_and_log_include_dirs(destination_path)
     module_graph, module_graph_inverse = build_and_log_graphs(files, modules)
 
@@ -232,7 +230,7 @@ def extract_repo_name(url: str) -> str:
     Returns:
         str: The name of the repository without the '.git' extension.
     """
-    return url.split('/')[-1].replace('.git', '')
+    return url.split("/")[-1].replace(".git", "")
 
 
 def clone_and_validate_repo(url: str, repo_name: str) -> str:
@@ -248,9 +246,9 @@ def clone_and_validate_repo(url: str, repo_name: str) -> str:
     """
     destination_path = clone_repo(url, repo_name)
     if not destination_path:
-        print_red('[ERROR] Não foi possível clonar o repositório.')
+        print_red("[ERROR] Não foi possível clonar o repositório.")
     else:
-        print_green('[LOG] Repositório clonado com sucesso\n')
+        print_green("[LOG] Repositório clonado com sucesso\n")
     return destination_path
 
 
@@ -264,17 +262,13 @@ def find_and_log_files(destination_path: str) -> tuple:
     Returns:
         tuple: A tuple containing a list of file paths and the common extension found.
     """
-    print_green(
-        '[LOG] Procurando arquivos com extensão .v, .sv, .vhdl ou .vhd\n'
-    )
+    print_green("[LOG] Procurando arquivos com extensão .v, .sv, .vhdl ou .vhd\n")
     files, extension = find_files_with_extension(destination_path, EXTENSIONS)
-    print_green('[LOG] Arquivos encontrados com sucesso\n')
+    print_green("[LOG] Arquivos encontrados com sucesso\n")
     return files, extension
 
 
-def extract_and_log_modules(
-    files: list, destination_path: str
-) -> tuple[list, list]:
+def extract_and_log_modules(files: list, destination_path: str) -> tuple[list, list]:
     """
     Extracts module information from files and logs the result.
 
@@ -286,21 +280,19 @@ def extract_and_log_modules(
         list: A list of dictionaries containing module names and their file paths
         relative to the repository.
     """
-    print_green('[LOG] Extraindo módulos dos arquivos\n')
+    print_green("[LOG] Extraindo módulos dos arquivos\n")
     modules = extract_modules(files)
-    print_green('[LOG] Módulos extraídos com sucesso\n')
+    print_green("[LOG] Módulos extraídos com sucesso\n")
     return [
         {
-            'module': module_name,
-            'file': os.path.relpath(file_path, destination_path),
+            "module": module_name,
+            "file": os.path.relpath(file_path, destination_path),
         }
         for module_name, file_path in modules
     ], modules
 
 
-def categorize_files(
-    files: list, repo_name: str, destination_path: str
-) -> tuple:
+def categorize_files(files: list, repo_name: str, destination_path: str) -> tuple:
     """
     Categorizes files into testbench and non-testbench files.
 
@@ -321,10 +313,7 @@ def categorize_files(
             non_tb_files.append(f)
     return (
         [os.path.relpath(tb_f, destination_path) for tb_f in tb_files],
-        [
-            os.path.relpath(non_tb_f, destination_path)
-            for non_tb_f in non_tb_files
-        ],
+        [os.path.relpath(non_tb_f, destination_path) for non_tb_f in non_tb_files],
     )
 
 
@@ -338,9 +327,9 @@ def find_and_log_include_dirs(destination_path: str) -> list:
     Returns:
         list: A list of include directory paths.
     """
-    print_green('[LOG] Procurando diretórios de inclusão\n')
+    print_green("[LOG] Procurando diretórios de inclusão\n")
     include_dirs = find_include_dirs(destination_path)
-    print_green('[LOG] Diretórios de inclusão encontrados com sucesso\n')
+    print_green("[LOG] Diretórios de inclusão encontrados com sucesso\n")
     return include_dirs
 
 
@@ -355,9 +344,9 @@ def build_and_log_graphs(files: list, modules: list) -> tuple:
     Returns:
         tuple: A tuple containing the direct and inverse module graphs.
     """
-    print_green('[LOG] Construindo os grafos direto e inverso\n')
+    print_green("[LOG] Construindo os grafos direto e inverso\n")
     module_graph, module_graph_inverse = build_module_graph(files, modules)
-    print_green('[LOG] Grafos construídos com sucesso\n')
+    print_green("[LOG] Grafos construídos com sucesso\n")
     return module_graph, module_graph_inverse
 
 
@@ -387,19 +376,17 @@ def process_files_with_llama(
     """
     if not no_llama:
         print_green(
-            '[LOG] Utilizando OLLAMA para identificar os arquivos do processador\n'
+            "[LOG] Utilizando OLLAMA para identificar os arquivos do processador\n"
         )
         filtered_files = get_filtered_files_list(
             non_tb_files, tb_files, modules, module_graph, repo_name, model
         )
-        print_green(
-            '[LOG] Utilizando OLLAMA para identificar o módulo principal\n'
-        )
+        print_green("[LOG] Utilizando OLLAMA para identificar o módulo principal\n")
         top_module = get_top_module(
             non_tb_files, tb_files, modules, module_graph, repo_name, model
         )
     else:
-        filtered_files, top_module = non_tb_files, ''
+        filtered_files, top_module = non_tb_files, ""
     return filtered_files, top_module
 
 
@@ -414,10 +401,10 @@ def determine_language_version(extension: str) -> str:
         str: The language version (e.g., '08', '2012', or '2005').
     """
     return {
-        '.vhdl': '08',
-        '.vhd': '08',
-        '.sv': '2012',
-    }.get(extension, '2005')
+        ".vhdl": "08",
+        ".vhd": "08",
+        ".sv": "2012",
+    }.get(extension, "2005")
 
 
 def create_output_json(
@@ -445,17 +432,17 @@ def create_output_json(
         dict: The output JSON structure.
     """
     return {
-        'name': repo_name,
-        'folder': repo_name,
-        'sim_files': tb_files,
-        'files': filtered_files,
-        'include_dirs': list(include_dirs),
-        'repository': url,
-        'top_module': top_module,
-        'extra_flags': [],
-        'language_version': language_version,
-        'march': 'rv32i',
-        'two_memory': False,
+        "name": repo_name,
+        "folder": repo_name,
+        "sim_files": tb_files,
+        "files": filtered_files,
+        "include_dirs": list(include_dirs),
+        "repository": url,
+        "top_module": top_module,
+        "extra_flags": [],
+        "language_version": language_version,
+        "march": "rv32i",
+        "two_memory": False,
     }
 
 
@@ -469,7 +456,7 @@ def print_json_output(output_json: dict) -> None:
     Returns:
         None
     """
-    print('Result: ')
+    print("Result: ")
     print(json.dumps(output_json, indent=4))
 
 
@@ -496,7 +483,7 @@ def save_log_and_generate_template(
     output_json,
     modules,
     top_module,
-    model: str = 'qwen3:14b',
+    model: str = "qwen3:14b",
 ):
     """
     Saves the log file and generates the hardware template.
@@ -513,21 +500,21 @@ def save_log_and_generate_template(
     Returns:
         None
     """
-    print_green('[LOG] Salvando o log em logs/\n')
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
+    print_green("[LOG] Salvando o log em logs/\n")
+    if not os.path.exists("logs"):
+        os.makedirs("logs")
     with open(
-        f'logs/{repo_name}_{time.time()}.json', 'w', encoding='utf-8'
+        f"logs/{repo_name}_{time.time()}.json", "w", encoding="utf-8"
     ) as log_file:
         log_file.write(json.dumps(output_json, indent=4))
-    print_green('[LOG] Arquivo de log salvo com sucesso\n')
+    print_green("[LOG] Arquivo de log salvo com sucesso\n")
 
     if top_module:
         top_module_file = get_top_module_file(modules, top_module)
         if top_module_file:
             generate_top_file(top_module_file, repo_name, model=model)
         else:
-            print_red('[ERROR] Módulo principal não encontrado')
+            print_red("[ERROR] Módulo principal não encontrado")
     else:
         copy_hardware_template(repo_name)
 
@@ -547,14 +534,14 @@ def cleanup_repo_and_plot_graphs(
     Returns:
         None
     """
-    print_green('[LOG] Removendo o repositório clonado\n')
+    print_green("[LOG] Removendo o repositório clonado\n")
     remove_repo(repo_name)
-    print_green('[LOG] Repositório removido com sucesso\n')
+    print_green("[LOG] Repositório removido com sucesso\n")
 
     if plot_graph:
-        print_green('[LOG] Plotando os grafos\n')
+        print_green("[LOG] Plotando os grafos\n")
         plot_processor_graph(module_graph, module_graph_inverse)
-        print_green('[LOG] Grafos plotados com sucesso\n')
+        print_green("[LOG] Grafos plotados com sucesso\n")
 
 
 def generate_all_pipelines(config_dir: str) -> None:
@@ -568,31 +555,31 @@ def generate_all_pipelines(config_dir: str) -> None:
         None
     """
     if not os.path.exists(config_dir):
-        print_red('[ERROR] Config directory not found')
-        raise FileNotFoundError(f'Config directory {config_dir} not found')
+        print_red("[ERROR] Config directory not found")
+        raise FileNotFoundError(f"Config directory {config_dir} not found")
 
     files = os.listdir(config_dir)
     if not files:
-        print_red('[ERROR] Config directory is empty')
-        raise FileNotFoundError('Config directory is empty')
+        print_red("[ERROR] Config directory is empty")
+        raise FileNotFoundError("Config directory is empty")
 
     for file in files:
-        if not file.endswith('.json'):
-            print_red(f'[ERROR] Invalid file: {file}')
+        if not file.endswith(".json"):
+            print_red(f"[ERROR] Invalid file: {file}")
             continue
 
-        config = load_config(config_dir, file.replace('.json', ''))
+        config = load_config(config_dir, file.replace(".json", ""))
 
         generate_jenkinsfile(
             config,
             FPGAs,
             MAIN_SCRIPT_PATH,
-            config['language_version'],
-            config['extra_flags'],
+            config["language_version"],
+            config["extra_flags"],
         )
-        os.rename('Jenkinsfile', f'{BASE_DIR}{config["name"]}.Jenkinsfile')
+        os.rename("Jenkinsfile", f'{BASE_DIR}{config["name"]}.Jenkinsfile')
 
-    print('Jenkinsfiles generated successfully.')
+    print("Jenkinsfiles generated successfully.")
 
 
 def main() -> None:
@@ -617,69 +604,69 @@ def main() -> None:
         None
     """
     parser = argparse.ArgumentParser(
-        description='Script para gerar as configurações de um processador'
+        description="Script para gerar as configurações de um processador"
     )
 
     parser = argparse.ArgumentParser(
-        description='Script to generate processor configurations'
+        description="Script to generate processor configurations"
     )
 
     parser.add_argument(
-        '-j',
-        '--generate-all-jenkinsfiles',
-        action='store_true',
-        help='Generates a Jenkinsfiles for the processors',
+        "-j",
+        "--generate-all-jenkinsfiles",
+        action="store_true",
+        help="Generates a Jenkinsfiles for the processors",
     )
     parser.add_argument(
-        '-c',
-        '--generate-config',
-        action='store_true',
-        help='Generates a processor configuration',
+        "-c",
+        "--generate-config",
+        action="store_true",
+        help="Generates a processor configuration",
     )
     parser.add_argument(
-        '-g',
-        '--plot-graph',
-        action='store_true',
-        help='Plots the graph of the generated configuration',
+        "-g",
+        "--plot-graph",
+        action="store_true",
+        help="Plots the graph of the generated configuration",
     )
     parser.add_argument(
-        '-a',
-        '--add-config',
-        action='store_true',
-        help='Adds the generated configuration to the config file',
+        "-a",
+        "--add-config",
+        action="store_true",
+        help="Adds the generated configuration to the config file",
     )
     parser.add_argument(
-        '-p',
-        '--path-config',
+        "-p",
+        "--path-config",
         type=str,
-        default='config',
-        help='Path to the config folder',
+        default="config",
+        help="Path to the config folder",
     )
     parser.add_argument(
-        '-u',
-        '--processor-url',
+        "-u",
+        "--processor-url",
         type=str,
-        help='URL of the processor repository',
+        help="URL of the processor repository",
     )
     parser.add_argument(
-        '-n',
-        '--no-llama',
-        action='store_true',
-        help='Não utilizar o OLLAMA para identificar o módulo principal',
+        "-n",
+        "--no-llama",
+        action="store_true",
+        help="Não utilizar o OLLAMA para identificar o módulo principal",
     )
     parser.add_argument(
-        '-m',
-        '--model',
+        "-m",
+        "--model",
         type=str,
-        default='qwen2.5:32b',
-        help='Modelo a ser utilizado pelo OLLAMA',
+        default="qwen2.5:32b",
+        help="Modelo a ser utilizado pelo OLLAMA",
     )
 
     args = parser.parse_args()
 
     if args.generate_config:
         if not args.processor_url:
-            raise ValueError('Argumento processor-url não encontrado')
+            raise ValueError("Argumento processor-url não encontrado")
 
         generate_processor_config(
             args.processor_url,
@@ -694,10 +681,10 @@ def main() -> None:
         generate_all_pipelines(args.path_config)
 
     if not args.generate_config and not args.generate_all_jenkinsfiles:
-        print('Nenhum comando fornecido, utilize --help para listar as opcões')
+        print("Nenhum comando fornecido, utilize --help para listar as opcões")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
     # try:
     #    main()

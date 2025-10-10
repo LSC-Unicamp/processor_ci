@@ -1,5 +1,5 @@
 DEFINES_BY_BOARD = {
-    'xilinx_vc709': """\
+    "xilinx_vc709": """\
 `define CLOCK_FREQ 100_000_000
 `define MEMORY_SIZE 16384
 `define HIGH_CLK 1
@@ -14,7 +14,7 @@ DEFINES_BY_BOARD = {
 `define MEMORY_FILE ""
 `define DIFERENCIAL_CLK 1
 """,
-    'digilent_arty_a7_100t': """\
+    "digilent_arty_a7_100t": """\
 `define CLOCK_FREQ 50_000_000
 `define MEMORY_SIZE 8192
 `define HIGH_CLK 1
@@ -28,7 +28,7 @@ DEFINES_BY_BOARD = {
 `define RESET_CLK_CYCLES 20
 `define MEMORY_FILE ""
 """,
-    'digilent_nexys4_ddr': """\
+    "digilent_nexys4_ddr": """\
 `define CLOCK_FREQ 50_000_000
 `define MEMORY_SIZE 8192
 `define HIGH_CLK 1
@@ -42,7 +42,7 @@ DEFINES_BY_BOARD = {
 `define RESET_CLK_CYCLES 20
 `define MEMORY_FILE ""
 """,
-    'opensdrlab_kintex7': """\
+    "opensdrlab_kintex7": """\
 `define CLOCK_FREQ 50_000_000
 `define MEMORY_SIZE 8192
 `define ID 32'h4B494E54 // KINTEX
@@ -55,7 +55,7 @@ DEFINES_BY_BOARD = {
 `define RESET_CLK_CYCLES 20
 `define MEMORY_FILE ""
 """,
-    'zedboard': """\
+    "zedboard": """\
 `define CLOCK_FREQ 50_000_000
 `define MEMORY_SIZE 8192
 `define ID 32'h5A454442 // ZEDBOARD
@@ -68,7 +68,7 @@ DEFINES_BY_BOARD = {
 `define RESET_CLK_CYCLES 20
 `define MEMORY_FILE ""
 """,
-    'colorlight_i9': """\
+    "colorlight_i9": """\
 `define CLOCK_FREQ 25_000_000
 `define MEMORY_SIZE 4096
 `define ID 32'h434F4C4F // COLORLIGHT 
@@ -81,7 +81,7 @@ DEFINES_BY_BOARD = {
 `define RESET_CLK_CYCLES 20
 `define MEMORY_FILE ""
 """,
-    'tangnano_20k': """\
+    "tangnano_20k": """\
 `define CLOCK_FREQ 27_000_000
 `define MEMORY_SIZE 4096
 `define ID 32'h54414E47 // TANG
