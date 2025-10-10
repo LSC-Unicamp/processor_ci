@@ -61,17 +61,9 @@ from core.ollama import (
 )
 from core.log import print_green, print_red, print_yellow
 from verilator_runner import (
-    compile_with_dependency_resolution as verilator_compile,
-    auto_orchestrate as verilator_auto,
-)
-from verilator_runner_incremental import (
     compile_incremental as verilator_incremental,
 )
 from ghdl_runner import (
-    analyze_with_dependency_resolution as ghdl_analyze,
-    auto_orchestrate as ghdl_auto,
-)
-from ghdl_runner_incremental import (
     try_incremental_compilation as ghdl_incremental,
 )
 
@@ -541,15 +533,11 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
     valid_modules = []
     verilog_keywords = {"if", "else", "always", "initial", "begin", "end", "case", "default", "for", "while", "assign"}
     
-    print_green(f"[DEBUG] All found modules: {sorted(nodes)}")
-    
     for module in nodes:
         if (module not in verilog_keywords and 
             len(module) > 1 and 
             (module.replace('_', '').isalnum())):
             valid_modules.append(module)
-    
-    print_green(f"[DEBUG] Valid modules after filtering: {sorted(valid_modules)}")
     
     # Find candidates: modules with few parents are preferred
     zero_parent_modules = [m for m in valid_modules if not parents_of.get(m, [])]
@@ -612,18 +600,11 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
                 
                 if is_cpu_core and module not in repo_name_matches:
                     cpu_core_matches.append(module)
-                    print_green(f"[DEBUG] Added likely CPU core: {module}")
     
     candidates = list(set(zero_parent_modules + low_parent_modules + repo_name_matches + cpu_core_matches))
     
     if not candidates:
         candidates = valid_modules
-
-    # Debug output
-    print_green(f"[DEBUG] valid_modules count: {len(valid_modules)}")
-    print_green(f"[DEBUG] zero_parent_modules count: {len(zero_parent_modules)}")  
-    print_green(f"[DEBUG] low_parent_modules count: {len(low_parent_modules)}")
-    print_green(f"[DEBUG] final candidates count: {len(candidates)}")
 
     repo_lower = (repo_name or "").lower()
     scored = []
@@ -857,11 +838,6 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
 
     # Sort by score (descending), then by reach (descending), then by name
     scored.sort(reverse=True, key=lambda t: (t[0], t[1], t[2]))
-
-    # Debug: Print top 20 scored candidates
-    print_green("[DEBUG] Top 20 scored candidates:")
-    for i, (s, r, c) in enumerate(scored[:20]):
-        print_green(f"  {i+1}. {c}: score={s}, reach={r}")
 
     ranked = [c for score, _, c in scored if score > -5000]
     # If the top few are micro-stage or interface modules, try to skip them in favor of a core-like one
