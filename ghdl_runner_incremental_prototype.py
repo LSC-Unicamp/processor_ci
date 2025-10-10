@@ -741,19 +741,16 @@ def _has_vhdl2008_conflicts(file_path: str, repo_root: str) -> bool:
             if re.search(r'procedure\s+HRead\s*\(', content, re.IGNORECASE):
                 # Check if it's wrapped in translate_off pragma (simulation-only code)
                 if re.search(r'pragma\s+translate_off', content, re.IGNORECASE):
-                    print_yellow(f"[GHDL-INCREMENTAL] Skipping {file_path}: contains VHDL-2008 conflicting declarations (HRead/HWrite)")
                     return True
             
             # Check for 'force' used as identifier (reserved keyword in VHDL-2008)
             # Pattern: "force : in/out/inout type" in port/signal declarations
             if re.search(r'\bforce\s*:\s*(in|out|inout|buffer)\b', content, re.IGNORECASE):
-                print_yellow(f"[GHDL-INCREMENTAL] Skipping {file_path}: uses 'force' as identifier (VHDL-2008 reserved keyword)")
                 return True
             
             # Check for files that import from grlib.stdio (which has VHDL-2008 conflicts)
             # Files like testlib.vhd depend on stdio but don't directly have conflicts
             if re.search(r'use\s+grlib\.stdio\s*\.', content, re.IGNORECASE):
-                print_yellow(f"[GHDL-INCREMENTAL] Skipping {file_path}: depends on grlib.stdio (VHDL-2008 incompatible)")
                 return True
     
     except Exception:
@@ -838,7 +835,7 @@ def _build_ghdl_cmd(
         work_library: Custom library name (default: "work")
         repo_root: Repository root for Synopsys package detection
     """
-    cmd = ["ghdl", "-a", "--std=08", f"--workdir={workdir}"]
+    cmd = ["ghdl", "-a", "--std=93c", "-frelaxed-rules", f"--workdir={workdir}"]
     
     # Add custom library name if specified
     if work_library and work_library != "work":
@@ -872,7 +869,7 @@ def _build_elab_cmd(
         files: List of files for Synopsys detection
         repo_root: Repository root for Synopsys package detection
     """
-    cmd = ["ghdl", "-e", "--std=08", f"--workdir={workdir}"]
+    cmd = ["ghdl", "-e", "--std=93c", "-frelaxed-rules", f"--workdir={workdir}"]
     
     # Add custom library name if specified
     if work_library and work_library != "work":
@@ -888,12 +885,129 @@ def _build_elab_cmd(
     return cmd
 
 
+def _compile_single_library_incremental(
+    lib_name: str,
+    initial_files: List[str],
+    all_modules: List[Tuple[str, str]],
+    repo_root: str,
+    repo_name: str,
+    workdir: str,
+    ghdl_extra_flags: List[str] = None,
+    timeout: int = 300,
+    max_lib_iterations: int = 10
+) -> Tuple[int, str, List[str]]:
+    """Incrementally compile a single library until it's complete.
+    
+    Args:
+        lib_name: Name of the library to compile
+        initial_files: Initial list of files for this library
+        all_modules: All available modules to search for dependencies
+        repo_root: Repository root directory
+        repo_name: Repository name
+        workdir: Working directory for GHDL
+        ghdl_extra_flags: Additional GHDL flags
+        timeout: Timeout for each command
+        max_lib_iterations: Maximum iterations for this library
+        
+    Returns: (return_code, output, final_file_list)
+    """
+    lib_files = list(initial_files)
+    added_files = set(lib_files)
+    
+    for lib_iter in range(1, max_lib_iterations + 1):
+        print_blue(f"[GHDL-INCREMENTAL] Library '{lib_name}' iteration {lib_iter}/{max_lib_iterations} | files={len(lib_files)}")
+        
+        # Remove duplicates
+        seen = set()
+        unique_files = []
+        for f in lib_files:
+            if f not in seen:
+                seen.add(f)
+                unique_files.append(f)
+        lib_files = unique_files
+        
+        if not lib_files:
+            return 1, "All files filtered out", lib_files
+        
+        # Order files by dependencies: packages first, then entities
+        # This is critical for VHDL compilation
+        lib_files = _order_vhdl_files(lib_files, repo_root)
+        
+        # Compile files ONE AT A TIME to avoid GHDL batch compilation issues
+        # This is slower but more reliable for complex multi-file libraries
+        print_blue(f"[GHDL-INCREMENTAL] Compiling {len(lib_files)} files for library '{lib_name}' one at a time with VHDL-93c")
+        
+        combined_output = []
+        rc = 0
+        for file_to_compile in lib_files:
+            cmd = ["ghdl", "-a", "--std=93c", "-frelaxed-rules", f"--workdir={workdir}", f"--work={lib_name}"]
+            flags = _validation_flags(ghdl_extra_flags, [file_to_compile], repo_root)
+            if flags:
+                cmd.extend(flags)
+            cmd.append(file_to_compile)
+            
+            file_rc, file_output = _run(cmd, repo_root, timeout)
+            combined_output.append(file_output)
+            
+            if file_rc != 0:
+                rc = file_rc
+                # Don't break - continue trying other files
+        
+        output = "\n".join(combined_output)
+        
+        if rc == 0:
+            print_green(f"[GHDL-INCREMENTAL] ✓ Library '{lib_name}' compiled successfully")
+            return 0, output, lib_files
+        
+        # Parse errors to find missing dependencies
+        missing_entities = _parse_missing_entities(output)
+        missing_packages = _parse_missing_packages(output)
+        
+        if not missing_entities and not missing_packages:
+            print_yellow(f"[GHDL-INCREMENTAL] Library '{lib_name}' has errors but no missing dependencies detected")
+            return rc, output, lib_files
+        
+        # Find and add missing files for this library only
+        new_files_added = False
+        for entity_name in missing_entities:
+            candidates = _search_repo_for_declaration(repo_root, entity_name, "entity", repo_name)
+            for candidate in candidates:
+                candidate_lib = _get_file_library(candidate, repo_root)
+                if candidate_lib == lib_name and candidate not in added_files:
+                    lib_files.append(candidate)
+                    added_files.add(candidate)
+                    new_files_added = True
+                    print_yellow(f"[GHDL-INCREMENTAL] Added entity '{entity_name}' from {candidate} to library '{lib_name}'")
+        
+        for pkg_name, pkg_lib in missing_packages:
+            if pkg_lib and pkg_lib != lib_name:
+                continue  # Skip packages from other libraries
+            candidates = _find_file_declaring_package(repo_root, pkg_name, pkg_lib, repo_name, None)
+            for candidate in candidates:
+                candidate_lib = _get_file_library(candidate, repo_root)
+                if candidate_lib == lib_name and candidate not in added_files:
+                    lib_files.append(candidate)
+                    added_files.add(candidate)
+                    new_files_added = True
+                    print_yellow(f"[GHDL-INCREMENTAL] Added package '{pkg_name}' from {candidate} to library '{lib_name}'")
+        
+        if not new_files_added:
+            print_yellow(f"[GHDL-INCREMENTAL] Library '{lib_name}' cannot make progress")
+            return rc, output, lib_files
+    
+    print_red(f"[GHDL-INCREMENTAL] Library '{lib_name}' failed to compile after {max_lib_iterations} iterations")
+    return 1, output, lib_files
+
+
 def _compile_multi_library(
     files: List[str],
     repo_root: str,
+    repo_name: str,
     workdir: str,
+    modules: List[Tuple[str, str]],
     ghdl_extra_flags: List[str] = None,
-    timeout: int = 300
+    timeout: int = 300,
+    incremental: bool = True
 ) -> Tuple[int, str]:
     """Compile VHDL files that belong to multiple libraries.
     
@@ -906,9 +1020,12 @@ def _compile_multi_library(
     Args:
         files: List of VHDL files to compile
         repo_root: Repository root directory
+        repo_name: Repository name
         workdir: Working directory for GHDL
+        modules: All available modules for finding dependencies
         ghdl_extra_flags: Additional GHDL flags
         timeout: Timeout for each command
+        incremental: If True, use per-library incremental compilation
     
     Returns: (return_code, combined_output)
     """
@@ -944,43 +1061,55 @@ def _compile_multi_library(
     combined_output = []
     overall_rc = 0
     
-    # Compile each library separately
+    # Compile each library separately (with incremental mode if requested)
     for lib in sorted_libs:
         lib_files = files_by_lib[lib]
         
-        # Filter out files with VHDL-2008 conflicts
-        filtered_files = []
-        for f in lib_files:
-            if _has_vhdl2008_conflicts(f, repo_root):
-                # Skip this file
+        if incremental:
+            # Use per-library incremental compilation
+            rc, output, final_files = _compile_single_library_incremental(
+                lib, lib_files, modules, repo_root, repo_name, workdir,
+                ghdl_extra_flags, timeout, max_lib_iterations=10
+            )
+            combined_output.append(output)
+            if rc != 0:
+                overall_rc = rc
+                print_red(f"[GHDL-INCREMENTAL] ✗ Library '{lib}' failed to compile")
+                # Continue to try other libraries
+        else:
+            # Original non-incremental mode
+            # Remove duplicates while preserving order
+            seen = set()
+            unique_files = []
+            for f in lib_files:
+                if f not in seen:
+                    seen.add(f)
+                    unique_files.append(f)
+            lib_files = unique_files
+            
+            # Don't filter out files - compile everything with VHDL-93
+            lib_files = unique_files
+            
+            if not lib_files:
+                print_yellow(f"[GHDL-INCREMENTAL] Skipping library '{lib}': no files")
                 continue
-            filtered_files.append(f)
-        
-        if not filtered_files:
-            # All files were filtered out
-            print_yellow(f"[GHDL-INCREMENTAL] Skipping library '{lib}': all files filtered out")
-            continue
-        
-        print_blue(f"[GHDL-INCREMENTAL] Compiling library '{lib}' ({len(filtered_files)} files)")
-        
-        # Build command for this library
-        cmd = ["ghdl", "-a", "--std=08", f"--workdir={workdir}", f"--work={lib}"]
-        
-        # Add flags
-        flags = _validation_flags(ghdl_extra_flags, filtered_files, repo_root)
-        if flags:
-            cmd.extend(flags)
-        
-        cmd.extend(filtered_files)
-        
-        # Run compilation
-        print_blue(f"[GHDL-INCREMENTAL-DEBUG] Command: {' '.join(cmd)}")
-        rc, output = _run(cmd, repo_root, timeout)
-        combined_output.append(output)
-        
-        if rc != 0:
-            overall_rc = rc
-            # Don't stop - continue to get all errors
+            
+            print_blue(f"[GHDL-INCREMENTAL] Compiling library '{lib}' ({len(lib_files)} files) with VHDL-93")
+            
+            # Build command for this library with VHDL-93 and -frelaxed-rules
+            cmd = ["ghdl", "-a", "--std=93c", "-frelaxed-rules", f"--workdir={workdir}", f"--work={lib}"]
+            flags = _validation_flags(ghdl_extra_flags, lib_files, repo_root)
+            if flags:
+                cmd.extend(flags)
+            cmd.extend(lib_files)
+            
+            # Run compilation
+            print_blue(f"[GHDL-INCREMENTAL-DEBUG] Command: {' '.join(cmd)}")
+            rc, output = _run(cmd, repo_root, timeout)
+            combined_output.append(output)
+            
+            if rc != 0:
+                overall_rc = rc
     
     return overall_rc, "\n".join(combined_output)
 
@@ -1050,9 +1179,9 @@ def compile_incremental(
             
             # Check if we need multi-library compilation mode
             if work_library == "MULTI_LIBRARY":
-                # Multi-library mode: compile each library separately
-                print_blue(f"[GHDL-INCREMENTAL] Using multi-library compilation mode")
-                rc, output = _compile_multi_library(ordered_files, repo_root, workdir, ghdl_extra_flags, timeout)
+                # Multi-library mode: compile each library separately with incremental sub-loops
+                print_blue(f"[GHDL-INCREMENTAL] Using multi-library compilation mode with per-library incremental compilation")
+                rc, output = _compile_multi_library(ordered_files, repo_root, repo_name, workdir, modules, ghdl_extra_flags, timeout, incremental=True)
             else:
                 # Single library mode (original behavior)
                 cmd = _build_ghdl_cmd(ordered_files, top_entity, workdir, ghdl_extra_flags, work_library, repo_root)
@@ -1273,7 +1402,7 @@ def try_incremental_compilation(
     print_blue(f"[GHDL-INCREMENTAL] Candidates to try: {', '.join(top_candidates[:10])}")
     
     # Limit candidates for performance
-    MAX_CANDIDATES = 10
+    MAX_CANDIDATES = 1
     if len(top_candidates) > MAX_CANDIDATES:
         print_yellow(f"[GHDL-INCREMENTAL] Limiting to top {MAX_CANDIDATES} candidates (out of {len(top_candidates)})")
         top_candidates = top_candidates[:MAX_CANDIDATES]
