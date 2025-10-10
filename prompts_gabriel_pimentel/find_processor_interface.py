@@ -3,6 +3,7 @@ from pathlib import Path
 import sys
 import json
 import ast
+import argparse
 
 # pip install ollama
 from ollama import Client
@@ -188,10 +189,10 @@ def extract_full_module(file_path, context=10):
             i += 1
     return results
 
-def extract_interface_and_memory_ports(core_declaration):
+def extract_interface_and_memory_ports(core_declaration, model='qwen2.5:32b'):
     
     prompt = find_interface_prompt.format(core_declaration=core_declaration)
-    success, response = send_prompt(prompt)
+    success, response = send_prompt(prompt, model=model)
     
     if not success:
         print("Error communicating with the server.")
@@ -199,9 +200,8 @@ def extract_interface_and_memory_ports(core_declaration):
     json_info = filter_processor_interface_from_response(response)
     return json_info
 
-def main():
-    file_path = sys.argv[1]
-    matches = extract_full_module(file_path)
+def main(file_path: str, context: int, model: str, output: str):
+    matches = extract_full_module(file_path, context)
 
     if not matches:
         print("No module/entity declarations found.")
@@ -215,7 +215,7 @@ def main():
             print()
 
     # only get first declaration as it's the most probable option
-    interface_and_ports = extract_interface_and_memory_ports(matches[0][1])
+    interface_and_ports = extract_interface_and_memory_ports(matches[0][1], model=model)
     if not interface_and_ports:
         print("No bus interface type or memory port information found.")
         return
@@ -225,8 +225,17 @@ def main():
         print("=" * 60)
         print(json.dumps(interface_and_ports, indent=2))
 
+        if output:
+            with open(output, 'w', encoding='utf-8') as f:
+                json.dump(interface_and_ports, f, indent=2)
+            print(f"\nOutput saved to {output}")
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python find_processor_interface.py <file.v|file.sv|file.vhd>")
-        sys.exit(1)
-    main()
+    parser = argparse.ArgumentParser(description="Find processor interface in HDL files.")
+    parser.add_argument("file", help="Path to the HDL file (Verilog/SystemVerilog/VHDL)")
+    parser.add_argument("-c", "--context", type=int, default=10, help="Number of context lines to include")
+    parser.add_argument("-m", "--model", type=str, default="qwen2.5:32b", help="Model to use for the LLM")
+    parser.add_argument("-o", "--output", type=str, help="Path to save the output JSON", required=False)
+    args = parser.parse_args()
+
+    main(args.file, args.context, args.model, args.output)

@@ -2,6 +2,7 @@ import find_processor_interface
 import sys
 import re
 import json
+import argparse
 
 wishbone_prompt = """You are a hardware engineer. Your task is to connect a processor interface to a wrapper interface following the rules of a Wishbone memory-mapped bus. You will be given:
 
@@ -400,9 +401,8 @@ def filter_connections_from_response(response):
 
 
 
-def main():
-    file_path = sys.argv[1]
-    matches = find_processor_interface.extract_full_module(file_path)
+def main(file_path: str, context: int, model: str, output: str):
+    matches = find_processor_interface.extract_full_module(file_path, context)
 
     if not matches:
         print("No module/entity declarations found.")
@@ -416,7 +416,7 @@ def main():
             print()
 
     # only get first declaration as it's the most probable option
-    interface_and_ports = find_processor_interface.extract_interface_and_memory_ports(matches[0][1])
+    interface_and_ports = find_processor_interface.extract_interface_and_memory_ports(matches[0][1], model=model)
     if not interface_and_ports:
         print("No bus interface type or memory port information found.")
         return
@@ -437,8 +437,18 @@ def main():
         print("=" * 60)
         print(connections)
 
+    if output:
+        merged_json = {**interface_and_ports, **connections}
+        with open(output, 'w', encoding='utf-8') as f:
+            json.dump(merged_json, f, indent=4)
+        print(f"\nOutput saved to {output}")
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python connect_interface.py <file.v|file.sv|file.vhd>")
-        sys.exit(1)
-    main()
+    parser = argparse.ArgumentParser(description="Find processor interface in HDL files.")
+    parser.add_argument("file", help="Path to the HDL file (Verilog/SystemVerilog/VHDL)")
+    parser.add_argument("-c", "--context", type=int, default=10, help="Number of context lines to include")
+    parser.add_argument("-m", "--model", type=str, default="qwen2.5:32b", help="Model to use for the LLM")
+    parser.add_argument("-o", "--output", type=str, help="Path to save the output JSON", required=False)
+    args = parser.parse_args()
+
+    main(args.file, args.context, args.model, args.output)
