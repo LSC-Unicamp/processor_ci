@@ -1,0 +1,1 @@
+from processor_ci_utils.labeler import main as labeler_main

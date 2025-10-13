@@ -152,6 +152,8 @@ def generate_processor_config(
     config_file_path: str,
     no_llama: bool,
     model: str = 'qwen2.5:32b',
+    existing_repo: str | None = None,
+    cleanup: bool = False,
 ) -> None:
     """
     Generates a processor configuration by cloning a repository, analyzing its files,
@@ -168,7 +170,7 @@ def generate_processor_config(
         None
     """
     repo_name = extract_repo_name(url)
-    destination_path = clone_and_validate_repo(url, repo_name)
+    destination_path, was_cloned = clone_and_validate_repo(url, repo_name, existing_repo)
     if not destination_path:
         return
 
@@ -215,14 +217,18 @@ def generate_processor_config(
     )
 
     cleanup_repo_and_plot_graphs(
-        repo_name, plot_graph, module_graph, module_graph_inverse
+        repo_name,
+        plot_graph,
+        module_graph,
+        module_graph_inverse,
+        was_cloned,
+        cleanup,
     )
-
 
 # Helper functions for modularity
 
 
-def extract_repo_name(url: str) -> str:
+def extract_repo_name(url: str) -> str:    #USA O URL !!!
     """
     Extracts the repository name from the given URL.
 
@@ -235,7 +241,7 @@ def extract_repo_name(url: str) -> str:
     return url.split('/')[-1].replace('.git', '')
 
 
-def clone_and_validate_repo(url: str, repo_name: str) -> str:
+def clone_and_validate_repo(url: str, repo_name: str, existing_repo: str | None = None) -> tuple[str | None, bool]:
     """
     Clones the repository and validates the operation.
 
@@ -246,12 +252,23 @@ def clone_and_validate_repo(url: str, repo_name: str) -> str:
     Returns:
         str: The destination path of the cloned repository, or an empty string if cloning fails.
     """
+    # If caller provided an explicit existing repository path, prefer and validate it
+    if existing_repo:
+        if os.path.exists(existing_repo) and os.path.isdir(existing_repo):
+            print_green('[LOG] Usando repositório já clonado: %s\n' % existing_repo)
+            return existing_repo, False
+        else:
+            print_red('[ERROR] Caminho fornecido em --existing-repo não é um diretório válido')
+            return None, False
+
+    # Otherwise, attempt to clone into the normal destination
     destination_path = clone_repo(url, repo_name)
     if not destination_path:
         print_red('[ERROR] Não foi possível clonar o repositório.')
+        return None, False
     else:
         print_green('[LOG] Repositório clonado com sucesso\n')
-    return destination_path
+    return destination_path, True
 
 
 def find_and_log_files(destination_path: str) -> tuple:
@@ -339,7 +356,7 @@ def find_and_log_include_dirs(destination_path: str) -> list:
         list: A list of include directory paths.
     """
     print_green('[LOG] Procurando diretórios de inclusão\n')
-    include_dirs = find_include_dirs(destination_path)
+    include_dirs = list(find_include_dirs(destination_path))
     print_green('[LOG] Diretórios de inclusão encontrados com sucesso\n')
     return include_dirs
 
@@ -533,7 +550,7 @@ def save_log_and_generate_template(
 
 
 def cleanup_repo_and_plot_graphs(
-    repo_name, plot_graph, module_graph, module_graph_inverse
+    repo_name, plot_graph, module_graph, module_graph_inverse, was_cloned: bool = True, cleanup: bool = False
 ):
     """
     Cleans up the cloned repository and optionally plots graphs.
@@ -547,9 +564,19 @@ def cleanup_repo_and_plot_graphs(
     Returns:
         None
     """
-    print_green('[LOG] Removendo o repositório clonado\n')
-    remove_repo(repo_name)
-    print_green('[LOG] Repositório removido com sucesso\n')
+    # Only remove the repository when the user explicitly requested cleanup
+    # and when this script actually cloned the repository.
+    if cleanup and was_cloned:
+        print_green('[LOG] Removendo o repositório clonado\n')
+        try:
+            remove_repo(repo_name)
+            print_green('[LOG] Repositório removido com sucesso\n')
+        except Exception as e:
+            print_red(f'[WARN] Falha ao remover repositório: {e}')
+    elif cleanup and not was_cloned:
+        print_green('[LOG] Repositório fornecido pelo usuário; não será removido\n')
+    else:
+        print_green('[LOG] Cleanup não solicitado; pulando remoção do repositório\n')
 
     if plot_graph:
         print_green('[LOG] Plotando os grafos\n')
@@ -662,6 +689,17 @@ def main() -> None:
         help='URL of the processor repository',
     )
     parser.add_argument(
+        '--existing-repo',
+        type=str,
+        default=None,
+        help='Path to an already-cloned repository to use instead of cloning',
+    )
+    parser.add_argument(
+        '--cleanup',
+        action='store_true',
+        help='If set, remove cloned repositories after processing',
+    )
+    parser.add_argument(
         '-n',
         '--no-llama',
         action='store_true',
@@ -678,8 +716,8 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.generate_config:
-        if not args.processor_url:
-            raise ValueError('Argumento processor-url não encontrado')
+        # if not args.processor_url:
+        #     raise ValueError('Argumento processor-url não encontrado')
 
         generate_processor_config(
             args.processor_url,
@@ -688,6 +726,8 @@ def main() -> None:
             args.path_config,
             args.no_llama,
             args.model,
+            existing_repo=args.existing_repo,
+            cleanup=args.cleanup,
         )
 
     if args.generate_all_jenkinsfiles:

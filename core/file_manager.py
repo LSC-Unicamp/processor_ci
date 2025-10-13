@@ -57,7 +57,17 @@ def remove_repo(repo_name: str) -> None:
         None
     """
     destination_path = os.path.join(DESTINATION_DIR, repo_name)
-    shutil.rmtree(destination_path)
+    # If the destination doesn't exist, nothing to do.
+    if not os.path.exists(destination_path):
+        # Be tolerant: callers may call remove_repo even when a previous
+        # clone failed or an existing repo was provided in a different path.
+        return
+
+    try:
+        shutil.rmtree(destination_path)
+    except Exception as e:
+        # Don't raise on cleanup failures; log a message for debugging.
+        print(f"Warning: failed to remove {destination_path}: {e}")
 
 
 def find_files_with_extension(

@@ -1,30 +1,25 @@
-import prefect
-from prefect import flow, task
 import argparse
-from processor_ci.PCI_Pipeline.tasks.get_config import generate_config_files
+from ..tasks.repo import RepoStruct
+from ..tasks.config import ConfigStruct
 
-# Generate necessary config file and shell file
-@flow
-def config_flow(repo_url: str):
-    generate_config_files(repo_url)
-    # Gerar rtl
-
-@flow
-def simulation_flow():
-    
+def simulation_flow(config_path: str, repo_path: str):
     pass
 
-@flow
 def main_flow(repo_url: str):
-    config_flow(repo_url)
+    repo = RepoStruct(repo_url, base_dir="processors")
+    repo_path = repo.repo_path
+    
+    config = ConfigStruct(destination_path="config", repo=repo)
+    config_path = config.config_path
+    
+    simulation_flow(config_path, repo_path)
+    
 
 def main():
     # Set up argument parsing
     parser = argparse.ArgumentParser(description="Clone a Git repository.")
     parser.add_argument("--repo-url", type=str, required=True, 
                         help="The URL of the Git repository to clone.")
-    parser.add_argument("--base-dir", type=str, required=True, 
-                        help="The base directory where the 'processors' directory will be created.")
     args = parser.parse_args()
 
     # Clone the repository and generate config and shell files

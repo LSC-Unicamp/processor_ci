@@ -137,6 +137,57 @@ Controller #(
 
 // Core space
 
-// Core instantiation
+logic write_request, read_request, write_response, read_response;
+logic [31:0] read_data;
+
+rvx_core #(
+    .BOOT_ADDRESS (32'h00000000)
+) rvx_core_instance (
+
+    // Global signals
+
+    .clock                 (clk_core),
+    .reset                 (rst_core),
+    .halt                  (1'b0 ),
+
+    // IO interface
+
+    .rw_address            (core_addr),
+    .read_data             (read_data),
+    .read_request          (read_request),
+    .read_response         (read_response),
+    .write_data            (core_data_out),
+    .write_strobe          (),
+    .write_request         (write_request),
+    .write_response        (write_response),
+
+    // Interrupt request signals
+
+    .irq_fast              (16'h0),
+    .irq_external          (1'b0),
+    .irq_timer             (1'b0),
+    .irq_software          (1'b0),
+
+    // Interrupt response signals
+
+    .irq_fast_response     (),
+    .irq_external_response (),
+    .irq_timer_response    (),
+    .irq_software_response (),
+
+    // Real Time Clock
+
+    .real_time_clock       (64'h0)
+);
+
+assign core_cyc = read_request | write_request;
+assign core_stb = read_request | write_request;
+assign core_we  = write_request;
+
+always_ff @(posedge clk_core) begin
+    read_data <= core_data_in;
+    read_response <= core_ack & !write_request;
+    write_response <= core_ack & !read_request;
+end
 
 endmodule
