@@ -5,17 +5,17 @@
     "files": [
         "rtl/core/grande_risco5_types.sv",
         "rtl/core/core.sv",
-        "rtl/core/csr_unit.sv",
-        "rtl/core/ir_decomp.sv",
+        "rtl/core/mdu.sv",
         "rtl/core/branch_prediction.sv",
-        "rtl/core/mux.sv",
-        "rtl/core/invalid_ir_check.sv",
-        "rtl/core/alu.sv",
         "rtl/core/registers.sv",
-        "rtl/core/forwarding_unit.sv",
         "rtl/core/immediate_generator.sv",
+        "rtl/core/forwarding_unit.sv",
         "rtl/core/alu_control.sv",
-        "rtl/core/mdu.sv"
+        "rtl/core/csr_unit.sv",
+        "rtl/core/invalid_ir_check.sv",
+        "rtl/core/ir_decomp.sv",
+        "rtl/core/alu.sv",
+        "rtl/core/mux.sv"
     ],
     "include_dirs": [
         "rtl/core"

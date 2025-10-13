@@ -4,9 +4,9 @@
     "sim_files": [],
     "files": [
         "rtl/e203/core/e203_core.v",
-        "rtl/e203/general/sirv_gnrl_dffs.v",
         "rtl/e203/general/sirv_gnrl_bufs.v",
-        "rtl/e203/general/sirv_gnrl_icbs.v"
+        "rtl/e203/general/sirv_gnrl_icbs.v",
+        "rtl/e203/general/sirv_gnrl_dffs.v"
     ],
     "include_dirs": [
         "rtl/e203/core",

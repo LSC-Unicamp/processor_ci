@@ -115,8 +115,8 @@
         "SIM/CORE/ALL/core_1.v"
     ],
     "include_dirs": [
-        "SIM/AUX",
-        "SIM/CORE/ALL"
+        "SIM/CORE/ALL",
+        "SIM/AUX"
     ],
     "repository": "https://github.com/arruk/TRYonRISCV.git",
     "top_module": "core",

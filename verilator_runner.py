@@ -277,6 +277,27 @@ def _find_include_file(repo_root: str, include_name: str, current_includes: Set[
     return None
 
 
+def _is_pkg_file(path: str) -> bool:
+    """Heuristic: treat files that define packages as package files.
+    Common convention is *_pkg.sv or *_pkg.svh. Many repos also use *_types.sv or *_config*.sv.
+    Also catch paths with '/pkg/' in them.
+    """
+    p = path.lower()
+    base = os.path.basename(p)
+    return (
+        base.endswith("_pkg.sv")
+        or base.endswith("_pkg.svh")
+        or base.endswith("_types.sv")
+        or base.endswith("types.sv")
+        or base.endswith("_types.svh")
+        or base.endswith("types.svh")
+        or base.endswith("_config.sv")
+        or base.endswith("_config.svh")
+        or "config_and_types" in base
+        or "/pkg/" in p.replace("\\", "/")
+    )
+
+
 def _order_sv_files(files: List[str], repo_root: str | None = None) -> List[str]:
     """Order SV files generically so that package providers compile before importers.
 

@@ -4,15 +4,15 @@
     "sim_files": [],
     "files": [
         "src/top/riscv_top.v",
-        "src/core/riscv_core.v",
+        "src/dcache/dcache.v",
         "src/icache/icache.v",
-        "src/dcache/dcache.v"
+        "src/core/riscv_core.v"
     ],
     "include_dirs": [
-        "src/core",
-        "src/dcache",
         "src/top",
-        "src/icache"
+        "src/icache",
+        "src/dcache",
+        "src/core"
     ],
     "repository": "https://github.com/ultraembedded/biriscv",
     "top_module": "riscv_top",

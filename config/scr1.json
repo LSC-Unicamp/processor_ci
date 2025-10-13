@@ -9,10 +9,10 @@
         "src/core/primitives/scr1_cg.sv"
     ],
     "include_dirs": [
-        "src/core/pipeline",
-        "src/core/primitives",
         "src/core",
-        "src/includes"
+        "src/core/pipeline",
+        "src/includes",
+        "src/core/primitives"
     ],
     "repository": "https://github.com/syntacore/scr1",
     "top_module": "scr1_core_top",

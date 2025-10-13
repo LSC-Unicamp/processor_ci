@@ -3,9 +3,9 @@
     "folder": "RV12",
     "sim_files": [],
     "files": [
-        "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
-        "rtl/verilog/pkg/riscv_du_pkg.sv",
         "rtl/verilog/pkg/biu_constants_pkg.sv",
+        "rtl/verilog/pkg/riscv_du_pkg.sv",
+        "rtl/verilog/pkg/riscv_opcodes_pkg.sv",
         "rtl/verilog/pkg/riscv_state_20240411_pkg.sv",
         "rtl/verilog/pkg/riscv_rv12_pkg.sv",
         "rtl/verilog/core/riscv_core.sv",
@@ -16,10 +16,10 @@
         "submodules/memory/rtl/verilog/rl_ram_1r1w.sv"
     ],
     "include_dirs": [
-        "rtl/verilog/core/ex",
-        "submodules/memory/rtl/verilog",
         "rtl/verilog/pkg",
-        "rtl/verilog/core"
+        "submodules/memory/rtl/verilog",
+        "rtl/verilog/core",
+        "rtl/verilog/core/ex"
     ],
     "repository": "https://github.com/roalogic/RV12",
     "top_module": "riscv_core",

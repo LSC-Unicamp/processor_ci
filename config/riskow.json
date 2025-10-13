@@ -4,12 +4,12 @@
     "sim_files": [],
     "files": [
         "top.v",
-        "cpu/cpu.v",
         "devices/digital_port.v",
+        "cpu/cpu.v",
         "devices/timer.v",
-        "cpu/register_bank.v",
-        "cpu/instruction_decoder.v",
         "cpu/alu.v",
+        "cpu/instruction_decoder.v",
+        "cpu/register_bank.v",
         "cpu/program_counter.v"
     ],
     "include_dirs": [

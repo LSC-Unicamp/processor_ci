@@ -5,13 +5,13 @@
     "files": [
         "vhdl/constants.vhd",
         "vhdl/core.vhd",
-        "vhdl/unit_alu_RV32_I.vhd",
         "vhdl/lint_unit.vhd",
-        "vhdl/unit_decoder_RV32I.vhd",
+        "vhdl/unit_alu_RV32_I.vhd",
         "vhdl/pc_unit.vhd",
-        "vhdl/csr_unit.vhd",
         "vhdl/control_unit.vhd",
+        "vhdl/unit_decoder_RV32I.vhd",
         "vhdl/register_set.vhd",
+        "vhdl/csr_unit.vhd",
         "vhdl/mem_controller.vhd",
         "vhdl/alu_int32_div.vhd"
     ],

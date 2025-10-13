@@ -4,15 +4,15 @@
     "sim_files": [],
     "files": [
         "src/core/core.v",
+        "src/core/mdu.v",
+        "src/core/alu_control.v",
+        "src/core/alu.v",
+        "src/core/immediate_generator.v",
         "src/core/mux.v",
         "src/core/registers.v",
-        "src/core/alu.v",
-        "src/core/csr_unit.v",
-        "src/core/immediate_generator.v",
-        "src/core/pc.v",
-        "src/core/mdu.v",
         "src/core/control_unit.v",
-        "src/core/alu_control.v"
+        "src/core/csr_unit.v",
+        "src/core/pc.v"
     ],
     "include_dirs": [
         "src/core"

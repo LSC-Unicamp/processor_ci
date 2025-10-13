@@ -12,17 +12,17 @@
         "vendor/lowrisc_ip/ip/prim/rtl/prim_count_pkg.sv",
         "dv/uvm/core_ibex/common/prim/prim_pkg.sv",
         "rtl/ibex_top.sv",
-        "dv/uvm/core_ibex/common/prim/prim_clock_gating.sv",
         "dv/uvm/core_ibex/common/prim/prim_buf.sv",
+        "dv/uvm/core_ibex/common/prim/prim_clock_gating.sv",
         "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_clock_gating.sv",
         "vendor/lowrisc_ip/ip/prim_generic/rtl/prim_generic_buf.sv"
     ],
     "include_dirs": [
-        "vendor/lowrisc_ip/ip/prim/rtl",
-        "dv/uvm/core_ibex/common/prim",
+        "vendor/lowrisc_ip/ip/prim_generic/rtl",
         "vendor/lowrisc_ip/dv/sv/dv_utils",
         "rtl",
-        "vendor/lowrisc_ip/ip/prim_generic/rtl"
+        "dv/uvm/core_ibex/common/prim",
+        "vendor/lowrisc_ip/ip/prim/rtl"
     ],
     "repository": "https://github.com/lowRISC/ibex",
     "top_module": "ibex_top",

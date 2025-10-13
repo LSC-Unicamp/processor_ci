@@ -9,8 +9,8 @@
         "hdl/arith/hazard3_muldiv_seq.v"
     ],
     "include_dirs": [
-        "hdl/arith",
-        "hdl"
+        "hdl",
+        "hdl/arith"
     ],
     "repository": "https://github.com/Wren6991/Hazard3",
     "top_module": "hazard3_core",

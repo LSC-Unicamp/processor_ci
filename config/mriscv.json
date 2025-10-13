@@ -4,25 +4,25 @@
     "sim_files": [],
     "files": [
         "mriscvcore/mriscvcore.v",
-        "mriscvcore/REG_FILE/REG_FILE.v",
+        "mriscvcore/ALU/ALU.v",
+        "mriscvcore/DECO_INSTR/DECO_INSTR.v",
+        "mriscvcore/MEMORY_INTERFACE/MEMORY_INTERFACE.v",
         "mriscvcore/UTILITIES/UTILITY.v",
         "mriscvcore/MULT/MULT.v",
-        "mriscvcore/MEMORY_INTERFACE/MEMORY_INTERFACE.v",
-        "mriscvcore/FSM/FSM.v",
-        "mriscvcore/DECO_INSTR/DECO_INSTR.v",
         "mriscvcore/IRQ/IRQ.v",
-        "mriscvcore/ALU/ALU.v"
+        "mriscvcore/REG_FILE/REG_FILE.v",
+        "mriscvcore/FSM/FSM.v"
     ],
     "include_dirs": [
-        "mriscvcore/REG_FILE",
-        "mriscvcore",
         "mriscvcore/MULT",
         "mriscvcore/ALU",
-        "mriscvcore/UTILITIES",
         "mriscvcore/DECO_INSTR",
-        "mriscvcore/IRQ",
+        "mriscvcore/UTILITIES",
         "mriscvcore/MEMORY_INTERFACE",
-        "mriscvcore/FSM"
+        "mriscvcore/FSM",
+        "mriscvcore",
+        "mriscvcore/REG_FILE",
+        "mriscvcore/IRQ"
     ],
     "repository": "https://github.com/onchipuis/mriscv",
     "top_module": "mriscvcore",

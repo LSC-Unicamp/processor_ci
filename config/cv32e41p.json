@@ -7,13 +7,13 @@
         "rtl/include/cv32e41p_pkg.sv",
         "rtl/include/cv32e41p_fpu_pkg.sv",
         "rtl/cv32e41p_core.sv",
-        "bhv/cv32e41p_sim_clock_gate.sv",
-        "rtl/cv32e41p_register_file_ff.sv"
+        "rtl/cv32e41p_register_file_ff.sv",
+        "bhv/cv32e41p_sim_clock_gate.sv"
     ],
     "include_dirs": [
-        "rtl/include",
         "rtl",
-        "bhv"
+        "bhv",
+        "rtl/include"
     ],
     "repository": "https://github.com/openhwgroup/cv32e41p",
     "top_module": "cv32e41p_core",

@@ -4,11 +4,11 @@
     "sim_files": [],
     "files": [
         "riscv.v",
-        "program_counter.v",
         "alu.v",
-        "register_file.v",
+        "program_counter.v",
         "control_unit.v",
-        "load_store.v"
+        "load_store.v",
+        "register_file.v"
     ],
     "include_dirs": [],
     "repository": "https://github.com/zxmarcos/riscado-v",

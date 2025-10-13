@@ -925,7 +925,7 @@ def compile_incremental(
             pass
 
 
-def try_incremental_compilation(
+def incremental_compilation(
     repo_root: str,
     repo_name: str,
     top_candidates: List[str],

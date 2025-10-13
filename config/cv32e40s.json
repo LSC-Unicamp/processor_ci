@@ -5,14 +5,14 @@
     "files": [
         "rtl/include/cv32e40s_pkg.sv",
         "rtl/cv32e40s_core.sv",
-        "bhv/cv32e40s_sim_sffs.sv",
+        "bhv/cv32e40s_sim_clock_gate.sv",
         "bhv/cv32e40s_sim_sffr.sv",
-        "bhv/cv32e40s_sim_clock_gate.sv"
+        "bhv/cv32e40s_sim_sffs.sv"
     ],
     "include_dirs": [
-        "rtl/include",
         "bhv",
-        "rtl"
+        "rtl",
+        "rtl/include"
     ],
     "repository": "https://github.com/openhwgroup/cv32e40s",
     "top_module": "cv32e40s_core",

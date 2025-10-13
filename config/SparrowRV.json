@@ -6,8 +6,8 @@
         "rtl/core/core.v"
     ],
     "include_dirs": [
-        "rtl",
-        "rtl/core"
+        "rtl/core",
+        "rtl"
     ],
     "repository": "https://github.com/xiaowuzxc/SparrowRV",
     "top_module": "core",

@@ -7,9 +7,9 @@
         "rtl/cve2_core.sv"
     ],
     "include_dirs": [
+        "rtl",
         "vendor/lowrisc_ip/dv/sv/dv_utils",
-        "vendor/lowrisc_ip/ip/prim/rtl",
-        "rtl"
+        "vendor/lowrisc_ip/ip/prim/rtl"
     ],
     "repository": "https://github.com/openhwgroup/cve2",
     "top_module": "cve2_core",
