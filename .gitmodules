@@ -1,0 +1,3 @@
+[submodule "processor_ci_utils"]
+	path = processor_ci_utils
+	url = https://github.com/LSC-Unicamp/processor_ci_utils
