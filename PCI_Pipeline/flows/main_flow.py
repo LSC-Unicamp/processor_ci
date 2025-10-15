@@ -1,9 +1,10 @@
 import argparse
 from ..tasks.repo import RepoStruct
 from ..tasks.config import ConfigStruct
+from ..tasks.cocotb_setup import create_makefile
 
-def simulation_flow(config_path: str, repo_path: str):
-    pass
+def simulation_flow(processor_name: str):
+    create_makefile(processor_name)
 
 def main_flow(repo_url: str):
     repo = RepoStruct(repo_url, base_dir="processors")
@@ -12,8 +13,12 @@ def main_flow(repo_url: str):
     config = ConfigStruct(destination_path="config", repo=repo)
     config_path = config.config_path
     
-    simulation_flow(config_path, repo_path)
+    # Gera config (pegar nova versão do config_generator)
     
+    # Gera o RTL (Perguntar se para o Julio)
+
+    simulation_flow(repo_path.split('/')[-1])
+
 
 def main():
     # Set up argument parsing
