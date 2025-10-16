@@ -950,11 +950,9 @@ def interactive_simulate_and_minimize(
     maximize_attempts: int = 6,
     verilator_extra_flags: list | None = None,
     ghdl_extra_flags: list | None = None,
-    use_incremental: bool = False,
 ) -> tuple:
     """
     Interactive flow is now delegated to runners. Core only selects candidates and passes to runners.
-    If use_incremental is True, tries the incremental bottom-up approach first.
     """
     # Proactively drop any FPGA-related files from candidates to avoid board wrappers influencing top detection
     candidate_files = [f for f in candidate_files if not _is_fpga_path(f)]
@@ -1080,38 +1078,22 @@ def interactive_simulate_and_minimize(
     if prefer_ghdl and vhdl_candidates:
         print_green(f"[CORE] Selecting GHDL (VHDL) | top={primary_top} vhdl_candidates={len(vhdl_candidates)} files={len(vhdl_files)}")
         
-        # Try incremental approach first if enabled
-        if use_incremental:
-            print_green(f"[CORE] Trying incremental bottom-up GHDL approach first...")
-            is_simulable, last_log, final_files, top_module = ghdl_incremental(
-                repo_root=repo_root,
-                repo_name=repo_name,
-                top_candidates=vhdl_candidates,
-                modules=modules,
-                ghdl_extra_flags=ghdl_extra_flags or ["-frelaxed"],
-                timeout=240,
-            )
-            if is_simulable:
-                print_green(f"[CORE] ✓ Incremental GHDL approach succeeded!")
-                return final_files, set(), last_log, top_module, is_simulable
-            else:
-                print_yellow(f"[CORE] Incremental GHDL approach failed, returning failure...")
-                return final_files, set(), last_log, top_module, is_simulable
-        
-        # Run GHDL on VHDL-only files/candidates (old approach)
-        final_files, final_includes, last_log, top_module, is_simulable = ghdl_auto(
+        print_green(f"[CORE] Trying incremental bottom-up GHDL approach first...")
+        is_simulable, last_log, final_files, top_module = ghdl_incremental(
             repo_root=repo_root,
             repo_name=repo_name,
-            tb_files=tb_vhdl,
-            candidate_files=vhdl_files,
-            include_dirs_unused=set(),
             top_candidates=vhdl_candidates,
-            language_version=language_version,
+            modules=modules,
+            ghdl_extra_flags=ghdl_extra_flags or ["-frelaxed"],
             timeout=240,
-            ghdl_extra_flags=ghdl_extra_flags or ["--std=08", "-frelaxed"],
-            max_retries=3,
-            excluded_files_blacklist=excluded_share,
         )
+        if is_simulable:
+            print_green(f"[CORE] ✓ Incremental GHDL approach succeeded!")
+            return final_files, set(), last_log, top_module, is_simulable
+        else:
+            print_yellow(f"[CORE] Incremental GHDL approach failed, returning failure...")
+            return final_files, set(), last_log, top_module, is_simulable
+        
         if is_simulable:
             return final_files, final_includes, last_log, top_module, is_simulable
 
@@ -1119,42 +1101,23 @@ def interactive_simulate_and_minimize(
     if verilog_candidates:
         print_green(f"[CORE] Selecting Verilator (Verilog/SV) | top={primary_top} verilog_candidates={len(verilog_candidates)} files={len(verilog_files)} includes={len(include_dirs)}")
         
-        # Try incremental approach first if enabled
-        if use_incremental:
-            print_green(f"[CORE] Trying incremental bottom-up approach first...")
-            final_files, final_includes, last_log, top_module, is_simulable = try_incremental_approach(
-                repo_root=repo_root,
-                repo_name=repo_name,
-                top_candidates=verilog_candidates,
-                modules=modules,
-                module_graph=module_graph,
-                language_version=language_version,
-                verilator_extra_flags=verilator_extra_flags,
-                timeout=240,
-            )
-            if is_simulable:
-                print_green(f"[CORE] ✓ Incremental approach succeeded!")
-                return final_files, final_includes, last_log, top_module, is_simulable
-            else:
-                print_yellow(f"[CORE] Incremental approach failed, returning failure...")
-                return final_files, final_includes, last_log, top_module, is_simulable
-        
-        # Standard approach (top-down with exclusion) - COMMENTED OUT for testing incremental only
-        # final_files, final_includes, last_log, top_module, is_simulable = verilator_auto(
-        #     repo_root=repo_root,
-        #     repo_name=repo_name,
-        #     tb_files=tb_verilog,
-        #     candidate_files=verilog_files,
-        #     include_dirs=set(include_dirs),
-        #     top_candidates=verilog_candidates,
-        #     language_version=language_version,
-        #     timeout=240,
-        #     extra_flags=verilator_extra_flags or ['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED', '-Wno-TIMESCALEMOD', '-Wno-PROTECTED', '-Wno-MODDUP', '-Wno-REDEFMACRO'],
-        #     max_retries=3,
-        #     excluded_files_blacklist=excluded_share,
-        # )
-        # if is_simulable or not prefer_ghdl:
-        #     return final_files, final_includes, last_log, top_module, is_simulable
+        print_green(f"[CORE] Trying incremental bottom-up approach first...")
+        final_files, final_includes, last_log, top_module, is_simulable = try_incremental_approach(
+            repo_root=repo_root,
+            repo_name=repo_name,
+            top_candidates=verilog_candidates,
+            modules=modules,
+            module_graph=module_graph,
+            language_version=language_version,
+            verilator_extra_flags=verilator_extra_flags,
+            timeout=240,
+        )
+        if is_simulable:
+            print_green(f"[CORE] ✓ Incremental approach succeeded!")
+            return final_files, final_includes, last_log, top_module, is_simulable
+        else:
+            print_yellow(f"[CORE] Incremental approach failed, returning failure...")
+            return final_files, final_includes, last_log, top_module, is_simulable
         
         # Return empty result if incremental is disabled
         return [], set(), "", "", False
@@ -1163,35 +1126,17 @@ def interactive_simulate_and_minimize(
     if vhdl_candidates:
         print_yellow(f"[CORE] Fallback to GHDL (VHDL) after Verilator path | candidates={len(vhdl_candidates)}")
         
-        # Try incremental approach first if enabled
-        if use_incremental:
-            print_green(f"[CORE] Trying fallback incremental GHDL approach...")
-            is_simulable, last_log, final_files, top_module = ghdl_incremental(
-                repo_root=repo_root,
-                repo_name=repo_name,
-                top_candidates=vhdl_candidates,
-                modules=modules,
-                ghdl_extra_flags=ghdl_extra_flags or ["-frelaxed"],
-                timeout=240,
-            )
-            return final_files, set(), last_log, top_module, is_simulable
-        
-        # Old approach
-        final_files, final_includes, last_log, top_module, is_simulable = ghdl_auto(
+        print_green(f"[CORE] Trying fallback incremental GHDL approach...")
+        is_simulable, last_log, final_files, top_module = ghdl_incremental(
             repo_root=repo_root,
             repo_name=repo_name,
-            tb_files=tb_vhdl,
-            candidate_files=vhdl_files,
-            include_dirs_unused=set(),
             top_candidates=vhdl_candidates,
-            language_version=language_version,
+            modules=modules,
+            ghdl_extra_flags=ghdl_extra_flags or ["-frelaxed"],
             timeout=240,
-            ghdl_extra_flags=ghdl_extra_flags or ["--std=08", "-frelaxed"],
-            max_retries=3,
-            excluded_files_blacklist=excluded_share,
         )
-        return final_files, final_includes, last_log, top_module, is_simulable
-
+        return final_files, set(), last_log, top_module, is_simulable
+        
     # If we get here, nothing worked; return empty result
     return [], set(), "", "", False
 
@@ -1455,7 +1400,6 @@ def generate_processor_config(
     add_to_config: bool = False,
     no_llama: bool = False,
     model: str = 'qwen2.5:32b',
-    use_incremental: bool = False,
 ) -> dict:
     """
     Main function to generate a processor configuration.
@@ -1467,7 +1411,6 @@ def generate_processor_config(
         add_to_config: Whether to add to central config
         no_llama: Skip OLLAMA processing
         model: OLLAMA model to use
-        use_incremental: Use incremental bottom-up compilation (experimental)
     """
     repo_name = extract_repo_name(url)
     destination_path = clone_and_validate_repo(url, repo_name)
@@ -1523,7 +1466,6 @@ def generate_processor_config(
         maximize_attempts=6,
         verilator_extra_flags=['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED', '-Wno-TIMESCALEMOD', '-Wno-PROTECTED', '-Wno-MODDUP', '-Wno-REDEFMACRO', '-Wno-BLKANDNBLK', '-Wno-SYMRSVDWORD'],
         ghdl_extra_flags=['--std=08', '-frelaxed'],
-        use_incremental=use_incremental,
     )
 
     # Convert absolute include directories to relative paths
@@ -1679,12 +1621,6 @@ def main() -> None:
         default='qwen2.5:32b',
         help='OLLAMA model to use'
     )
-    parser.add_argument(
-        '-i', 
-        '--incremental', 
-        action='store_true',
-        help='Use incremental bottom-up compilation (experimental)'
-    )
 
     args = parser.parse_args()
 
@@ -1696,7 +1632,6 @@ def main() -> None:
             args.add_to_config,
             args.no_llama,
             args.model,
-            args.incremental,
         )
         print('Result: ')
         print(json.dumps(config, indent=4))

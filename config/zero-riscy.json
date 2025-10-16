@@ -3,34 +3,18 @@
     "folder": "zero-riscy",
     "sim_files": [],
     "files": [
-        "include/zeroriscy_config.sv",
         "include/zeroriscy_defines.sv",
-        "cluster_clock_gating.sv",
-        "zeroriscy_alu.sv",
-        "zeroriscy_compressed_decoder.sv",
-        "zeroriscy_controller.sv",
+        "include/zeroriscy_tracer_defines.sv",
         "zeroriscy_core.sv",
-        "zeroriscy_cs_registers.sv",
-        "zeroriscy_debug_unit.sv",
-        "zeroriscy_decoder.sv",
-        "zeroriscy_ex_block.sv",
-        "zeroriscy_fetch_fifo.sv",
-        "zeroriscy_id_stage.sv",
-        "zeroriscy_if_stage.sv",
-        "zeroriscy_int_controller.sv",
-        "zeroriscy_load_store_unit.sv",
-        "zeroriscy_mmult.sv",
-        "zeroriscy_multdiv_fast.sv",
-        "zeroriscy_prefetch_buffer.sv",
-        "zeroriscy_register_file.sv",
-        "zeroriscy_register_file_ff.sv"
-
+        "zeroriscy_tracer_verilator.sv"
     ],
-    "include_dirs": ["include"],
+    "include_dirs": [
+        "include"
+    ],
     "repository": "https://github.com/tom01h/zero-riscy",
-    "top_module": "",
+    "top_module": "zeroriscy_core",
     "extra_flags": [],
-    "language_version": "2012",
+    "language_version": "2017",
     "march": "rv32i",
     "two_memory": true
 }
