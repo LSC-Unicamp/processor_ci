@@ -15,7 +15,7 @@
         "src/core/registers.v"
     ],
     "language_version": "2005",
-    "top_module": "soc_tb",
+    "top_module": "Core",
     "sim_files": [
         "tests/soc_test.v",
         "src/peripheral/bus.v",
