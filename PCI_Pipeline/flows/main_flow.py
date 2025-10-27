@@ -12,11 +12,8 @@ def main_flow(repo_url: str):
     
     config = ConfigStruct(destination_path="config", repo=repo)
     config_path = config.config_path
+    rtl_path = config.rtl_path
     
-    # Gera config (pegar nova versão do config_generator)
-    
-    # Gera o RTL (Perguntar se para o Julio)
-
     simulation_flow(repo_path.split('/')[-1])
 
 

@@ -1400,6 +1400,8 @@ def generate_processor_config(
     add_to_config: bool = False,
     no_llama: bool = False,
     model: str = 'qwen2.5:32b',
+    existing_repo: str | None = None,
+    cleanup: bool = True,
 ) -> dict:
     """
     Main function to generate a processor configuration.
@@ -1413,9 +1415,23 @@ def generate_processor_config(
         model: OLLAMA model to use
     """
     repo_name = extract_repo_name(url)
-    destination_path = clone_and_validate_repo(url, repo_name)
-    if not destination_path:
-        return {}
+
+    repo_was_cloned = False
+    # Use an already-cloned repository if provided
+    if existing_repo:
+        destination_path = existing_repo
+        if not os.path.exists(destination_path):
+            print_red(f'[ERROR] Existing repository path does not exist: {destination_path}')
+            return {}
+        print_green(f'[LOG] Using existing repository at {destination_path}\n')
+        # Convert to absolute path for config script
+        abs_path = os.path.abspath(destination_path)
+        detect_and_run_config_script(abs_path, repo_name)
+    else:
+        destination_path = clone_and_validate_repo(url, repo_name)
+        repo_was_cloned = True
+        if not destination_path:
+            return {}
 
     files, extension = find_and_log_files(destination_path)
     modulename_list, modules = extract_and_log_modules(files, destination_path)
@@ -1557,10 +1573,19 @@ def generate_processor_config(
     except Exception as e:
         print_yellow(f'[WARN] Falha ao salvar o log: {e}')
 
-    # Cleanup
-    print_green('[LOG] Removendo o repositório clonado\n')
-    remove_repo(repo_name)
-    print_green('[LOG] Repositório removido com sucesso\n')
+    # Cleanup: remove repository only if we cloned it and cleanup is requested
+    if repo_was_cloned and cleanup:
+        print_green('[LOG] Removendo o repositório clonado\n')
+        try:
+            remove_repo(repo_name)
+            print_green('[LOG] Repositório removido com sucesso\n')
+        except Exception as e:
+            print_yellow(f'[WARN] Failed to remove repository: {e}\n')
+    else:
+        if repo_was_cloned and not cleanup:
+            print_yellow('[LOG] Cleanup disabled: leaving cloned repository in place\n')
+        else:
+            print_yellow('[LOG] Using existing repository; skipping removal\n')
 
     # Plot graph if requested
     if plot_graph:
@@ -1621,6 +1646,17 @@ def main() -> None:
         default='qwen2.5:32b',
         help='OLLAMA model to use'
     )
+    parser.add_argument(
+        '--existing-repo',
+        type=str,
+        default=None,
+        help='Path to an already-cloned repository to use instead of cloning from URL',
+    )
+    parser.add_argument(
+        '--no-cleanup',
+        action='store_true',
+        help='Do not remove the cloned repository after generating the config',
+    )
 
     args = parser.parse_args()
 
@@ -1633,7 +1669,7 @@ def main() -> None:
             args.no_llama,
             args.model,
             existing_repo=args.existing_repo,
-            cleanup=args.cleanup,
+            cleanup=(not args.no_cleanup),
         )
         print('Result: ')
         print(json.dumps(config, indent=4))

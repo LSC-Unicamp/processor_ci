@@ -1,3 +1,6 @@
 [submodule "processor_ci_utils"]
 	path = processor_ci_utils
 	url = https://github.com/LSC-Unicamp/processor_ci_utils
+[submodule "processor_ci_connector"]
+	path = processor_ci_connector
+	url = https://github.com/LSC-Unicamp/processor_ci_connector
