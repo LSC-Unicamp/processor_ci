@@ -1,0 +1,21 @@
+{
+    "default_options": {
+        "cleanup": true,
+        "verify_versions": true,
+        "skip_config_generation": false,
+        "skip_rtl_generation": false,
+        "skip_simulation": false,
+        "skip_synthesis": false
+    },
+
+    "cores": {
+        "RVX": {
+            "name": "RVX",
+            "github": "https://github.com/rafaelcalcada/rvx",
+            "pipeline_options": {
+                "cleanup": false,
+                "skip_simulation": true
+            }
+        }
+    }
+}
