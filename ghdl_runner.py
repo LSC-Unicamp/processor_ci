@@ -257,7 +257,7 @@ def _search_repo_for_declaration(repo_root: str, symbol_name: str, symbol_type: 
             full_path = os.path.join(root, file)
             try:
                 with open(full_path, 'r', encoding='utf-8', errors='ignore') as fh:
-                    content = fh.read(15000)  # Read first 15KB
+                    content = fh.read()  # Read entire file to ensure we find all symbol declarations
                     if pattern.search(content):
                         # Convert to relative path
                         rel_path = os.path.relpath(full_path, repo_root)
@@ -377,7 +377,7 @@ def _reorder_by_dependencies(files: List[str], log_text: str, repo_root: str) ->
         full_path = os.path.join(repo_root, f) if not os.path.isabs(f) else f
         try:
             with open(full_path, 'r', encoding='utf-8', errors='ignore') as fh:
-                content = fh.read(12000)
+                content = fh.read()  # Read entire file to catch all entity declarations
                 # Look for ALL "package <name> is" declarations
                 for pkg_match in re.finditer(r'^\s*package\s+(\w+)\s+is\b', content, flags=re.IGNORECASE | re.MULTILINE):
                     pkg_name = pkg_match.group(1).lower()
