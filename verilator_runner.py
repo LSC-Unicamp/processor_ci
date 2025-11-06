@@ -119,6 +119,7 @@ def _parse_missing_packages(log_text: str) -> List[str]:
         r"%Error-PKGNODECL:\s*[^:]+:\d+:\d+:\s*Package/class '([^']+)' not found",
         r"Importing from missing package '([^']+)'",  # For "Importing from missing package 'pkg_name'"
         r"Can't find typedef/interface:\s*'([^']+)'",  # Typedefs often come from packages
+        r"Package/class for ':: reference' not found:\s*'([^']+)'",  # For namespace reference errors
     ]
     for pat in patterns:
         for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
@@ -149,6 +150,183 @@ def _parse_missing_interfaces(log_text: str) -> List[str]:
         for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
             missing.add(m.group(1))
     return list(missing)
+
+
+def _parse_included_files_with_errors(log_text: str, repo_root: str) -> List[str]:
+    """
+    Extract files that have typedef/package errors and are included from other files.
+    These files (especially interfaces) often need to be compiled as standalone files.
+    
+    Pattern:
+        %Error: path/to/file.sv:30:5: Can't find typedef/interface: 'TypeName'
+           30 |     TypeName variable;
+              |     ^~~~~~~~~
+                parent/file.sv:110:1: ... note: In file included from 'parent.sv'
+    
+    Returns list of relative file paths that should be added to compilation.
+    """
+    files = set()
+    # Pattern to match error in a file followed by "included from" note (with possible intervening lines)
+    # Capture the file with the error
+    pattern = r"%Error:\s*([a-zA-Z0-9_/.\\-]+\.sv[h]?):\d+:\d+:\s*Can't find (?:typedef/interface|package)[^\n]*(?:\n(?!%Error:)[^\n]*){0,5}?In file included from"
+    
+    for m in re.finditer(pattern, log_text, flags=re.MULTILINE):
+        file_path = m.group(1)
+        # Normalize path relative to repo_root
+        rel_path = _normalize_path(file_path, repo_root)
+        files.add(rel_path)
+    
+    return list(files)
+
+
+def _parse_missing_interfaces(log_text: str) -> List[str]:
+    """Extract missing interface names from Verilator errors."""
+    missing = set()
+    patterns = [
+        r"Cannot find file containing interface: '([^']+)'",
+    ]
+    for pat in patterns:
+        for m in re.finditer(pat, log_text, flags=re.IGNORECASE):
+            missing.add(m.group(1))
+    return list(missing)
+
+
+def _parse_forward_declaration_files(log_text: str, repo_root: str) -> List[str]:
+    """
+    Extract file paths from 'Reference before declaration' errors.
+    These files contain type definitions that need to be compiled first.
+    
+    Example error:
+        %Error: file.sv:23:14: Reference to 'bp_params_e' before declaration
+            file.sv:599:5: ... Location of original declaration
+    
+    Returns list of relative file paths that need to be added to compilation.
+    """
+    files = set()
+    # Pattern: ... Location of original declaration
+    # Followed by filename:line:col on next line
+    pattern = r"Location of original declaration\s*\n\s*(\d+)\s*\|\s*"
+    
+    # Alternative pattern: look for lines with file paths after "Location of" messages
+    # Format:     bp_common/src/include/file.svh:599:5: ... Location of original declaration
+    decl_pattern = r"^\s*([a-zA-Z0-9_/.\\-]+\.[sv]+h?):\d+:\d+:.*Location of original declaration"
+    
+    for m in re.finditer(decl_pattern, log_text, flags=re.MULTILINE):
+        file_path = m.group(1)
+        # Normalize path relative to repo_root
+        rel_path = _normalize_path(file_path, repo_root)
+        files.add(rel_path)
+    
+    return list(files)
+
+
+def _parse_missing_import_packages(log_text: str) -> List[str]:
+    """Extract package names from 'Import package not found' errors."""
+    missing = set()
+    pattern = r"Import package not found: '([^']+)'"
+    for m in re.finditer(pattern, log_text, flags=re.IGNORECASE):
+        missing.add(m.group(1))
+    return list(missing)
+
+
+def _parse_missing_defines(log_text: str) -> List[str]:
+    """
+    Extract undefined macro/define names from Verilator errors.
+    
+    Example error:
+        %Error: rtl/nox.sv:20:38: Define or directive not defined: '`M_HART_ID'
+    
+    Returns list of define names (without the backtick).
+    """
+    missing = set()
+    # Pattern: Define or directive not defined: '`NAME'
+    pattern = r"Define or directive not defined:\s*'`([^']+)'"
+    for m in re.finditer(pattern, log_text, flags=re.IGNORECASE):
+        missing.add(m.group(1))
+    return list(missing)
+
+
+def _find_header_with_define(repo_root: str, define_name: str, module_graph: Dict[str, Dict]) -> List[str]:
+    """
+    Find header files (.vh, .svh) that define a specific macro.
+    
+    Searches through all header files in the repository to find files containing
+    `define MACRO_NAME definitions.
+    
+    Args:
+        repo_root: Root directory of the repository
+        define_name: Name of the define to search for (without backtick)
+        module_graph: Optional module graph with file information
+        
+    Returns:
+        List of relative paths to header files that define this macro
+    """
+    candidates = []
+    
+    # Pattern to match: `define MACRO_NAME
+    pattern = re.compile(rf'^\s*`define\s+{re.escape(define_name)}\b', re.IGNORECASE | re.MULTILINE)
+    
+    # Search through the repository for header files
+    for root, dirs, files in os.walk(repo_root):
+        # Skip common non-source directories
+        dirs[:] = [d for d in dirs if d not in {'.git', 'obj_dir', 'build', 'sim_build', '__pycache__'}]
+        
+        for file in files:
+            if not (file.endswith('.vh') or file.endswith('.svh') or file.endswith('.v') or file.endswith('.sv')):
+                continue
+            
+            full_path = os.path.join(root, file)
+            try:
+                with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                    if pattern.search(content):
+                        # Convert to relative path
+                        rel_path = os.path.relpath(full_path, repo_root)
+                        candidates.append(rel_path)
+                        print_yellow(f"[INCREMENTAL] Found define '{define_name}' in: {rel_path}")
+            except Exception:
+                continue
+    
+    return candidates
+
+
+def _find_package_including_file(repo_root: str, include_file: str, module_graph: Dict[str, Dict]) -> List[str]:
+    """
+    Find package (.sv) files that include a given .svh file.
+    
+    When a .svh file contains typedefs used before declaration, we need to compile
+    the package file that includes it, not the .svh itself.
+    
+    Args:
+        repo_root: Repository root
+        include_file: Relative path to .svh file (e.g., "bp_common/src/include/bp_common_aviary_pkgdef.svh")
+        module_graph: Module dependency graph
+    
+    Returns:
+        List of package files (.sv) that include this file
+    """
+    package_files: List[str] = []
+    include_basename = os.path.basename(include_file)
+
+    # Always use filesystem fallback as it's more reliable than module_graph for this use case
+    # Scan the repository filesystem for .sv files that include the .svh
+    for root, dirs, files in os.walk(repo_root):
+        dirs[:] = [d for d in dirs if d not in {'.git', 'obj_dir', 'build', 'out'}]
+        for fname in files:
+            if not fname.lower().endswith('.sv'):
+                continue
+            full_path = os.path.join(root, fname)
+            try:
+                with open(full_path, 'r', encoding='utf-8', errors='ignore') as fh:
+                    content = fh.read(50000)
+                    include_pattern = re.compile(rf'`include\s+["\']([^"\']*{re.escape(include_basename)})["\']', re.IGNORECASE)
+                    if include_pattern.search(content) and re.search(r'^\s*package\s+\w+\s*;', content, re.MULTILINE | re.IGNORECASE):
+                        rel = _normalize_path(os.path.relpath(full_path, repo_root), repo_root)
+                        package_files.append(rel)
+            except Exception:
+                continue
+
+    return package_files
 
 
 def _find_file_declaring_module(repo_root: str, module_name: str, module_graph: Dict[str, Dict]) -> List[str]:
@@ -229,8 +407,17 @@ def _find_file_by_search(repo_root: str, symbol_name: str, symbol_type: str) -> 
     Returns:
         List of relative paths to files (may be empty or have multiple matches)
     """
-    # First try exact match
-    pattern = re.compile(rf"^\s*{symbol_type}\s+{re.escape(symbol_name)}\b", re.IGNORECASE | re.MULTILINE)
+    # Build search patterns - for modules, also try interface since Verilator
+    # sometimes reports missing interfaces as missing modules
+    patterns = []
+    if symbol_type == "module":
+        # Try both module and interface patterns
+        patterns.append(re.compile(rf"^\s*module\s+{re.escape(symbol_name)}\b", re.IGNORECASE | re.MULTILINE))
+        patterns.append(re.compile(rf"^\s*interface\s+{re.escape(symbol_name)}\b", re.IGNORECASE | re.MULTILINE))
+    else:
+        # For package and interface, use exact type
+        patterns.append(re.compile(rf"^\s*{symbol_type}\s+{re.escape(symbol_name)}\b", re.IGNORECASE | re.MULTILINE))
+    
     found_files = []
     
     for root, dirs, files in os.walk(repo_root):
@@ -244,13 +431,86 @@ def _find_file_by_search(repo_root: str, symbol_name: str, symbol_type: str) -> 
             full_path = os.path.join(root, fname)
             try:
                 with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
-                    content = f.read(100000)  # Read first 100KB
-                    if pattern.search(content):
-                        found_files.append(_normalize_path(full_path, repo_root))
+                    content = f.read()  # Read entire file
+                    # Check if any pattern matches
+                    for pattern in patterns:
+                        if pattern.search(content):
+                            found_files.append(_normalize_path(full_path, repo_root))
+                            break  # Found in this file, no need to check other patterns
             except Exception:
                 continue
     
     return found_files
+
+
+def _find_package_with_typedef(repo_root: str, typedef_name: str, module_graph: Dict[str, Dict]) -> List[str]:
+    """
+    Find the package file(s) that contain a given typedef/struct.
+    
+    When Verilator reports "Can't find typedef/interface: 'TypeName'", the type might be 
+    defined inside a package. This function searches for files containing the typedef and 
+    determines which package declares it.
+    
+    Args:
+        repo_root: Repository root
+        typedef_name: Name of the typedef (e.g., 'BypassControll')
+        module_graph: Module dependency graph
+    
+    Returns:
+        List of file paths declaring the package containing this typedef
+    """
+    # Search for files containing this typedef
+    # Pattern matches:
+    # 1. } TypeName; (closing brace of struct/enum/union)
+    # 2. typedef struct/enum/union ... TypeName;
+    typedef_pattern = re.compile(
+        rf'\}}\s*{re.escape(typedef_name)}\s*;'  # } TypeName;
+        rf'|typedef\s+(?:struct|enum|union)\s+.*\s+{re.escape(typedef_name)}\s*;'  # typedef struct/enum/union ... TypeName;
+        , 
+        re.MULTILINE | re.IGNORECASE
+    )
+    
+    package_pattern = re.compile(r'^\s*package\s+(\w+)\s*;', re.MULTILINE)
+    
+    found_packages = set()
+    files_searched = 0
+    matches_found = 0
+    
+    for root, dirs, files in os.walk(repo_root):
+        dirs[:] = [d for d in dirs if d not in {'.git', 'obj_dir', 'build', 'out'}]
+        
+        for fname in files:
+            if not fname.endswith(('.sv', '.svh')):
+                continue
+            
+            files_searched += 1
+            full_path = os.path.join(root, fname)
+            try:
+                with open(full_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                    
+                    # Check if this file contains the typedef
+                    if typedef_pattern.search(content):
+                        matches_found += 1
+                        # Find which package this typedef is in
+                        pkg_match = package_pattern.search(content)
+                        if pkg_match:
+                            package_name = pkg_match.group(1)
+                            # Now find the file declaring this package
+                            pkg_files = _find_file_declaring_package(repo_root, package_name, module_graph)
+                            if pkg_files:
+                                found_packages.update(pkg_files)
+                            else:
+                                print_yellow(f"[INCREMENTAL] Found typedef '{typedef_name}' in package '{package_name}', but package file not found")
+                        else:
+                            print_yellow(f"[INCREMENTAL] Found typedef '{typedef_name}' in {os.path.relpath(full_path, repo_root)}, but no package declaration")
+            except Exception as e:
+                continue
+    
+    if not found_packages:
+        print_yellow(f"[INCREMENTAL] Searched {files_searched} files ({matches_found} matches), typedef '{typedef_name}' package not found")
+    
+    return list(found_packages)
 
 
 def _find_include_file(repo_root: str, include_name: str, current_includes: Set[str]) -> Optional[str]:
@@ -327,6 +587,10 @@ def _order_sv_files(files: List[str], repo_root: str | None = None) -> List[str]
     ifdef_error_re = re.compile(r"^\s*`ifdef\s+(\w+)\s*\n\s*`error", re.IGNORECASE | re.MULTILINE)
     # Detect define declarations
     define_re = re.compile(r"^\s*`define\s+(\w+)", re.IGNORECASE | re.MULTILINE)
+    # Detect typedef declarations (enum, struct, union) - these need to be compiled before use
+    typedef_re = re.compile(r"^\s*}\s*(\w+)\s*;", re.IGNORECASE | re.MULTILINE)  # } type_name;
+    # Detect parameter type usage: parameter TYPE_NAME param_name = ...
+    param_type_re = re.compile(r"^\s*#?\s*\(\s*parameter\s+([a-zA-Z_]\w+)\s+", re.IGNORECASE | re.MULTILINE)
 
     file_to_imports: Dict[str, Set[str]] = {f: set() for f in files}
     pkg_to_file: Dict[str, str] = {}
@@ -334,6 +598,10 @@ def _order_sv_files(files: List[str], repo_root: str | None = None) -> List[str]
     define_to_file: Dict[str, str] = {}
     # Map: file -> set of defines it requires to NOT be defined yet (must come before definer)
     file_to_forbidden_defines: Dict[str, Set[str]] = {f: set() for f in files}
+    # Map: typedef name -> file that defines it
+    typedef_to_file: Dict[str, str] = {}
+    # Map: file -> set of typedefs it uses as parameter types
+    file_to_param_types: Dict[str, Set[str]] = {f: set() for f in files}
 
     def _read(rel_path: str) -> str:
         p = os.path.join(repo_root, rel_path)
@@ -363,11 +631,22 @@ def _order_sv_files(files: List[str], repo_root: str | None = None) -> List[str]
             define = m.group(1)
             if define and define not in define_to_file:
                 define_to_file[define] = f
+        # Typedef declarations in this file (enum, struct, union)
+        for m in typedef_re.finditer(text):
+            typedef = m.group(1)
+            if typedef and typedef not in typedef_to_file:
+                typedef_to_file[typedef] = f
         # Explicit ordering constraints: ifdef + error means must come before definer
         for m in ifdef_error_re.finditer(text):
             define = m.group(1)
             if define:
                 file_to_forbidden_defines[f].add(define)
+        # Parameter type usage: #(parameter TYPE_NAME param_name = ...)
+        for m in param_type_re.finditer(text):
+            param_type = m.group(1)
+            # Filter out built-in types and common parameter patterns
+            if param_type not in ['int', 'integer', 'logic', 'bit', 'reg', 'wire', 'real', 'string', 'signed', 'unsigned']:
+                file_to_param_types[f].add(param_type)
     # Collect imports per file
     for f in files:
         text = _read(f)
@@ -421,6 +700,17 @@ def _order_sv_files(files: List[str], repo_root: str | None = None) -> List[str]
                     adj[f].add(definer)
                     indeg[definer] += 1
 
+    # Add edges for typedef dependencies
+    # If file A uses a typedef as a parameter type, and file B defines that typedef,
+    # then B must come before A: add edge B -> A
+    for f, param_types in file_to_param_types.items():
+        for typedef in param_types:
+            definer = typedef_to_file.get(typedef)
+            if definer and definer != f:
+                if f not in adj[definer]:
+                    adj[definer].add(f)
+                    indeg[f] += 1
+
     # Kahn's algorithm for topo sort, preserving original order among equals
     zero_indeg = sorted([n for n in nodes if indeg[n] == 0], key=lambda x: index_map[x])
     ordered: List[str] = []
@@ -462,15 +752,16 @@ def _has_sv_keyword_as_identifier(repo_root: str, files: List[str]) -> bool:
     # SystemVerilog keywords that might be used as identifiers in Verilog code
     sv_keywords = ['dist', 'randomize', 'constraint', 'covergroup', 'coverpoint', 
                    'bins', 'illegal_bins', 'ignore_bins', 'cross', 'with', 
-                   'matches', 'inside', 'tagged', 'priority', 'unique']
+                   'matches', 'inside', 'tagged', 'priority', 'unique', 'bit']
     
-    # Pattern to detect keyword used as identifier (e.g., "begin:dist", "wire dist", etc.)
+    # Pattern to detect keyword used as identifier (e.g., "begin:dist", "wire dist", "reg [7:0] bit", etc.)
     identifier_patterns = [
         re.compile(r'\bbegin\s*:\s*(' + '|'.join(sv_keywords) + r')\b', re.I),  # begin:keyword
-        re.compile(r'\b(wire|reg|logic|input|output|inout)\s+(' + '|'.join(sv_keywords) + r')\b', re.I),  # wire keyword
+        re.compile(r'\b(wire|reg|logic|input|output|inout)(\s+\[[^\]]+\])?\s+(' + '|'.join(sv_keywords) + r')\b', re.I),  # wire keyword or reg [N:0] keyword
         re.compile(r'\bparameter\s+(' + '|'.join(sv_keywords) + r')\s*=', re.I),  # parameter keyword =
     ]
     
+    print_blue(f"[KEYWORD CHECK] Checking {len(files)} files for SV keywords as identifiers")
     for file_rel in files:
         file_path = os.path.join(repo_root, file_rel) if not os.path.isabs(file_rel) else file_rel
         try:
@@ -478,7 +769,9 @@ def _has_sv_keyword_as_identifier(repo_root: str, files: List[str]) -> bool:
                 content = f.read()
                 
                 for pattern in identifier_patterns:
-                    if pattern.search(content):
+                    match = pattern.search(content)
+                    if match:
+                        print_yellow(f"[KEYWORD CHECK] FOUND SV keyword in {file_rel}: {match.group(0)}")
                         return True
         except Exception:
             continue
@@ -536,13 +829,43 @@ def _detect_language_for_files(repo_root: str, files: List[str], module_graph: D
                 except Exception:
                     pass
     
-    # First check for SystemVerilog features BEFORE checking keyword conflicts
-    # This way, if a file uses both always_comb and a keyword as identifier,
-    # we know it's truly SystemVerilog code that needs SV mode
+    # Also scan all .v/.sv files in the same directories as files we're compiling
+    # This catches cases where files in the same directory might use SV keywords but aren't in the initial list
+    scanned_dirs = set()
+    initial_file_count = len(files_to_check)
+    for file_rel in list(files_to_check):
+        file_dir = os.path.dirname(file_rel)
+        if file_dir and file_dir not in scanned_dirs:
+            scanned_dirs.add(file_dir)
+            full_dir = os.path.join(repo_root, file_dir) if not os.path.isabs(file_dir) else file_dir
+            if os.path.isdir(full_dir):
+                try:
+                    dir_files = []
+                    for file in os.listdir(full_dir):
+                        if file.endswith(('.v', '.sv', '.svh')):
+                            rel_path = os.path.join(file_dir, file) if file_dir else file
+                            if rel_path not in files_to_check:
+                                dir_files.append(file)
+                            files_to_check.add(rel_path)
+                    if dir_files:
+                        print_blue(f"[LANG DETECT]   Dir {file_dir}: added {dir_files}")
+                except Exception:
+                    pass
+    
+    # FIRST: Check for keyword conflicts (highest priority)
+    # Plain Verilog code using SV keywords as identifiers must use Verilog mode
+    has_keyword_conflict = _has_sv_keyword_as_identifier(repo_root, list(files_to_check))
+    if has_keyword_conflict:
+        return "1364-2005"
+    
+    # SECOND: Check for SystemVerilog features
+    # If no keyword conflicts but has SV features, use SystemVerilog mode
     has_sv_features = False
     has_logic_keyword = False
     has_interface = False
     has_always_ff = False
+    
+    print_blue(f"[LANG DETECT] No keyword conflicts, checking {len(files_to_check)} files for SV features...")
     
     # Patterns for SystemVerilog features
     sv_patterns = {
@@ -581,11 +904,7 @@ def _detect_language_for_files(repo_root: str, files: List[str], module_graph: D
     if has_sv_features:
         return "1800-2017"
     
-    # Only check for keyword conflicts if NO SV features found
-    # (i.e., plain Verilog code using SV keywords as identifiers)
-    if _has_sv_keyword_as_identifier(repo_root, list(files_to_check)):
-        return "1364-2005"
-    
+    print_blue(f"[LANG DETECT] No SV features found either")
     # Check file extensions
     has_sv_ext = any(f.endswith(('.sv', '.svh')) for f in files_to_check)
     if has_sv_ext:
@@ -944,10 +1263,16 @@ def compile_incremental(
     attempted_interfaces: Set[str] = set()
     attempted_includes: Set[str] = set()
     
+    # Track error counts to detect progress even when no files are added
+    prev_error_count = float('inf')
+    
     last_log = ""
     
     for iteration in range(max_iterations):
         print_yellow(f"[INCREMENTAL] Iteration {iteration + 1}/{max_iterations} | files={len(current_files)} includes={len(current_includes)}")
+        
+        # Order files before compilation to ensure packages come before importers
+        current_files = _order_sv_files(current_files, repo_root)
         
         # Build and run Verilator command
         cmd = _build_verilator_cmd(
@@ -1005,17 +1330,121 @@ def compile_incremental(
         missing_packages = _parse_missing_packages(output)
         missing_includes = _parse_missing_includes(output)
         missing_interfaces = _parse_missing_interfaces(output)
+        forward_decl_files = _parse_forward_declaration_files(output, repo_root)
+        missing_import_packages = _parse_missing_import_packages(output)
+        missing_defines = _parse_missing_defines(output)
+        included_files_with_errors = _parse_included_files_with_errors(output, repo_root)
         
-        print_yellow(f"[INCREMENTAL] Missing: modules={len(missing_modules)} packages={len(missing_packages)} includes={len(missing_includes)} interfaces={len(missing_interfaces)}")
+        print_yellow(f"[INCREMENTAL] Missing: modules={len(missing_modules)} packages={len(missing_packages)} includes={len(missing_includes)} interfaces={len(missing_interfaces)} forward_decls={len(forward_decl_files)} import_pkgs={len(missing_import_packages)} defines={len(missing_defines)} included_files={len(included_files_with_errors)}")
         
         # Track if we made any progress this iteration
         added_something = False
         
         # IMPORTANT: Process dependencies in order of specificity:
-        # 1. Packages first (define types and constants needed by everything else)
-        # 2. Includes (header files)
-        # 3. Interfaces (interface definitions)
-        # 4. Modules last (can now pick correct version based on packages)
+        # 0. Forward declaration files (files with type definitions that must come first)
+        # 1. Import packages (package files that are imported)
+        # 2. Packages (define types and constants needed by everything else)
+        # 3. Includes (header files)
+        # 4. Interfaces (interface definitions)
+        # 5. Modules last (can now pick correct version based on packages)
+        
+        # Add files that contain forward declarations (type definitions used before declaration)
+        for fwd_file in forward_decl_files:
+            # If it's a .svh include file, find the package that includes it
+            if fwd_file.endswith('.svh') or fwd_file.endswith('.vh'):
+                pkg_files = _find_package_including_file(repo_root, fwd_file, module_graph)
+                for pkg_file in pkg_files:
+                    if pkg_file not in current_files:
+                        print_green(f"[INCREMENTAL] + Adding package file: {pkg_file} (includes '{os.path.basename(fwd_file)}' with type definitions)")
+                        current_files.append(pkg_file)
+                        added_something = True
+                        pkg_dir = os.path.dirname(pkg_file)
+                        if pkg_dir and pkg_dir not in current_includes:
+                            current_includes.add(pkg_dir)
+                if not pkg_files:
+                    print_yellow(f"[INCREMENTAL] ! Could not find package including {fwd_file}")
+            # If it's a .sv file, add it directly
+            elif fwd_file.endswith('.sv') and fwd_file not in current_files:
+                print_green(f"[INCREMENTAL] + Adding forward declaration file: {fwd_file} (contains type definitions)")
+                current_files.append(fwd_file)
+                added_something = True
+                # Add its directory as include
+                fwd_dir = os.path.dirname(fwd_file)
+                if fwd_dir and fwd_dir not in current_includes:
+                    current_includes.add(fwd_dir)
+        
+        # Add files that have typedef/package errors when included (typically interfaces)
+        # These need to be compiled as standalone files before the files that include them
+        for inc_file in included_files_with_errors:
+            if inc_file not in current_files:
+                print_green(f"[INCREMENTAL] + Adding included file as standalone: {inc_file} (has typedef/package errors when included)")
+                current_files.append(inc_file)
+                added_something = True
+                # Add its directory as include
+                inc_dir = os.path.dirname(inc_file)
+                if inc_dir and inc_dir not in current_includes:
+                    current_includes.add(inc_dir)
+        
+        # Add files for missing import packages (explicit import statements)
+        for pkg_name in missing_import_packages:
+            if pkg_name in attempted_packages:
+                continue
+            
+            attempted_packages.add(pkg_name)
+            pkg_files = _find_file_declaring_package(repo_root, pkg_name, module_graph)
+            
+            if pkg_files:
+                # Convert to list if single file
+                if not isinstance(pkg_files, list):
+                    pkg_files = [pkg_files]
+                
+                # If multiple candidates, test them to find the best one
+                if len(pkg_files) > 1:
+                    best_candidate = _try_package_candidates(
+                        pkg_name, pkg_files, current_files, current_includes,
+                        repo_root, top_module, language_version, extra_flags, timeout
+                    )
+                    if best_candidate and best_candidate not in current_files:
+                        print_green(f"[INCREMENTAL] + Adding import package file: {best_candidate} (provides '{pkg_name}')")
+                        current_files.append(best_candidate)
+                        added_something = True
+                        pkg_dir = os.path.dirname(best_candidate)
+                        if pkg_dir and pkg_dir not in current_includes:
+                            current_includes.add(pkg_dir)
+                else:
+                    # Single candidate, add directly
+                    pkg_file = pkg_files[0]
+                    if pkg_file not in current_files:
+                        print_green(f"[INCREMENTAL] + Adding import package file: {pkg_file} (provides '{pkg_name}')")
+                        current_files.append(pkg_file)
+                        added_something = True
+                        pkg_dir = os.path.dirname(pkg_file)
+                        if pkg_dir and pkg_dir not in current_includes:
+                            current_includes.add(pkg_dir)
+            else:
+                print_red(f"[INCREMENTAL] ✗ Cannot find file for import package: {pkg_name}")
+        
+        # Add header files for missing defines
+        for define_name in missing_defines:
+            if define_name in attempted_packages:  # Reuse attempted set to avoid duplicates
+                continue
+            
+            attempted_packages.add(define_name)
+            header_files = _find_header_with_define(repo_root, define_name, module_graph)
+            
+            if header_files:
+                for header_file in header_files:
+                    if header_file not in current_files:
+                        print_green(f"[INCREMENTAL] + Adding header file: {header_file} (defines '`{define_name}')")
+                        current_files.append(header_file)
+                        added_something = True
+                        # Add the directory containing the header to includes
+                        header_dir = os.path.dirname(header_file)
+                        if header_dir and header_dir not in current_includes:
+                            current_includes.add(header_dir)
+                            print_green(f"[INCREMENTAL] + Adding include dir: {header_dir} (for define '`{define_name}')")
+            else:
+                print_yellow(f"[INCREMENTAL] ! Cannot find header file defining: `{define_name}")
         
         # Add files for missing packages
         # Strategy: First add all unique packages (single file), then test duplicates with better context
@@ -1029,8 +1458,13 @@ def compile_incremental(
             attempted_packages.add(pkg_name)
             pkg_files = _find_file_declaring_package(repo_root, pkg_name, module_graph)
             
+            # If not found as a package declaration, it might be a typedef inside a package
             if not pkg_files:
-                print_red(f"[INCREMENTAL] ✗ Cannot find file for package: {pkg_name}")
+                print_yellow(f"[INCREMENTAL] '{pkg_name}' not found as package, searching for typedef...")
+                pkg_files = _find_package_with_typedef(repo_root, pkg_name, module_graph)
+            
+            if not pkg_files:
+                print_red(f"[INCREMENTAL] ✗ Cannot find file for package/typedef: {pkg_name}")
                 continue
             
             if len(pkg_files) == 1:
@@ -1169,8 +1603,17 @@ def compile_incremental(
                     print_yellow(f"[INCREMENTAL] + Adding module file (fallback): {fallback} (provides '{mod_name}')")
                     added_something = True
         
-        # Check if we're stuck
-        if not added_something:
+        # Calculate current error count (total missing dependencies)
+        current_error_count = (
+            len(missing_modules) + len(missing_packages) + len(missing_includes) +
+            len(missing_interfaces) + len(forward_decl_files) + len(missing_import_packages) +
+            len(missing_defines) + len(included_files_with_errors)
+        )
+        
+        # Check if we're stuck (no files added AND error count didn't decrease)
+        made_progress = added_something or (current_error_count < prev_error_count)
+        
+        if not made_progress:
             print_red(f"[INCREMENTAL] ✗ No progress made in iteration {iteration + 1}")
             print_red(f"[INCREMENTAL] Still have unresolved dependencies:")
             if missing_modules:
@@ -1188,6 +1631,9 @@ def compile_incremental(
                 print_red(f"[INCREMENTAL] This may indicate typos or other issues in the source code")
                 rc = 1  # Force failure
             break
+        
+        # Update prev_error_count for next iteration
+        prev_error_count = current_error_count
     
     print_red(f"[INCREMENTAL] ✗ Failed to achieve clean compilation after {max_iterations} iterations")
     # Order files topologically before returning (packages before importers)

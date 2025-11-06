@@ -69,7 +69,7 @@ from ghdl_runner import (
 
 
 # Constants
-EXTENSIONS = ['v', 'sv', 'vhdl', 'vhd']
+EXTENSIONS = ['v', 'sv', 'vhdl', 'vhd']  # Note: .vm files are FPGA netlists, not RTL
 DESTINATION_DIR = './temp'
 UTILITY_PATTERNS = (
     "gen_", "dff", "buf", "full_handshake", "fifo", "mux", "regfile"
@@ -521,13 +521,16 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
     Rank module candidates to identify the best top module.
     Analyzes both module connectivity and instantiation patterns to distinguish CPU cores from SoC tops.
     """
-    children_of = _ensure_mapping(module_graph_inverse)
-    parents_of = _ensure_mapping(module_graph)
+    # module_graph: A -> [B, C] means A instantiates B and C
+    # module_graph_inverse: B -> [A] means B is instantiated by A
+    
+    instantiates = _ensure_mapping(module_graph)  # What each module instantiates (its children)
+    instantiated_by = _ensure_mapping(module_graph_inverse)  # What instantiates each module (its parents)
 
-    nodes = set(children_of.keys()) | set(parents_of.keys())
+    nodes = set(instantiated_by.keys()) | set(instantiates.keys())
     for n in nodes:
-        children_of.setdefault(n, [])
-        parents_of.setdefault(n, [])
+        instantiated_by.setdefault(n, [])
+        instantiates.setdefault(n, [])
 
     # Filter out Verilog keywords and invalid module names
     valid_modules = []
@@ -539,9 +542,12 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
             (module.replace('_', '').isalnum())):
             valid_modules.append(module)
     
-    # Find candidates: modules with few parents are preferred
-    zero_parent_modules = [m for m in valid_modules if not parents_of.get(m, [])]
-    low_parent_modules = [m for m in valid_modules if len(parents_of.get(m, [])) <= 2]
+    # Find candidates: modules with few parents (few modules instantiate them) are preferred as top modules
+    zero_parent_modules = [m for m in valid_modules if not instantiated_by.get(m, [])]
+    low_parent_modules = [m for m in valid_modules if len(instantiated_by.get(m, [])) <= 2]
+    
+    # Always include standalone 'core' and 'cpu' modules as candidates
+    core_cpu_modules = [m for m in valid_modules if m.lower() in ['core', 'cpu', 'processor']]
     
     # Include repo name matches even if they have many parents
     repo_name_matches = []
@@ -562,7 +568,6 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
                 repo_lower in module_lower or 
                 module_lower in repo_lower):
                 repo_name_matches.append(module)
-                print_green(f"[REPO-MATCH] Found repo name match: {module} (parents: {len(parents_of.get(module, []))})")
             
             # Also check for common variations
             repo_variations = [repo_lower, repo_lower.upper(), repo_lower.capitalize()]
@@ -575,7 +580,8 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
             # Enhanced CPU core detection using instantiation patterns
             if (any(pattern in module_lower for pattern in [repo_lower, 'cpu', 'core', 'risc', 'processor', 'microcontroller']) and 
                 module not in zero_parent_modules and module not in low_parent_modules and
-                (module_lower == 'microcontroller' or not any(bad_pattern in module_lower for bad_pattern in 
+                (module_lower == 'microcontroller' or module_lower == 'core' or module_lower == 'cpu' or 
+                 not any(bad_pattern in module_lower for bad_pattern in 
                        ['div', 'mul', 'alu', 'fpu', 'cache', 'mem', 'bus', '_ctrl', 'ctrl_', 'reg', 'decode', 'fetch', 'exec', 'forward', 'hazard', 'pred',
                         'sm3', 'sha', 'aes', 'des', 'rsa', 'ecc', 'crypto', 'hash', 'cipher', 'encrypt', 'decrypt', 'uart', 'spi', 'i2c', 'gpio',
                         'timer', 'interrupt', 'dma', 'pll', 'clk', 'pwm', 'aon', 'hclk', 'oitf', 'wrapper', 'regs'])) and
@@ -601,7 +607,7 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
                 if is_cpu_core and module not in repo_name_matches:
                     cpu_core_matches.append(module)
     
-    candidates = list(set(zero_parent_modules + low_parent_modules + repo_name_matches + cpu_core_matches))
+    candidates = list(set(zero_parent_modules + low_parent_modules + core_cpu_modules + repo_name_matches + cpu_core_matches))
     
     if not candidates:
         candidates = valid_modules
@@ -609,19 +615,23 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
     repo_lower = (repo_name or "").lower()
     scored = []
     
+    # Normalize repo name: remove hyphens and underscores for matching
+    repo_normalized = repo_lower.replace('-', '').replace('_', '')
+    
     for c in candidates:
-        reach = _reachable_size(children_of, c)
+        reach = _reachable_size(instantiates, c)  # How many modules does this one instantiate (directly or indirectly)
         score = reach * 10  # Base score from connectivity
         name_lower = c.lower()
+        name_normalized = name_lower.replace('_', '')
 
         # REPOSITORY NAME MATCHING (Highest Priority)
         # Only apply repo matching if the module actually exists in the dependency graph
-        if repo_lower and len(repo_lower) > 2 and c in module_graph:
-            if repo_lower == name_lower:
+        if repo_normalized and len(repo_normalized) > 2 and c in module_graph:
+            if repo_normalized == name_normalized:
                 score += 50000
-            elif repo_lower in name_lower:
+            elif repo_normalized in name_normalized:
                 score += 40000
-            elif name_lower in repo_lower:
+            elif name_normalized in repo_normalized:
                 score += 35000
             else:
                 # Check initialism matching (e.g., "black-parrot" → "bp")
@@ -696,6 +706,9 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
                 # Exception: don't penalize microcontroller
                 if "microcontroller" not in name_lower:
                     score -= 15000
+            # Penalize subsystem cores - they're usually wrappers around the actual core
+            elif "subsys" in name_lower or "subsystem" in name_lower:
+                score -= 8000
             # Strong boost for exact core modules like "repo_core"
             elif name_lower == f"{repo_lower}_core" or name_lower == f"core_{repo_lower}":
                 score += 25000
@@ -772,13 +785,21 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
                         utility_prefixes = ['bsg_', 'common_', 'util_', 'lib_', 'helper_']
                         if any(name_lower.startswith(prefix) for prefix in utility_prefixes):
                             score -= 35000
-                            print_green(f"[PENALTY] Utility module {c} penalized (project uses {initialism}_* modules)")
 
     # STRUCTURAL HEURISTICS
-        num_children = len(children_of.get(c, []))
-        num_parents = len(parents_of.get(c, []))
+        num_children = len(instantiates.get(c, []))  # What this module instantiates
+        num_parents = len(instantiated_by.get(c, []))  # Who instantiates this module
         
-        if num_children > 10 and num_parents == 0:
+        # Boost CPU cores (modules with few parents and "core"/"cpu"/"processor" in name)
+        # These are better targets for testing than SoC tops
+        # Can have multiple parents (different top-level wrappers, test harnesses, etc.)
+        is_likely_core = (num_parents >= 1 and num_parents <= 3 and 
+                          any(pattern in name_lower for pattern in ['core', 'cpu', 'processor']) and
+                          not any(bad in name_lower for bad in ['_top', 'top_', 'soc', 'system', 'wrapper']))
+        
+        if is_likely_core and num_children > 2:
+            score += 25000  # Very strong preference for CPU cores
+        elif num_children > 10 and num_parents == 0:
             score += 1000
         elif num_children > 5 and num_parents <= 1:
             score += 500
@@ -835,6 +856,67 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
             score += 100
 
         scored.append((score, reach, c))
+
+    # CONDITIONAL TOP MODULE PENALTY
+    # Check if there are any "core" or "cpu" candidates in the list that are better choices than "top"
+    # This includes:
+    # 1. Modules with "core", "cpu", "processor", or "riscv" in their names (but not wrapped in _top/top_)
+    # 2. Exact matches like "CPU", "Core", "Processor", "RISCV" (standalone names)
+    # 3. Exclude peripheral cores (SPI, UART, I2C, GPIO, etc.)
+    peripheral_patterns = ['spi', 'uart', 'i2c', 'gpio', 'timer', 'pwm', 'adc', 'dac', 'can', 'usb', 'eth', 'pci']
+    
+    has_core_candidates = any(
+        (any(pattern in c.lower() for pattern in ['core', 'cpu', 'processor', 'riscv', 'atom']) or
+         c in ['CPU', 'Core', 'Processor', 'CORE', 'RISCV'])
+        and not any(bad in c.lower() for bad in ['_top', 'top_', 'soc', 'system', 'wrapper'])
+        and not any(periph in c.lower() for periph in peripheral_patterns)
+        for score, reach, c in scored
+    )
+    
+    # If core candidates exist, apply penalty to "top" modules and boost to core/cpu modules
+    if has_core_candidates:
+        adjusted_scored = []
+        for score, reach, c in scored:
+            name_lower = c.lower()
+            # Check if this is a top-level wrapper
+            num_parents = len(instantiated_by.get(c, []))
+            
+            # Penalize if:
+            # 1. Has "_top" or "top_" pattern (like e203_cpu_top, ibex_top)
+            # 2. Is exactly named "top" (generic top module)
+            is_top_wrapper = (num_parents == 0 and 
+                             (any(pattern in name_lower for pattern in ['_top', 'top_']) or
+                              name_lower == 'top'))
+            
+            # Boost if this is a CPU/core/RISCV module (exact matches or with cpu/core/riscv/atom in name)
+            # Exclude peripheral cores (SPI_core, UART_core, etc.)
+            is_cpu_core = (
+                (c in ['CPU', 'Core', 'Processor', 'CORE', 'RISCV'] or
+                 any(pattern in name_lower for pattern in ['_cpu', 'cpu_', '_core', 'core_', 'riscv', 'atom']))
+                and not any(periph in name_lower for periph in peripheral_patterns)
+            )
+            
+            # Check if this is a bus wrapper (has bus protocol suffix)
+            bus_wrapper_patterns = ['_wb', '_axi', '_ahb', '_apb', '_obi', '_tilelink']
+            is_bus_wrapper = any(pattern in name_lower for pattern in bus_wrapper_patterns)
+            
+            # Always penalize top wrappers when core candidates exist, even if they have core/cpu/riscv in name
+            # (e.g., RISCV_TOP should be penalized in favor of RISCV)
+            if is_top_wrapper:
+                # Apply a strong penalty to prefer cores over wrappers
+                score -= 15000  # Strong penalty to overcome structural advantage
+                print_yellow(f"[RANKING] Applying top-wrapper penalty to {c} (core/cpu candidates available)")
+            elif is_cpu_core and is_bus_wrapper:
+                # Bus wrappers get a smaller boost (prefer the unwrapped core)
+                score += 5000  # Moderate boost for bus-wrapped cores
+                print_yellow(f"[RANKING] Applying bus-wrapper boost to {c}")
+            elif is_cpu_core and not any(bad in name_lower for bad in ['_top', 'top_', 'soc', 'system', 'wrapper']):
+                # Pure cores get the full boost
+                score += 10000  # Significant boost for CPU/core modules
+                print_yellow(f"[RANKING] Applying CPU/core boost to {c}")
+            
+            adjusted_scored.append((score, reach, c))
+        scored = adjusted_scored
 
     # Sort by score (descending), then by reach (descending), then by name
     scored.sort(reverse=True, key=lambda t: (t[0], t[1], t[2]))
@@ -1363,7 +1445,6 @@ def build_and_log_graphs(files: list, modules: list, destination_path: str = Non
         absolute_files = [os.path.join(destination_path, f) if not os.path.isabs(f) else f for f in files]
     else:
         absolute_files = files
-    
     module_graph, module_graph_inverse = build_module_graph(absolute_files, modules)
     print_green('[LOG] Grafos construídos com sucesso\n')
     return module_graph, module_graph_inverse
@@ -1400,8 +1481,7 @@ def generate_processor_config(
     add_to_config: bool = False,
     no_llama: bool = False,
     model: str = 'qwen2.5:32b',
-    existing_repo: str | None = None,
-    cleanup: bool = True,
+    local_repo: str = None,
 ) -> dict:
     """
     Main function to generate a processor configuration.
@@ -1413,23 +1493,16 @@ def generate_processor_config(
         add_to_config: Whether to add to central config
         no_llama: Skip OLLAMA processing
         model: OLLAMA model to use
+        local_repo: Path to local repository (skips cloning if provided)
     """
     repo_name = extract_repo_name(url)
-
-    repo_was_cloned = False
-    # Use an already-cloned repository if provided
-    if existing_repo:
-        destination_path = existing_repo
-        if not os.path.exists(destination_path):
-            print_red(f'[ERROR] Existing repository path does not exist: {destination_path}')
-            return {}
-        print_green(f'[LOG] Using existing repository at {destination_path}\n')
-        # Convert to absolute path for config script
-        abs_path = os.path.abspath(destination_path)
-        detect_and_run_config_script(abs_path, repo_name)
+    
+    # Use local repo if provided, otherwise clone
+    if local_repo and os.path.exists(local_repo):
+        destination_path = os.path.abspath(local_repo)
+        print_green(f"[LOG] Using local repository: {destination_path}")
     else:
         destination_path = clone_and_validate_repo(url, repo_name)
-        repo_was_cloned = True
         if not destination_path:
             return {}
 
@@ -1462,11 +1535,17 @@ def generate_processor_config(
         pass
     include_dirs = find_and_log_include_dirs(destination_path)
     module_graph, module_graph_inverse = build_and_log_graphs(non_tb_files, modules, destination_path)
-
     filtered_files, top_module = process_files_with_llama(
         no_llama, non_tb_files, tb_files, modules, module_graph, repo_name, model,
     )
     language_version = determine_language_version(extension, filtered_files, destination_path)
+
+    # Processor-specific Verilator flags
+    verilator_flags = ['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED', '-Wno-TIMESCALEMOD', '-Wno-PROTECTED', '-Wno-MODDUP', '-Wno-REDEFMACRO', '-Wno-BLKANDNBLK', '-Wno-SYMRSVDWORD']
+    
+    # orv64: Define FPGA to use pre-synthesized .vm module implementations instead of missing DW IP
+    if 'orv64' in repo_name.lower():
+        verilator_flags.append('-DFPGA')
 
     final_files, final_include_dirs, last_log, top_module, is_simulable = interactive_simulate_and_minimize(
         repo_root=destination_path,
@@ -1480,7 +1559,7 @@ def generate_processor_config(
         module_graph_inverse=module_graph_inverse,
         language_version=language_version,
         maximize_attempts=6,
-        verilator_extra_flags=['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED', '-Wno-TIMESCALEMOD', '-Wno-PROTECTED', '-Wno-MODDUP', '-Wno-REDEFMACRO', '-Wno-BLKANDNBLK', '-Wno-SYMRSVDWORD'],
+        verilator_extra_flags=verilator_flags,
         ghdl_extra_flags=['--std=08', '-frelaxed'],
     )
 
@@ -1573,19 +1652,13 @@ def generate_processor_config(
     except Exception as e:
         print_yellow(f'[WARN] Falha ao salvar o log: {e}')
 
-    # Cleanup: remove repository only if we cloned it and cleanup is requested
-    if repo_was_cloned and cleanup:
+    # Cleanup - only remove if we cloned it (not using local repo)
+    if not local_repo:
         print_green('[LOG] Removendo o repositório clonado\n')
-        try:
-            remove_repo(repo_name)
-            print_green('[LOG] Repositório removido com sucesso\n')
-        except Exception as e:
-            print_yellow(f'[WARN] Failed to remove repository: {e}\n')
+        remove_repo(repo_name)
+        print_green('[LOG] Repositório removido com sucesso\n')
     else:
-        if repo_was_cloned and not cleanup:
-            print_yellow('[LOG] Cleanup disabled: leaving cloned repository in place\n')
-        else:
-            print_yellow('[LOG] Using existing repository; skipping removal\n')
+        print_green('[LOG] Mantendo repositório local (não foi clonado)\n')
 
     # Plot graph if requested
     if plot_graph:
@@ -1647,15 +1720,11 @@ def main() -> None:
         help='OLLAMA model to use'
     )
     parser.add_argument(
-        '--existing-repo',
+        '-l',
+        '--local-repo',
         type=str,
         default=None,
-        help='Path to an already-cloned repository to use instead of cloning from URL',
-    )
-    parser.add_argument(
-        '--no-cleanup',
-        action='store_true',
-        help='Do not remove the cloned repository after generating the config',
+        help='Path to local repository (skips cloning if provided)'
     )
 
     args = parser.parse_args()
@@ -1668,8 +1737,7 @@ def main() -> None:
             args.add_to_config,
             args.no_llama,
             args.model,
-            existing_repo=args.existing_repo,
-            cleanup=(not args.no_cleanup),
+            args.local_repo,
         )
         print('Result: ')
         print(json.dumps(config, indent=4))

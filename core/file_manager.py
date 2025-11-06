@@ -225,6 +225,11 @@ def should_exclude_file(file_path: str, base_directory: str = None) -> bool:
         if exclude_dir in rel_path:
             return True
     
+    # Exclude duplicated lib/lib directory (e.g., rtl/lib/lib/* in orv64)
+    # This handles repositories with nested duplicate directory structures
+    if '/lib/lib/' in rel_path.replace('\\', '/'):
+        return True
+    
     # For vendor directories, be more selective - exclude obvious problematic files
     if 'vendor' in rel_path:
         # Exclude Google RISC-V DV completely
@@ -321,7 +326,11 @@ def find_files_with_extension(
     for ext in extensions:
         found_files = glob.glob(f'{directory}/**/*.{ext}', recursive=True)
         
-        for file_path in found_files:            
+        for file_path in found_files:
+            # Skip broken symlinks
+            if os.path.islink(file_path) and not os.path.exists(file_path):
+                continue
+            
             if not should_exclude_file(file_path, directory):
                 files.append(file_path)
 
@@ -508,6 +517,7 @@ def find_missing_module_files(directory: str, missing_module_names: list) -> lis
     
     try:
         # Search for .v/.sv files that might contain the missing modules
+        # Note: .vm files are FPGA netlists (not RTL) and cannot be used with Verilator
         for extension in ['**/*.v', '**/*.sv']:
             source_files = glob.glob(os.path.join(directory, extension), recursive=True)
             
@@ -563,6 +573,9 @@ def extract_modules(files: list[str]) -> list[tuple[str, str]]:
     entity_pattern_vhdl = re.compile(r'^\s*entity\s+(\w+)\s+is', re.IGNORECASE | re.MULTILINE)
 
     for file_path in files:
+        # Convert to absolute path to ensure consistency
+        abs_file_path = os.path.abspath(file_path)
+        
         with open(file_path, 'r', errors='ignore', encoding='utf-8') as f:
             content = f.read()
             
@@ -575,7 +588,7 @@ def extract_modules(files: list[str]) -> list[tuple[str, str]]:
             verilog_matches = module_pattern_verilog.findall(content)
             modules.extend(
                 [
-                    (module_name, os.path.relpath(file_path))
+                    (module_name, abs_file_path)  # Use absolute path for consistency
                     for module_name in verilog_matches
                 ]
             )
@@ -584,7 +597,7 @@ def extract_modules(files: list[str]) -> list[tuple[str, str]]:
             vhdl_matches = entity_pattern_vhdl.findall(content)
             modules.extend(
                 [
-                    (entity_name, os.path.relpath(file_path))
+                    (entity_name, abs_file_path)  # Use absolute path for consistency
                     for entity_name in vhdl_matches
                 ]
             )
