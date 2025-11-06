@@ -16,6 +16,12 @@
                 "cleanup": false,
                 "skip_simulation": true
             }
+        },
+        "Tinyriscv": {
+            "name": "Tinyriscv",
+            "github": "https://github.com/liangkangnan/tinyriscv",
+            "pipeline_options": {
+            }
         }
     }
 }
