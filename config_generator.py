@@ -144,9 +144,11 @@ def _is_micro_stage_name(name: str) -> bool:
 
 
 def _is_interface_module_name(name: str) -> bool:
-    """Return True for interface-like module names (ControllerIF, DCacheIF, ...)."""
+    """Return True for interface-like module names (ControllerIF, DCacheIF, cpu_inf, ...)."""
     n = (name or "").lower()
-    return n.endswith("if") or "interface" in n
+    # Check for common interface suffixes: _if, _inf, if (standalone), or "interface" in name
+    return (n.endswith("if") or n.endswith("_if") or n.endswith("_inf") 
+            or n.endswith("inf") or "interface" in n)
 
 
 def _is_fpga_path(path: str) -> bool:
@@ -929,13 +931,113 @@ def rank_top_candidates(module_graph, module_graph_inverse, repo_name=None, modu
     return ranked, cpu_core_matches
 
 
+def convert_vhdl_to_verilog_with_ghdl(
+    vhdl_files: List[str],
+    repo_root: str,
+    output_dir: str = None
+) -> tuple[List[str], bool]:
+    """
+    Convert VHDL files to Verilog using GHDL's synthesis feature.
+    
+    Args:
+        vhdl_files: List of VHDL file paths (relative to repo_root)
+        repo_root: Root directory of the repository
+        output_dir: Directory to place generated Verilog files (default: repo_root/vhdl_synth)
+        
+    Returns:
+        (converted_verilog_files, success)
+    """
+    if not vhdl_files:
+        return [], True
+    
+    if output_dir is None:
+        output_dir = os.path.join(repo_root, "vhdl_synth")
+    
+    os.makedirs(output_dir, exist_ok=True)
+    
+    print_yellow(f"[VHDL→Verilog] Converting {len(vhdl_files)} VHDL files to Verilog using GHDL...")
+    
+    converted_files = []
+    failed_files = []
+    
+    for vhdl_file in vhdl_files:
+        vhdl_path = os.path.join(repo_root, vhdl_file) if not os.path.isabs(vhdl_file) else vhdl_file
+        
+        if not os.path.exists(vhdl_path):
+            print_yellow(f"[VHDL→Verilog] Warning: File not found: {vhdl_path}")
+            continue
+        
+        # Extract entity name from VHDL file
+        entity_name = None
+        try:
+            with open(vhdl_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+                match = re.search(r'^\s*entity\s+(\w+)\s+is', content, re.MULTILINE | re.IGNORECASE)
+                if match:
+                    entity_name = match.group(1)
+        except Exception as e:
+            print_yellow(f"[VHDL→Verilog] Error reading {vhdl_file}: {e}")
+            continue
+        
+        if not entity_name:
+            print_yellow(f"[VHDL→Verilog] Could not find entity name in {vhdl_file}, skipping")
+            continue
+        
+        output_v_file = os.path.join(output_dir, f"{entity_name}.v")
+        
+        # Try GHDL synthesis: ghdl --synth --out=verilog file.vhd -e entity_name > output.v
+        # Try with -fsynopsys first (for std_logic_arith, std_logic_unsigned support)
+        try:
+            cmd = ['ghdl', '--synth', '--out=verilog', '-fsynopsys', vhdl_path, '-e', entity_name]
+            print(f"[VHDL→Verilog] Converting {entity_name}: {' '.join(cmd)}")
+            
+            result = subprocess.run(
+                cmd,
+                cwd=repo_root,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            
+            if result.returncode == 0 and result.stdout:
+                # Write Verilog output to file
+                with open(output_v_file, 'w') as f:
+                    f.write(result.stdout)
+                converted_files.append(os.path.relpath(output_v_file, repo_root))
+                print_green(f"[VHDL→Verilog] ✓ Converted {entity_name} → {os.path.basename(output_v_file)}")
+            else:
+                print_yellow(f"[VHDL→Verilog] ✗ Failed to convert {entity_name}")
+                if result.stderr:
+                    print_yellow(f"  Error: {result.stderr[:200]}")
+                failed_files.append(vhdl_file)
+                
+        except subprocess.TimeoutExpired:
+            print_yellow(f"[VHDL→Verilog] Timeout converting {entity_name}")
+            failed_files.append(vhdl_file)
+        except FileNotFoundError:
+            print_red(f"[VHDL→Verilog] GHDL not found! Please install GHDL for mixed-language support")
+            return [], False
+        except Exception as e:
+            print_yellow(f"[VHDL→Verilog] Error converting {entity_name}: {e}")
+            failed_files.append(vhdl_file)
+    
+    if failed_files:
+        print_yellow(f"[VHDL→Verilog] Failed to convert {len(failed_files)} files: {failed_files[:3]}")
+    
+    success = len(converted_files) > 0
+    if success:
+        print_green(f"[VHDL→Verilog] ✓ Successfully converted {len(converted_files)}/{len(vhdl_files)} files")
+    
+    return converted_files, success
+
+
 def try_incremental_approach(
     repo_root: str,
     repo_name: str,
     top_candidates: list,
     modules: list,
     module_graph: dict,
-    language_version: str = "1800-2017",
+    language_version: str = "1800-2023",
     verilator_extra_flags: list = None,
     timeout: int = 300,
 ) -> tuple:
@@ -1148,9 +1250,16 @@ def interactive_simulate_and_minimize(
         vhdl_candidates = non_periph_vhdl
 
     # Choose simulator based on the primary top candidate's file extension
+    # IMPORTANT: For mixed-language designs, the top module's language determines the simulator
+    # - If top is Verilog → use Verilator (GHDL cannot handle Verilog top modules)
+    # - If top is VHDL → use GHDL (Verilator cannot handle VHDL top modules)
     prefer_ghdl = False
     if primary_ext is not None:
+        # Primary top module language takes precedence
         prefer_ghdl = primary_ext in vhdl_exts
+        if primary_ext in verilog_exts and vhdl_files:
+            print_yellow(f"[CORE] Mixed-language design detected: Verilog top '{primary_top}' with {len(vhdl_files)} VHDL files")
+            print_yellow(f"[CORE] Using Verilator (GHDL cannot simulate Verilog top modules)")
     else:
         # Fallback: if majority of candidates are VHDL, prefer GHDL
         prefer_ghdl = len(vhdl_candidates) >= len(verilog_candidates)
@@ -1182,6 +1291,26 @@ def interactive_simulate_and_minimize(
     # Try Verilator if preferred path failed or primary is Verilog
     if verilog_candidates:
         print_green(f"[CORE] Selecting Verilator (Verilog/SV) | top={primary_top} verilog_candidates={len(verilog_candidates)} files={len(verilog_files)} includes={len(include_dirs)}")
+        
+        # If mixed-language (Verilog top + VHDL modules), convert VHDL to Verilog first
+        if primary_ext in verilog_exts and vhdl_files:
+            print_yellow(f"[CORE] Attempting to convert {len(vhdl_files)} VHDL files to Verilog for mixed-language support...")
+            converted_v_files, conversion_success = convert_vhdl_to_verilog_with_ghdl(
+                vhdl_files=vhdl_files,
+                repo_root=repo_root
+            )
+            
+            if conversion_success and converted_v_files:
+                print_green(f"[CORE] ✓ Converted {len(converted_v_files)} VHDL files to Verilog")
+                # Add converted Verilog files to the file list
+                verilog_files.extend(converted_v_files)
+                candidate_files.extend(converted_v_files)
+                # Remove VHDL files from candidate list since we have Verilog versions
+                candidate_files = [f for f in candidate_files if os.path.splitext(f)[1].lower() not in vhdl_exts]
+                print_yellow(f"[CORE] Updated file list: {len(verilog_files)} Verilog files (including {len(converted_v_files)} converted)")
+            else:
+                print_yellow(f"[CORE] ⚠ VHDL conversion failed or incomplete - continuing with Verilog-only simulation")
+                print_yellow(f"[CORE] Note: VHDL modules will not be included in simulation")
         
         print_green(f"[CORE] Trying incremental bottom-up approach first...")
         final_files, final_includes, last_log, top_module, is_simulable = try_incremental_approach(
@@ -1428,6 +1557,187 @@ def categorize_files(files: list, repo_name: str, destination_path: str) -> tupl
     )
 
 
+def handle_dependency_manager(destination_path: str, repo_name: str) -> bool:
+    """Detect and run dependency managers (Bender, FuseSoC) to fetch external dependencies.
+    
+    Args:
+        destination_path: Path to the repository
+        repo_name: Name of the repository
+        
+    Returns:
+        bool: True if dependencies were successfully fetched, False otherwise
+    """
+    # Check for Bender (used by CVA6, PULP projects)
+    # First check root, then check subdirectories (like hw/ip/*/Bender.yml)
+    bender_yml = os.path.join(destination_path, 'Bender.yml')
+    bender_found = os.path.exists(bender_yml)
+    
+    if not bender_found:
+        # Search for Bender.yml in subdirectories (e.g., Snitch: hw/ip/snitch/Bender.yml)
+        # If multiple found, prefer the one whose package name matches repo_name
+        candidate_benders = []
+        for root, dirs, files in os.walk(destination_path):
+            if 'Bender.yml' in files:
+                candidate_path = os.path.join(root, 'Bender.yml')
+                candidate_benders.append(candidate_path)
+        
+        if candidate_benders:
+            # Try to find Bender.yml with matching package name
+            selected_bender = None
+            for candidate in candidate_benders:
+                try:
+                    with open(candidate, 'r') as f:
+                        content = f.read()
+                        # Simple YAML parsing to find package name
+                        import re
+                        match = re.search(r'^\s*name:\s*["\']?(\w+)["\']?\s*$', content, re.MULTILINE)
+                        if match:
+                            pkg_name = match.group(1)
+                            if pkg_name.lower() == repo_name.lower():
+                                selected_bender = candidate
+                                print_yellow(f"[DEPS] Found matching Bender.yml: {os.path.relpath(candidate, destination_path)} (package: {pkg_name})")
+                                break
+                except Exception:
+                    continue
+            
+            # If no match found, use the first one
+            if not selected_bender:
+                selected_bender = candidate_benders[0]
+                print_yellow(f"[DEPS] Using first Bender.yml found: {os.path.relpath(selected_bender, destination_path)}")
+            
+            bender_yml = selected_bender
+            bender_found = True
+    
+    if bender_found:
+        print_yellow(f"[DEPS] Detected Bender.yml - fetching dependencies...")
+        
+        # Check if bender is installed
+        try:
+            result = subprocess.run(
+                ['bender', '--version'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if result.returncode != 0:
+                print_yellow(f"[DEPS] Bender not installed. Install with: cargo install bender")
+                print_yellow(f"[DEPS] Skipping dependency fetch - some modules may be missing")
+                return False
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            print_yellow(f"[DEPS] Bender not found. Install with: cargo install bender")
+            print_yellow(f"[DEPS] Skipping dependency fetch - some modules may be missing")
+            return False
+        
+        # Run bender checkout to fetch and checkout dependencies
+        # This creates local working copies in the .bender directory
+        # Run from repo root but use --dir to point to the Bender.yml location
+        bender_dir = os.path.dirname(bender_yml)
+        bender_rel_dir = os.path.relpath(bender_dir, destination_path)
+        try:
+            print_yellow(f"[DEPS] Running 'bender checkout' for {bender_rel_dir}...")
+            result = subprocess.run(
+                ['bender', 'checkout', '--dir', bender_rel_dir],
+                cwd=destination_path,  # Run from repo root
+                capture_output=True,
+                text=True,
+                timeout=300  # 5 minutes timeout for fetching dependencies
+            )
+            
+            if result.returncode == 0:
+                print_green(f"[DEPS] ✓ Successfully checked out dependencies with Bender")
+                
+                # Generate file list with include directories
+                try:
+                    print_yellow(f"[DEPS] Generating file list with 'bender script flist'...")
+                    result_flist = subprocess.run(
+                        ['bender', 'script', 'flist', '--relative-path', '--dir', bender_rel_dir],
+                        cwd=destination_path,  # Run from repo root
+                        capture_output=True,
+                        text=True,
+                        timeout=30
+                    )
+                    if result_flist.returncode == 0 and result_flist.stdout:
+                        # Save the flist to repo root for easier access
+                        flist_path = os.path.join(destination_path, '.bender_flist')
+                        with open(flist_path, 'w') as f:
+                            f.write(result_flist.stdout)
+                        print_green(f"[DEPS] ✓ Saved Bender file list to .bender_flist")
+                except Exception as e:
+                    print_yellow(f"[DEPS] Could not generate flist: {e}")
+                
+                return True
+            else:
+                print_yellow(f"[DEPS] ✗ Bender checkout failed:")
+                if result.stderr:
+                    print_yellow(f"[DEPS]   {result.stderr[:500]}")
+                return False
+                
+        except subprocess.TimeoutExpired:
+            print_yellow(f"[DEPS] ✗ Bender checkout timed out")
+            return False
+        except Exception as e:
+            print_yellow(f"[DEPS] ✗ Error running Bender: {e}")
+            return False
+    
+    # Check for FuseSoC (used by some OpenHW projects)
+    fusesoc_core = None
+    for file in os.listdir(destination_path):
+        if file.endswith('.core'):
+            fusesoc_core = file
+            break
+    
+    if fusesoc_core:
+        print_yellow(f"[DEPS] Detected FuseSoC core file: {fusesoc_core}")
+        print_yellow(f"[DEPS] FuseSoC support not yet implemented")
+        print_yellow(f"[DEPS] Manual setup may be required")
+        return False
+    
+    # No dependency manager detected
+    return False
+
+
+def parse_bender_flist(destination_path: str) -> tuple[list, set]:
+    """Parse Bender-generated flist to extract files and include directories.
+    
+    Args:
+        destination_path: Path to the repository
+        
+    Returns:
+        tuple: (list of additional files, set of additional include dirs)
+    """
+    flist_path = os.path.join(destination_path, '.bender_flist')
+    if not os.path.exists(flist_path):
+        return [], set()
+    
+    additional_files = []
+    additional_includes = set()
+    
+    try:
+        with open(flist_path, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('//') or line.startswith('#'):
+                    continue
+                    
+                # Include directory directive
+                if line.startswith('+incdir+'):
+                    inc_dir = line.replace('+incdir+', '').strip()
+                    additional_includes.add(inc_dir)
+                elif line.startswith('-I'):
+                    inc_dir = line.replace('-I', '').strip()
+                    additional_includes.add(inc_dir)
+                # File path
+                elif line.endswith(('.sv', '.v', '.svh', '.vh', '.vhdl', '.vhd')):
+                    additional_files.append(line)
+                    
+        print_green(f"[DEPS] Parsed Bender flist: {len(additional_files)} files, {len(additional_includes)} includes")
+        return additional_files, additional_includes
+        
+    except Exception as e:
+        print_yellow(f"[DEPS] Error parsing Bender flist: {e}")
+        return [], set()
+
+
 def find_and_log_include_dirs(destination_path: str) -> list:
     """Finds include directories in the repository and logs the result."""
     print_green('[LOG] Procurando diretórios de inclusão\n')
@@ -1506,6 +1816,12 @@ def generate_processor_config(
         if not destination_path:
             return {}
 
+    # Handle dependency managers (Bender, FuseSoC, etc.)
+    # This must be done BEFORE scanning for files since it fetches external dependencies
+    deps_fetched = handle_dependency_manager(destination_path, repo_name)
+    if deps_fetched:
+        print_green(f"[DEPS] Dependencies fetched - rescanning files and includes...")
+
     files, extension = find_and_log_files(destination_path)
     modulename_list, modules = extract_and_log_modules(files, destination_path)
 
@@ -1534,6 +1850,41 @@ def generate_processor_config(
     except Exception:
         pass
     include_dirs = find_and_log_include_dirs(destination_path)
+    
+    # If Bender was used, also scan .bender directory for includes and parse flist
+    if deps_fetched:
+        # Scan .bender/git/checkouts for include directories
+        # With --dir option, .bender is created relative to the Bender.yml location
+        # So we need to check both root and subdirectories
+        bender_checkout_dir = os.path.join(destination_path, '.bender', 'git', 'checkouts')
+        if not os.path.exists(bender_checkout_dir):
+            # Search for .bender in subdirectories
+            for root, dirs, files in os.walk(destination_path):
+                if '.bender' in dirs:
+                    candidate = os.path.join(root, '.bender', 'git', 'checkouts')
+                    if os.path.exists(candidate):
+                        bender_checkout_dir = candidate
+                        print_yellow(f"[DEPS] Found Bender checkouts at: {os.path.relpath(bender_checkout_dir, destination_path)}")
+                        break
+        
+        if os.path.exists(bender_checkout_dir):
+            print_yellow(f"[DEPS] Scanning Bender checkouts for include directories...")
+            bender_includes_found = find_include_dirs(bender_checkout_dir)
+            if bender_includes_found:
+                # Convert to paths relative to repo root
+                bender_base = os.path.dirname(os.path.dirname(os.path.dirname(bender_checkout_dir)))  # Go up to .bender parent
+                for inc_dir in bender_includes_found:
+                    # Construct path relative to repo root
+                    rel_to_root = os.path.relpath(os.path.join(bender_checkout_dir, inc_dir), destination_path)
+                    include_dirs.add(rel_to_root)
+                print_green(f"[DEPS] Added {len(bender_includes_found)} include directories from Bender checkouts")
+        
+        # Also parse the flist for any additional includes
+        bender_files, bender_includes = parse_bender_flist(destination_path)
+        if bender_includes:
+            print_yellow(f"[DEPS] Adding {len(bender_includes)} include directories from Bender flist")
+            include_dirs.update(bender_includes)
+    
     module_graph, module_graph_inverse = build_and_log_graphs(non_tb_files, modules, destination_path)
     filtered_files, top_module = process_files_with_llama(
         no_llama, non_tb_files, tb_files, modules, module_graph, repo_name, model,
@@ -1541,7 +1892,7 @@ def generate_processor_config(
     language_version = determine_language_version(extension, filtered_files, destination_path)
 
     # Processor-specific Verilator flags
-    verilator_flags = ['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED', '-Wno-TIMESCALEMOD', '-Wno-PROTECTED', '-Wno-MODDUP', '-Wno-REDEFMACRO', '-Wno-BLKANDNBLK', '-Wno-SYMRSVDWORD']
+    verilator_flags = ['-Wno-lint', '-Wno-fatal', '-Wno-style', '-Wno-UNOPTFLAT', '-Wno-UNDRIVEN', '-Wno-UNUSED', '-Wno-TIMESCALEMOD', '-Wno-PROTECTED', '-Wno-MODDUP', '-Wno-REDEFMACRO', '-Wno-BLKANDNBLK', '-Wno-SYMRSVDWORD', '-Wno-STMTDLY', '-Wno-SELRANGE']
     
     # orv64: Define FPGA to use pre-synthesized .vm module implementations instead of missing DW IP
     if 'orv64' in repo_name.lower():
@@ -1602,7 +1953,7 @@ def generate_processor_config(
             else:
                 # Fallback to file-extension based inference only if no effective language found
                 if any(os.path.splitext(f)[1].lower() in {'.sv', '.svh'} for f in final_files):
-                    language_version_out = '1800-2017'
+                    language_version_out = '1800-2023'
                 elif any(os.path.splitext(f)[1].lower() == '.v' for f in final_files):
                     # Don't blindly assume .v = Verilog 2005, check if we detected SV earlier
                     if language_version.startswith('1800'):
@@ -1614,7 +1965,7 @@ def generate_processor_config(
         else:
             # No log? Infer from selected files
             if any(os.path.splitext(f)[1].lower() in {'.sv', '.svh'} for f in final_files):
-                language_version_out = '1800-2017'
+                language_version_out = '1800-2023'
             elif any(os.path.splitext(f)[1].lower() == '.v' for f in final_files):
                 language_version_out = '1364-2005'
             else:

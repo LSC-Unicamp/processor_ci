@@ -127,6 +127,25 @@ def _parse_missing_packages(log_text: str) -> List[str]:
     return list(missing)
 
 
+def _parse_package_scope_references(log_text: str) -> List[str]:
+    """
+    Extract package names from scope resolution syntax errors (pkg::identifier).
+    When Verilator sees 'pkg_name::something' but pkg_name is not defined,
+    it reports "syntax error, unexpected ':'" - we can detect the package name
+    from the source line shown in the error.
+    """
+    missing = set()
+    # Look for patterns like: "localparam X = pkg_name::Something"
+    # The error will show the line with the :: usage
+    pattern = r'\b([a-zA-Z_][a-zA-Z0-9_]*)::'
+    for m in re.finditer(pattern, log_text):
+        pkg_name = m.group(1)
+        # Filter out common non-package prefixes
+        if pkg_name not in ['std', 'this', 'super', 'local']:
+            missing.add(pkg_name)
+    return list(missing)
+
+
 def _parse_missing_includes(log_text: str) -> List[str]:
     """Extract missing include file names from Verilator errors."""
     missing = set()
@@ -750,9 +769,11 @@ def _has_sv_keyword_as_identifier(repo_root: str, files: List[str]) -> bool:
     import re
     
     # SystemVerilog keywords that might be used as identifiers in Verilog code
+    # Note: 'bit' and 'logic' are removed since they're fundamental SV types and often used correctly
+    # Note: 'with' is removed since it matches comments too often
     sv_keywords = ['dist', 'randomize', 'constraint', 'covergroup', 'coverpoint', 
-                   'bins', 'illegal_bins', 'ignore_bins', 'cross', 'with', 
-                   'matches', 'inside', 'tagged', 'priority', 'unique', 'bit']
+                   'bins', 'illegal_bins', 'ignore_bins', 'cross', 
+                   'matches', 'inside', 'tagged', 'priority', 'unique']
     
     # Pattern to detect keyword used as identifier (e.g., "begin:dist", "wire dist", "reg [7:0] bit", etc.)
     identifier_patterns = [
@@ -902,13 +923,13 @@ def _detect_language_for_files(repo_root: str, files: List[str], module_graph: D
     
     # If we found SV features, use SystemVerilog mode
     if has_sv_features:
-        return "1800-2017"
+        return "1800-2023"
     
     print_blue(f"[LANG DETECT] No SV features found either")
     # Check file extensions
     has_sv_ext = any(f.endswith(('.sv', '.svh')) for f in files_to_check)
     if has_sv_ext:
-        return "1800-2017"
+        return "1800-2023"
     
     return "1364-2005"  # Default to Verilog-2005
 
@@ -918,7 +939,7 @@ def _build_verilator_cmd(
     files: List[str],
     include_dirs: Set[str],
     top_module: str,
-    language_version: str = "1800-2017",
+    language_version: str = "1800-2023",
     extra_flags: List[str] = None,
     module_graph: Dict[str, Dict] = None
 ) -> List[str]:
@@ -1210,7 +1231,7 @@ def compile_incremental(
     top_module: str,
     top_module_file: str,
     module_graph: Dict[str, Dict],
-    language_version: str = "1800-2017",
+    language_version: str = "1800-2023",
     extra_flags: List[str] = None,
     max_iterations: int = 20,
     timeout: int = 300,
@@ -1318,6 +1339,9 @@ def compile_incremental(
         has_errors = "%Error:" in output or "error:" in output.lower()
         
         if rc == 0 and not has_errors:
+            # Print the effective language version for config_generator to parse
+            mode_name = "sv" if language_version.startswith("1800") else "verilog"
+            print(f"[LANG-EFFECTIVE] {language_version} mode={mode_name}")
             print_green(f"[INCREMENTAL] ✓ Compilation successful after {iteration + 1} iterations!")
             print_green(f"[INCREMENTAL] Final file count: {len(current_files)}")
             print_green(f"[INCREMENTAL] Final include dirs: {len(current_includes)}")
@@ -1334,6 +1358,12 @@ def compile_incremental(
         missing_import_packages = _parse_missing_import_packages(output)
         missing_defines = _parse_missing_defines(output)
         included_files_with_errors = _parse_included_files_with_errors(output, repo_root)
+        
+        # Also detect packages referenced with :: syntax (e.g., pkg_name::constant)
+        package_scope_refs = _parse_package_scope_references(output)
+        for pkg_ref in package_scope_refs:
+            if pkg_ref not in missing_import_packages:
+                missing_import_packages.append(pkg_ref)
         
         print_yellow(f"[INCREMENTAL] Missing: modules={len(missing_modules)} packages={len(missing_packages)} includes={len(missing_includes)} interfaces={len(missing_interfaces)} forward_decls={len(forward_decl_files)} import_pkgs={len(missing_import_packages)} defines={len(missing_defines)} included_files={len(included_files_with_errors)}")
         
@@ -1440,6 +1470,17 @@ def compile_incremental(
                         added_something = True
                         # Add the directory containing the header to includes
                         header_dir = os.path.dirname(header_file)
+                        
+                        # If the file is in a subdirectory of 'include', 'inc', or 'includes', use the parent include dir
+                        # Example: .bender/.../include/common_cells/file.svh -> use .bender/.../include/
+                        parts = header_dir.split(os.sep)
+                        if 'include' in parts or 'inc' in parts or 'includes' in parts:
+                            # Find the last occurrence of include/inc/includes
+                            for i in range(len(parts) - 1, -1, -1):
+                                if parts[i] in ['include', 'inc', 'includes']:
+                                    header_dir = os.sep.join(parts[:i+1])
+                                    break
+                        
                         if header_dir and header_dir not in current_includes:
                             current_includes.add(header_dir)
                             print_green(f"[INCREMENTAL] + Adding include dir: {header_dir} (for define '`{define_name}')")

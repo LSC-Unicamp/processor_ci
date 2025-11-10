@@ -119,27 +119,35 @@ def build_module_graph(files: list, modules: list[dict]) -> tuple[list, list]:
         module_graph_inverse[module_name] = []
 
     for file_path in files:
-        with open(
-            file_path, 'r', errors='ignore', encoding='utf-8'
-        ) as f:  # Ignore decoding errors
-            content = f.read()
+        try:
+            with open(
+                file_path, 'r', errors='ignore', encoding='utf-8'
+            ) as f:  # Ignore decoding errors
+                content = f.read()
 
-            # Find the current module name (module where instances are being made)
-            current_module_match = re.search(r'module\s+(\w+)', content)
-            if not current_module_match:
-                continue  # Skip files without a Verilog module
+                # Find the current module name (module where instances are being made)
+                current_module_match = re.search(r'module\s+(\w+)', content)
+                if not current_module_match:
+                    continue  # Skip files without a Verilog module
 
-            current_module_name = current_module_match.group(1)
+                current_module_name = current_module_match.group(1)
 
-            # Find instances within this module
-            module_instances = find_module_instances(content, module_names)
+                # Find instances within this module
+                module_instances = find_module_instances(content, module_names)
 
-            # Update the direct (instantiated -> instantiator) and inverse
-            # (instantiator -> instantiated) graphs
-            for instance in module_instances:
-                if instance in module_graph:
-                    module_graph[instance].append(current_module_name)
-                    module_graph_inverse[current_module_name].append(instance)
+                # Initialize current module if not already in graph
+                if current_module_name not in module_graph:
+                    module_graph[current_module_name] = []
+                    module_graph_inverse[current_module_name] = []
+
+                # Update the direct (instantiated -> instantiator) and inverse
+                # (instantiator -> instantiated) graphs
+                for instance in module_instances:
+                    if instance in module_graph:
+                        module_graph[current_module_name].append(instance)
+                        module_graph_inverse[instance].append(current_module_name)
+        except Exception as e:
+            print(f"Error processing {file_path}: {e}")
 
     return module_graph, module_graph_inverse
 
