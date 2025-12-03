@@ -166,7 +166,7 @@ aukv aukv_inst(
 
 
 assign core_cyc = core_cyc_stb;
-assing core_stb = core_cyc_stb;
+assign core_stb = core_cyc_stb;
 assign data_mem_cyc = data_mem_cyc_stb;
 assign data_mem_stb = data_mem_cyc_stb;
 assign core_we = 1'b0; // core_we = 0

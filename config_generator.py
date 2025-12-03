@@ -8,6 +8,14 @@ It includes the following functionality:
 - Building module dependency graphs.
 - Generating configuration files for the processor.
 - Interactive simulation and file minimization.
+- **Chisel/Scala support**: Automatic detection and processing of Chisel projects
+
+Supported Languages:
+-------------------
+- Verilog (.v)
+- SystemVerilog (.sv)
+- VHDL (.vhd, .vhdl)
+- **Chisel (.scala)** - Automatically detects, analyzes, and generates Verilog
 
 Main Functions:
 --------------
@@ -23,10 +31,15 @@ Command-Line Interface:
 - `-a`, `--add-to-config`: Adds the generated configuration to a central config file.
 - `-n`, `--no-llama`: Skip OLLAMA processing for top module identification.
 - `-m`, `--model`: OLLAMA model to use (default: 'qwen2.5:32b').
+- `-l`, `--local-repo`: Path to local repository (skips cloning if provided).
 
 Usage:
 ------
-python config_generator_core.py -u <processor_url> -p config/
+# Process a remote repository
+python config_generator.py -u <processor_url> -p config/
+
+# Process a local repository (including Chisel projects)
+python config_generator.py -u <repo_url> -l /path/to/local/repo -p config/
 """
 
 import os
@@ -60,6 +73,16 @@ from core.ollama import (
     get_top_module,
 )
 from core.log import print_green, print_red, print_yellow
+from core.chisel_manager import (
+    find_scala_files,
+    extract_chisel_modules,
+    build_chisel_dependency_graph,
+    find_top_module as find_chisel_top_module,
+    generate_main_app,
+    configure_build_file,
+    emit_verilog,
+    process_chisel_project,
+)
 from verilator_runner import (
     compile_incremental as verilator_incremental,
 )
@@ -69,7 +92,7 @@ from ghdl_runner import (
 
 
 # Constants
-EXTENSIONS = ['v', 'sv', 'vhdl', 'vhd']  # Note: .vm files are FPGA netlists, not RTL
+EXTENSIONS = ['v', 'sv', 'vhdl', 'vhd', 'scala']  # Note: .vm files are FPGA netlists, not RTL
 DESTINATION_DIR = './temp'
 UTILITY_PATTERNS = (
     "gen_", "dff", "buf", "full_handshake", "fifo", "mux", "regfile"
@@ -1056,6 +1079,7 @@ def interactive_simulate_and_minimize(
         print_yellow(f"[FILTER] Excluded Verification/UnitTest files -> non-tb:{dropped_cf} tb:{dropped_tb}")
     # Rank candidates using existing heuristics
     candidates, cpu_core_matches = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
+    print(candidates)
     if not candidates:
         candidates = [m for m, _ in modules] if modules else []
 
@@ -1244,7 +1268,6 @@ def determine_language_version(extension: str, files: list = None, base_path: st
 def create_output_json(
     repo_name,
     url,
-    tb_files,
     filtered_files,
     include_dirs,
     top_module,
@@ -1257,8 +1280,7 @@ def create_output_json(
     return {
         'name': repo_name,
         'folder': repo_name,
-        'sim_files': tb_files,
-        'files': filtered_files,
+        'sim_files': filtered_files,
         'include_dirs': list(include_dirs),
         'repository': url,
         'top_module': top_module,
@@ -1395,8 +1417,16 @@ def clone_and_validate_repo(url: str, repo_name: str) -> str:
 
 def find_and_log_files(destination_path: str) -> tuple:
     """Finds files with specific extensions in the repository and logs the result."""
-    print_green('[LOG] Procurando arquivos com extensão .v, .sv, .vhdl ou .vhd\n')
-    files, extension = find_files_with_extension(destination_path, EXTENSIONS)
+    print_green('[LOG] Procurando arquivos com extensão .v, .sv, .vhdl, .vhd ou .scala\n')
+    
+    # First check for Scala/Chisel files
+    scala_files = find_scala_files(destination_path)
+    if scala_files:
+        print_green(f'[LOG] Encontrados {len(scala_files)} arquivos Scala - projeto Chisel detectado\n')
+        return scala_files, '.scala'
+    
+    # Otherwise, look for HDL files
+    files, extension = find_files_with_extension(destination_path, ['v', 'sv', 'vhdl', 'vhd'])
     return files, extension
 
 
@@ -1507,6 +1537,44 @@ def generate_processor_config(
             return {}
 
     files, extension = find_and_log_files(destination_path)
+    
+    # Check if this is a Chisel project
+    if extension == '.scala':
+        print_green('[LOG] Processando projeto Chisel\n')
+        config = process_chisel_project(destination_path, repo_name)
+        
+        if not config:
+            print_red('[ERROR] Failed to process Chisel project')
+            if not local_repo:
+                remove_repo(repo_name)
+            return {}
+        
+        # Add repository URL
+        config['repository'] = url
+        
+        # Save configuration
+        print_green('[LOG] Salvando configuração\n')
+        if not os.path.exists(config_path):
+            os.makedirs(config_path)
+        
+        config_file = os.path.join(config_path, f"{repo_name}.json")
+        with open(config_file, 'w', encoding='utf-8') as f:
+            json.dump(config, f, indent=4)
+        
+        if add_to_config:
+            central_config_path = os.path.join(config_path, "config.json")
+            save_config(central_config_path, config, repo_name)
+        
+        # Cleanup
+        if not local_repo:
+            print_green('[LOG] Removendo o repositório clonado\n')
+            remove_repo(repo_name)
+        else:
+            print_green('[LOG] Mantendo repositório local (não foi clonado)\n')
+        
+        return config
+    
+    # Continue with HDL processing (existing code)
     modulename_list, modules = extract_and_log_modules(files, destination_path)
 
     tb_files, non_tb_files = categorize_files(files, repo_name, destination_path)
@@ -1624,7 +1692,7 @@ def generate_processor_config(
         language_version_out = language_version
 
     output_json = create_output_json(
-        repo_name, url, sim_tb_files, final_files, relative_include_dirs, top_module, language_version_out, is_simulable,
+        repo_name, url, final_files, relative_include_dirs, top_module, language_version_out, is_simulable,
     )
 
     # Save configuration
