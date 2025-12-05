@@ -1822,6 +1822,7 @@ def generate_processor_config(
     no_llama: bool = False,
     model: str = 'qwen2.5:32b',
     local_repo: str = None,
+    user_config: dict = None,
 ) -> dict:
     """
     Main function to generate a processor configuration.
@@ -1834,6 +1835,10 @@ def generate_processor_config(
         no_llama: Skip OLLAMA processing
         model: OLLAMA model to use
         local_repo: Path to local repository (skips cloning if provided)
+        user_config: User-provided configuration for Chisel projects:
+            - config_class: Configuration class name
+            - constructor_params: Comma-separated key=value pairs
+            - compile_flags: Comma-separated compilation flags
     """
     repo_name = extract_repo_name(url)
     
@@ -1857,7 +1862,7 @@ def generate_processor_config(
     # Check if this is a Chisel project
     if extension == '.scala':
         print_green('[LOG] Processando projeto Chisel\n')
-        config = process_chisel_project(destination_path, repo_name)
+        config = process_chisel_project(destination_path, repo_name, user_config)
         
         if not config:
             print_red('[ERROR] Failed to process Chisel project')
@@ -2145,10 +2150,10 @@ def main() -> None:
         default=None,
         help='Path to local repository (skips cloning if provided)'
     )
-
     args = parser.parse_args()
 
     try:
+        # First attempt without user configuration
         config = generate_processor_config(
             args.processor_url,
             args.config_path,
@@ -2157,7 +2162,58 @@ def main() -> None:
             args.no_llama,
             args.model,
             args.local_repo,
+            user_config=None,
         )
+        
+        # Check if configuration is required
+        if config.get('requires_user_config'):
+            print_yellow('\n[CONFIG REQUIRED] This project requires manual configuration.')
+            config_check = config.get('config_check', {})
+            
+            # Display what was detected
+            if config_check.get('implicit_params'):
+                print_yellow(f"  • Detected implicit Parameters in module: {config.get('top_module')}")
+            if config_check.get('lazy_modules'):
+                print_yellow(f"  • Detected LazyModule usage")
+            if config_check.get('config_classes'):
+                print_yellow(f"  • Found configuration classes: {', '.join(config_check['config_classes'])}")
+            if config_check.get('constructor_params'):
+                print_yellow(f"  • Constructor parameters needed: {', '.join(config_check['constructor_params'])}")
+            
+            print_yellow('\nPlease provide configuration details:\n')
+            
+            # Prompt for config class
+            config_class = input('Configuration class name (e.g., top.MinimalConfig): ').strip()
+            if not config_class:
+                print_red('[ERROR] Configuration class is required!')
+                return 1
+            
+            # Prompt for constructor parameters (optional)
+            constructor_params_str = input('Constructor parameters [key=value,key=value] (press Enter to skip): ').strip()
+            
+            # Prompt for compile flags (optional)
+            compile_flags_str = input('Compile flags [-Xmx8G,-XX:+UseG1GC] (press Enter to skip): ').strip()
+            
+            # Build user_config dict
+            user_config = {'config_class': config_class}
+            if constructor_params_str:
+                user_config['constructor_params'] = constructor_params_str
+            if compile_flags_str:
+                user_config['compile_flags'] = compile_flags_str
+            
+            print_green('\n[RETRY] Attempting to generate configuration with provided settings...\n')
+            
+            # Retry with user configuration
+            config = generate_processor_config(
+                args.processor_url,
+                args.config_path,
+                args.plot_graph,
+                args.add_to_config,
+                args.no_llama,
+                args.model,
+                args.local_repo,
+                user_config=user_config,
+            )
         print('Result: ')
         print(json.dumps(config, indent=4))
         

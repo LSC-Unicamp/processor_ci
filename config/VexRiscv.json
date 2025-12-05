@@ -1,16 +1,24 @@
 {
     "name": "VexRiscv",
     "folder": "VexRiscv",
-    "sim_files": [],
-    "files": [
+    "top_module": "VexRiscv",
+    "pre_script": "sbt \"runMain vexriscv.demo.VexRiscvCachedWishboneForSim\"",
+    "sim_files": [
         "VexRiscv.v"
     ],
-    "include_dirs": [],
-    "repository": "https://github.com/SpinalHDL/VexRiscv",
-    "top_module": "VexRiscv",
-    "extra_flags": [],
-    "language_version": "2005",
-    "pre_script": "sbt \"runMain vexriscv.demo.VexRiscvCachedWishboneForSim\"",
-    "march": "rv32i",
-    "two_memory": true
+    "source_files": [
+        "doc/gcdPeripheral/src/main/scala/vexriscv/periph/gcd/Apb3GCDCtrl.scala",
+        "doc/gcdPeripheral/src/main/scala/vexriscv/periph/gcd/GCDCtrl.scala",
+        "doc/gcdPeripheral/src/main/scala/vexriscv/periph/gcd/GCDData.scala",
+        "doc/gcdPeripheral/src/main/scala/vexriscv/periph/gcd/GCDTop.scala",
+        "src/main/scala/vexriscv/VexRiscv.scala",
+        "src/main/scala/vexriscv/demo/Briey.scala",
+        "src/main/scala/vexriscv/demo/MuraxUtiles.scala",
+        "src/main/scala/vexriscv/demo/MuraxUtiles.scala",
+        "src/main/scala/vexriscv/ip/InstructionCache.scala",
+        "src/main/scala/vexriscv/ip/DataCache.scala",
+        "src/main/scala/vexriscv/plugin/PmpPluginNapot.scala"
+    ],
+    "is_simulable": true,
+    "repository": "https://github.com/SpinalHDL/VexRiscv"
 }

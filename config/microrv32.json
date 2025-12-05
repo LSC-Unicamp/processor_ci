@@ -1,16 +1,43 @@
 {
     "name": "microrv32",
     "folder": "microrv32",
+    "top_module": "SBCoreIO",
+    "pre_script": "sbt \"runMain core.microrv32.SBRV32CoreTopVerilog\"",
     "sim_files": [
-        "microrv32/vtb/rtl/MicroRV32Top_TB.v"
+        "microrv32/rtl/SBRV32Core.v"
     ],
-    "files": [],
-    "include_dirs": [],
-    "repository": "https://github.com/agra-uni-bremen/microrv32",
-    "top_module": "",
-    "extra_flags": [],
-    "language_version": "2005",
-    "march": "rv32i",
-    "two_memory": false,
-    "pre_script": "cd microrv32 && sbt run"
+    "source_files": [
+        "microrv32/src/main/scala/core/microrv32/Memory.scala",
+        "microrv32/src/main/scala/core/microrv32/MemoryRework.scala",
+        "microrv32/src/main/scala/core/microrv32/MicroRV32Top.scala",
+        "microrv32/src/main/scala/core/microrv32/MicroRV32TopHX8K.scala",
+        "microrv32/src/main/scala/core/microrv32/RV32RegisterFile.scala",
+        "microrv32/src/main/scala/core/microrv32/RVCLIC.scala",
+        "microrv32/src/main/scala/core/microrv32/RiscV32Core.scala",
+        "microrv32/src/main/scala/core/microrv32/SBRV32Core.scala",
+        "microrv32/src/main/scala/core/microrv32/bus/SimpleBusDecoder.scala",
+        "microrv32/src/main/scala/core/microrv32/dbg/ClockDivider.scala",
+        "microrv32/src/main/scala/core/microrv32/peripheral/GPIOLED.scala",
+        "microrv32/src/main/scala/core/microrv32/peripheral/Shutdown.scala",
+        "microrv32/src/main/scala/core/microrv32/peripheral/gpio/GPIOBank.scala",
+        "microrv32/src/main/scala/core/microrv32/peripheral/uart/SBUart.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/ArithmeticLogicUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/ControlUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/DecoderUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/ExtensionUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/FetchUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/compressed/CompressedArbitrationController.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/compressed/CompressedExtensionUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/compressed/DecompressorUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/compressed/ExpanderUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/muldiv/DivUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/muldiv/DivUnitControl.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/muldiv/DivUnitTBTop.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/muldiv/MulDivUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/muldiv/MulUnit.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/muldiv/MulUnitControl.scala",
+        "microrv32/src/main/scala/core/microrv32/rv32core/muldiv/MulUnitTBTop.scala"
+    ],
+    "is_simulable": true,
+    "repository": "https://github.com/agra-uni-bremen/microrv32"
 }

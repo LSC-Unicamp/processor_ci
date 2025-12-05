@@ -1304,7 +1304,17 @@ def find_build_file(directory: str, top_module: str = None, modules: List[Tuple[
     root_mill = os.path.join(directory, 'build.sc')
     root_sbt = os.path.join(directory, 'build.sbt')
     
-    # Strategy 1: Check for Mill first (simpler, newer)
+    # Strategy 1: Prefer SBT if both exist (SBT is more mature and widely supported)
+    if os.path.exists(root_sbt) and os.path.exists(root_mill):
+        print(f"[INFO] Found both SBT and Mill, preferring SBT: {root_sbt}")
+        return (root_sbt, 'sbt')
+    
+    # Strategy 2: Check for SBT first
+    if os.path.exists(root_sbt):
+        print(f"[INFO] Found SBT build file: {root_sbt}")
+        return (root_sbt, 'sbt')
+    
+    # Strategy 3: Check for Mill
     if os.path.exists(root_mill):
         print(f"[INFO] Found Mill build file: {root_mill}")
         return (root_mill, 'mill')
@@ -1312,11 +1322,6 @@ def find_build_file(directory: str, top_module: str = None, modules: List[Tuple[
     if mill_files:
         print(f"[INFO] Found Mill build file: {mill_files[0]}")
         return (mill_files[0], 'mill')
-    
-    # Strategy 2: Look for SBT
-    if os.path.exists(root_sbt):
-        print(f"[INFO] Found SBT build file: {root_sbt}")
-        return (root_sbt, 'sbt')
     
     # Strategy 3: If we know the top module location, find nearest build file
     if top_module and modules:
@@ -1524,17 +1529,29 @@ def emit_verilog(
                 with open(build_sc, 'r', encoding='utf-8') as f:
                     content = f.read()
                 
-                # Find all modules that extend appropriate base classes
-                module_matches = re.findall(r'object\s+(\w+)\s+extends\s+(?:\w+(?:Module|NS))', content)
+                # Find all Mill modules (object X extends ...)
+                # Look for top-level object definitions (not nested)
+                lines = content.split('\n')
+                module_matches = []
+                for line in lines:
+                    # Match: object Name extends ... (at start of line, not indented much)
+                    if line.strip().startswith('object '):
+                        match = re.match(r'^\s*object\s+(\w+)\s+extends', line)
+                        if match:
+                            module_name = match.group(1)
+                            # Skip test modules
+                            if module_name.lower() not in ['test', 'tests'] and not module_name.endswith(('Test', 'Tests')):
+                                module_matches.append(module_name)
+                
                 if module_matches:
-                    # Prefer the last module (usually the main one that depends on others)
-                    # or look for 'generator', 'design', 'main' as common names
+                    # Prefer common names, otherwise take the first module
                     for preferred in ['generator', 'design', 'main']:
                         if preferred in module_matches:
                             mill_module = preferred
                             break
                     else:
-                        mill_module = module_matches[-1]  # Take the last one
+                        mill_module = module_matches[0]
+                    
                     print(f"[INFO] Detected Mill module: {mill_module}")
             except Exception as e:
                 print(f"[WARNING] Could not parse build.sc: {e}")
@@ -1606,15 +1623,486 @@ def emit_verilog(
         return False, "", str(e)
 
 
+def detect_configuration_requirements(
+    directory: str,
+    top_module: str,
+    modules: List[Tuple[str, str]]
+) -> Dict[str, Any]:
+    """Detect if the project requires configuration flags or parameters.
+    
+    Analyzes the top module and related files to identify:
+    1. Implicit Parameters (Rocket Chip style)
+    2. Case class Config parameters
+    3. Constructor parameters with no defaults
+    4. Framework indicators (LazyModule, diplomacy)
+    
+    Args:
+        directory (str): Project root directory
+        top_module (str): Name of the identified top module
+        modules (List[Tuple[str, str]]): List of (module_name, file_path) tuples
+        
+    Returns:
+        Dict with:
+        - requires_config (bool): True if configuration is needed
+        - config_type (str): Type of config ('parameters', 'case_class', 'constructor', 'none')
+        - details (Dict): Detailed information about requirements
+        - suggestions (List[str]): Suggested flags/configurations
+        - frameworks (List[str]): Detected frameworks (e.g., 'rocket_chip', 'diplomacy')
+    """
+    result = {
+        'requires_config': False,
+        'config_type': 'none',
+        'details': {},
+        'suggestions': [],
+        'frameworks': [],
+        'user_prompt_needed': False
+    }
+    
+    # Find the top module file
+    top_module_file = None
+    for module_name, file_path in modules:
+        if module_name == top_module:
+            top_module_file = file_path
+            break
+    
+    if not top_module_file or not os.path.exists(top_module_file):
+        return result
+    
+    try:
+        with open(top_module_file, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+    except Exception as e:
+        print(f"[WARNING] Could not read top module file: {e}")
+        return result
+    
+    # Pattern 1: Detect implicit Parameters (Rocket Chip/Diplomacy)
+    implicit_params_pattern = re.compile(
+        r'class\s+' + re.escape(top_module) + r'[^{]*\(implicit\s+(?:val\s+)?(\w+)\s*:\s*(\w+)',
+        re.MULTILINE
+    )
+    implicit_match = implicit_params_pattern.search(content)
+    
+    if implicit_match:
+        param_name = implicit_match.group(1)
+        param_type = implicit_match.group(2)
+        
+        # Check if the parameter type has default values (case class with all defaults)
+        has_defaults = check_config_has_defaults(directory, param_type)
+        
+        if not has_defaults:
+            result['requires_config'] = True
+            result['config_type'] = 'parameters'
+            result['details']['implicit_param_name'] = param_name
+            result['details']['implicit_param_type'] = param_type
+            result['user_prompt_needed'] = True
+            
+            # Check if it's Rocket Chip Parameters
+            if 'Parameters' in param_type or 'Config' in param_type:
+                result['frameworks'].append('rocket_chip')
+                result['suggestions'].append(f"Rocket Chip framework detected - requires Parameters object")
+                result['suggestions'].append(f"Example: implicit val p: {param_type} = new SomeConfig().toInstance")
+                
+                # Search for config classes in the project
+                config_classes = find_config_classes(directory, param_type)
+                if config_classes:
+                    result['details']['available_configs'] = config_classes
+                    result['suggestions'].append(f"Available config classes: {', '.join(config_classes)}")
+        else:
+            # Has defaults, can be instantiated without parameters
+            result['details']['config_has_defaults'] = True
+            result['details']['implicit_param_type'] = param_type
+    
+    # Pattern 2: Check for LazyModule (Rocket Chip diplomacy indicator)
+    if 'extends LazyModule' in content or 'extends LazyModuleImp' in content:
+        result['frameworks'].append('diplomacy')
+        if 'rocket_chip' not in result['frameworks']:
+            result['frameworks'].append('rocket_chip')
+        result['requires_config'] = True
+        result['user_prompt_needed'] = True
+        result['suggestions'].append("LazyModule detected - this is a Rocket Chip diplomacy module")
+        result['suggestions'].append("Requires complex configuration with LazyModule instantiation")
+    
+    # Pattern 3: Detect case class Config with required parameters
+    case_class_pattern = re.compile(
+        r'case\s+class\s+(\w*Config\w*)\s*\((.*?)\)',
+        re.MULTILINE | re.DOTALL
+    )
+    case_class_matches = case_class_pattern.finditer(content)
+    
+    config_classes_with_required = []
+    for match in case_class_matches:
+        config_name = match.group(1)
+        params_str = match.group(2)
+        
+        # Check if any parameters lack default values
+        # Pattern: paramName: Type (no = default)
+        required_params = []
+        for param_line in params_str.split(','):
+            param_line = param_line.strip()
+            if ':' in param_line and '=' not in param_line and param_line:
+                # Extract parameter name
+                param_parts = param_line.split(':')
+                if len(param_parts) >= 2:
+                    param_name_only = param_parts[0].strip()
+                    param_type_only = param_parts[1].strip()
+                    required_params.append(f"{param_name_only}: {param_type_only}")
+        
+        if required_params:
+            config_classes_with_required.append({
+                'name': config_name,
+                'required_params': required_params
+            })
+    
+    if config_classes_with_required:
+        result['requires_config'] = True
+        result['config_type'] = 'case_class'
+        result['details']['config_classes'] = config_classes_with_required
+        result['user_prompt_needed'] = True
+        
+        for cfg in config_classes_with_required:
+            result['suggestions'].append(
+                f"Config class '{cfg['name']}' requires: {', '.join(cfg['required_params'])}"
+            )
+    
+    # Pattern 4: Check constructor parameters of top module (NON-IMPLICIT)
+    # We only check the regular constructor, not the implicit one
+    constructor_pattern = re.compile(
+        r'class\s+' + re.escape(top_module) + r'\s*\((.*?)\)\s*(?:\(implicit.*?\))?\s*extends',
+        re.MULTILINE | re.DOTALL
+    )
+    constructor_match = constructor_pattern.search(content)
+    
+    if constructor_match:
+        params_str = constructor_match.group(1)
+        # Check for required constructor parameters (no default value)
+        # Skip if already handled by implicit parameter check
+        if not result['details'].get('config_has_defaults'):
+            required_constructor_params = []
+            for param_line in params_str.split(','):
+                param_line = param_line.strip()
+                if param_line and ':' in param_line and '=' not in param_line:
+                    # Remove 'val' or 'var' keywords
+                    param_line = re.sub(r'^\s*(?:val|var)\s+', '', param_line)
+                    param_parts = param_line.split(':')
+                    if len(param_parts) >= 2:
+                        param_name_only = param_parts[0].strip()
+                        param_type_only = param_parts[1].split('=')[0].strip()
+                        required_constructor_params.append(f"{param_name_only}: {param_type_only}")
+            
+            if required_constructor_params:
+                result['requires_config'] = True
+                if result['config_type'] == 'none':
+                    result['config_type'] = 'constructor'
+                result['details']['constructor_params'] = required_constructor_params
+                result['user_prompt_needed'] = True
+                result['suggestions'].append(
+                    f"Top module '{top_module}' constructor requires: {', '.join(required_constructor_params)}"
+                )
+    
+    # Pattern 5: Check for Chisel version (7.x vs 3.x)
+    if 'circt.stage' in content or 'CIRCTTarget' in content:
+        result['details']['chisel_version'] = '7.x'
+        result['suggestions'].append("Chisel 7.x detected - requires circt.stage.ChiselStage API")
+    elif 'chisel3.stage.ChiselStage' in content:
+        result['details']['chisel_version'] = '3.x'
+    
+    return result
+
+
+def check_config_has_defaults(directory: str, param_type: str) -> bool:
+    """Check if a configuration class/case class has all default values.
+    
+    Args:
+        directory (str): Project root directory
+        param_type (str): Configuration type name (e.g., 'NutCoreConfig', 'Parameters')
+        
+    Returns:
+        bool: True if all parameters have default values, False otherwise
+    """
+    scala_files = find_scala_files(directory)
+    
+    # Look for case class definition with the parameter type
+    case_class_pattern = re.compile(
+        r'case\s+class\s+' + re.escape(param_type) + r'\s*\((.*?)\)',
+        re.MULTILINE | re.DOTALL
+    )
+    
+    for scala_file in scala_files[:100]:  # Limit search
+        try:
+            with open(scala_file, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+            
+            match = case_class_pattern.search(content)
+            if match:
+                params_str = match.group(1)
+                
+                # Check if all parameters have default values (contain '=')
+                # Split by comma, but be careful with nested types
+                params = []
+                depth = 0
+                current_param = ""
+                
+                for char in params_str:
+                    if char in '([{':
+                        depth += 1
+                    elif char in ')]}':
+                        depth -= 1
+                    elif char == ',' and depth == 0:
+                        params.append(current_param.strip())
+                        current_param = ""
+                        continue
+                    current_param += char
+                
+                if current_param.strip():
+                    params.append(current_param.strip())
+                
+                # Check each parameter
+                all_have_defaults = True
+                for param in params:
+                    # Skip empty params
+                    if not param or not ':' in param:
+                        continue
+                    # If parameter has no '=' it has no default value
+                    if '=' not in param:
+                        all_have_defaults = False
+                        break
+                
+                return all_have_defaults
+        except Exception:
+            continue
+    
+    # If we can't find the definition, assume it doesn't have defaults (safer)
+    return False
+
+
+def find_config_classes(directory: str, param_type: str) -> List[str]:
+    """Search for configuration classes in the project.
+    
+    Args:
+        directory (str): Project root directory
+        param_type (str): Expected parameter type (e.g., 'Parameters', 'Config')
+        
+    Returns:
+        List[str]: Names of found configuration classes
+    """
+    config_classes = []
+    
+    # Search for Scala files that might contain configurations
+    scala_files = find_scala_files(directory)
+    
+    # Pattern to find classes/objects extending or creating the parameter type
+    config_pattern = re.compile(
+        r'(?:class|object)\s+(\w+)(?:\s+extends\s+\w*Config\w*|\s*\{\s*.*?new\s+' + re.escape(param_type) + r')',
+        re.MULTILINE | re.DOTALL
+    )
+    
+    for scala_file in scala_files[:50]:  # Limit search to first 50 files for performance
+        try:
+            with open(scala_file, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+            
+            matches = config_pattern.finditer(content)
+            for match in matches:
+                config_name = match.group(1)
+                if 'Config' in config_name and config_name not in config_classes:
+                    config_classes.append(config_name)
+        except Exception:
+            continue
+    
+    return config_classes
+
+
+def apply_user_configuration(
+    directory: str,
+    top_module: str,
+    modules: List[Tuple[str, str]],
+    hdl_type: str,
+    config_class: str = None,
+    constructor_params: Dict[str, str] = None,
+    compile_flags: List[str] = None
+) -> Tuple[bool, str, str]:
+    """Generate Verilog with user-provided configuration.
+    
+    Args:
+        directory (str): Project root directory
+        top_module (str): Top module name
+        modules (List[Tuple[str, str]]): List of (module_name, file_path) tuples
+        hdl_type (str): HDL type ('chisel' or 'spinalhdl')
+        config_class (str): Configuration class name (e.g., 'DefaultConfig')
+        constructor_params (Dict[str, str]): Constructor parameters as key-value pairs
+        compile_flags (List[str]): Additional compilation flags
+        
+    Returns:
+        Tuple[bool, str, str]: (success, verilog_file, log)
+    """
+    print(f"[INFO] Applying user configuration to generate {top_module}")
+    
+    # Find the top module file to get package information
+    top_module_file = None
+    package_name = None
+    for module_name, file_path in modules:
+        if module_name == top_module:
+            top_module_file = file_path
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                package_match = re.search(r'package\s+([\w.]+)', content)
+                if package_match:
+                    package_name = package_match.group(1)
+            except Exception:
+                pass
+            break
+    
+    if not package_name:
+        package_name = "generated"
+    
+    # Generate custom main App with user configuration
+    app_code = f"package {package_name}\n\n"
+    
+    if hdl_type == 'chisel':
+        # Check if it's Chisel 7 or 3
+        app_code += "import chisel3._\n"
+        app_code += "import chisel3.stage.ChiselGeneratorAnnotation\n"
+        app_code += "import circt.stage._\n"
+        
+        # Add config instantiation if provided (Rocket Chip style)
+        if config_class:
+            app_code += "import org.chipsalliance.cde.config._\n"
+        
+        app_code += "\n"
+        app_code += "object GenerateVerilogWithConfig extends App {\n"
+        
+        # For Rocket Chip configs, need to convert Config to Parameters
+        if config_class:
+            # Check if there are constructor params for the config
+            if constructor_params:
+                param_str = ", ".join([f"{k} = {v}" for k, v in constructor_params.items()])
+                app_code += f"  implicit val p: Parameters = (new {config_class}({param_str})).toInstance\n"
+            else:
+                app_code += f"  implicit val p: Parameters = (new {config_class}()).toInstance\n"
+        
+        # Add constructor parameters for the top module if provided
+        if constructor_params:
+            param_str = ", ".join([f"{k} = {v}" for k, v in constructor_params.items()])
+            app_code += f"  val top = new {top_module}({param_str})\n"
+        else:
+            app_code += f"  val top = new {top_module}()\n"
+        
+        app_code += f"  val generator = ChiselGeneratorAnnotation(() => top)\n"
+        app_code += f"  (new ChiselStage).execute(\n"
+        app_code += f"    Array(\"--target-dir\", \"generated\"),\n"
+        app_code += f"    Seq(generator)\n"
+        app_code += f"      :+ CIRCTTargetAnnotation(CIRCTTarget.SystemVerilog)\n"
+        app_code += f"      :+ FirtoolOption(\"--disable-annotation-unknown\")\n"
+        app_code += f"  )\n"
+        app_code += "}\n"
+    else:  # SpinalHDL
+        app_code += "import spinal.core._\n"
+        app_code += "import spinal.lib._\n\n"
+        
+        app_code += "object GenerateVerilogWithConfig extends App {\n"
+        
+        if config_class:
+            app_code += f"  val config = {config_class}()\n"
+        
+        if constructor_params:
+            param_str = ", ".join([f"{k} = {v}" for k, v in constructor_params.items()])
+            app_code += f"  SpinalVerilog(new {top_module}({param_str}))\n"
+        else:
+            app_code += f"  SpinalVerilog(new {top_module}())\n"
+        
+        app_code += "}\n"
+    
+    # Write the generated App
+    app_file = os.path.join(os.path.dirname(top_module_file) if top_module_file else directory, 
+                            "GenerateVerilogWithConfig.scala")
+    
+    try:
+        with open(app_file, 'w', encoding='utf-8') as f:
+            f.write(app_code)
+        print(f"[INFO] Generated configuration App: {app_file}")
+    except Exception as e:
+        print(f"[ERROR] Failed to write configuration App: {e}")
+        return False, "", str(e)
+    
+    # Build and run with compile flags if provided
+    build_file, build_tool = configure_build_file(directory, top_module, modules)
+    build_directory = os.path.dirname(build_file)
+    
+    main_class = f"{package_name}.GenerateVerilogWithConfig"
+    
+    # Add compile flags to the build command if provided
+    if compile_flags and build_tool == 'sbt':
+        # For SBT, we can add JVM options via SBT_OPTS environment variable
+        import subprocess
+        env = os.environ.copy()
+        current_opts = env.get('SBT_OPTS', '')
+        env['SBT_OPTS'] = f"{current_opts} {' '.join(compile_flags)}"
+        
+        command = f'sbt "runMain {main_class}"'
+        try:
+            result = subprocess.run(
+                command,
+                cwd=build_directory,
+                capture_output=True,
+                text=True,
+                timeout=300,
+                shell=True,
+                env=env
+            )
+            
+            log_output = result.stdout + result.stderr
+            
+            if result.returncode == 0:
+                # Look for generated Verilog
+                search_locations = [
+                    os.path.join(directory, 'generated'),
+                    directory,
+                    os.path.join(directory, 'rtl'),
+                ]
+                
+                verilog_files = []
+                for location in search_locations:
+                    if os.path.exists(location):
+                        found_files = glob.glob(f'{location}/*.v') + glob.glob(f'{location}/*.sv')
+                        import time
+                        current_time = time.time()
+                        recent_files = [f for f in found_files 
+                                       if os.path.getmtime(f) > current_time - 120]
+                        verilog_files.extend(recent_files)
+                
+                if verilog_files:
+                    verilog_files.sort(key=lambda f: os.path.getmtime(f), reverse=True)
+                    print(f"[SUCCESS] Generated Verilog with user config: {verilog_files[0]}")
+                    return True, verilog_files[0], log_output
+            
+            print(f"[ERROR] Build failed with return code {result.returncode}")
+            return False, "", log_output
+            
+        except Exception as e:
+            print(f"[ERROR] Execution failed: {e}")
+            return False, "", str(e)
+    else:
+        # Standard execution without special flags
+        return emit_verilog(build_directory, app_file, main_class_override=main_class, build_tool=build_tool)
+    
+    return False, "", "Configuration failed"
+
+
 def process_chisel_project(
     directory: str,
-    repo_name: str = None
+    repo_name: str = None,
+    user_config: Dict[str, Any] = None
 ) -> Dict:
     """Process a Chisel/SpinalHDL project end-to-end.
     
     Args:
         directory (str): Root directory of the Chisel/SpinalHDL project
         repo_name (str): Repository name for heuristics
+        user_config (Dict): Optional user-provided configuration
+            - config_class (str): Configuration class name
+            - constructor_params (str): Comma-separated key=value pairs
+            - compile_flags (str): Comma-separated compilation flags
         
     Returns:
         Dict: Configuration dictionary with project information
@@ -1661,84 +2149,208 @@ def process_chisel_project(
     print(f"[INFO] Build directory: {build_directory}")
     print(f"[INFO] Build tool: {build_tool}")
     
-    # Step 7: Try to find existing main Apps (get ALL candidates)
-    app_candidates = find_all_main_apps(directory, top_module, hdl_type, repo_name)
+    # Step 7: Check if the top module itself requires configuration BEFORE trying Apps
+    # This prevents wasting time on utility Apps when the main module needs config
+    config_check = detect_configuration_requirements(directory, top_module, modules)
     
-    success = False
-    verilog_file = None
-    log = ""
-    final_main_class = None
-    final_top_module = top_module
-    
-    if app_candidates and len(app_candidates) > 0:
-        print(f"[INFO] Found {len(app_candidates)} App candidates, trying in order...")
-        
-        # Try each candidate in order of score
-        for idx, (score, app_path, main_class, app_name, instantiated_module) in enumerate(app_candidates):
-            print(f"[INFO] Trying App {idx+1}/{len(app_candidates)}: {app_name} (score: {score}, instantiates: {instantiated_module})")
+    # Step 8: If top module requires configuration, check user_config first
+    if config_check['user_prompt_needed']:
+        if user_config:
+            # User already provided configuration, apply it immediately
+            print("[INFO] Top module requires configuration, applying user-provided config...")
             
-            # Try to run this App - use build_directory instead of directory
-            success, verilog_file, log = emit_verilog(build_directory, app_path, main_class_override=main_class, build_tool=build_tool)
+            config_class = user_config.get('config_class')
+            constructor_params_str = user_config.get('constructor_params', '')
+            compile_flags_str = user_config.get('compile_flags', '')
+            
+            # Parse constructor parameters
+            constructor_params = {}
+            if constructor_params_str:
+                for param in constructor_params_str.split(','):
+                    if '=' in param:
+                        key, value = param.split('=', 1)
+                        constructor_params[key.strip()] = value.strip()
+            
+            # Parse compile flags
+            compile_flags = []
+            if compile_flags_str:
+                compile_flags = [flag.strip() for flag in compile_flags_str.split(',')]
+            
+            # Try to generate with user configuration
+            success, verilog_file, log = apply_user_configuration(
+                build_directory, top_module, modules, hdl_type,
+                config_class, constructor_params, compile_flags
+            )
             
             if success:
-                print(f"[SUCCESS] App {app_name} worked!")
-                final_main_class = main_class
-                final_top_module = instantiated_module
-                break
+                print(f"[SUCCESS] Generated Verilog with user configuration!")
+                final_main_class = f"{config_class or 'generated'}.GenerateVerilogWithConfig"
+                final_top_module = top_module
+                # Skip to building final config dict
             else:
-                print(f"[WARNING] App {app_name} failed, trying next candidate...")
-                # Show a snippet of the error
-                if "ClassNotFoundException" in log:
-                    print(f"[DEBUG] ClassNotFoundException - class may not be compiled")
-                elif "error" in log.lower():
-                    error_lines = [line for line in log.split('\n') if 'error' in line.lower()]
-                    if error_lines:
-                        print(f"[DEBUG] Error: {error_lines[0][:200]}")
-        
-        if not success:
-            print("[WARNING] All App candidates failed, will try generating new App")
-    else:
-        print(f"[INFO] No existing Apps found")
-    
-    # Step 8: If no existing App worked, generate a new one
-    if not success:
-        print(f"[INFO] Generating new main App for {top_module}")
-        main_app = generate_main_app(directory, top_module, modules, hdl_type)
-        success, verilog_file, log = emit_verilog(build_directory, main_app, build_tool=build_tool)
-        
-        if not success:
-            # Clean up the generated file since it didn't work
-            try:
-                if os.path.exists(main_app):
-                    os.remove(main_app)
-                    print(f"[INFO] Cleaned up failed generated App: {main_app}")
-            except Exception:
-                pass
+                print(f"[ERROR] Failed to generate with user configuration")
+                print(f"[LOG] {log}")
+                return None
         else:
-            # Extract main class from generated app
-            try:
-                with open(main_app, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                
-                match = re.search(r'object\s+(\w+)\s+extends\s+App', content)
-                if match:
-                    final_main_class = match.group(1)
-                
-                package_match = re.search(r'package\s+([\w.]+)', content)
-                if package_match:
-                    package_name = package_match.group(1)
-                    final_main_class = f"{package_name}.{final_main_class}"
-            except Exception:
-                pass
+            # No user config provided yet, prompt for it
+            print("\n" + "="*80)
+            print("[CONFIGURATION REQUIRED]")
+            print("="*80)
+            print(f"The top module '{top_module}' requires configuration parameters.")
+            print(f"Configuration type: {config_check['config_type']}")
+            
+            if config_check['frameworks']:
+                print(f"\nDetected frameworks: {', '.join(config_check['frameworks'])}")
+            
+            if config_check['suggestions']:
+                print("\nConfiguration requirements:")
+                for suggestion in config_check['suggestions']:
+                    print(f"  - {suggestion}")
+            
+            if config_check['details'].get('implicit_param_type'):
+                print(f"\nImplicit parameter required: {config_check['details']['implicit_param_type']}")
+            
+            if config_check['details'].get('constructor_params'):
+                print(f"\nConstructor parameters: {', '.join(config_check['details']['constructor_params'])}")
+            
+            if config_check['details'].get('config_classes'):
+                print("\nConfig classes with required parameters:")
+                for cfg in config_check['details']['config_classes']:
+                    print(f"  - {cfg['name']}: {', '.join(cfg['required_params'])}")
+            
+            if config_check['details'].get('available_configs'):
+                print(f"\nAvailable configuration classes found: {', '.join(config_check['details']['available_configs'])}")
+            
+            print("\n" + "="*80)
+            print("[ACTION REQUIRED]")
+            print("="*80)
+            print("This project requires manual configuration. Please provide:")
+            print("1. Configuration class name (e.g., 'top.DefaultConfig', 'top.MinimalConfig')")
+            print("2. Any additional constructor parameters needed (optional)")
+            print("3. Compilation flags if needed (optional, e.g., -Xmx8G)")
+            print("="*80 + "\n")
+            
+            # Interactive prompts using sys.stdin
+            import sys
+            sys.stdout.write("Enter configuration class name: ")
+            sys.stdout.flush()
+            config_class = sys.stdin.readline().strip()
+            
+            if not config_class:
+                print("[ERROR] Configuration class is required for this project")
+                return None
+            
+            sys.stdout.write("Enter constructor parameters (key=value,key2=value2) or press Enter to skip: ")
+            sys.stdout.flush()
+            constructor_params_str = sys.stdin.readline().strip()
+            
+            sys.stdout.write("Enter compile flags (comma-separated) or press Enter to skip: ")
+            sys.stdout.flush()
+            compile_flags_str = sys.stdin.readline().strip()
+            
+            # Parse and apply
+            constructor_params = {}
+            if constructor_params_str:
+                for param in constructor_params_str.split(','):
+                    if '=' in param:
+                        key, value = param.split('=', 1)
+                        constructor_params[key.strip()] = value.strip()
+            
+            compile_flags = []
+            if compile_flags_str:
+                compile_flags = [flag.strip() for flag in compile_flags_str.split(',')]
+            
+            # Try to generate with user configuration
+            success, verilog_file, log = apply_user_configuration(
+                build_directory, top_module, modules, hdl_type,
+                config_class, constructor_params, compile_flags
+            )
+            
+            if success:
+                print(f"[SUCCESS] Generated Verilog with user configuration!")
+                final_main_class = f"{config_class}.GenerateVerilogWithConfig"
+                final_top_module = top_module
+                # Skip to building final config dict
+            else:
+                print(f"[ERROR] Failed to generate with user configuration")
+                print(f"[LOG] {log}")
+                return None
     
-    if not success:
-        print("[ERROR] Failed to generate Verilog with all attempts")
-        print(f"[LOG] {log}")
-        return None
-    if not success:
-        print("[ERROR] Failed to generate Verilog with all attempts")
-        print(f"[LOG] {log}")
-        return None
+    # Step 9: If no configuration needed, try existing Apps
+    if not config_check['user_prompt_needed']:
+        app_candidates = find_all_main_apps(directory, top_module, hdl_type, repo_name)
+        
+        success = False
+        verilog_file = None
+        log = ""
+        final_main_class = None
+        final_top_module = top_module
+        
+        if app_candidates and len(app_candidates) > 0:
+            print(f"[INFO] Found {len(app_candidates)} App candidates, trying in order...")
+            
+            # Try each candidate in order of score
+            for idx, (score, app_path, main_class, app_name, instantiated_module) in enumerate(app_candidates):
+                print(f"[INFO] Trying App {idx+1}/{len(app_candidates)}: {app_name} (score: {score}, instantiates: {instantiated_module})")
+                
+                # Try to run this App - use build_directory instead of directory
+                success, verilog_file, log = emit_verilog(build_directory, app_path, main_class_override=main_class, build_tool=build_tool)
+                
+                if success:
+                    print(f"[SUCCESS] App {app_name} worked!")
+                    final_main_class = main_class
+                    final_top_module = instantiated_module
+                    break
+                else:
+                    print(f"[WARNING] App {app_name} failed, trying next candidate...")
+                    # Show a snippet of the error
+                    if "ClassNotFoundException" in log:
+                        print(f"[DEBUG] ClassNotFoundException - class may not be compiled")
+                    elif "error" in log.lower():
+                        error_lines = [line for line in log.split('\n') if 'error' in line.lower()]
+                        if error_lines:
+                            print(f"[DEBUG] Error: {error_lines[0][:200]}")
+            
+            if not success:
+                print("[WARNING] All App candidates failed, will try generating new App")
+        else:
+            print(f"[INFO] No existing Apps found")
+        
+        # Step 10: If no existing App worked and no config issues, generate a new one
+        if not success:
+            print(f"[INFO] Generating new main App for {top_module}")
+            main_app = generate_main_app(directory, top_module, modules, hdl_type)
+            success, verilog_file, log = emit_verilog(build_directory, main_app, build_tool=build_tool)
+            
+            if not success:
+                # Clean up the generated file since it didn't work
+                try:
+                    if os.path.exists(main_app):
+                        os.remove(main_app)
+                        print(f"[INFO] Cleaned up failed generated App: {main_app}")
+                except Exception:
+                    pass
+            else:
+                # Extract main class from generated app
+                try:
+                    with open(main_app, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    
+                    match = re.search(r'object\s+(\w+)\s+extends\s+App', content)
+                    if match:
+                        final_main_class = match.group(1)
+                    
+                    package_match = re.search(r'package\s+([\w.]+)', content)
+                    if package_match:
+                        package_name = package_match.group(1)
+                        final_main_class = f"{package_name}.{final_main_class}"
+                except Exception:
+                    pass
+        
+        if not success:
+            print("[ERROR] Failed to generate Verilog with all attempts")
+            print(f"[LOG] {log}")
+            return None
     
     # Build configuration using the final successful values
     # Generate appropriate pre_script based on build tool
@@ -1752,17 +2364,29 @@ def process_chisel_project(
                 try:
                     with open(build_sc, 'r', encoding='utf-8') as f:
                         content = f.read()
-                    # Find all modules that extend appropriate base classes
-                    module_matches = re.findall(r'object\s+(\w+)\s+extends\s+(?:\w+(?:Module|NS))', content)
+                    # Find all Mill modules (object X extends ...)
+                    # Look for top-level object definitions (not nested)
+                    lines = content.split('\n')
+                    module_matches = []
+                    for line in lines:
+                        # Match: object Name extends ... (at start of line, not indented much)
+                        if line.strip().startswith('object '):
+                            match = re.match(r'^\s*object\s+(\w+)\s+extends', line)
+                            if match:
+                                module_name = match.group(1)
+                                # Skip test modules
+                                if module_name.lower() not in ['test', 'tests'] and not module_name.endswith(('Test', 'Tests')):
+                                    module_matches.append(module_name)
+                    
                     if module_matches:
-                        # Prefer the last module (usually the main one that depends on others)
-                        # or look for 'generator', 'design', 'main' as common names
+                        # Prefer common names, otherwise take the first module
                         for preferred in ['generator', 'design', 'main']:
                             if preferred in module_matches:
                                 mill_module = preferred
                                 break
                         else:
-                            mill_module = module_matches[-1]  # Take the last one
+                            mill_module = module_matches[0]
+                        
                         print(f"[INFO] Detected Mill module: {mill_module}")
                 except Exception:
                     pass

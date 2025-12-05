@@ -1,0 +1,5 @@
+{
+  "write_enable": "processorci_top.core0.CTRL_UNIT.MEM_wen",
+  "write_addr": "processorci_top.core0.EXMEM_preg_rd",
+  "write_data": "processorci_top.core0.LS_UNIT.data_i"
+}

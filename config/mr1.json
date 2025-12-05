@@ -1,16 +1,21 @@
 {
     "name": "mr1",
     "folder": "mr1",
-    "sim_files": [],
-    "files": [
+    "top_module": "Fetch",
+    "pre_script": "sbt \"runMain mr1.MR1Verilog\"",
+    "sim_files": [
         "MR1.v"
     ],
-    "include_dirs": [],
-    "repository": "https://github.com/tomverbeure/mr1",
-    "top_module": "MR1",
-    "extra_flags": [],
-    "language_version": "2005",
-    "pre_script": "sbt \"run-main mr1.MR1Verilog\"",
-    "march": "rv32i",
-    "two_memory": false
+    "source_files": [
+        "src/main/scala/mr1/Decode.scala",
+        "src/main/scala/mr1/Execute.scala",
+        "src/main/scala/mr1/Fetch.scala",
+        "src/main/scala/mr1/MR1.scala",
+        "src/main/scala/mr1/RegFile.scala",
+        "src/main/scala/mr1/TopMR1.scala",
+        "src/main/scala/mr1/TopPicoRV32.scala",
+        "src/main/scala/mr1/Writeback.scala"
+    ],
+    "is_simulable": true,
+    "repository": "https://github.com/tomverbeure/mr1"
 }
