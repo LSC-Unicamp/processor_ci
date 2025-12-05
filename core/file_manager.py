@@ -426,10 +426,11 @@ def find_include_dirs(directory: str) -> set[str]:
     Returns:
         set[str]: Set of directories containing include files.
     """
-    # Find .svh and .vh files
+    # Find .svh, .vh, and .h files (some projects like OpenC910 use .h for Verilog headers)
     include_files = []
     include_files.extend(glob.glob(f'{directory}/**/*.svh', recursive=True))
     include_files.extend(glob.glob(f'{directory}/**/*.vh', recursive=True))
+    include_files.extend(glob.glob(f'{directory}/**/*.h', recursive=True))
     
     # Also find .v files that appear to be include/definition files
     # Look for files with common include patterns in their names
@@ -445,6 +446,16 @@ def find_include_dirs(directory: str) -> set[str]:
         # Convert to relative path from the directory
         relative_dir_path = os.path.relpath(dir_path, directory)
         include_dirs.add(relative_dir_path)
+        
+        # Also add parent directories if they're named 'include' or 'inc'
+        # This handles cases where include files are in subdirectories like core/include/*.svh
+        path_parts = relative_dir_path.split(os.sep)
+        for i, part in enumerate(path_parts):
+            if part in ['include', 'inc', 'includes']:
+                # Add this directory level
+                parent_path = os.sep.join(path_parts[:i+1])
+                include_dirs.add(parent_path)
+                
     return include_dirs
 
 

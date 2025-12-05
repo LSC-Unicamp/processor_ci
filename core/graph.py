@@ -145,26 +145,20 @@ def build_module_graph(files: list, modules: list[dict]) -> tuple[list, list]:
                 # Find instances within this module
                 module_instances = find_module_instances(content, module_names)
 
-                # Ensure current module exists in graphs (in case it's not in modules list)
-                if current_module_name not in module_graph_inverse:
-                    module_graph_inverse[current_module_name] = []
+                # Initialize current module if not already in graph
                 if current_module_name not in module_graph:
                     module_graph[current_module_name] = []
+                    module_graph_inverse[current_module_name] = []
 
                 # Update the direct (instantiated -> instantiator) and inverse
                 # (instantiator -> instantiated) graphs
                 for instance in module_instances:
                     if instance in module_graph:
-                        module_graph[instance].append(current_module_name)
-                        module_graph_inverse[current_module_name].append(instance)
+                        module_graph[current_module_name].append(instance)
+                        module_graph_inverse[instance].append(current_module_name)
         except Exception as e:
-            # Skip files that can't be processed
-            print(f"[GRAPH] Warning: Could not process file {file_path}: {e}")
-            continue
+            print(f"Error processing {file_path}: {e}")
 
-    print(module_graph)
-    print("\n")
-    print(module_graph_inverse)
     return module_graph, module_graph_inverse
 
 
