@@ -138,8 +138,12 @@ Controller #(
 
 // Core space
 
-Core #(
+Grande_Risco5 #(
     .BOOT_ADDRESS           (32'h00000000),
+    .I_CACHE_SIZE           (16),
+    .D_CACHE_SIZE           (16),
+    .DATA_WIDTH             (32),
+    .ADDR_WIDTH             (32),
     .BRANCH_PREDICTION_SIZE (128),
     .CLK_FREQ               (`CLOCK_FREQ)
 ) Processor (
@@ -147,22 +151,17 @@ Core #(
     .rst_n             (~rst_core),
     .halt              (1'b0), // Halt signal, not used in this design
 
-    // Instruction BUS
-    .instr_flush_o     (),
-    .instr_req_o       (core_cyc),
-    .instr_rsp_i       (core_ack),
-    .instr_data_i      (core_data_in),
-    .instr_addr_o      (core_addr),
+    .cyc_o             (core_cyc),
+    .stb_o             (core_stb),
+    .we_o              (core_we),
 
-    // Data BUS
-    .data_mem_rsp_i    (0),
-    .data_mem_rd_o     (),
-    .data_mem_wr_o     (),
-    .data_read_i       (32'b0),
-    .data_addr_o       (),
-    .data_write_o      (),
+    .addr_o            (core_addr),
+    .data_o            (core_data_out),
 
-    .external_interruption_i    (1'b0),
+    .ack_i             (core_ack),
+    .data_i            (core_data_in),
+
+    .interruption      (1'b0),
 
     // JTAG interface
     .jtag_we_en_i      (1'b0),  // JTAG write enable
@@ -174,7 +173,6 @@ Core #(
     .jtag_reset_flag_i (1'b0)   // JTAG reset flag
 );
 
-assign core_stb = 1'b1;
 assign core_wstrb     = 4'b1111;
     
 endmodule

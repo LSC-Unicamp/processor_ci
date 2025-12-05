@@ -126,9 +126,19 @@ def build_module_graph(files: list, modules: list[dict]) -> tuple[list, list]:
                 content = f.read()
 
                 # Find the current module name (module where instances are being made)
-                current_module_match = re.search(r'module\s+(\w+)', content)
+                #check for both verilog and vhdl module declaration
+                if file_path.endswith(('.v', '.sv')):
+                    current_module_match = re.search(r'module\s+(\w+)', content)
+                elif file_path.endswith('.vhd'):
+                    current_module_match = re.search(
+                        r'entity\s+(\w+)\s+is', content, re.IGNORECASE
+                    )
+                else:
+                    continue  # Skip unsupported file types
+
                 if not current_module_match:
-                    continue  # Skip files without a Verilog module
+                    # Skip files without a proper module/entity declaration
+                    continue
 
                 current_module_name = current_module_match.group(1)
 
