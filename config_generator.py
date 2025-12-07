@@ -83,6 +83,10 @@ from core.chisel_manager import (
     emit_verilog,
     process_chisel_project,
 )
+from core.bluespec_manager import (
+    find_bsv_files,
+    process_bluespec_project,
+)
 from verilator_runner import (
     compile_incremental as verilator_incremental,
 )
@@ -1546,9 +1550,15 @@ def clone_and_validate_repo(url: str, repo_name: str) -> str:
 
 def find_and_log_files(destination_path: str) -> tuple:
     """Finds files with specific extensions in the repository and logs the result."""
-    print_green('[LOG] Procurando arquivos com extensão .v, .sv, .vhdl, .vhd ou .scala\n')
+    print_green('[LOG] Procurando arquivos com extensão .v, .sv, .vhdl, .vhd, .scala ou .bsv\n')
     
-    # First check for Scala/Chisel files
+    # First check for Bluespec files
+    bsv_files = find_bsv_files(destination_path)
+    if bsv_files:
+        print_green(f'[LOG] Encontrados {len(bsv_files)} arquivos Bluespec - projeto BSV detectado\n')
+        return bsv_files, '.bsv'
+    
+    # Then check for Scala/Chisel files
     scala_files = find_scala_files(destination_path)
     if scala_files:
         print_green(f'[LOG] Encontrados {len(scala_files)} arquivos Scala - projeto Chisel detectado\n')
@@ -1854,8 +1864,45 @@ def generate_processor_config(
 
     files, extension = find_and_log_files(destination_path)
     
+    # Check if this is a Bluespec project
+    if extension == '.bsv':
+        print_green('[LOG] Processando projeto Bluespec\n')
+        config = process_bluespec_project(destination_path, repo_name)
+        
+        if not config or 'error' in config:
+            print_yellow('[WARNING] Failed to process Bluespec project or compilation failed')
+            if 'error' in config:
+                print_yellow(f'[WARNING] Error: {config["error"]}')
+                # Still continue with the config, just mark as non-simulable
+                config.pop('error', None)
+            else:
+                if not local_repo:
+                    remove_repo(repo_name)
+                return {}
+        
+        # Add repository URL
+        config['repository'] = url
+        
+        # Save configuration
+        print_green('[LOG] Salvando configuração\n')
+        if not os.path.exists(config_path):
+            os.makedirs(config_path)
+        
+        config_file = os.path.join(config_path, f"{repo_name}.json")
+        with open(config_file, 'w', encoding='utf-8') as f:
+            json.dump(config, f, indent=4)
+        
+        if add_to_config:
+            add_processor_to_config(repo_name)
+        
+        if not local_repo:
+            remove_repo(repo_name)
+        
+        print_green('[SUCCESS] Bluespec project configuration generated successfully\n')
+        return config
+    
     # Check if this is a Chisel project
-    if extension == '.scala':
+    elif extension == '.scala':
         print_green('[LOG] Processando projeto Chisel\n')
         config = process_chisel_project(destination_path, repo_name)
         
