@@ -764,21 +764,21 @@ def _order_sv_files(files: List[str], repo_root: str | None = None) -> List[str]
 def _has_sv_keyword_as_identifier(repo_root: str, files: List[str]) -> bool:
     """
     Check if files use SystemVerilog keywords as identifiers (like block labels, variable names, etc.).
-    Common problematic keywords: dist, randomize, constraint, etc.
+    Common problematic keywords: type, dist, randomize, constraint, etc.
     """
     import re
     
     # SystemVerilog keywords that might be used as identifiers in Verilog code
     # Note: 'bit' and 'logic' are removed since they're fundamental SV types and often used correctly
     # Note: 'with' is removed since it matches comments too often
-    sv_keywords = ['dist', 'randomize', 'constraint', 'covergroup', 'coverpoint', 
+    sv_keywords = ['type', 'dist', 'randomize', 'constraint', 'covergroup', 'coverpoint', 
                    'bins', 'illegal_bins', 'ignore_bins', 'cross', 
                    'matches', 'inside', 'tagged', 'priority', 'unique']
     
-    # Pattern to detect keyword used as identifier (e.g., "begin:dist", "wire dist", "reg [7:0] bit", etc.)
+    # Pattern to detect keyword used as identifier (e.g., "begin:dist", "wire dist", "reg [7:0] bit", "reg[7:0] type", etc.)
     identifier_patterns = [
         re.compile(r'\bbegin\s*:\s*(' + '|'.join(sv_keywords) + r')\b', re.I),  # begin:keyword
-        re.compile(r'\b(wire|reg|logic|input|output|inout)(\s+\[[^\]]+\])?\s+(' + '|'.join(sv_keywords) + r')\b', re.I),  # wire keyword or reg [N:0] keyword
+        re.compile(r'\b(wire|reg|logic|input|output|inout)\s*(\[[^\]]+\])?\s+(' + '|'.join(sv_keywords) + r')\b', re.I),  # wire keyword or reg[N:0] keyword
         re.compile(r'\bparameter\s+(' + '|'.join(sv_keywords) + r')\s*=', re.I),  # parameter keyword =
     ]
     

@@ -273,13 +273,40 @@ def clone_repo(url: str, repo_name: str) -> str:
     destination_path = os.path.join(DESTINATION_DIR, repo_name)
 
     try:
+        # First try recursive clone
         subprocess.run(
             ['git', 'clone', '--recursive', url, destination_path], check=True
         )
         return destination_path
     except subprocess.CalledProcessError as e:
-        print(f'Error cloning the repository: {e}')
-        return None
+        print(f'Error with recursive clone: {e}')
+        
+        # Clean up partial clone if it exists
+        if os.path.exists(destination_path):
+            print(f'[WARN] Removing partial clone at {destination_path}')
+            import shutil
+            shutil.rmtree(destination_path)
+        
+        # Try non-recursive clone
+        try:
+            subprocess.run(
+                ['git', 'clone', url, destination_path], check=True
+            )
+            print('[WARN] Cloned without submodules (some submodules may be unavailable)')
+            # Try to update submodules but don't fail if some are missing
+            try:
+                subprocess.run(
+                    ['git', 'submodule', 'update', '--init', '--recursive'],
+                    cwd=destination_path,
+                    check=False,  # Don't fail on submodule errors
+                    capture_output=True
+                )
+            except Exception:
+                pass  # Ignore submodule update errors
+            return destination_path
+        except subprocess.CalledProcessError as e2:
+            print(f'Error cloning the repository: {e2}')
+            return None
 
 
 def remove_repo(repo_name: str) -> None:

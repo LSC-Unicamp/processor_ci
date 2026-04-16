@@ -29,8 +29,44 @@ import os
 import re
 import glob
 import subprocess
+import signal
 from typing import List, Tuple, Dict, Set, Optional, Any
 from collections import deque
+
+
+def input_with_timeout(prompt: str, timeout: int = 5, default: str = "") -> str:
+    """
+    Get user input with a timeout. Returns default value if timeout expires.
+    
+    Args:
+        prompt: Prompt message to display
+        timeout: Timeout in seconds (default: 5)
+        default: Default value to return on timeout
+        
+    Returns:
+        User input string or default value
+    """
+    def timeout_handler(signum, frame):
+        raise TimeoutError()
+    
+    # Set up signal handler for timeout
+    old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(timeout)
+    
+    try:
+        result = input(prompt).strip()
+        signal.alarm(0)  # Cancel alarm
+        return result
+    except TimeoutError:
+        signal.alarm(0)  # Cancel alarm
+        print(f"\n[TIMEOUT] Auto-selecting default: {default}")
+        return default
+    except EOFError:
+        signal.alarm(0)  # Cancel alarm
+        return default
+    finally:
+        signal.signal(signal.SIGALRM, old_handler)  # Restore old handler
+
 
 # Helper constants and functions from config_generator.py
 UTILITY_PATTERNS = (
@@ -157,13 +193,17 @@ def find_bsv_files(directory: str) -> List[str]:
     """
     bsv_files = []
     
-    # Common directories to exclude (test directories, build artifacts, etc.)
-    exclude_dirs = ['build', 'obj', 'bdir', 'simdir', 'verilog', 'test', 'tests', '.git']
+    # Common directories to exclude (test directories, build artifacts, example/demo code, etc.)
+    # Extended to skip peripheral examples and software directories that might contain BSV examples
+    exclude_dirs = ['build', 'obj', 'bdir', 'simdir', 'verilog', 'test', 'tests', '.git',
+                    'sw', 'software', 'example', 'examples', 'demo', 'demos', 'sample', 'samples',
+                    'tutorial', 'doc', 'docs', 'documentation', 'bench', 'tb', 'testbench']
     
     for bsv_file in glob.glob(f'{directory}/**/*.bsv', recursive=True):
         # Skip files in excluded directories
         relative_path = os.path.relpath(bsv_file, directory)
-        if any(excl in relative_path for excl in exclude_dirs):
+        path_parts = relative_path.lower().split(os.sep)
+        if any(excl in path_parts for excl in exclude_dirs):
             continue
             
         # Skip broken symlinks
@@ -632,7 +672,11 @@ def find_package_name(file_path: str) -> Optional[str]:
 
 
 def find_bsv_package_file(directory: str, package_name: str, bsv_files: List[str]) -> Optional[str]:
-    """Find BSV file that declares a specific package.
+    """Find BSV file that declares a specific package or exports it.
+    
+    This function handles two Bluespec patterns:
+    1. Traditional: package PackageName; ... endpackage
+    2. Export-style: export PackageName :: *; (without explicit package declaration)
     
     Args:
         directory (str): Root directory to search
@@ -640,8 +684,9 @@ def find_bsv_package_file(directory: str, package_name: str, bsv_files: List[str
         bsv_files (List[str]): List of BSV file paths to search
         
     Returns:
-        Optional[str]: Relative path to file containing the package, or None if not found
+        Optional[str]: Relative path to directory containing the package, or None if not found
     """
+    # First, try to find traditional package declaration
     for bsv_file in bsv_files:
         try:
             with open(bsv_file, 'r', encoding='utf-8', errors='ignore') as f:
@@ -659,6 +704,42 @@ def find_bsv_package_file(directory: str, package_name: str, bsv_files: List[str
         except Exception:
             continue
     
+    # Second, try to find files that export the package (export-style BSV)
+    # Look for: export PackageName :: *; or similar export statements
+    for bsv_file in bsv_files:
+        # Check if the filename matches the package name (common pattern)
+        file_basename = os.path.splitext(os.path.basename(bsv_file))[0]
+        if file_basename == package_name:
+            try:
+                with open(bsv_file, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                    # Verify it has export statements (indicates export-style package)
+                    if re.search(r'^\s*export\s+', content, re.MULTILINE):
+                        pkg_dir = os.path.dirname(bsv_file)
+                        try:
+                            rel_dir = os.path.relpath(pkg_dir, directory)
+                            if not rel_dir.startswith('..'):
+                                print(f"[INFO] Found export-style package '{package_name}' in {rel_dir}/{file_basename}.bsv")
+                                return rel_dir
+                        except ValueError:
+                            pass
+            except Exception:
+                continue
+    
+    # Third fallback: if a file with the exact name exists, assume it's the package
+    # This handles cases where packages are implicit (no package/export declarations)
+    for bsv_file in bsv_files:
+        file_basename = os.path.splitext(os.path.basename(bsv_file))[0]
+        if file_basename == package_name:
+            pkg_dir = os.path.dirname(bsv_file)
+            try:
+                rel_dir = os.path.relpath(pkg_dir, directory)
+                if not rel_dir.startswith('..'):
+                    print(f"[INFO] Found implicit package '{package_name}' in {rel_dir}/{file_basename}.bsv (filename-based)")
+                    return rel_dir
+            except ValueError:
+                pass
+    
     return None
 
 
@@ -669,17 +750,19 @@ def parse_bsc_errors(log_output: str) -> Dict[str, List[str]]:
     - Cannot find package `PackageName'
     - Unbound type constructor `TypeName'
     - Unbound variable `VarName'
+    - Preprocessor macro 'MacroName' is not defined
     
     Args:
         log_output (str): BSC compilation log output
         
     Returns:
-        Dict with keys: 'packages', 'types', 'variables'
+        Dict with keys: 'packages', 'types', 'variables', 'macros'
     """
     result = {
         'packages': [],
         'types': [],
-        'variables': []
+        'variables': [],
+        'macros': []
     }
     
     # Pattern: Cannot find package `PackageName'
@@ -702,6 +785,24 @@ def parse_bsc_errors(log_output: str) -> Dict[str, List[str]]:
         var_name = match.group(1)
         if var_name not in result['variables']:
             result['variables'].append(var_name)
+    
+    # Pattern: Preprocessor macro 'MacroName' is not defined (P0145 error)
+    macro_pattern = re.compile(r"Preprocessor macro [`'\"](\w+)[`'\"] is not defined", re.MULTILINE)
+    for match in macro_pattern.finditer(log_output):
+        macro_name = match.group(1)
+        if macro_name not in result['macros']:
+            result['macros'].append(macro_name)
+    
+    # Pattern: Cannot find the file `FileName' to be included (P0034 error)
+    # We'll store include files separately from packages
+    if 'includes' not in result:
+        result['includes'] = []
+    
+    include_pattern = re.compile(r"Cannot find the file [`'\"]([^`'\"]+\.bsv)[`'\"] to be included", re.MULTILINE)
+    for match in include_pattern.finditer(log_output):
+        include_file = match.group(1)
+        if include_file not in result['includes']:
+            result['includes'].append(include_file)
     
     return result
 
@@ -785,6 +886,168 @@ def detect_required_defines(file_path: str, type_name: str) -> List[str]:
     return required_defines
 
 
+def detect_import_defines(file_path: str, package_name: str) -> List[str]:
+    """Detect which ifdef defines are required for a package import.
+    
+    Looks for patterns like:
+    `ifdef Near_Mem_Caches
+    import Near_Mem_Caches :: *;
+    `endif
+    
+    IMPORTANT: Only matches if the import line is between ifdef and endif.
+    Uses line-based analysis to avoid false positives from earlier ifdef blocks.
+    
+    Args:
+        file_path (str): Path to BSV file containing the import
+        package_name (str): Name of the package being imported
+        
+    Returns:
+        List[str]: List of define names that enable this import
+    """
+    required_defines = []
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            lines = f.readlines()
+        
+        # Find all lines with the import statement
+        import_line_nums = []
+        for i, line in enumerate(lines):
+            if re.search(rf'import\s+{re.escape(package_name)}\s*::', line):
+                import_line_nums.append(i)
+        
+        # For each import, work backwards to find any active ifdef
+        for import_line_num in import_line_nums:
+            for i in range(import_line_num, -1, -1):
+                line = lines[i]
+                
+                # If we hit an endif before ifdef, we're outside any ifdef block
+                if re.search(r'`endif', line):
+                    break
+                
+                # If we hit an ifdef, this is the one
+                ifdef_match = re.search(r'`ifdef\s+(\w+)', line)
+                if ifdef_match:
+                    define_name = ifdef_match.group(1)
+                    if define_name not in required_defines:
+                        required_defines.append(define_name)
+                    break
+    
+    except Exception:
+        pass
+    
+    return required_defines
+
+
+def detect_module_defines(directory: str, module_name: str, bsv_files: List[str]) -> List[str]:
+    """Detect which ifdef defines are required for a module definition.
+    
+    Looks for patterns like:
+    `ifdef Near_Mem_Caches
+    module mkNear_Mem ...;
+    `endif
+    
+    IMPORTANT: Only matches if the module definition line is between ifdef and endif.
+    Uses line-based analysis to avoid false positives from earlier ifdef blocks.
+    
+    Args:
+        directory (str): Root directory to search
+        module_name (str): Name of the module to find
+        bsv_files (List[str]): List of BSV file paths to search
+        
+    Returns:
+        List[str]: List of define names that enable this module
+    """
+    required_defines = []
+    
+    for bsv_file in bsv_files:
+        file_path = os.path.join(directory, bsv_file) if not os.path.isabs(bsv_file) else bsv_file
+        
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                lines = f.readlines()
+            
+            # Find the line with the module definition
+            module_line_num = None
+            for i, line in enumerate(lines):
+                if re.search(rf'module\s+{re.escape(module_name)}\b', line):
+                    module_line_num = i
+                    break
+            
+            if module_line_num is None:
+                continue
+            
+            # Now work backwards from module line to find any active ifdef
+            active_ifdefs = []
+            for i in range(module_line_num, -1, -1):
+                line = lines[i]
+                
+                # If we hit an endif, we're outside the ifdef block
+                if re.search(r'`endif', line):
+                    break
+                
+                # If we hit an ifdef, this is the one
+                ifdef_match = re.search(r'`ifdef\s+(\w+)', line)
+                if ifdef_match:
+                    define_name = ifdef_match.group(1)
+                    active_ifdefs.append(define_name)
+                    break
+            
+            # Add any found ifdefs
+            for define_name in active_ifdefs:
+                if define_name not in required_defines:
+                    required_defines.append(define_name)
+                    print(f"[IFDEF] Found {module_name} requires ifdef {define_name} in {os.path.basename(file_path)}")
+        
+        except Exception:
+            continue
+    
+    return required_defines
+
+
+def find_package_exporting_module(directory: str, module_name: str, bsv_files: List[str]) -> Optional[str]:
+    """Find which package exports a specific module.
+    
+    Looks for:
+    - package PackageName;
+    - export moduleName;
+    - or module moduleName definition
+    
+    Args:
+        directory (str): Root directory to search
+        module_name (str): Name of the module to find
+        bsv_files (List[str]): List of BSV file paths to search
+        
+    Returns:
+        Optional[str]: Package name that exports the module, or None
+    """
+    for bsv_file in bsv_files:
+        file_path = os.path.join(directory, bsv_file) if not os.path.isabs(bsv_file) else bsv_file
+        
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+            
+            # Check if this file defines the module
+            module_pattern = rf'module\s+{re.escape(module_name)}\b'
+            if not re.search(module_pattern, content):
+                continue
+            
+            # Found the module, now find which package it belongs to
+            # Look for: package PackageName;
+            pkg_pattern = r'^\s*package\s+(\w+)\s*;'
+            match = re.search(pkg_pattern, content, re.MULTILINE)
+            if match:
+                package_name = match.group(1)
+                print(f"[PACKAGE] Module {module_name} is exported by package {package_name}")
+                return package_name
+        
+        except Exception:
+            continue
+    
+    return None
+
+
 def find_bsv_variable_definition(directory: str, var_name: str, bsv_files: List[str]) -> Optional[str]:
     """Find BSV file that defines a specific variable or function.
     
@@ -828,8 +1091,8 @@ def _try_compile_with_iterations(
     bsv_files: List[str],
     timeout: int,
     search_paths: List[str] = None,
-    max_iterations: int = 15
-) -> Tuple[bool, str, str]:
+    max_iterations: int = 50
+) -> Tuple[bool, str, str, str, List[str], List[str], str]:
     """Try to compile a specific candidate file with full iterative dependency resolution.
     
     Similar to Verilator's incremental compilation - tries to resolve dependencies
@@ -845,7 +1108,8 @@ def _try_compile_with_iterations(
         max_iterations: Maximum number of iterations to try
         
     Returns:
-        Tuple[bool, str, str]: (success, verilog_file_path, log_output)
+        Tuple[bool, str, str, str, List[str], List[str]]: 
+            (success, verilog_file_path, log_output, final_command, defines, search_paths)
     """
     # Get the directory containing the top module - this should be searched first
     top_module_dir = os.path.dirname(top_module_file)
@@ -874,6 +1138,17 @@ def _try_compile_with_iterations(
     # Add top module directory first (highest priority)
     if top_module_rel_dir:
         search_path_components.append(top_module_rel_dir)
+    
+    # Add common library directories upfront (for projects using export-style files)
+    # Some Bluespec projects (like riscy-OOO) use export statements instead of package declarations,
+    # so we can't detect packages via the traditional pattern. Add common lib directories preemptively.
+    common_lib_patterns = ['lib', 'src', 'common', 'core']
+    for bsv_dir in sorted(bsv_directories):
+        dir_parts = bsv_dir.split(os.sep)
+        # Add if it's a direct lib directory or contains lib in path
+        if any(pattern in dir_parts for pattern in common_lib_patterns):
+            if bsv_dir not in search_path_components:
+                search_path_components.append(bsv_dir)
     
     # Add user-provided search paths
     if search_paths:
@@ -922,24 +1197,29 @@ def _try_compile_with_iterations(
             if result.returncode == 0:
                 verilog_file = f"{top_module}.v"
                 print(f"[INFO] ✓ Compilation successful after {iteration + 1} iteration(s)!")
-                return (True, verilog_file, log_output)
+                # Build the final command string for pre_script
+                final_cmd = ' '.join(cmd)
+                return (True, verilog_file, log_output, final_cmd, defines, list(added_paths), top_module_rel_dir)
             
             # Parse errors to find missing dependencies
             errors = parse_bsc_errors(log_output)
             missing_packages = errors['packages']
             missing_types = errors['types']
             missing_vars = errors['variables']
+            missing_macros = errors.get('macros', [])
+            missing_includes = errors.get('includes', [])
             
             # Print status
-            total_missing = len(missing_packages) + len(missing_types) + len(missing_vars)
-            print(f"[INFO] Iteration {iteration + 1}/{max_iterations}: Missing {len(missing_packages)} packages, {len(missing_types)} types, {len(missing_vars)} variables")
+            total_missing = len(missing_packages) + len(missing_types) + len(missing_vars) + len(missing_macros) + len(missing_includes)
+            print(f"[INFO] Iteration {iteration + 1}/{max_iterations}: Missing {len(missing_packages)} packages, {len(missing_types)} types, {len(missing_vars)} variables, {len(missing_macros)} macros, {len(missing_includes)} includes")
             
             # Check if we have any dependencies to resolve
             if total_missing == 0:
                 # No resolvable errors found
                 if iteration == 0:
                     print(f"[DEBUG] bsc output:\n{log_output}")
-                return (False, "", f"bsc compilation failed (no resolvable dependencies):\n{log_output}")
+                final_cmd = ' '.join(cmd)
+                return (False, "", f"bsc compilation failed (no resolvable dependencies):\n{log_output}", final_cmd, defines, list(added_paths), "")
             
             # Try to find and add missing dependencies
             added_something = False
@@ -959,6 +1239,29 @@ def _try_compile_with_iterations(
                     print(f"[INFO] + Adding package directory: {pkg_dir} (provides '{pkg_name}')")
                     added_paths.add(pkg_dir)
                     added_something = True
+                elif pkg_dir and pkg_dir in added_paths:
+                    # Package directory already added but still getting error
+                    # Check if the import is inside an ifdef block
+                    print(f"[INFO] Package '{pkg_name}' directory already in search path")
+                    print(f"[INFO] Checking if import requires conditional compilation...")
+                    
+                    # Search for files that import this package
+                    for bsv_file in bsv_files:
+                        file_path = os.path.join(directory, bsv_file) if not os.path.isabs(bsv_file) else bsv_file
+                        try:
+                            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                                if f'import {pkg_name}' in f.read():
+                                    # Found a file that imports this package
+                                    import_defines = detect_import_defines(file_path, pkg_name)
+                                    if import_defines:
+                                        print(f"[INFO] Import of '{pkg_name}' requires one of: {', '.join(import_defines)}")
+                                        # Auto-select first option (non-interactive)
+                                        print(f"[INFO] + Adding define: -D {import_defines[0]} (auto-selected)")
+                                        defines.append(import_defines[0])
+                                        added_something = True
+                                        break
+                        except Exception:
+                            continue
                 elif not pkg_dir:
                     print(f"[WARNING] ! Could not find package: {pkg_name}")
             
@@ -987,24 +1290,21 @@ def _try_compile_with_iterations(
                             required_defines = detect_required_defines(type_file, type_name)
                             if required_defines:
                                 print(f"[INFO] Type '{type_name}' requires one of these defines: {', '.join(required_defines)}")
-                                print(f"[INPUT] Which define should be used? [{'/'.join(required_defines)}]:", end=' ')
+                                default_choice = required_defines[0]
                                 
-                                # Get user input
-                                try:
-                                    user_choice = input().strip()
-                                    if user_choice in required_defines:
-                                        print(f"[INFO] + Adding define: -D {user_choice}")
-                                        defines.append(user_choice)
-                                        added_something = True
-                                    else:
-                                        print(f"[WARNING] Invalid choice '{user_choice}', using default: {required_defines[0]}")
-                                        defines.append(required_defines[0])
-                                        added_something = True
-                                except EOFError:
-                                    # Non-interactive mode, use first define
-                                    print(f"{required_defines[0]}")
-                                    print(f"[INFO] + Adding define: -D {required_defines[0]} (non-interactive)")
-                                    defines.append(required_defines[0])
+                                user_choice = input_with_timeout(
+                                    f"[INPUT] Which define? [{'/'.join(required_defines)}] (default: {default_choice}, 5s timeout): ",
+                                    timeout=5,
+                                    default=default_choice
+                                )
+                                
+                                if user_choice in required_defines:
+                                    print(f"[INFO] + Adding define: -D {user_choice}")
+                                    defines.append(user_choice)
+                                    added_something = True
+                                else:
+                                    print(f"[INFO] + Adding define: -D {default_choice} (auto-selected)")
+                                    defines.append(default_choice)
                                     added_something = True
                             else:
                                 print(f"[INFO] Type '{type_name}' found in {rel_dir} (already in search path)")
@@ -1034,12 +1334,116 @@ def _try_compile_with_iterations(
                             added_something = True
                         elif rel_dir in added_paths:
                             print(f"[INFO] Variable '{var_name}' found in {rel_dir} (already in search path)")
-                            # Variable exists but still getting error - might be ifdef or other issue
-                            # Continue iteration to see if other errors can be resolved
+                            # Variable exists but still getting error - check multiple possibilities
+                            print(f"[INFO] Checking if '{var_name}' requires conditional compilation...")
+                            
+                            # Strategy 1: Check if the module itself is inside an ifdef
+                            module_defines = detect_module_defines(directory, var_name, bsv_files)
+                            if module_defines:
+                                print(f"[INFO] Module '{var_name}' requires one of: {', '.join(module_defines)}")
+                                default_choice = module_defines[0]
+                                
+                                user_choice = input_with_timeout(
+                                    f"[INPUT] Which define? [{'/'.join(module_defines)}] (default: {default_choice}, 5s timeout): ",
+                                    timeout=5,
+                                    default=default_choice
+                                )
+                                
+                                if user_choice in module_defines:
+                                    print(f"[INFO] + Adding define: -D {user_choice}")
+                                    defines.append(user_choice)
+                                    added_something = True
+                                else:
+                                    print(f"[INFO] + Adding define: -D {default_choice} (auto-selected)")
+                                    defines.append(default_choice)
+                                    added_something = True
+                            else:
+                                # Strategy 2: Find which package exports this module and check if import is conditional
+                                print(f"[INFO] Module definition is not conditional, checking package imports...")
+                                exporting_package = find_package_exporting_module(directory, var_name, bsv_files)
+                                
+                                if exporting_package:
+                                    # Now check if this package's import is conditional in any file
+                                    print(f"[INFO] Searching for conditional imports of package '{exporting_package}'...")
+                                    
+                                    for search_file in bsv_files:
+                                        search_path = os.path.join(directory, search_file) if not os.path.isabs(search_file) else search_file
+                                        try:
+                                            with open(search_path, 'r', encoding='utf-8', errors='ignore') as f:
+                                                search_content = f.read()
+                                            
+                                            # Check if this file imports the package
+                                            if f'import {exporting_package}' in search_content:
+                                                print(f"[DEBUG] Found import of '{exporting_package}' in {os.path.basename(search_path)}")
+                                                import_defines = detect_import_defines(search_path, exporting_package)
+                                                if import_defines:
+                                                    print(f"[INFO] Package '{exporting_package}' import in {os.path.basename(search_path)} requires one of: {', '.join(import_defines)}")
+                                                    default_choice = import_defines[0]
+                                                    
+                                                    user_choice = input_with_timeout(
+                                                        f"[INPUT] Which define? [{'/'.join(import_defines)}] (default: {default_choice}, 5s timeout): ",
+                                                        timeout=5,
+                                                        default=default_choice
+                                                    )
+                                                    
+                                                    if user_choice in import_defines:
+                                                        print(f"[INFO] + Adding define: -D {user_choice}")
+                                                        defines.append(user_choice)
+                                                        added_something = True
+                                                    else:
+                                                        print(f"[INFO] + Adding define: -D {default_choice} (auto-selected)")
+                                                        defines.append(default_choice)
+                                                        added_something = True
+                                                    break  # Found the conditional import, stop searching
+                                        except Exception:
+                                            continue
                     except ValueError:
                         pass
                 else:
                     print(f"[WARNING] ! Could not find variable: {var_name}")
+            
+            # Handle missing preprocessor macros  
+            if missing_macros:
+                # Common default values for typical Bluespec macros
+                macro_defaults = {
+                    'NUM_CORES': '1',
+                    'NUM_THREADS': '1', 
+                    'CORE_SMALL': '',
+                    'CORE_MEDIUM': '',
+                    'CORE_LARGE': '',
+                    'CACHE_SMALL': '',
+                    'CACHE_MEDIUM': '',
+                    'CACHE_LARGE': '',
+                    'FABRIC32': '',
+                    'FABRIC64': '',
+                    'RV32': '',
+                    'RV64': ''
+                }
+                
+                for macro_name in missing_macros:
+                    if macro_name not in [d.split('=')[0] for d in defines]:
+                        default_val = macro_defaults.get(macro_name, '1')
+                        define_str = f"{macro_name}={default_val}" if default_val else macro_name
+                        print(f"[INFO] + Adding macro define: -D {define_str}")
+                        defines.append(define_str)
+                        added_something = True
+            
+            # Handle missing include files (like ProcConfig.bsv)
+            for include_file in missing_includes:
+                print(f"[INFO] Looking for include file: {include_file}")
+                # Search for this file in all BSV directories
+                for bsv_file_path in bsv_files:
+                    if os.path.basename(bsv_file_path) == include_file:
+                        include_dir = os.path.dirname(bsv_file_path)
+                        try:
+                            rel_dir = os.path.relpath(include_dir, directory)
+                            if not rel_dir.startswith('..') and rel_dir not in added_paths:
+                                print(f"[INFO] + Adding include directory: {rel_dir} (contains '{include_file}')")
+                                added_paths.add(rel_dir)
+                                added_something = True
+                                break
+                        except ValueError:
+                            pass
             
             if not added_something:
                 # Couldn't resolve any new packages
@@ -1053,7 +1457,8 @@ def _try_compile_with_iterations(
                 print(f"[INFO] ")
                 print(f"[INFO] Current defines used: {defines if defines else '(none)'}")
                 print(f"[INFO] Search paths: {len(added_paths)} directories")
-                return (False, "", f"bsc compilation failed (unresolvable dependencies):\n{log_output}")
+                final_cmd = ' '.join(cmd)
+                return (False, "", f"bsc compilation failed (unresolvable dependencies):\n{log_output}", final_cmd, defines, list(added_paths), "")
             
             # Rebuild command with new search paths and defines
             full_search_path = ':'.join(sorted(added_paths))
@@ -1073,9 +1478,11 @@ def _try_compile_with_iterations(
             cmd.extend(['-p', full_search_path, top_module_file])
             
         except subprocess.TimeoutExpired:
-            return (False, "", f"Compilation timed out after {timeout} seconds")
+            final_cmd = ' '.join(cmd)
+            return (False, "", f"Compilation timed out after {timeout} seconds", final_cmd, defines, list(added_paths), "")
         except Exception as e:
-            return (False, "", f"Error running bsc: {e}")
+            final_cmd = ' '.join(cmd)
+            return (False, "", f"Error running bsc: {e}", final_cmd, defines, list(added_paths), "")
     
     # Hit max iterations
     print(f"[INFO] Exhausted {max_iterations} iterations without successful compilation")
@@ -1085,7 +1492,8 @@ def _try_compile_with_iterations(
     print(f"[INFO]   - Directories added: {len(added_paths)}")
     print(f"[INFO]   - Iterations completed: {iteration}")
     print(f"[INFO] ")
-    return (False, "", f"bsc compilation failed after {max_iterations} iterations:\n{last_log}")
+    final_cmd = ' '.join(cmd)
+    return (False, "", f"bsc compilation failed after {max_iterations} iterations:\n{last_log}", final_cmd, defines, list(added_paths), "")
 
 
 def compile_to_verilog(
@@ -1094,7 +1502,7 @@ def compile_to_verilog(
     bsv_files: List[str],
     timeout: int = 300,
     search_paths: List[str] = None
-) -> Tuple[bool, str, str]:
+) -> Tuple[bool, str, str, str, List[str], List[str], str]:
     """Compile Bluespec to Verilog using bsc compiler.
     
     The bsc command structure:
@@ -1108,7 +1516,8 @@ def compile_to_verilog(
         search_paths (List[str]): Optional additional search paths
         
     Returns:
-        Tuple[bool, str, str]: (success, verilog_file_path, log_output)
+        Tuple[bool, str, str, str, List[str], List[str]]: 
+            (success, verilog_file_path, log_output, final_command, defines, search_paths)
     """
     print(f"[INFO] Compiling Bluespec to Verilog: {top_module}")
     
@@ -1136,7 +1545,7 @@ def compile_to_verilog(
             continue
     
     if not top_module_candidates:
-        return (False, "", f"Could not find file containing module {top_module}")
+        return (False, "", f"Could not find file containing module {top_module}", "", [], [], "")
     
     # If only one candidate, use it directly
     if len(top_module_candidates) == 1:
@@ -1167,7 +1576,7 @@ def compile_to_verilog(
             
             # Try to compile this candidate with full iterative dependency resolution
             result = _try_compile_with_iterations(
-                directory, top_module, candidate, bsv_files, timeout, search_paths, max_iterations=15
+                directory, top_module, candidate, bsv_files, timeout, search_paths, max_iterations=50
             )
             
             if result[0]:  # Success
@@ -1182,16 +1591,19 @@ def compile_to_verilog(
                     if not successful_result:
                         successful_result = result
                 else:
-                    print(f"[INFO]   ✗ Candidate {idx+1} has fatal errors")
+                    # Show first few lines of error for debugging
+                    error_preview = '\n'.join(error_msg.split('\n')[:5])
+                    print(f"[INFO]   ✗ Candidate {idx+1} has fatal errors:")
+                    print(f"[DEBUG]   {error_preview}")
         
         # All candidates failed, return the last result (or first with dependency errors)
         if successful_result:
             return successful_result
         
-        return (False, "", f"All {len(sorted_candidates)} candidates for '{top_module}' failed to compile")
+        return (False, "", f"All {len(sorted_candidates)} candidates for '{top_module}' failed to compile", "", [], [], "")
     
     # Single candidate path - use the helper function with full iteration
-    return _try_compile_with_iterations(directory, top_module, top_module_file, bsv_files, timeout, search_paths, max_iterations=15)
+    return _try_compile_with_iterations(directory, top_module, top_module_file, bsv_files, timeout, search_paths, max_iterations=50)
 
 
 def process_bluespec_project(
@@ -1239,21 +1651,10 @@ def process_bluespec_project(
     print(f"[INFO] Top module: {top_module}")
     
     # Step 6: Compile to Verilog
-    success, verilog_file, log = compile_to_verilog(directory, top_module, bsv_files)
+    success, verilog_file, log, final_cmd, defines, search_paths, top_module_rel_dir = compile_to_verilog(directory, top_module, bsv_files)
     
-    # Generate pre_script for bsc compilation
-    # Find the file containing the top module
-    top_module_file = None
-    for name, path in modules:
-        if name == top_module:
-            top_module_file = os.path.relpath(path, directory)
-            break
-    
-    pre_script = None
-    if top_module_file:
-        # Generate bsc command that will be run before simulation
-        # This allows re-compilation if source files change
-        pre_script = f'bsc -verilog -g {top_module} -u -aggressive-conditions -p .:%/Libraries {top_module_file}'
+    # Use the actual command that successfully compiled (includes all defines and search paths)
+    pre_script = final_cmd if success and final_cmd else None
     
     if not success:
         print(f"[ERROR] Failed to compile to Verilog:\n{log}")
@@ -1273,7 +1674,7 @@ def process_bluespec_project(
     config = {
         'name': repo_name or os.path.basename(directory),
         'folder': os.path.basename(directory),
-        'files': [os.path.relpath(verilog_file, directory)] if verilog_file else [],
+        'files': [os.path.join(top_module_rel_dir, verilog_file)] if verilog_file and top_module_rel_dir else ([verilog_file] if verilog_file else []),
         'source_files': [os.path.relpath(path, directory) for name, path in modules],
         'top_module': top_module,
         'repository': "",

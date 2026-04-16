@@ -1185,7 +1185,6 @@ def interactive_simulate_and_minimize(
         print_yellow(f"[FILTER] Excluded Verification/UnitTest files -> non-tb:{dropped_cf} tb:{dropped_tb}")
     # Rank candidates using existing heuristics
     candidates, cpu_core_matches = rank_top_candidates(module_graph, module_graph_inverse, repo_name=repo_name, modules=modules)
-    print(candidates)
     if not candidates:
         candidates = [m for m, _ in modules] if modules else []
 
@@ -1849,8 +1848,21 @@ def generate_processor_config(
     
     # Use local repo if provided, otherwise clone
     if local_repo and os.path.exists(local_repo):
-        destination_path = os.path.abspath(local_repo)
-        print_green(f"[LOG] Using local repository: {destination_path}")
+        # Check if local_repo is the actual repo or a parent directory containing it
+        if os.path.isdir(os.path.join(local_repo, '.git')):
+            # It's the actual repository
+            destination_path = os.path.abspath(local_repo)
+            print_green(f"[LOG] Using local repository: {destination_path}")
+        else:
+            # Check if local_repo is a parent directory containing repo_name
+            potential_path = os.path.join(local_repo, repo_name)
+            if os.path.exists(potential_path) and os.path.isdir(os.path.join(potential_path, '.git')):
+                destination_path = os.path.abspath(potential_path)
+                print_green(f"[LOG] Found repository in parent directory: {destination_path}")
+            else:
+                # Treat it as the repo path anyway (might be a non-git directory)
+                destination_path = os.path.abspath(local_repo)
+                print_yellow(f"[LOG] Using provided path (no .git found): {destination_path}")
     else:
         destination_path = clone_and_validate_repo(url, repo_name)
         if not destination_path:
@@ -2026,7 +2038,7 @@ def generate_processor_config(
         language_version=language_version,
         maximize_attempts=6,
         verilator_extra_flags=verilator_flags,
-        ghdl_extra_flags=['--std=08', '-frelaxed'],
+        ghdl_extra_flags=['--std=08', '-frelaxed', '-fsynopsys'],
     )
 
     # Convert absolute include directories to relative paths

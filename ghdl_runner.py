@@ -1000,7 +1000,20 @@ def incremental_compilation(
         if rc == 0:
             print_green(f"[GHDL-INCREMENTAL] ✓ Success with top entity: {candidate}")
             print_blue(f"[GHDL-INCREMENTAL] Final files: {len(final_files)}")
-            return True, log, final_files, candidate
+            # Convert absolute paths to relative paths (relative to repo_root)
+            normalized_files = []
+            for f in final_files:
+                if os.path.isabs(f):
+                    # Make it relative to repo_root
+                    try:
+                        rel_path = os.path.relpath(f, repo_root)
+                        normalized_files.append(rel_path)
+                    except ValueError:
+                        # If relpath fails (different drives on Windows), keep as is
+                        normalized_files.append(f)
+                else:
+                    normalized_files.append(f)
+            return True, log, normalized_files, candidate
         
         print_yellow(f"[GHDL-INCREMENTAL] ✗ Failed with top entity: {candidate}")
     
